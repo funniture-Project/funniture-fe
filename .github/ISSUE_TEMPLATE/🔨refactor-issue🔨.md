@@ -1,5 +1,5 @@
 ---
-name: "\U0001F528Refactor-Issue/\U0001F528"
+name: "\U0001F528Refactor-Issue\U0001F528"
 about: 수정 한 기능에 대해 기록해주세요.
 title: "[Refactor] 2025/[월]/[일] [이름]"
 labels: ''
