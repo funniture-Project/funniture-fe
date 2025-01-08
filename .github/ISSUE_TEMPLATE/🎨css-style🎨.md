@@ -1,6 +1,6 @@
 ---
 name: "\U0001F3A8CSS Style\U0001F3A8"
-about: Describe this issue template's purpose here.
+about: '추가/수정 한 CSS에 대해 기록해주세요. '
 title: "[CSS] 2025[날짜] [이름]"
 labels: ''
 assignees: ''
