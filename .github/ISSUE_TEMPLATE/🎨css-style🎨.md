@@ -1,0 +1,23 @@
+---
+name: "\U0001F3A8CSS Style\U0001F3A8"
+about: Describe this issue template's purpose here.
+title: "[CSS] 2025[날짜] [이름]"
+labels: ''
+assignees: ''
+
+---
+
+##  작업 내용
+- [ ] 새로운 스타일 추가
+- [ ] 기존 스타일 수정
+- [ ] 특정 페이지/컴포넌트에 대한 스타일 적용
+
+## ✔ 기능의 상세 내용 작성
+-  
+-  
+-  
+
+## #️⃣ 연관 이슈 
+- ex) #이슈번호 
+
+## 👁‍🗨 스크린 샷 첨부
