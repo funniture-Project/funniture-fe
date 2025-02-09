@@ -1,0 +1,78 @@
+.mypage {
+    display: flex;
+    justify-content: space-between;
+
+    .mypageMenu {
+        width: 34%;
+        border: solid 1px red;
+        max-height: 70vh;
+        box-sizing: border-box;
+
+        position: sticky;
+        top: 109px;
+
+        border-radius: 15px;
+        border: solid 3px #B08968;
+        padding: 20px 4%;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .userInfo {
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+
+            img {
+                width: 20%;
+                border-radius: 50%;
+                aspect-ratio: 1 / 1;
+                margin-right: 10px;
+            }
+
+            .name {
+                font-weight: bold;
+            }
+
+            .email {
+                color: #A5A3A3;
+            }
+
+            margin-bottom: 10px;
+        }
+
+        .pointCupon {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+
+            >div {
+                width: 48%;
+
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                background-color: #7F5539;
+                border-radius: 5px;
+
+                >div {
+                    color: white;
+                    padding: 2px 0;
+                    width: 100%;
+                    text-align: center;
+                }
+
+                >div:first-child {
+                    border-bottom: solid 1px white;
+                }
+            }
+        }
+    }
+
+    .mypageContent {
+        width: 64%;
+        border: solid 1px blue;
+    }
+}
