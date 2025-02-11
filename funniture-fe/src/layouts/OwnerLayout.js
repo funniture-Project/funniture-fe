@@ -13,12 +13,15 @@ function OwnerLayout() {
     return (
         <div className="owner">
             <div className="ownerMenuBar">
+
+                {/* 제공자 정보 */}
                 <div className='ownerInfo'>
                     <img src={profileImg} alt="프로필 이미지" />
                     <div className='name'>이은미 님</div>
                     <div className='email'>testEmail@gmail.com</div>
                 </div>
 
+                {/* 제공자 마이페이지 메뉴 */}
                 <div className="menus">
                     <NavLink to="/owner" className={({ isActive }) => (isActive ? "selectedMenu" : "")}>
                         <div>메뉴</div>
