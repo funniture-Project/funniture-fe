@@ -12,6 +12,11 @@ export const GET_CATEGORY_LIST = 'category/GET_CATEGORY_LIST';
 // 액션 함수
 const actions = createActions({
     [GET_CATEGORY_LIST]: () => { },
+    [GET_CATEGORY_LIST]: () => { },
+    [GET_CATEGORY_LIST]: () => { },
+    [GET_CATEGORY_LIST]: () => { },
+    [GET_CATEGORY_LIST]: () => { },
+    [GET_CATEGORY_LIST]: () => { },
 });
 
 // 리듀서
