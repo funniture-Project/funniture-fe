@@ -21,11 +21,13 @@ function UserLayout({ selectCategory, setSelectCategory }) {
 
     const { categoryList, refCategoryCode } = useSelector(state => state.category);
 
+    // 메인페이지에서 이동할 때  
     function moveListPage(categoryCode) {
-        console.log("e.target.key : ", categoryCode)
-        setSelectCategory([categoryCode]);
+        if (categoryCode != 1 && categoryCode != 2) {
+            setSelectCategory([categoryCode]);
+        }
 
-        navigate('/list', { state: { categoryCodeList: categoryCode } })
+        navigate('/list')
     }
 
     useEffect(() => {
@@ -34,7 +36,11 @@ function UserLayout({ selectCategory, setSelectCategory }) {
     }, [selectCategory])
 
     function addSelectCategory(categoryCode) {
-
+        if (selectCategory.includes(categoryCode)) {
+            setSelectCategory(prev => prev.filter(item => item !== categoryCode))
+        } else {
+            setSelectCategory(prev => [...prev, categoryCode])
+        }
     }
 
     return (
@@ -46,7 +52,7 @@ function UserLayout({ selectCategory, setSelectCategory }) {
                 <div>
                     < img className='bannerImg' src={banner1} alt="배너 사진 1" />
                     <div className="categoryBtns">
-                        <div onClick={() => navigate('/list', { state: { categoryCode: refCategoryCode } })}>
+                        <div onClick={() => moveListPage(refCategoryCode)}>
                             <div className="allProduct" >전체보기</div>
                         </div>
 
@@ -65,14 +71,14 @@ function UserLayout({ selectCategory, setSelectCategory }) {
             {/* 리스트 페이지 검색 조건 때문에 생성 */}
             {location.pathname == '/list' ? (
                 <div className="searchConditionBox">
-                    <div>회사 목록</div>
+                    <div className="companyItem">회사 목록</div>
                     <hr />
                     <div className="categoryList">
                         {categoryList.map(category => {
                             return (
                                 <div key={category.categoryCode} data-category-code={category.categoryCode}
                                     className={`categoryItem ${selectCategory?.includes(category.categoryCode) ? 'selectedCategory' : null}`}
-                                    onClick={() => navigate('/list', { state: { categoryCodeList: category.categoryCode } })}>
+                                    onClick={() => addSelectCategory(category.categoryCode)}>
                                     <div>{category.categoryName}</div>
                                 </div>
                             )
