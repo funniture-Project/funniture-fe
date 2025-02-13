@@ -62,7 +62,7 @@ function Header() {
                     <input type="text" value={searchText} placeholder='검색어를 입력하세요' onChange={changeHandler} onKeyUp={enterFunction} />
                     <img src={searchIcon} alt="검색 아이콘" onClick={searchFunction} />
                 </div>
-                <div className='loginBtn' onClick={() => navigate('/mypage')}>
+                <div className='loginBtn' onClick={() => navigate('/login')}>
                     <div>
                         로그인
                     </div>
