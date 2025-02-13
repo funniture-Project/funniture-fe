@@ -1,12 +1,12 @@
 import './mypage.css'
 import profileImg from '../../assets/images/profiletest.jpg'
+import { Outlet } from "react-router-dom"
 
 function MyPage() {
 
     return (
         <div className='mypage'>
             <div className="mypageMenu">
-
                 <div className='userInfo'>
                     <img src={profileImg} alt="프로필 이미지" />
                     <div>
@@ -25,7 +25,6 @@ function MyPage() {
                         <div>3개</div>
                     </div>
                 </div>
-
             </div>
             <div className='mypageContent'>
                 <h1>내용</h1>
@@ -36,25 +35,7 @@ function MyPage() {
                 <h1>내용</h1>
                 <h1>내용</h1>
                 <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
-                <h1>내용</h1>
+                <Outlet />
             </div>
         </div>
     )
