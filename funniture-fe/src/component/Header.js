@@ -7,12 +7,11 @@ import { useSelector, useDispatch } from 'react-redux';
 
 function Header() {
 
-    const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const categoryList = useSelector(state => state.category)
     const [refCategory, setRefCategory] = useState(1)
+    const [searchText, setSearchText] = useState('')
 
     async function setCategoryData(refCategory) {
         dispatch(getCategory(refCategory))
@@ -27,8 +26,22 @@ function Header() {
     }, [refCategory])
 
     function onChangeHandler(e) {
-        console.log(e.target.value); // 클릭한 라디오 버튼의 value를 출력
         setRefCategory(Number(e.target.value)); // 상태 업데이트
+    }
+
+    const changeHandler = (e) => {
+        setSearchText(e.target.value)
+    }
+
+    const searchFunction = () => {
+        setSearchText('')
+        navigate('/list', { state: { searchText: searchText }, replace: true })
+    }
+
+    const enterFunction = (e) => {
+        if (e.key == 'Enter') {
+            searchFunction()
+        }
     }
 
     return (
@@ -46,8 +59,8 @@ function Header() {
                     </label>
                 </div>
                 <div className='searchBox'>
-                    <input type="text" placeholder='검색어를 입력하세요' />
-                    <img src={searchIcon} alt="검색 아이콘" />
+                    <input type="text" value={searchText} placeholder='검색어를 입력하세요' onChange={changeHandler} onKeyUp={enterFunction} />
+                    <img src={searchIcon} alt="검색 아이콘" onClick={searchFunction} />
                 </div>
                 <div className='loginBtn' onClick={() => navigate('/mypage')}>
                     <div>

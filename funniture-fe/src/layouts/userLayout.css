@@ -9,6 +9,7 @@
 
     font-family: 'Paperlogy';
 
+    /* 메인 페이지 */
     .bannerImg {
         width: 100%;
         height: 370px;
@@ -62,6 +63,46 @@
             }
         }
     }
+
+    /* 검색 리스트 페이지 */
+
+    .searchConditionBox {
+        margin-top: 1.5%;
+        padding: 30px 10%;
+
+        background-color: #F4F4F4;
+
+        box-sizing: border-box;
+
+        hr {
+            border: solid 5px white;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .categoryList {
+            display: flex;
+
+            >div {
+                border: solid 1px #A5A3A3;
+                margin-right: 10px;
+                background-color: white;
+                padding: 10px 20px;
+                border-radius: 30px;
+
+                color: #A5A3A3;
+
+                font-weight: 200;
+            }
+
+            .selectedCategory {
+                background-color: #615F5F;
+                border-color: #615F5F;
+                color: white;
+            }
+        }
+    }
+
 }
 
 .mainContent {
