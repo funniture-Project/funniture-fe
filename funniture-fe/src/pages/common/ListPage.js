@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getProductList } from "../../apis/ProductAPI";
 import './listpage.css'
+import { useSelector } from "react-redux";
 
 function ListPage({ selectCategory }) {
 
+    const { refCategoryCode } = useSelector(state => state.category)
+    console.log("list 페이지 refCategoryCode : ", refCategoryCode)
     const location = useLocation();
 
     // location.state
@@ -39,7 +42,7 @@ function ListPage({ selectCategory }) {
     }, [location.state, selectCategory])
 
     async function getData(conditions) {
-        const response = await getProductList(conditions)
+        const response = await getProductList(conditions, refCategoryCode)
 
         console.log("sdan : ", response.results?.result ? response.results.result : response.message)
 
@@ -54,7 +57,7 @@ function ListPage({ selectCategory }) {
 
     useEffect(() => {
         getData(conditions)
-    }, [conditions])
+    }, [conditions, refCategoryCode])
 
     useEffect(() => {
         console.log("productList : ", productList)

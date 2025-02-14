@@ -21,11 +21,9 @@ function UserLayout({ selectCategory, setSelectCategory }) {
 
     const { categoryList, refCategoryCode } = useSelector(state => state.category);
 
-    // 메인페이지에서 이동할 때  
+    // 메인페이지에서 이동할 때(제일 처음 초기 카테고리 추가 및 초기화)
     function moveListPage(categoryCode) {
-        if (categoryCode != 1 && categoryCode != 2) {
-            setSelectCategory([categoryCode]);
-        }
+        setSelectCategory([categoryCode]);
 
         navigate('/list')
     }
@@ -35,12 +33,21 @@ function UserLayout({ selectCategory, setSelectCategory }) {
 
     }, [selectCategory])
 
+    // 리스트 페이지에서 이미 들어있는 곳에 1 또는 2 가 있다면 추가할때 지우고 넣기기
     function addSelectCategory(categoryCode) {
-        if (selectCategory.includes(categoryCode)) {
-            setSelectCategory(prev => prev.filter(item => item !== categoryCode))
-        } else {
-            setSelectCategory(prev => [...prev, categoryCode])
+        if (categoryCode != 1 && categoryCode != 2) {
+            if (selectCategory.includes(1) || selectCategory.includes(2)) {
+                setSelectCategory([categoryCode])
+            } else {
+                // 이미 들어 있으면 삭제를 위해 진행
+                if (selectCategory.includes(categoryCode)) {
+                    setSelectCategory(prev => prev.filter(item => item !== categoryCode))
+                } else {
+                    setSelectCategory(prev => [...prev, categoryCode])
+                }
+            }
         }
+
     }
 
     return (
