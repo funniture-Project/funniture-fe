@@ -4,8 +4,9 @@ import searchIcon from '../assets/icon/search-icon.svg'
 import { getCategory } from "../apis/ProductAPI"
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import headerCss from './headerfooter.module.css'
 
-function Header() {
+function Header({ setSelectCategory }) {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -14,6 +15,7 @@ function Header() {
     const [searchText, setSearchText] = useState('')
 
     async function setCategoryData(refCategory) {
+        console.log("전달 전 refCategory : ", refCategory)
         dispatch(getCategory(refCategory))
     }
 
@@ -23,6 +25,7 @@ function Header() {
 
     useEffect(() => {
         setCategoryData(refCategory)
+        setSelectCategory([refCategory])
     }, [refCategory])
 
     function onChangeHandler(e) {
@@ -47,7 +50,7 @@ function Header() {
         <header>
             <div>
                 <img src={mainLogo} alt="메인 로고" onClick={() => navigate('/')} />
-                <div className='switchBtns'>
+                <div className={headerCss.switchBtns}>
                     <input type="radio" id='electronics' value={1} name='bigCategory' checked={refCategory == 1} onChange={onChangeHandler} />
                     <label htmlFor="electronics">
                         <div>가전</div>
@@ -57,11 +60,11 @@ function Header() {
                         <div>가구</div>
                     </label>
                 </div>
-                <div className='searchBox'>
+                <div className={headerCss.searchBox}>
                     <input type="text" value={searchText} placeholder='검색어를 입력하세요' onChange={changeHandler} onKeyUp={enterFunction} />
                     <img src={searchIcon} alt="검색 아이콘" onClick={searchFunction} />
                 </div>
-                <div className='loginBtn' onClick={() => navigate('/login')}>
+                <div className={headerCss.loginBtn} onClick={() => navigate('/login')}>
                     <div>
                         로그인
                     </div>

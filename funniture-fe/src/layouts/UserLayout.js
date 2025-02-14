@@ -3,7 +3,6 @@ import Header from "../component/Header"
 import Footer from "../component/Footer"
 import './userLayout.css'
 import banner1 from '../assets/images/banner(3).jpg'
-import washing_machine from '../assets/images/washing_machine.png'
 import { useSelector } from "react-redux"
 import { useEffect, useState } from "react"
 
@@ -28,11 +27,6 @@ function UserLayout({ selectCategory, setSelectCategory }) {
         navigate('/list')
     }
 
-    useEffect(() => {
-        console.log("selectCategory : ", selectCategory)
-
-    }, [selectCategory])
-
     // 리스트 페이지에서 이미 들어있는 곳에 1 또는 2 가 있다면 추가할때 지우고 넣기기
     function addSelectCategory(categoryCode) {
         if (categoryCode != 1 && categoryCode != 2) {
@@ -52,7 +46,7 @@ function UserLayout({ selectCategory, setSelectCategory }) {
 
     return (
         <div className="layout">
-            <Header />
+            <Header setSelectCategory={setSelectCategory} />
 
             {/* 사이트 메인페이지 배너 때문에 생성 */}
             {location.pathname == '/' ? (
