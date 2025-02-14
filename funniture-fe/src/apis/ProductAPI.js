@@ -15,16 +15,22 @@ export function getCategory(refCategory) {
     }
 }
 
-export async function getProductList(conditions) {
+
+export async function getProductList(conditions, refCategoryCode) {
     console.log("fetch 전 conditions : ", conditions)
 
     const url = new URL(baseProductUrl)
     const params = new URLSearchParams()
 
+    console.log("conditions.categoryCodeList : ", conditions.categoryCodeList.length)
+
     if (conditions.categoryCodeList.length > 0) {
         conditions.categoryCodeList.map(categoryCode => {
             params.append('categoryCode', categoryCode);
         })
+    } else {
+        console.log("실행!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        params.append('categoryCode', refCategoryCode);
     }
 
     if (conditions.ownerNo.length > 0) {

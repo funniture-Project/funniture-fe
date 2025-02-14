@@ -12,18 +12,11 @@ export const GET_CATEGORY_LIST = 'category/GET_CATEGORY_LIST';
 // 액션 함수
 const actions = createActions({
     [GET_CATEGORY_LIST]: () => { },
-    [GET_CATEGORY_LIST]: () => { },
-    [GET_CATEGORY_LIST]: () => { },
-    [GET_CATEGORY_LIST]: () => { },
-    [GET_CATEGORY_LIST]: () => { },
-    [GET_CATEGORY_LIST]: () => { },
 });
 
 // 리듀서
 const categoryReducer = handleActions({
     [GET_CATEGORY_LIST]: (state, { payload, refCategory }) => (
-        // console.log("payload : ", payload),
-        // console.log("refCategory : ", refCategory), 
         {
             refCategoryCode: refCategory,
             categoryList: payload
