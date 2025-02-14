@@ -84,12 +84,12 @@ function ListPage({ selectCategory }) {
                         {productList.map(product => (
                             <div className="productItem">
                                 <div>
-                                    <img src={require(`../../assets/images/a.jpg`)} alt="상품 사진" />
-                                    <div>{product.ownerNo}</div>
+                                    <img src={require(`../../assets/images/${product.productImageLink}`)} alt="상품 사진" />
+                                    <div>{product.storeName}</div>
                                     <div>{product.productName}</div>
                                     <div>
                                         <div>최저가</div>
-                                        <div>월 {product.priceListAsIntegers[product.priceListAsIntegers.length - 1]}원</div>
+                                        <div>월 {product.priceListAsIntegers[product.priceListAsIntegers.length - 1]}원 ~ </div>
                                     </div>
                                 </div>
                             </div>
