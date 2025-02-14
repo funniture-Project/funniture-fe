@@ -34,7 +34,6 @@ function Header() {
     }
 
     const searchFunction = () => {
-        setSearchText('')
         navigate('/list', { state: { searchText: searchText }, replace: true })
     }
 
