@@ -1,5 +1,5 @@
 ---
-name: "\U0001F3A8CSS-Style\U0001F3A8"
+name: CSS-Style
 about: '추가/수정 한 CSS에 대해 기록해주세요. '
 title: "\U0001F3A8[CSS] 2025/[월]/[일] [이름]"
 labels: "\U0001F3A8CSS\U0001F3A8"

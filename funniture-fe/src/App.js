@@ -12,6 +12,8 @@ import AdminMain from './pages/admin/AdminMain';
 import AdminUser from './pages/admin/AdminUser';
 import ListPage from './pages/common/ListPage';
 import { useState } from 'react';
+import Login from './pages/login/Login';
+import Signup from './pages/login/Singup';
 
 function App() {
 
@@ -29,6 +31,10 @@ function App() {
           <Route index element={<OwnerMyPage />} />
         </Route>
       </Route>
+
+      <Route path='/login' element={<Login />} />
+      <Route path='/signup' element={<Signup />} />
+
       <Route path='/admin' element={<AdminLayout />}>
 
         <Route index element={<AdminMain />} />
