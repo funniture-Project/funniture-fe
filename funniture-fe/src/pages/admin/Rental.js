@@ -1,7 +1,21 @@
 import AdminTop from '../../component/adminpage/AdminTop';
 import RentalCss from './rental.module.css';
+import { useState, useEffect } from 'react';
+import {getAdminRentalList} from '../../apis/RentalAPI';
 
 function Rental() {
+
+    const [rentalList, setRentalList] = useState([]);
+    
+    useEffect(() => {
+        async function fetchData() {
+            const data = await getAdminRentalList();
+            setRentalList(data.results.adminRentalList);
+            console.log(data.results.adminRentalList);
+        }
+        fetchData();
+      }, []);
+
     return (
         <>
             <AdminTop title={'예약 정보'} />
@@ -45,46 +59,27 @@ function Rental() {
                             <div style={{width: "20%"}}><p>사용시작/만료날짜</p></div>
                             <div style={{width: "5%"}}><p>수량</p></div>
                         </div>
-                        {/* 반복 될 div => 렌탈예약 데이터 */}
-                        <div className={RentalCss.rentalItems}>
-                        <div style={{width: "15%"}}><p>20250214001</p></div>
-                            <div style={{width: "10%"}}><p>LG헬로</p></div>
-                            <div style={{width: "10%"}}><p>예약 완료</p></div>
-                            <div style={{width: "5%"}}><p>가전</p></div>
-                            <div style={{width: "35%"}}><p>딤채쿡 6인용 전기밥솥
-                            새프런 옐로우</p></div>
-                            <div style={{width: "20%"}}><p>2025.02.16~ 2026.02.16</p></div>
-                            <div style={{width: "5%"}}><p>1</p></div>
-                        </div>
-                        <div className={RentalCss.rentalItems}>
 
-                        </div>
-                        <div className='rentalItems'>
-
-                        </div>  
-                        <div className='rentalItems'>
-
-                        </div>
-                        <div className='rentalItems'>
-
-                        </div>
-                        <div className='rentalItems'>
-
-                        </div>
-                        <div className='rentalItems'>
-
-                        </div>
-                        <div className='rentalItems'>
-
-                        </div>  
-                        <div className='rentalItems'>
-
-                        </div>
-                        <div className='rentalItems'>
-
-                        </div>
-                       
-                       
+                        {/* 테이블 데이터 */}
+                        {rentalList.map((item) => (
+                            <>
+                                {/* 기본 행 */}
+                                <div
+                                    key={item.rentalNo}
+                                    className={RentalCss.rentalItems}
+                                >
+                                    <div style={{ width: '15%' }}><p>{item.rentalNo}</p></div>
+                                    <div style={{ width: '10%' }}><p>{item.storeName}</p></div>
+                                    <div style={{ width: '10%' }}><p>{item.rentalState}</p></div>
+                                    <div style={{ width: '5%' }}><p>{item.categoryName}</p></div>
+                                    <div style={{ width: '35%' }}><p>{item.productName}</p></div>
+                                    <div style={{ width: '20%' }}>
+                                        <p>{`${item.rentalStartDate} ~ ${item.rentalEndDate}`}</p>
+                                    </div>
+                                    <div style={{ width: '5%' }}><p>{item.rentalNumber}</p></div>
+                                </div>
+                            </>
+                        ))}
                     </div>
                     
                     <div className={RentalCss.pagination}>
@@ -97,7 +92,7 @@ function Rental() {
                 </div>
             </div>
         </>
-    )
+    )   
 }
 
 export default Rental;
