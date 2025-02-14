@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getProductList } from "../../apis/ProductAPI";
+import { getProductList, getOwnerListByCategory } from "../../apis/ProductAPI";
 import './listpage.css'
 import { useSelector } from "react-redux";
 
 function ListPage({ selectCategory }) {
 
     const { refCategoryCode } = useSelector(state => state.category)
-    console.log("list 페이지 refCategoryCode : ", refCategoryCode)
     const location = useLocation();
 
     // location.state
@@ -23,8 +22,10 @@ function ListPage({ selectCategory }) {
 
     // 상품 검색 결과
     const [productList, setProductList] = useState([])
+    const [storeList, setStoreList] = useState([])
     const [error, setError] = useState('')
 
+    // 검검색 조건 설정
     useEffect(() => {
         // 처음 페이지 넘어올 때 설정
         if (searchKey) {
@@ -41,28 +42,31 @@ function ListPage({ selectCategory }) {
         }
     }, [location.state, selectCategory])
 
+    // 검색 결과 데이터 가져오기
     async function getData(conditions) {
-        const response = await getProductList(conditions, refCategoryCode)
+        const productResponse = await getProductList(conditions, refCategoryCode)
 
-        console.log("sdan : ", response.results?.result ? response.results.result : response.message)
-
-        if (response.results?.result) {
-            setProductList(response.results.result)
+        if (productResponse.results?.result) {
+            setProductList(productResponse.results.result)
             setError('')
         } else {
-            setError(response.message)
+            setError(productResponse.message)
             setProductList([])
         }
+
+        const ownerListResponse = await getOwnerListByCategory(conditions.categoryCodeList, refCategoryCode)
+
+        if (ownerListResponse.results?.result) {
+            setStoreList(ownerListResponse.results.result)
+        } else {
+            setProductList([])
+        }
+
     }
 
     useEffect(() => {
         getData(conditions)
     }, [conditions, refCategoryCode])
-
-    useEffect(() => {
-        console.log("productList : ", productList)
-        console.log("error : ", error)
-    }, [productList, error])
 
     return (
         <div className="wholeContentBox">
@@ -80,12 +84,12 @@ function ListPage({ selectCategory }) {
             {/* 결과 출력 */}
             <div className="productList_result">
                 {error != '' ?
-                    (<div className="errorMsg">
+                    (<div key={error.length} className="errorMsg">
                         <div>{error}</div>
                     </div>) :
                     (<div className="productListBox">
                         {productList.map(product => (
-                            <div className="productItem">
+                            <div className="productItem" data-product-no={product.productNo}>
                                 <div>
                                     <img src={require(`../../assets/images/${product.productImageLink}`)} alt="상품 사진" />
                                     <div>{product.storeName}</div>

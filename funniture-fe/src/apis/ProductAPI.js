@@ -2,9 +2,12 @@ import { GET_CATEGORY_LIST } from '../redux/modules/CategoryModuls'
 
 const baseProductUrl = 'http://localhost:8080/api/v1/product'
 
+// 카테고리 조회
 export function getCategory(refCategory) {
 
     const url = baseProductUrl + `/category?refCategoryCode=${refCategory}`
+
+    console.log(url)
 
     return async (dispatch, getState) => {
         const response = await fetch(url)
@@ -15,21 +18,17 @@ export function getCategory(refCategory) {
     }
 }
 
-
+// 검색 조건에 상응하는 데이터 조회
 export async function getProductList(conditions, refCategoryCode) {
-    console.log("fetch 전 conditions : ", conditions)
 
     const url = new URL(baseProductUrl)
     const params = new URLSearchParams()
-
-    console.log("conditions.categoryCodeList : ", conditions.categoryCodeList.length)
 
     if (conditions.categoryCodeList.length > 0) {
         conditions.categoryCodeList.map(categoryCode => {
             params.append('categoryCode', categoryCode);
         })
     } else {
-        console.log("실행!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         params.append('categoryCode', refCategoryCode);
     }
 
@@ -57,3 +56,32 @@ const getProductData = async (url) => {
     return response
 }
 
+// 카테고리에 따른 제공자 목록 정보 조회
+export async function getOwnerListByCategory(categoryList, refCategoryCode) {
+
+    const url = new URL(baseProductUrl + '/ownerlist')
+    const params = new URLSearchParams()
+
+    if (categoryList?.length > 0) {
+        categoryList.map(category => {
+            params.append('categoryCode', category);
+        })
+    } else {
+        params.append('categoryCode', refCategoryCode);
+    }
+
+    url.search = params.toString()
+
+    const response = await getOwnerData(url)
+
+    console.log("제공자 리스트 결과 : ", response)
+
+    return response
+}
+
+const getOwnerData = async (url) => {
+    const response = await fetch(url)
+        .then(res => res.json())
+
+    return response
+}
