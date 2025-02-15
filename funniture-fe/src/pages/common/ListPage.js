@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getProductList, getOwnerListByCategory } from "../../apis/ProductAPI";
+import { getProductList } from "../../apis/ProductAPI";
 import './listpage.css'
 import { useSelector } from "react-redux";
 
-function ListPage({ selectCategory }) {
+function ListPage({ selectCategory, selectCompany }) {
 
     const { refCategoryCode } = useSelector(state => state.category)
     const location = useLocation();
@@ -22,7 +22,6 @@ function ListPage({ selectCategory }) {
 
     // 상품 검색 결과
     const [productList, setProductList] = useState([])
-    const [storeList, setStoreList] = useState([])
     const [error, setError] = useState('')
 
     // 검검색 조건 설정
@@ -32,15 +31,17 @@ function ListPage({ selectCategory }) {
             setConditions(prevState => ({
                 ...prevState,
                 [searchKey]: searchKey == 'searchText' ? searchValue : [searchValue],
-                categoryCodeList: selectCategory
+                categoryCodeList: selectCategory,
+                ownerNo: selectCompany
             }));
         } else {
             setConditions(prevState => ({
                 ...prevState,
-                categoryCodeList: selectCategory
+                categoryCodeList: selectCategory,
+                ownerNo: selectCompany
             }));
         }
-    }, [location.state, selectCategory])
+    }, [location.state, selectCategory, selectCompany])
 
     // 검색 결과 데이터 가져오기
     async function getData(conditions) {
@@ -53,15 +54,6 @@ function ListPage({ selectCategory }) {
             setError(productResponse.message)
             setProductList([])
         }
-
-        const ownerListResponse = await getOwnerListByCategory(conditions.categoryCodeList, refCategoryCode)
-
-        if (ownerListResponse.results?.result) {
-            setStoreList(ownerListResponse.results.result)
-        } else {
-            setProductList([])
-        }
-
     }
 
     useEffect(() => {

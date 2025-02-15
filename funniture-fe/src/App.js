@@ -19,13 +19,15 @@ function App() {
 
   // 선택한 검색 카테고리 관리
   const [selectCategory, setSelectCategory] = useState([])
+  const [selectCompany, setSelectCompany] = useState([])
 
   return (
     <Routes>
-      <Route path='/' element={<UserLayout selectCategory={selectCategory} setSelectCategory={setSelectCategory} />} >
+      <Route path='/' element={<UserLayout selectCategory={selectCategory} setSelectCategory={setSelectCategory}
+        selectCompany={selectCompany} setSelectCompany={setSelectCompany} />} >
         <Route index element={<Main />} />
         <Route path='mypage' element={<MyPage />} />
-        <Route path='list' element={<ListPage selectCategory={selectCategory} />} />
+        <Route path='list' element={<ListPage selectCategory={selectCategory} selectCompany={selectCompany} />} />
         <Route path='test' element={<Test />} />
         <Route path='/owner' element={<OwnerLayout />}>
           <Route index element={<OwnerMyPage />} />

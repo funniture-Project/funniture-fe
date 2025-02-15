@@ -3,10 +3,10 @@ import { createActions, handleActions } from 'redux-actions';
 // 초기값 
 let initialState = {
     refCategoryCode: 1,
-    categoryList: []
+    categoryList: [],
 }
 
-// 액션 타입입
+// 액션 타입
 export const GET_CATEGORY_LIST = 'category/GET_CATEGORY_LIST';
 
 // 액션 함수
@@ -19,8 +19,8 @@ const categoryReducer = handleActions({
     [GET_CATEGORY_LIST]: (state, { payload, refCategory }) => (
         {
             refCategoryCode: refCategory,
-            categoryList: payload
-        })
+            categoryList: payload.categoryList,
+        }),
 }, initialState)
 
 export default categoryReducer;

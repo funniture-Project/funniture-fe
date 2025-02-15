@@ -4,22 +4,30 @@ const baseProductUrl = 'http://localhost:8080/api/v1/product'
 
 // 카테고리 조회
 export function getCategory(refCategory) {
-
-    const url = baseProductUrl + `/category?refCategoryCode=${refCategory}`
-
-    console.log(url)
-
     return async (dispatch, getState) => {
-        const response = await fetch(url)
-            .then(res => res.json())
-        if (response.httpStatusCode == 200) {
-            dispatch({ type: GET_CATEGORY_LIST, payload: response.results.result, refCategory })
+
+        const categoryUrl = baseProductUrl + `/category?refCategoryCode=${refCategory}`
+
+        try {
+            const categoryListRes = await fetch(categoryUrl).then(res => res.json())
+
+            dispatch({
+                type: GET_CATEGORY_LIST, payload: {
+                    categoryList: categoryListRes.results?.result ?? [],
+                },
+                refCategory
+            })
+        } catch (error) {
+            console.error("카테고리및 회사 정보 호출 에러 : ", error)
         }
+
     }
 }
 
 // 검색 조건에 상응하는 데이터 조회
 export async function getProductList(conditions, refCategoryCode) {
+
+    console.log("검색 조건 : ", conditions)
 
     const url = new URL(baseProductUrl)
     const params = new URLSearchParams()
@@ -44,14 +52,9 @@ export async function getProductList(conditions, refCategoryCode) {
 
     url.search = params.toString()
 
-    const response = getProductData(url)
+    console.log("검색 조건 결과 요청 url : ", url)
 
-    return response
-}
-
-const getProductData = async (url) => {
-    const response = await fetch(url)
-        .then(res => res.json())
+    const response = getData(url)
 
     return response
 }
@@ -72,14 +75,13 @@ export async function getOwnerListByCategory(categoryList, refCategoryCode) {
 
     url.search = params.toString()
 
-    const response = await getOwnerData(url)
-
-    console.log("제공자 리스트 결과 : ", response)
+    const response = await getData(url)
 
     return response
 }
 
-const getOwnerData = async (url) => {
+// 공용
+const getData = async (url) => {
     const response = await fetch(url)
         .then(res => res.json())
 

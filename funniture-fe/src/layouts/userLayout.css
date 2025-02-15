@@ -80,28 +80,57 @@
             margin: 10px 0;
         }
 
-        .companyItem {
-            border: solid 1px #A5A3A3;
-            margin-right: 10px;
-            background-color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            width: fit-content;
+        .clearConditions {
+            padding: 10px 15px;
+            border-radius: 5px;
+            background-color: #615F5F;
+            color: white;
+            cursor: pointer;
+        }
 
-            color: #A5A3A3;
+        .companyList {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+
+            >div:first-child {
+                display: flex;
+                flex: 1;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .companyItem {
+                border: solid 1px #A5A3A3;
+                background-color: white;
+                padding: 10px 15px;
+                border-radius: 30px;
+                width: fit-content;
+
+                color: #A5A3A3;
+
+                cursor: pointer;
+            }
+
+            .selectedCompany {
+                background-color: #615F5F;
+                border-color: #615F5F;
+                color: white;
+            }
         }
 
         .categoryList {
             display: flex;
+            gap: 10px;
 
-            >div {
+            .categoryItem {
                 border: solid 1px #A5A3A3;
-                margin-right: 10px;
                 background-color: white;
-                padding: 10px 20px;
+                padding: 10px 15px;
                 border-radius: 30px;
 
                 color: #A5A3A3;
+                cursor: pointer;
             }
 
             .selectedCategory {
