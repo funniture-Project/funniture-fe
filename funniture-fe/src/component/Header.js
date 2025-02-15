@@ -2,7 +2,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import mainLogo from '../../src/assets/images/mainLogo.png';
 import searchIcon from '../assets/icon/search-icon.svg'
 import { getCategory } from "../apis/ProductAPI"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import headerCss from './headerfooter.module.css'
 
@@ -12,10 +12,10 @@ function Header({ setSelectCategory }) {
     const dispatch = useDispatch();
 
     const [refCategory, setRefCategory] = useState(1)
-    const [searchText, setSearchText] = useState('')
+
+    const searchText = useRef(null)
 
     async function setCategoryData(refCategory) {
-        console.log("전달 전 refCategory : ", refCategory)
         dispatch(getCategory(refCategory))
     }
 
@@ -33,11 +33,11 @@ function Header({ setSelectCategory }) {
     }
 
     const changeHandler = (e) => {
-        setSearchText(e.target.value)
+        searchText.current = e.target.value
     }
 
     const searchFunction = () => {
-        navigate('/list', { state: { searchText: searchText }, replace: true })
+        navigate('/list', { state: { searchText: searchText.current }, replace: true })
     }
 
     const enterFunction = (e) => {
@@ -61,7 +61,7 @@ function Header({ setSelectCategory }) {
                     </label>
                 </div>
                 <div className={headerCss.searchBox}>
-                    <input type="text" value={searchText} placeholder='검색어를 입력하세요' onChange={changeHandler} onKeyUp={enterFunction} />
+                    <input id='headerSearchText' type="text" ref={searchText} placeholder='검색어를 입력하세요' onChange={changeHandler} onKeyUp={enterFunction} />
                     <img src={searchIcon} alt="검색 아이콘" onClick={searchFunction} />
                 </div>
                 <div className={headerCss.loginBtn} onClick={() => navigate('/login')}>
