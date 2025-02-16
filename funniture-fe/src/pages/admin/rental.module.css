@@ -16,8 +16,10 @@
 
 .rentalSearchBox>select,
 .rentalSearchBox>div,
-.rentalSearchBox>input {
-   
+.rentalSearchBox>input, 
+.rentalSearchBox>img {
+    border: none;
+    height: 20px;
     box-sizing: border-box;
     border-radius: 8px; /* 모서리 둥글게 */
     padding: 5px; /* 내부 여백 */
@@ -32,14 +34,10 @@
     align-items: center;
 }
 
-.rentalSearchBox>div>input {
-    border: none;
-    height: 20px;
-}
-
-.rentalSearchBox>div>img {
-    width: 20px;
-    height: 20px;
+.rentalSearchBox>img {
+    width: 33px;
+    height: 80%;
+    cursor: pointer;
 }
 
 /* 렌탈 박스 ( rentalItem, pagination ) */
