@@ -2,19 +2,74 @@ import AdminTop from '../../component/adminpage/AdminTop';
 import RentalCss from './rental.module.css';
 import { useState, useEffect } from 'react';
 import {getAdminRentalList} from '../../apis/RentalAPI';
+import {getStoreList} from '../../apis/RentalAPI';
+import {getAdminRentalListWithCriteria} from '../../apis/RentalAPI'
 
 function Rental() {
 
-    const [rentalList, setRentalList] = useState([]);
+    const [searchRental, setSearchRental] = useState({
+        rentalState: '',
+        storeName: '',
+        categoryName: '',
+        searchDate: '',
+        rentalNo: ''
+    });
+
+    const [rentalList, setRentalList] = useState([]); // 예약
+    const [storeList, setStoreList] = useState([]); // selected-> option 에 추가할 회사
+    const [expandedRow, setExpandedRow] = useState(null); // 사용자, 제공자정보 보여 줄 행 관리
     
+    // 예약 리스트
     useEffect(() => {
         async function fetchData() {
             const data = await getAdminRentalList();
             setRentalList(data.results.adminRentalList);
-            console.log(data.results.adminRentalList);
         }
         fetchData();
       }, []);
+
+    // 회사 리스트
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const data = await getStoreList();
+                setStoreList(data.results?.result || []);
+                console.log('storeList:', data.results?.result);
+            } catch (error) {
+                console.error("API 호출 실패:", error);
+                setStoreList([]); 
+            }
+        }
+        fetchData();
+    }, []);  
+
+    // 검색 조건 변경 핸들러 (Select, Input 공통)
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setSearchRental((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    // 검색 실행 (버튼 클릭 시 실행)
+    const handleSearch = async () => {
+        try {
+            // 최신 검색 조건을 기반으로 필터링된 데이터 가져오기
+            const response = await getAdminRentalListWithCriteria(searchRental);
+            
+            // API 호출 후 결과 처리
+            if (response && response.results && response.results.adminRentalList) {
+                setRentalList(response.results.adminRentalList); // 검색 결과 상태에 저장
+            } else {
+                setRentalList([]); // 결과가 없을 경우 빈 리스트
+            }
+        } catch (error) {
+            console.error("검색 실패:", error);
+            setRentalList([]); // 오류 발생 시 빈 리스트로 설정
+        }
+    };
+
 
     return (
         <>
@@ -22,7 +77,8 @@ function Rental() {
 
             <div className={RentalCss.adminRentalContent}>
                 <div className={RentalCss.rentalSearchBox}>
-                    <select name="rentalState">
+
+                    <select name="rentalState" onChange={handleChange}>
                         <option value="" selected>진행상태 선택</option>
                         <option value="예약대기">예약대기</option>
                         <option value="예약완료">예약완료</option>
@@ -33,19 +89,32 @@ function Rental() {
                         <option value="수거중">수거중</option>
                         <option value="반납완료">반납완료</option>
                     </select>
-                    <select name="storeName">
+
+                    <select name="storeName" onChange={handleChange}>
                         <option>회사선택</option>
+                        {storeList.map((store) => (
+                            <option key={store.owner_no} value={store.store_name}>
+                                {store.store_name}
+                            </option>
+                        ))}
                     </select>
-                    <select name="categoryName">
+
+                    <select name="categoryName" onChange={handleChange}>
                         <option value="" selected>분류 선택</option>
                         <option value="가전">가전</option>
                         <option value="가구">가구</option>
                     </select>
-                    <input type="date"/>
-                    <div>
-                        <input type="text" placeholder='주문번호를 검색하세요'/>
-                        <img src={require(`../../assets/icon/search-icon.svg`).default} alt="검색 아이콘" />
-                    </div>
+
+                    <input type="date" name="searchDate" onChange={handleChange}/>
+                    
+                    <input type="text" name="rentalNo" placeholder="주문번호를 검색하세요" onChange={handleChange}/>
+                    
+                    <img 
+                            src={require(`../../assets/icon/search-icon.svg`).default} 
+                            alt="검색 아이콘" 
+                            onClick={handleSearch}
+                    />
+ 
                 </div>
 
                 <div className={RentalCss.rentalBox}>
