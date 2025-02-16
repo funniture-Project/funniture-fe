@@ -110,6 +110,8 @@ header {
 
             background-color: #7F5539;
             color: white;
+
+            cursor: pointer;
         }
 
     }
