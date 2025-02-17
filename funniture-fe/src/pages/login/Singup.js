@@ -11,12 +11,18 @@ function Signup () {
 
     const dispatch = useDispatch();
 
+    const selector = useSelector(state => state.memberReducer);
+
     const [form , setForm] = useState({
         email:'',
         userName:'',
         verification:'',
         password:'',
         confirmPassword:''
+    });
+
+    useEffect(() => {
+        
     });
 
     const onChangeHandler = (e) => {
