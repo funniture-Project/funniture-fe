@@ -41,7 +41,7 @@
 .rentalSearch{
     display: flex;
     width: 50%;
-
+}
 /* 검색 select, input, img */
 .rentalSearch>select,
 .rentalSearch>input, 
