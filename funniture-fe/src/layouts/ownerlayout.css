@@ -4,7 +4,7 @@
 
     .ownerMenuBar {
         position: sticky;
-        top: 109px;
+        top: 93px;
         max-height: 74.5vh;
 
         width: 15%;
@@ -30,12 +30,18 @@
                 aspect-ratio: 1 / 1;
                 margin-bottom: 10px;
             }
+
+            .email {
+                font-size: 0.9em;
+                color: #A5A3A3;
+                margin-top: 10px;
+            }
         }
 
         .menus {
             box-sizing: border-box;
             width: 100%;
-            padding: 30px;
+            padding: 15px 30px;
             display: flex;
             flex-direction: column;
 
@@ -62,6 +68,15 @@
                     color: white;
                 }
             }
+        }
+    }
+
+    .ownerMainContent {
+        width: 83%;
+
+        >div {
+            width: 100%;
+            height: 100%;
         }
     }
 }
