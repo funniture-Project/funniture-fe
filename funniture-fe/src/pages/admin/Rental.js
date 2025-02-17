@@ -167,25 +167,32 @@ function Rental() {
                         </div>
 
                         {/* 테이블 데이터 */}
-                        {rentalList.map((item) => (
-                            <>
-                                {/* 기본 행 */}
-                                <div
-                                    key={item.rentalNo}
-                                    className={RentalCss.rentalItems}
-                                >
-                                    <div style={{ width: '15%' }}><p>{item.rentalNo}</p></div>
-                                    <div style={{ width: '10%' }}><p>{item.storeName}</p></div>
-                                    <div style={{ width: '10%' }}><p>{item.rentalState}</p></div>
-                                    <div style={{ width: '5%' }}><p>{item.categoryName}</p></div>
-                                    <div style={{ width: '35%' }}><p>{item.productName}</p></div>
-                                    <div style={{ width: '20%' }}>
-                                        <p>{`${item.rentalStartDate} ~ ${item.rentalEndDate}`}</p>
-                                    </div>
-                                    <div style={{ width: '5%' }}><p>{item.rentalNumber}</p></div>
+                        {rentalList.length === 0 ? (
+                                <div className={RentalCss.noResultsMessage}>
+                                    <p>검색 조건에 맞는 예약 내역이 없습니다.</p>
                                 </div>
-                            </>
-                        ))}
+                            ) : (
+                                rentalList.map((item) => (
+                                    <>
+                                        {/* 기본 행 */}
+                                        <div
+                                            key={item.rentalNo}
+                                            className={RentalCss.rentalItems}
+                                        >
+                                            <div style={{ width: '15%' }}><p>{item.rentalNo}</p></div>
+                                            <div style={{ width: '10%' }}><p>{item.storeName}</p></div>
+                                            <div style={{ width: '10%' }}><p>{item.rentalState}</p></div>
+                                            <div style={{ width: '5%' }}><p>{item.categoryName}</p></div>
+                                            <div style={{ width: '35%' }}><p>{item.productName}</p></div>
+                                            <div style={{ width: '20%' }}>
+                                                <p>{`${item.rentalStartDate} ~ ${item.rentalEndDate}`}</p>
+                                            </div>
+                                            <div style={{ width: '5%' }}><p>{item.rentalNumber}</p></div>
+                                        </div>
+                                    </>
+                                ))
+                            )
+                        }
                     </div>
 
                     <Pagination />
