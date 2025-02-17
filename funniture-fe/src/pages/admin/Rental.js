@@ -77,44 +77,59 @@ function Rental() {
 
             <div className={RentalCss.adminRentalContent}>
                 <div className={RentalCss.rentalSearchBox}>
+                    <div className={RentalCss.searchReset}>
+                        <img 
+                            src={require(`../../assets/icon/rotate-right-solid.svg`).default} 
+                            alt="초기화 아이콘" 
+                        />
+                    </div>
 
-                    <select name="rentalState" onChange={handleChange}>
-                        <option value="" selected>진행상태 선택</option>
-                        <option value="예약대기">예약대기</option>
-                        <option value="예약완료">예약완료</option>
-                        <option value="예약취소">예약취소</option>
-                        <option value="배송중">배송중</option>
-                        <option value="배송완료">배송완료</option>
-                        <option value="반납요청">반납요청</option>
-                        <option value="수거중">수거중</option>
-                        <option value="반납완료">반납완료</option>
-                    </select>
+                    <div className={RentalCss.rentalSearch}>
+                        <select name="rentalState" onChange={handleChange}>
+                            <option value='' selected>진행상태 선택</option>
+                            <option value="예약대기">예약대기</option>
+                            <option value="예약완료">예약완료</option>
+                            <option value="예약취소">예약취소</option>
+                            <option value="배송중">배송중</option>
+                            <option value="배송완료">배송완료</option>
+                            <option value="반납요청">반납요청</option>
+                            <option value="수거중">수거중</option>
+                            <option value="반납완료">반납완료</option>
+                        </select>
 
-                    <select name="storeName" onChange={handleChange}>
-                        <option>회사선택</option>
-                        {storeList.map((store) => (
-                            <option key={store.owner_no} value={store.store_name}>
-                                {store.store_name}
-                            </option>
-                        ))}
-                    </select>
+                        <select name="storeName" onChange={handleChange}>
+                            <option value='' selected>회사선택</option>
+                            {storeList.map((store) => (
+                                <option key={store.owner_no} value={store.store_name}>
+                                    {store.store_name}
+                                </option>
+                            ))}
+                        </select>
 
-                    <select name="categoryName" onChange={handleChange}>
-                        <option value="" selected>분류 선택</option>
-                        <option value="가전">가전</option>
-                        <option value="가구">가구</option>
-                    </select>
+                        <select name="categoryName" onChange={handleChange}>
+                            <option value='' selected>분류 선택</option>
+                            <option value="가전">가전</option>
+                            <option value="가구">가구</option>
+                        </select>
 
-                    <input type="date" name="searchDate" onChange={handleChange}/>
-                    
-                    <input type="text" name="rentalNo" placeholder="주문번호를 검색하세요" onChange={handleChange}/>
-                    
-                    <img 
-                            src={require(`../../assets/icon/search-icon.svg`).default} 
-                            alt="검색 아이콘" 
-                            onClick={handleSearch}
-                    />
- 
+                        <input type="date" name="searchDate" onChange={handleChange}/>
+                        
+                        <input type="text" name="rentalNo" placeholder="주문번호를 검색하세요" 
+                            onChange={handleChange} 
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault(); // 엔터 입력 시 폼 제출 방지
+                                    handleSearch(); // 검색 실행
+                                }
+                                }} 
+                        />
+                        
+                        <img 
+                                src={require(`../../assets/icon/search-icon.svg`).default} 
+                                alt="검색 아이콘" 
+                                onClick={handleSearch}
+                        />
+                    </div>
                 </div>
 
                 <div className={RentalCss.rentalBox}>

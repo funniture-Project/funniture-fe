@@ -1,11 +1,15 @@
 
+const baseRentalUrl = 'http://localhost:8080/api/v1/rental'
+
 export async function getAdminRentalList() {
    
 
-    return await fetch('http://localhost:8080/api/v1/rental').then(res => res.json());
+    return await fetch(baseRentalUrl).then(res => res.json());
 }
 
 export async function getAdminRentalListWithCriteria(criteria) {
+
+    const url = new URL(baseRentalUrl)
      const params = new URLSearchParams();
 
     if (criteria.rentalState) {
@@ -24,9 +28,12 @@ export async function getAdminRentalListWithCriteria(criteria) {
         params.append('rentalNo', criteria.rentalNo);
     }
 
-    const queryString = params.toString();
-    console.log('queryString', queryString)
-    const response = await fetch(`http://localhost:8080/api/admin/rentals?${queryString}`);
+    url.search = params;
+
+    console.log('요청 url : ', url)
+
+    const response = await fetch(url);
+    console.log('response',response)
     const data = await response.json();
 
     // 응답 구조 확인 후 리턴
