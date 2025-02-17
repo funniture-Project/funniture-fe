@@ -2,25 +2,34 @@ import { GET_CATEGORY_LIST } from '../redux/modules/CategoryModuls'
 
 const baseProductUrl = 'http://localhost:8080/api/v1/product'
 
-// 카테고리 조회
+// 카테고리 조회 (store에 저장)
 export function getCategory(refCategory) {
-    return async (dispatch, getState) => {
 
-        const categoryUrl = baseProductUrl + `/category?refCategoryCode=${refCategory}`
+    console.log("refCategory : ", refCategory)
 
-        try {
-            const categoryListRes = await fetch(categoryUrl).then(res => res.json())
+    const categoryUrl = refCategory
+        ? baseProductUrl + `/category?refCategoryCode=${refCategory}`
+        : baseProductUrl + `/category`;
 
-            dispatch({
-                type: GET_CATEGORY_LIST, payload: {
-                    categoryList: categoryListRes.results?.result ?? [],
-                },
-                refCategory
-            })
-        } catch (error) {
-            console.error("카테고리및 회사 정보 호출 에러 : ", error)
+    if (refCategory) {
+        return async (dispatch, getState) => {
+
+            try {
+                const categoryListRes = await fetch(categoryUrl).then(res => res.json())
+
+                dispatch({
+                    type: GET_CATEGORY_LIST, payload: {
+                        categoryList: categoryListRes.results?.result ?? [],
+                    },
+                    refCategory
+                })
+            } catch (error) {
+                console.error("카테고리 및 회사 정보 호출 에러 : ", error)
+            }
+
         }
-
+    } else {
+        return getData(categoryUrl)
     }
 }
 
@@ -32,25 +41,33 @@ export async function getProductList(conditions, refCategoryCode) {
     const url = new URL(baseProductUrl)
     const params = new URLSearchParams()
 
-    if (conditions.categoryCodeList.length > 0) {
-        conditions.categoryCodeList.map(categoryCode => {
-            params.append('categoryCode', categoryCode);
-        })
-    } else {
-        params.append('categoryCode', refCategoryCode);
-    }
+    if (conditions) {
+        if (conditions.categoryCodeList?.length > 0) {
+            conditions.categoryCodeList.map(categoryCode => {
+                params.append('categoryCode', categoryCode);
+            })
+        } else {
+            if (refCategoryCode) {
+                params.append('categoryCode', refCategoryCode);
+            }
+        }
 
-    if (conditions.ownerNo.length > 0) {
-        conditions.ownerNo.map(owner => {
-            params.append('ownerNo', owner);
-        })
-    }
+        if (conditions.ownerNo.length > 0) {
+            conditions.ownerNo.map(owner => {
+                params.append('ownerNo', owner);
+            })
+        }
 
-    if (conditions.searchText.trim() != '') {
-        params.append("searchText", conditions.searchText.toString())
-    }
+        if (conditions.productStatus.trim() != '') {
+            params.append("productStatus", conditions.productStatus.toString())
+        }
 
-    url.search = params.toString()
+        if (conditions.searchText.trim() != '') {
+            params.append("searchText", conditions.searchText.toString())
+        }
+
+        url.search = params.toString()
+    }
 
     console.log("검색 조건 결과 요청 url : ", url)
 
@@ -74,6 +91,16 @@ export async function getOwnerListByCategory(categoryList, refCategoryCode) {
     }
 
     url.search = params.toString()
+
+    const response = await getData(url)
+
+    return response
+}
+
+// 전체 제공자 목록 조회
+export async function getOwnerAllList() {
+
+    const url = new URL(baseProductUrl + '/ownerlist')
 
     const response = await getData(url)
 
