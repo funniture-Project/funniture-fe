@@ -22,10 +22,6 @@ function TopDownBtn() {
         return () => { observe.disconnect() };
     }, [])
 
-    useEffect(() => {
-        console.log("btnShow : ", btnShow)
-    }, [btnShow])
-
     return (
         <div className={btnsCss.topDownBtns}>
             <div style={{ display: btnShow ? "flex" : "none" }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>

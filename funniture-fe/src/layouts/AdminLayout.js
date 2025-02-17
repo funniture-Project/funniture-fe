@@ -20,7 +20,7 @@ function AdminLayout() {
                         <div>회원 정보</div>
                     </NavLink>
                     <NavLink to="/admin/product" className={({ isActive }) => (isActive ? "selectedMenu" : "")}>
-                        <div>제품 정보</div>
+                        <div>제품 관리</div>
                     </NavLink>
                     <NavLink to="/admin/rentals" className={({ isActive }) => (isActive ? "selectedMenu" : "")}>
                         <div>예약 정보</div>
