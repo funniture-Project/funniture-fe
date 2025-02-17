@@ -15,16 +15,17 @@
         display: flex;
         align-items: center;
         margin-bottom: 30px;
+        justify-content: space-between;
 
         label {
-            margin-right: 10px;
+            /* margin-right: 10px; */
         }
 
         select,
         input {
-            margin-right: 20px;
-            min-width: 10%;
+            min-width: 17%;
             height: 50%;
+            cursor: pointer;
         }
 
         input {
@@ -32,10 +33,16 @@
             padding: 0 10px;
         }
 
-        button {
-            background: none;
-            margin-left: auto;
+        .searchBtnZone {
+            display: flex;
+            /* margin-left: auto; */
             height: 60%;
+        }
+
+        button {
+            height: 100%;
+            background: none;
+            margin-left: 10px;
             aspect-ratio: 1 / 1;
             display: flex;
             align-items: center;
@@ -44,6 +51,8 @@
             background-color: white;
             border-radius: 5px;
             padding: 5px;
+
+            cursor: pointer;
 
             .searchIcon {
                 path {
@@ -73,6 +82,7 @@
                 color: white;
                 border: none;
                 border-radius: 5px;
+                cursor: pointer;
             }
         }
 
@@ -85,7 +95,6 @@
 
             >div:first-child {
                 height: 95%;
-
 
                 .productItem {
                     border: solid 2px #7F5539;
@@ -139,6 +148,7 @@
                     border: none;
                     border-bottom: solid 2px #8D8A8A;
                     border-radius: 0;
+                    padding-right: 28px;
                 }
 
                 .productItemListBox {
@@ -150,11 +160,21 @@
                     overflow-x: hidden;
                 }
 
+                .errorMsg {
+                    font-size: 1.5em;
+                    width: 100%;
+                    height: 95%;
+                    box-sizing: border-box;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
                 ::-webkit-scrollbar {
                     display: block;
                     /* 스크롤바를 보이게 설정 */
                     width: 8px;
-                    margin-left: 10px;
                     /* 스크롤바의 너비를 설정 */
                 }
 
