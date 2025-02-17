@@ -1,14 +1,33 @@
 import './login.css'
 import { useNavigate } from 'react-router-dom';
 import mainLogo from '../../assets/images/mainLogo.png';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { callLoginAPI } from '../../apis/MemberAPI';
 
 function Login () {
 
+    const [form , setForm] = useState({
+        email : '',
+        password : ''
+    });
+
     const navigate = useNavigate();
 
-    const onChangeHandler = () => {};
+    const dispatch = useDispatch();
 
-    const onClickLoginHandler = () => {};
+    const onChangeHandler = (e) => {
+        setForm({
+            ...form,
+            [e.target.name] : e.target.value
+        });
+    };
+
+    const onClickLoginHandler = () => {
+        dispatch(callLoginAPI(
+            {form : form}
+        )).then(() => {navigate("/")});
+    };
 
     return (
         <>  
