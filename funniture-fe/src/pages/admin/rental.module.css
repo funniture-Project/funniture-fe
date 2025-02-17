@@ -10,7 +10,7 @@
 .rentalSearchBox{
     display: flex;   
     height: 5%;
-    justify-content: flex-end;
+    
     gap: 1%;
 }
 
@@ -21,7 +21,7 @@
     justify-content: flex-start;
     gap: 0.5%;
 }
-
+/* aspect-ratio: 1/1; */
 /* 초기화 img */
 .searchReset>img {
     width: 30px;
@@ -41,6 +41,9 @@
 .rentalSearch{
     display: flex;
     width: 50%;
+    justify-content: flex-end;
+    gap: 10px;
+}
 
 /* 검색 select, input, img */
 .rentalSearch>select,
@@ -61,11 +64,11 @@
     color: #726f6f;
 }
 
-.rentalSearchBox>select {
+.rentalSearch>select {
     padding: 0 5px;
 }
 
-.rentalSearchBox>div {
+.rentalSearch>div {
     display: flex;
     align-items: center;
 
