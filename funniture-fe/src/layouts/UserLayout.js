@@ -6,6 +6,7 @@ import banner1 from '../assets/images/banner(3).jpg'
 import { useSelector } from "react-redux"
 import { useEffect, useState } from "react"
 import { getOwnerListByCategory } from "../apis/ProductAPI"
+import TopDownBtn from "../component/TopDownBtn"
 
 function UserLayout({ selectCategory, setSelectCategory, selectCompany, setSelectCompany }) {
 
@@ -92,6 +93,8 @@ function UserLayout({ selectCategory, setSelectCategory, selectCompany, setSelec
         <div className="layout">
             <Header setSelectCategory={setSelectCategory} />
 
+            <TopDownBtn />
+
             {/* 사이트 메인페이지 배너 때문에 생성 */}
             {location.pathname == '/' ? (
                 <div>
@@ -147,7 +150,7 @@ function UserLayout({ selectCategory, setSelectCategory, selectCompany, setSelec
 
             {/* 기본 레이아웃 */}
             <div className="mainContent" style={location.pathname != '/' ? { "marginTop": "1.5%" } : null}>
-                {/* 내용 변경 위친친 */}
+                {/* 내용 변경 위치 */}
                 <Outlet />
             </div>
             <Footer />
