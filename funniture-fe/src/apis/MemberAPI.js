@@ -1,3 +1,4 @@
+import { POST_REGISTER } from "../redux/modules/MemberModule";
 
 export const callSignupAPI = ({ form }) => {
     const requestURL = `http://localhost:8080/api/v1/auth/signup`;
@@ -18,9 +19,10 @@ export const callSignupAPI = ({ form }) => {
          }),
     }).then(res => res.json());
 
-        console.log('회원 가입 데이터 서버에 보내기 result : ', result);
+        console.log('회원 가입 데이터 서버에 보내고 리턴된 result : ', result);
 
         if (result.status == 201) {
+            console.log('result.status : ' , result.status);
             dispatch({type : POST_REGISTER, payload : result});
         }
     };
