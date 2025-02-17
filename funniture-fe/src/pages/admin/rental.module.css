@@ -1,5 +1,5 @@
 /* searchBox 와 rentalBox 포함하는 div*/
-.adminRentalContent{
+.adminRentalContent {
     margin-top: 2%;
     width: 100%;
     height: 100%;
@@ -10,6 +10,8 @@
 .rentalSearchBox{
     display: flex;   
     height: 5%;
+    justify-content: flex-end;
+    gap: 1%;
 }
 
 /* 초기화 div*/
@@ -39,9 +41,6 @@
 .rentalSearch{
     display: flex;
     width: 50%;
-    justify-content: flex-end;
-    gap: 1%;
-}
 
 /* 검색 select, input, img */
 .rentalSearch>select,
@@ -50,19 +49,29 @@
     border: none;
     height: 20px;
     box-sizing: border-box;
-    border-radius: 8px; /* 모서리 둥글게 */
-    padding: 5px; /* 내부 여백 */
-    border: 1px solid #7F5539; /* 테두리 스타일 */
+    border-radius: 8px;
+    /* 모서리 둥글게 */
+    padding: 5px;
+    /* 내부 여백 */
+    border: 1px solid #7F5539;
+    /* 테두리 스타일 */
     height: 80%;
     font-family: 'Paperlogy';
     background-color: white;
     color: #726f6f;
 }
 
+.rentalSearchBox>select {
+    padding: 0 5px;
+}
 
-.rentalSearch>div {
+.rentalSearchBox>div {
     display: flex;
     align-items: center;
+
+    select {
+        font-size: 1px;
+    }
 }
 
 .rentalSearch>img {
@@ -94,7 +103,8 @@
 .title {
     display: flex;
     width: 100%;
-    height: 45px;
+    height: 10%;
+    max-height: 45px;
     border-bottom: 1px solid #7F5539;
 }
 
@@ -114,7 +124,8 @@
 .rentalItems {
     display: flex;
     width: 100%;
-    height: 45px;
+    height: 10%;
+    max-height: 45px;
     border: 1px solid #7F5539;
     border-radius: 10px;
 }
@@ -122,7 +133,7 @@
 /* 페이지네이션 */
 .pagination {
     display: flex;
-    gap: 17px; 
+    gap: 17px;
     align-items: center;
     justify-content: center;
     width: 330px;
@@ -135,13 +146,12 @@
     margin-bottom: 1%;
 }
 
-.pagination span{
+.pagination span {
     cursor: pointer;
-    
+
 }
 
 .pagination img {
     width: 20px;
     height: 20px;
 }
-

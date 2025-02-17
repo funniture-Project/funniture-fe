@@ -14,6 +14,8 @@ import ListPage from './pages/common/ListPage';
 import { useState } from 'react';
 import Login from './pages/login/Login';
 import Signup from './pages/login/Singup';
+import OwnerProducts from './pages/owner/OwnerProducts';
+import AdminProduct from './pages/admin/AdminProduct';
 
 function App() {
 
@@ -25,13 +27,17 @@ function App() {
     <Routes>
       <Route path='/' element={<UserLayout selectCategory={selectCategory} setSelectCategory={setSelectCategory}
         selectCompany={selectCompany} setSelectCompany={setSelectCompany} />} >
+
         <Route index element={<Main />} />
         <Route path='mypage' element={<MyPage />} />
         <Route path='list' element={<ListPage selectCategory={selectCategory} selectCompany={selectCompany} />} />
         <Route path='test' element={<Test />} />
+
         <Route path='/owner' element={<OwnerLayout />}>
           <Route index element={<OwnerMyPage />} />
+          <Route path='product' element={<OwnerProducts />} />
         </Route>
+
       </Route>
 
       <Route path='/login' element={<Login />} />
@@ -45,6 +51,8 @@ function App() {
         <Route path='authority' element={<AuthorityLayout />}>
           <Route path='user' element={<AdminUser />} />
         </Route>
+
+        <Route path='product' element={<AdminProduct />} />
 
       </Route>
     </Routes>
