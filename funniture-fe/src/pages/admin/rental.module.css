@@ -1,4 +1,4 @@
-/* searchBox 와 rentalBox 포함하는 div*/
+/* searchBox 와 rentalBox 감싸는 div*/
 .adminRentalContent {
     margin-top: 2%;
     width: 100%;
@@ -6,11 +6,10 @@
     margin-bottom: 0%;
 }
 
-/* 검색박스 (select=> 진행상태&회사&분류, input=>날짜선택, div>input => 주문번호검색) */
+/* searchReset 와 rentalSearch 를 감싸는 div */
 .rentalSearchBox{
     display: flex;   
     height: 5%;
-    
     gap: 1%;
 }
 
@@ -21,7 +20,7 @@
     justify-content: flex-start;
     gap: 0.5%;
 }
-/* aspect-ratio: 1/1; */
+
 /* 초기화 img */
 .searchReset>img {
     width: 30px;
@@ -36,6 +35,16 @@
     background-color: white;
 }
 
+/* 예약 조회 결과 없을 시 텍스트 */
+.noResultsMessage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+    font-size: 20px;
+    width: 100%;
+    height: 100%;
+}
 
 /* 검색 div */
 .rentalSearch{
