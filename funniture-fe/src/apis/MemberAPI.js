@@ -1,5 +1,6 @@
 import { POST_REGISTER , POST_LOGIN } from "../redux/modules/MemberModule";
 
+
 export const callSignupAPI = ({ form }) => {
     const requestURL = `http://localhost:8080/api/v1/auth/signup`;
 
@@ -27,6 +28,7 @@ export const callSignupAPI = ({ form }) => {
         }
     };
 };
+
 
 export const callLoginAPI = ({ form }) => {
     const loginURL = `http://localhost:8080/api/v1/auth/login`

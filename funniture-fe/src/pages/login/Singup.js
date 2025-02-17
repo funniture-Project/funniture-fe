@@ -36,6 +36,7 @@ function Signup () {
         dispatch(callSignupAPI({
             form:form
         })).then(()=>{navigate("/login")});
+
     }
 
     return (
