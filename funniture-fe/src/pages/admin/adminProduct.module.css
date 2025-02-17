@@ -1,0 +1,178 @@
+.wholeContainer {
+    width: 100%;
+    height: 100%;
+
+    .searchBox {
+        border: solid 2px #7F5539;
+        padding: 10px;
+        box-sizing: border-box;
+
+        border-radius: 10px;
+
+        width: 100%;
+        height: 10%;
+
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+
+        label {
+            margin-right: 10px;
+        }
+
+        select,
+        input {
+            margin-right: 20px;
+            min-width: 10%;
+            height: 50%;
+        }
+
+        input {
+            box-sizing: border-box;
+            padding: 0 10px;
+        }
+
+        button {
+            background: none;
+            margin-left: auto;
+            height: 60%;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: solid 2px #7F5539;
+            background-color: white;
+            border-radius: 5px;
+            padding: 5px;
+
+            .searchIcon {
+                path {
+                    fill: #7F5539;
+                }
+            }
+
+        }
+    }
+
+    .resultContainer {
+        border-radius: 10px;
+        height: calc(90% - 30px);
+
+        .btns {
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            margin-bottom: 10px;
+            height: 6%;
+            font-weight: 70;
+
+            button {
+                margin-left: 10px;
+                padding: 5px 10px;
+                background-color: #7F5539;
+                color: white;
+                border: none;
+                border-radius: 5px;
+            }
+        }
+
+        .resultBox {
+            border: solid 2px #7F5539;
+            border-radius: 10px;
+            height: calc(93% - 20px);
+            padding: 10px;
+            box-sizing: border-box;
+
+            >div:first-child {
+                height: 95%;
+
+
+                .productItem {
+                    border: solid 2px #7F5539;
+                    display: flex;
+                    width: 100%;
+                    justify-content: space-between;
+                    padding: 7px 10px;
+                    box-sizing: border-box;
+                    font-weight: 200;
+                    margin-bottom: 12px;
+                    border-radius: 10px;
+
+                    font-size: 0.9em;
+
+                    >div {
+                        width: 13%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+
+                    .check {
+                        width: 3%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 0;
+
+                        input {
+                            margin: 0;
+                            height: 18px;
+                            aspect-ratio: 1 / 1;
+                        }
+                    }
+
+                    .productName {
+                        width: 20%;
+                        word-break: keep-all;
+                        text-align: center;
+                    }
+
+                    .createAt {
+                        width: 20%;
+                    }
+                }
+
+                .productListTitle {
+                    font-weight: 400;
+                    color: #8D8A8A;
+                    padding-top: 0;
+                    border: none;
+                    border-bottom: solid 2px #8D8A8A;
+                    border-radius: 0;
+                }
+
+                .productItemListBox {
+                    width: 100%;
+                    height: 92%;
+                    overflow: scroll;
+                    padding-right: 10px;
+                    box-sizing: border-box;
+                    overflow-x: hidden;
+                }
+
+                ::-webkit-scrollbar {
+                    display: block;
+                    /* 스크롤바를 보이게 설정 */
+                    width: 8px;
+                    margin-left: 10px;
+                    /* 스크롤바의 너비를 설정 */
+                }
+
+                ::-webkit-scrollbar-thumb {
+                    background-color: #888;
+                    /* 스크롤바 thumb의 색을 설정 */
+                    border-radius: 4px;
+                    /* 스크롤바 thumb의 테두리를 둥글게 설정 */
+                }
+            }
+
+
+            .paginationDiv {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+}

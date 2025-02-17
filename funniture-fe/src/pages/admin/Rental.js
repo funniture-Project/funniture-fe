@@ -1,9 +1,10 @@
 import AdminTop from '../../component/adminpage/AdminTop';
 import RentalCss from './rental.module.css';
 import { useState, useEffect } from 'react';
-import {getAdminRentalList} from '../../apis/RentalAPI';
-import {getStoreList} from '../../apis/RentalAPI';
-import {getAdminRentalListWithCriteria} from '../../apis/RentalAPI'
+import { getAdminRentalList } from '../../apis/RentalAPI';
+import { getStoreList } from '../../apis/RentalAPI';
+import { getAdminRentalListWithCriteria } from '../../apis/RentalAPI'
+import Pagination from '../../component/Pagination';
 
 function Rental() {
 
@@ -18,7 +19,7 @@ function Rental() {
     const [rentalList, setRentalList] = useState([]); // 예약
     const [storeList, setStoreList] = useState([]); // selected-> option 에 추가할 회사
     const [expandedRow, setExpandedRow] = useState(null); // 사용자, 제공자정보 보여 줄 행 관리
-    
+
     // 예약 리스트
     useEffect(() => {
         async function fetchData() {
@@ -26,7 +27,7 @@ function Rental() {
             setRentalList(data.results.adminRentalList);
         }
         fetchData();
-      }, []);
+    }, []);
 
     // 회사 리스트
     useEffect(() => {
@@ -37,11 +38,11 @@ function Rental() {
                 console.log('storeList:', data.results?.result);
             } catch (error) {
                 console.error("API 호출 실패:", error);
-                setStoreList([]); 
+                setStoreList([]);
             }
         }
         fetchData();
-    }, []);  
+    }, []);
 
     // 검색 조건 변경 핸들러 (Select, Input 공통)
     const handleChange = (e) => {
@@ -57,7 +58,7 @@ function Rental() {
         try {
             // 최신 검색 조건을 기반으로 필터링된 데이터 가져오기
             const response = await getAdminRentalListWithCriteria(searchRental);
-            
+
             // API 호출 후 결과 처리
             if (response && response.results && response.results.adminRentalList) {
                 setRentalList(response.results.adminRentalList); // 검색 결과 상태에 저장
@@ -105,28 +106,28 @@ function Rental() {
                         <option value="가구">가구</option>
                     </select>
 
-                    <input type="date" name="searchDate" onChange={handleChange}/>
-                    
-                    <input type="text" name="rentalNo" placeholder="주문번호를 검색하세요" onChange={handleChange}/>
-                    
-                    <img 
-                            src={require(`../../assets/icon/search-icon.svg`).default} 
-                            alt="검색 아이콘" 
-                            onClick={handleSearch}
+                    <input type="date" name="searchDate" onChange={handleChange} />
+
+                    <input type="text" name="rentalNo" placeholder="주문번호를 검색하세요" onChange={handleChange} />
+
+                    <img
+                        src={require(`../../assets/icon/search-icon.svg`).default}
+                        alt="검색 아이콘"
+                        onClick={handleSearch}
                     />
- 
+
                 </div>
 
                 <div className={RentalCss.rentalBox}>
                     <div className={RentalCss.rentalSubBox}>
                         <div className={RentalCss.title}>
-                            <div style={{width: "15%"}}><p>주문번호</p></div>
-                            <div style={{width: "10%"}}><p>회사명</p></div>
-                            <div style={{width: "10%"}}><p>진행상태</p></div>
-                            <div style={{width: "5%"}}><p>분류</p></div>
-                            <div style={{width: "35%"}}><p>제품명</p></div>
-                            <div style={{width: "20%"}}><p>사용시작/만료날짜</p></div>
-                            <div style={{width: "5%"}}><p>수량</p></div>
+                            <div style={{ width: "15%" }}><p>주문번호</p></div>
+                            <div style={{ width: "10%" }}><p>회사명</p></div>
+                            <div style={{ width: "10%" }}><p>진행상태</p></div>
+                            <div style={{ width: "5%" }}><p>분류</p></div>
+                            <div style={{ width: "35%" }}><p>제품명</p></div>
+                            <div style={{ width: "20%" }}><p>사용시작/만료날짜</p></div>
+                            <div style={{ width: "5%" }}><p>수량</p></div>
                         </div>
 
                         {/* 테이블 데이터 */}
@@ -150,18 +151,12 @@ function Rental() {
                             </>
                         ))}
                     </div>
-                    
-                    <div className={RentalCss.pagination}>
-                        <img src={require(`../../assets/icon/angles-left-solid.svg`).default} alt="페이지 맨앞으로 가는 아이콘"/>
-                        <img src={require(`../../assets/icon/angle-left-solid.svg`).default} alt="페이지 이전 아이콘"/>
-                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-                        <img src={require(`../../assets/icon/angle-right-solid.svg`).default} alt="페이지 다음 아이콘"/>
-                        <img src={require(`../../assets/icon/angles-right-solid.svg`).default} alt="페이지 맨뒤로 가는 아이콘"/>
-                    </div>
+
+                    <Pagination />
                 </div>
             </div>
         </>
-    )   
+    )
 }
 
 export default Rental;
