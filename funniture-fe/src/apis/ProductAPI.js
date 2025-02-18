@@ -58,12 +58,12 @@ export async function getProductList(conditions, refCategoryCode) {
             })
         }
 
-        if (conditions.productStatus.trim() != '') {
-            params.append("productStatus", conditions.productStatus.toString())
+        if (conditions.productStatus?.trim() != '' && conditions.productStatus) {
+            params.append("productStatus", conditions.productStatus?.toString())
         }
 
-        if (conditions.searchText.trim() != '') {
-            params.append("searchText", conditions.searchText.toString())
+        if (conditions.searchText?.trim() != '') {
+            params.append("searchText", conditions.searchText?.toString())
         }
 
         url.search = params.toString()

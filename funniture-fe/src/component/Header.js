@@ -9,8 +9,8 @@ import decodeJwt from '../utils/tokenUtils';
 
 function Header({ setSelectCategory }) {
 
-    const isLogin = window.localStorage.getItem('accessToken');
-    
+    const [isLogin, setIsLogin] = useState(false);
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -24,6 +24,9 @@ function Header({ setSelectCategory }) {
 
     useEffect(() => {
         setCategoryData(refCategory)
+        if (window.localStorage.getItem('accessToken')) {
+            setIsLogin(prev => !prev)
+        }
     }, [])
 
     useEffect(() => {
@@ -50,21 +53,25 @@ function Header({ setSelectCategory }) {
     }
 
     function BeforeLogin() { // | 는 시각적으로 버튼 구분
-        return(
+        return (
             <div>
-                <NavLink to="/login">로그인</NavLink> | <NavLink to="/register">회원가입</NavLink>
+                <div onClick={() => navigate('/login')}>로그인</div>
             </div>
         );
     }
+
     function AfterLogin() {
-        return(
+        return (
             <div>
-                <NavLink to="/">로그아웃</NavLink>
+                <div onClick={onClickLogoutHandler}>로그아웃</div>
             </div>
         );
     }
+
     const onClickLogoutHandler = () => {
-        
+        window.localStorage.removeItem('accessToken')
+        setIsLogin(false)
+        navigate('/')
     }
 
     return (
@@ -85,10 +92,8 @@ function Header({ setSelectCategory }) {
                     <input id='headerSearchText' type="text" ref={searchText} placeholder='검색어를 입력하세요' onChange={changeHandler} onKeyUp={enterFunction} />
                     <img src={searchIcon} alt="검색 아이콘" onClick={searchFunction} />
                 </div>
-                <div className={headerCss.loginBtn} onClick={() => navigate('/login')}>
-                    <div>
-                    {(isLogin == null || isLogin === undefined) ? <BeforeLogin /> : <AfterLogin />}
-                    </div>
+                <div className={headerCss.loginBtn}>
+                    {isLogin ? <AfterLogin /> : <BeforeLogin />}
                 </div>
             </div>
         </header>

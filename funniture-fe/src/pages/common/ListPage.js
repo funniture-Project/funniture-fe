@@ -60,6 +60,10 @@ function ListPage({ selectCategory, selectCompany }) {
         getData(conditions)
     }, [conditions, refCategoryCode])
 
+    useEffect(() => {
+        console.log('productList : ', productList)
+    }, [productList])
+
     return (
         <div className="wholeContentBox">
             {/* 필터링 조건 */}
