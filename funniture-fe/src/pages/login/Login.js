@@ -4,8 +4,11 @@ import mainLogo from '../../assets/images/mainLogo.png';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { callLoginAPI } from '../../apis/MemberAPI';
+import decodeJwt from '../../utils/tokenUtils';
 
 function Login () {
+
+    const token = decodeJwt(window.localStorage.getItem("accessToken"));
 
     const [form , setForm] = useState({
         email : '',
@@ -26,6 +29,8 @@ function Login () {
     const onClickLoginHandler = async () => {
         const isLoginSuccess = await dispatch(callLoginAPI({form}));
         if (isLoginSuccess){
+            console.log('token.sub : ', token.sub);
+            console.log('token : ', token);
             console.log('onClickLoginHandler, 로그인 성공!');
             navigate("/");
         }
