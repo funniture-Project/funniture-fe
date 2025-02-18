@@ -2,13 +2,13 @@ import './login.css'
 import { useNavigate } from 'react-router-dom';
 import mainLogo from '../../assets/images/mainLogo.png';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { callLoginAPI, callMemberListAPI } from '../../apis/MemberAPI';
+import { useSelector,useDispatch } from 'react-redux';
+import { callGetMemberAPI, callLoginAPI, callMemberListAPI } from '../../apis/MemberAPI';
 import decodeJwt from '../../utils/tokenUtils';
 
 function Login() {
 
-    const token = decodeJwt(window.localStorage.getItem("accessToken"));
+    const loginMember = useSelector(state => state.member);
 
     const [form, setForm] = useState({
         email: '',
@@ -18,6 +18,12 @@ function Login() {
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if(loginMember.state === 200){
+            console.log('useEffect의 loginMember : ', loginMember);
+        }
+    }, [loginMember]);
 
     const onChangeHandler = (e) => {
         setForm({
@@ -30,11 +36,16 @@ function Login() {
         const isLoginSuccess = await dispatch(callLoginAPI({ form }));
         if (isLoginSuccess) {
             console.log('isLoginSuccess : ', isLoginSuccess);
-            console.log('token.sub : ', token?.sub);
+            // 로그인 하고 decoding 해야 함.
+            const token = decodeJwt(window.localStorage.getItem("accessToken"));
             console.log('token : ', token);
-            console.log('onClickLoginHandler, 로그인 성공!');
-            dispatch(callMemberListAPI(token.sub));
+            console.log('token.sub : ', token?.sub);
+            if(token){
+            dispatch(callGetMemberAPI({memberId : token.sub}));
             navigate("/");
+            } else {
+                console.error("유효하지 않은 토큰!!");
+            }
         }
     }
 
