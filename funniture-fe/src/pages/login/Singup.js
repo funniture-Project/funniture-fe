@@ -35,7 +35,8 @@ function Signup () {
     const signUpHandler = () => {
         dispatch(callSignupAPI({
             form:form
-        }));
+        })).then(()=>{navigate("/login")});
+
     }
 
     return (
