@@ -1,9 +1,9 @@
 import './login.css'
 import { useNavigate } from 'react-router-dom';
 import mainLogo from '../../assets/images/mainLogo.png';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { callLoginAPI } from '../../apis/MemberAPI';
+import { callLoginAPI, callMemberListAPI } from '../../apis/MemberAPI';
 import decodeJwt from '../../utils/tokenUtils';
 
 function Login() {
@@ -29,9 +29,11 @@ function Login() {
     const onClickLoginHandler = async () => {
         const isLoginSuccess = await dispatch(callLoginAPI({ form }));
         if (isLoginSuccess) {
+            console.log('isLoginSuccess : ', isLoginSuccess);
             console.log('token.sub : ', token?.sub);
             console.log('token : ', token);
             console.log('onClickLoginHandler, 로그인 성공!');
+            dispatch(callMemberListAPI(token.sub));
             navigate("/");
         }
     }

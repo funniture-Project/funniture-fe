@@ -247,7 +247,7 @@ function OwnerProducts() {
                         </div>
                     </div>
 
-                    <div className={OwProductCss.pagination}>
+                    <div className={OwProductCss.paginationBox}>
                         <Pagination />
                     </div>
                 </div>
