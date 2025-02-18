@@ -1,5 +1,5 @@
 import { json } from "react-router-dom";
-import { POST_REGISTER , POST_LOGIN , SET_MEMBER_LIST} from "../redux/modules/MemberModule";
+import { POST_REGISTER , POST_LOGIN , GET_MEMBER} from "../redux/modules/MemberModule";
 
 
 export const callSignupAPI = ({ form }) => {
@@ -53,7 +53,7 @@ export const callLoginAPI = ({ form }) => {
         if (result.status == 200) {
             console.log('로그인 성공 result.status : ', result.status);
             window.localStorage.setItem('accessToken', result.userInfo.accessToken);
-            dispatch({type : POST_LOGIN , payload : result});
+            dispatch({ type: POST_LOGIN, payload: result });
             alert(result.message);
             return true;
         } else {
@@ -64,18 +64,36 @@ export const callLoginAPI = ({ form }) => {
     }
 }
 
-export const callMemberListAPI = (memberId) => async (dispatch) => {
-    const memberListURL = `http://localhost:8080/api/v1/member/${memberId}`;
+// export const callGetMemberAPI = (memberId) => async (dispatch) => {
+//     const memberListURL = `http://localhost:8080/api/v1/member/${memberId}`;
 
-    const response = await fetch(memberListURL, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: '*/*',
-        },
-    });
+//     const response = await fetch(memberListURL, {
+//         method: 'GET',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             Accept: '*/*',
+//         },
+//     });
 
-    const result = await response.json();
-    console.log('멤버 전체 리스트 반환 데이터 : ', result);
+//     const result = await response.json();
+//     console.log('멤버 전체 리스트 반환 데이터 : ', result);
+// };
 
-};
+export const callGetMemberAPI = ({memberId}) => {
+    const memberRequestURL = `http://localhost:8080/api/v1/member/${memberId}`;
+
+    return async (dispatch, getState) => {
+        const result = await fetch(memberRequestURL,{
+            method : 'GET',
+            headers: {
+                'Content-Type' : 'application/json',
+                Accept: '*/*',
+                Authorization : 'Bearer' + window.localStorage.getItem('accessToken'),
+            },
+        }).then((res) => res.json());
+
+        console.log('callGetMemberAPI result : ', result);
+
+        dispatch({type: GET_MEMBER, payload:result});
+    }
+}
