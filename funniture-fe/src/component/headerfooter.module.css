@@ -79,7 +79,7 @@ header {
         .searchBox {
             border: solid 1px #AAA9A9;
             display: flex;
-            width: 60%;
+            width: 55%;
             height: 60%;
             justify-content: space-between;
             padding: 0 20px;

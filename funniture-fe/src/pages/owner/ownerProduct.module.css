@@ -1,0 +1,187 @@
+.wholeContainer {
+    border: solid 2px #7F5539;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+
+    box-sizing: border-box;
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .title {
+        font-size: 1.4em;
+        font-weight: 700;
+        margin-bottom: 60px;
+    }
+
+    .productBox {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .Btns {
+            width: 100%;
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            margin-bottom: 10px;
+
+            >button {
+                margin-left: 10px;
+            }
+
+            .StatusBtn {
+                width: 18%;
+                height: 100%;
+                border: solid 2px #7F5539;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+                box-sizing: border-box;
+                justify-content: space-between;
+
+                select {
+                    padding: 0px 10px;
+                    border-top-left-radius: 5px;
+                    border-bottom-left-radius: 5px;
+                    border: none;
+                    width: 50%;
+                    height: 100%;
+                    font-family: 'Paperlogy';
+                }
+
+                select:focus-visible {
+                    border: none;
+                    outline: none;
+                }
+
+                button {
+                    width: 50%;
+                    border-radius: 0;
+                    margin-left: 5px;
+                }
+            }
+
+
+            button {
+                font-family: 'Paperlogy';
+                padding: 8px 12px;
+                border-radius: 5px;
+                border: none;
+                background-color: #7F5539;
+                color: white;
+                height: 100%;
+            }
+
+            >button {
+                border: solid 2px #7F5539;
+            }
+        }
+
+        .productList {
+            border: solid 2px #7F5539;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+
+            .productItem {
+                display: flex;
+                padding: 15px 30px;
+                box-sizing: border-box;
+                justify-content: space-between;
+                align-items: center;
+
+                min-height: 140px;
+
+                border: solid 1px black;
+                border-radius: 5px;
+
+                margin-bottom: 10px;
+
+                input[type='checkbox'] {
+                    width: 20px;
+                    aspect-ratio: 1/1;
+                }
+
+                .imgBox {
+                    width: 13%;
+                    aspect-ratio: 1 / 1;
+                    border: solid 1px black;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 10px;
+                    box-sizing: border-box;
+
+                    img {
+                        height: 100%;
+                    }
+                }
+
+                .productInfo {
+                    width: 20%;
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    justify-content: space-around;
+
+                    .productName {
+                        margin-bottom: 10px;
+                        word-break: keep-all;
+                    }
+
+                    .productRentalInfo {
+                        display: flex;
+
+                        div:first-child {
+                            margin-right: 10px;
+                        }
+                    }
+                }
+
+                .productStatus {
+                    color: white;
+                    background-color: #0675CF;
+                    border-radius: 30px;
+                    padding: 5px 15px;
+                }
+
+                .editBtns {
+                    display: flex;
+                    flex-direction: column;
+
+                    button {
+                        font-family: 'Paperlogy';
+                        padding: 8px 10px;
+                        color: white;
+                        background-color: #2C7E3E;
+                        border: none;
+                        border-radius: 5px;
+                    }
+
+                    button:last-child {
+                        margin-top: 10px;
+                        background-color: #AAA9A9;
+                    }
+                }
+
+            }
+
+            .paginationBox {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 2.5%;
+
+                >div {
+                    margin: 0;
+                    height: 100%;
+                }
+            }
+        }
+    }
+}
