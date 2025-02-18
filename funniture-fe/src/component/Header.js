@@ -5,9 +5,12 @@ import { getCategory } from "../apis/ProductAPI"
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import headerCss from './headerfooter.module.css'
+import decodeJwt from '../utils/tokenUtils';
 
 function Header({ setSelectCategory }) {
 
+    const isLogin = window.localStorage.getItem('accessToken');
+    
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -46,6 +49,24 @@ function Header({ setSelectCategory }) {
         }
     }
 
+    function BeforeLogin() { // | 는 시각적으로 버튼 구분
+        return(
+            <div>
+                <NavLink to="/login">로그인</NavLink> | <NavLink to="/register">회원가입</NavLink>
+            </div>
+        );
+    }
+    function AfterLogin() {
+        return(
+            <div>
+                <NavLink to="/">로그아웃</NavLink>
+            </div>
+        );
+    }
+    const onClickLogoutHandler = () => {
+        
+    }
+
     return (
         <header>
             <div>
@@ -66,7 +87,7 @@ function Header({ setSelectCategory }) {
                 </div>
                 <div className={headerCss.loginBtn} onClick={() => navigate('/login')}>
                     <div>
-                        로그인
+                    {(isLogin == null || isLogin === undefined) ? <BeforeLogin /> : <AfterLogin />}
                     </div>
                 </div>
             </div>
