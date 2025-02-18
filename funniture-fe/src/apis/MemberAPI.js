@@ -21,7 +21,7 @@ export const callSignupAPI = ({ form }) => {
     }).then(res => res.json());
 
         console.log('회원 가입 데이터 서버에 보내고 리턴된 result : ', result);
-
+        alert(result.message);
         if (result.status == 201) {
             console.log('result.status : ' , result.status);
             dispatch({type : POST_REGISTER, payload : result});
@@ -48,10 +48,17 @@ export const callLoginAPI = ({ form }) => {
         }).then(res => res.json());
 
         console.log('로그인 시도 후 반환 받은 데이터 result : ', result);
+
         if (result.status == 200) {
-            console.log('result.status : ', result.status);
+            console.log('로그인 성공 result.status : ', result.status);
             window.localStorage.setItem('accessToken', result.userInfo.accessToken);
             dispatch({type : POST_LOGIN , payload : result});
+            alert(result.message);
+            return true;
+        } else {
+            console.log('로그인 실패 : ', result.status);
+            alert(result.failType);
+            return false;
         }
     }
 }

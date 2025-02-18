@@ -23,11 +23,13 @@ function Login () {
         });
     };
 
-    const onClickLoginHandler = () => {
-        dispatch(callLoginAPI(
-            {form : form}
-        )).then(() => {navigate("/")});
-    };
+    const onClickLoginHandler = async () => {
+        const isLoginSuccess = await dispatch(callLoginAPI({form}));
+        if (isLoginSuccess){
+            console.log('onClickLoginHandler, 로그인 성공!');
+            navigate("/");
+        }
+    }
 
     return (
         <>  
