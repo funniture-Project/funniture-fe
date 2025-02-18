@@ -24,7 +24,7 @@ function ListPage({ selectCategory, selectCompany }) {
     const [productList, setProductList] = useState([])
     const [error, setError] = useState('')
 
-    // 검검색 조건 설정
+    // 검색 조건 설정
     useEffect(() => {
         // 처음 페이지 넘어올 때 설정
         if (searchKey) {

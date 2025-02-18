@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import AdminTop from "../../component/adminpage/AdminTop";
 import AdMainCss from "./adminMain.module.css"
+import { useLocation, useNavigate } from "react-router-dom";
 
 function AdminMain() {
 

@@ -4,12 +4,13 @@ import { ReactComponent as SearchIcon } from '../../assets/icon/search-icon.svg'
 import { ReactComponent as ResetCondition } from '../../assets/icon/rotate-right-solid.svg'
 import Pagination from "../../component/Pagination";
 import { useEffect, useState } from "react";
-import { getOwnerAllList, getCategory, getProductList } from "../../apis/ProductAPI";
+import { getOwnerAllList, getCategory, getProductList, changeProductStatus } from "../../apis/ProductAPI";
 function AdminProduct() {
     const [storeList, setStoreList] = useState([]);
     const [categoryList, setCategoryList] = useState([]);
     const [productList, setProductList] = useState([])
     const [errorMsg, setErrorMsg] = useState('')
+    const [changeStatue, setChangeStatue] = useState('')
 
     const [searchCondition, setSearchCondition] = useState({
         ownerNo: [],
@@ -88,6 +89,24 @@ function AdminProduct() {
         console.log("productListData : ", productListData.results.result)
     }
 
+    async function handleSubmit(e) {
+        e.preventDefault();
+        const data = new FormData(e.target)
+        const productNoList = data.getAll("productNo")
+
+        const response = await changeProductStatus(productNoList, changeStatue)
+        console.log("response : ", response)
+
+        if (response.httpStatusCode == 204) {
+            const productListData = await getProductList();
+            setProductList(productListData.results.result)
+
+            document.querySelectorAll("input[name='productNo']").forEach(checkBox => {
+                checkBox.checked = false;
+            })
+        }
+    }
+
     return (
         <>
             <AdminTop title={'제품 관리'} />
@@ -135,11 +154,11 @@ function AdminProduct() {
                 </div>
 
                 {/* 검색 결과 박스 */}
-                <div className={AdProductCss.resultContainer}>
+                <form className={AdProductCss.resultContainer} onSubmit={handleSubmit}>
                     <div className={AdProductCss.btns}>
                         <button>완전 삭제하기</button>
-                        <button>판매 불가로 변경</button>
-                        <button>판매 가능으로 변경</button>
+                        <button type="submit" onClick={() => setChangeStatue("판매불가")}>판매 불가로 변경</button>
+                        <button type="submit" onClick={() => setChangeStatue("판매중")}>판매 가능으로 변경</button>
                     </div>
 
                     <div className={AdProductCss.resultBox}>
@@ -158,7 +177,7 @@ function AdminProduct() {
                                 {productList.length > 0 ? productList.map(product => (
                                     <div className={AdProductCss.productItem}>
                                         <div className={AdProductCss.check}>
-                                            <input type="checkbox" value={product.productNo} />
+                                            <input type="checkbox" name="productNo" value={product.productNo} />
                                         </div>
                                         <div className={AdProductCss.productNo} id="productNo">{product.productNo}</div>
                                         <div className={AdProductCss.storeName} id="storeName">{product.storeName}</div>
@@ -181,7 +200,7 @@ function AdminProduct() {
                             <Pagination />
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </>
     )

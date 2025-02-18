@@ -107,6 +107,24 @@ export async function getOwnerAllList() {
     return response
 }
 
+// 상품 상태 정보 수정
+export async function changeProductStatus(productNoList, changeStatueValue) {
+    const url = baseProductUrl + '/changestatus'
+
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            productList: productNoList,
+            changeStatus: changeStatueValue
+        })
+    }).then(res => res.json())
+
+    return response
+}
+
 // 공용
 const getData = async (url) => {
     const response = await fetch(url)
