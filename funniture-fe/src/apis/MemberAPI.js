@@ -1,4 +1,5 @@
-import { POST_REGISTER , POST_LOGIN } from "../redux/modules/MemberModule";
+import { json } from "react-router-dom";
+import { POST_REGISTER , POST_LOGIN , SET_MEMBER_LIST} from "../redux/modules/MemberModule";
 
 
 export const callSignupAPI = ({ form }) => {
@@ -62,3 +63,19 @@ export const callLoginAPI = ({ form }) => {
         }
     }
 }
+
+export const callMemberListAPI = (memberId) => async (dispatch) => {
+    const memberListURL = `http://localhost:8080/api/v1/member/${memberId}`;
+
+    const response = await fetch(memberListURL, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: '*/*',
+        },
+    });
+
+    const result = await response.json();
+    console.log('멤버 전체 리스트 반환 데이터 : ', result);
+
+};
