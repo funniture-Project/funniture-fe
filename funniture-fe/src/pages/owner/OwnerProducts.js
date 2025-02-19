@@ -2,6 +2,7 @@ import OwProductCss from './ownerProduct.module.css'
 import Pagination from '../../component/Pagination'
 import { useEffect, useState } from 'react'
 import { changeProductStatus, getProductListByOwnerNo } from '../../apis/ProductAPI'
+import { useNavigate } from 'react-router-dom'
 
 function OwnerProducts() {
     const [searchFilter, setSearchFilter] = useState('판매중')
@@ -10,6 +11,8 @@ function OwnerProducts() {
     const [productSaleList, setProductSaleList] = useState([])
     const [notAbleList, setNotAbleList] = useState([])
     const [errorMsg, setErrorMsg] = useState('')
+
+    const navigate = useNavigate();
 
     async function getData(ownerNo) {
 
@@ -95,7 +98,7 @@ function OwnerProducts() {
                             </select>
                             <button onClick={changeStatus}>상태변경</button>
                         </div>
-                        <button>등록하기</button>
+                        <button onClick={() => navigate('/owner/register')}>등록하기</button>
                     </div>
                 </div>
 
