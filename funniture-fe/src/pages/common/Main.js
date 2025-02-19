@@ -3,9 +3,6 @@ import decodeJwt from '../../utils/tokenUtils'
 import './main.css'
 
 function Main() {
-
-   
-
     return (
         <div>
             <div className='mainContentBox'>

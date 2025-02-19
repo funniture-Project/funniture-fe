@@ -5,8 +5,6 @@ const baseProductUrl = 'http://localhost:8080/api/v1/product'
 // 카테고리 조회 (store에 저장)
 export function getCategory(refCategory) {
 
-    console.log("refCategory : ", refCategory)
-
     const categoryUrl = refCategory
         ? baseProductUrl + `/category?refCategoryCode=${refCategory}`
         : baseProductUrl + `/category`;
@@ -121,6 +119,17 @@ export async function changeProductStatus(productNoList, changeStatueValue) {
             changeStatus: changeStatueValue
         })
     }).then(res => res.json())
+
+    return response
+}
+
+// 제공자 별 상품 리스트 조회
+export async function getProductListByOwnerNo(ownerNo) {
+    console.log("ownerNo : ", ownerNo)
+
+    const url = new URL(baseProductUrl + `/owner?ownerNo=${ownerNo}`)
+
+    const response = await getData(url)
 
     return response
 }

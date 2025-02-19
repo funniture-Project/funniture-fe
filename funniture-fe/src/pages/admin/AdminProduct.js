@@ -156,7 +156,6 @@ function AdminProduct() {
                 {/* 검색 결과 박스 */}
                 <form className={AdProductCss.resultContainer} onSubmit={handleSubmit}>
                     <div className={AdProductCss.btns}>
-                        <button>완전 삭제하기</button>
                         <button type="submit" onClick={() => setChangeStatue("판매불가")}>판매 불가로 변경</button>
                         <button type="submit" onClick={() => setChangeStatue("판매중")}>판매 가능으로 변경</button>
                     </div>
