@@ -65,21 +65,6 @@ export const callLoginAPI = ({ form }) => {
     }
 }
 
-// export const callGetMemberAPI = (memberId) => async (dispatch) => {
-//     const memberListURL = `http://localhost:8080/api/v1/member/${memberId}`;
-
-//     const response = await fetch(memberListURL, {
-//         method: 'GET',
-//         headers: {
-//             'Content-Type': 'application/json',
-//             Accept: '*/*',
-//         },
-//     });
-
-//     const result = await response.json();
-//     console.log('멤버 전체 리스트 반환 데이터 : ', result);
-// };
-
 export const callGetMemberAPI = ({memberId}) => {
     const memberRequestURL = `http://localhost:8080/api/v1/member/${memberId}`;
 
