@@ -9,7 +9,6 @@ import decodeJwt from '../utils/tokenUtils';
 
 function Header({ setSelectCategory }) {
     const {user} = useSelector(state => state.member);
-    console.log('user : ', user);
     const [isLogin, setIsLogin] = useState(false);
 
     const navigate = useNavigate();
