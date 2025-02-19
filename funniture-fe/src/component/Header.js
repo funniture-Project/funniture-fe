@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import headerCss from './headerfooter.module.css'
 import decodeJwt from '../utils/tokenUtils';
+import {ReactComponent as MyPageImage} from "../assets/images/circle-user.svg"
 
 function Header({ setSelectCategory }) {
     const {user} = useSelector(state => state.member);
@@ -74,6 +75,21 @@ function Header({ setSelectCategory }) {
         navigate('/')
     }
 
+    const moveMyPage = () => {
+        const token = decodeJwt(window.localStorage.getItem('accessToken'));
+        console.log('token' , token);
+        console.log(token.memberRole);
+        if(token.memberRole == 'USER'){
+            navigate('/mypage')
+        } else if (token.memberRole == 'OWNER') {
+            navigate('/owner')
+        } else if (token.memberRole == 'ADMIN') {
+            navigate('/admin')
+        } else {
+            console.log('얜 뭐냐.');
+        }
+    }
+
     return (
         <header>
             <div>
@@ -92,6 +108,7 @@ function Header({ setSelectCategory }) {
                     <input id='headerSearchText' type="text" ref={searchText} placeholder='검색어를 입력하세요' onChange={changeHandler} onKeyUp={enterFunction} />
                     <img src={searchIcon} alt="검색 아이콘" onClick={searchFunction} />
                 </div>
+                <MyPageImage style={{fill : "#B08968", width:"2.5%"}} onClick={moveMyPage} />
                 <div className={headerCss.loginBtn}>
                     {isLogin ? <AfterLogin /> : <BeforeLogin />}
                 </div>
