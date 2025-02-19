@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import mainLogo from '../../assets/images/mainLogo.png';
 import { useEffect, useState } from 'react';
 import { useSelector,useDispatch } from 'react-redux';
-import { callGetMemberAPI, callLoginAPI, callMemberListAPI } from '../../apis/MemberAPI';
+import { callLoginAPI} from '../../apis/MemberAPI';
 import decodeJwt from '../../utils/tokenUtils';
 
 function Login() {
@@ -32,22 +32,36 @@ function Login() {
         });
     };
 
+    // const onClickLoginHandler = async () => {
+    //     const isLoginSuccess = await dispatch(callLoginAPI({ form }));
+    //     if (isLoginSuccess) {
+    //         console.log('isLoginSuccess : ', isLoginSuccess);
+    //         // 로그인 하고 decoding 해야 함.
+    //         const token = decodeJwt(window.localStorage.getItem("accessToken"));
+    //         console.log('token : ', token);
+    //         console.log('token.sub : ', token.sub);
+    //         if(token){
+    //         dispatch(callGetMemberAPI({memberId : token.sub}));
+    //         navigate("/");
+    //         } else {
+    //             console.error("유효하지 않은 토큰!!");
+    //         }
+    //     }
+    // }
+
     const onClickLoginHandler = async () => {
         const isLoginSuccess = await dispatch(callLoginAPI({ form }));
         if (isLoginSuccess) {
-            console.log('isLoginSuccess : ', isLoginSuccess);
-            // 로그인 하고 decoding 해야 함.
-            const token = decodeJwt(window.localStorage.getItem("accessToken"));
-            console.log('token : ', token);
-            console.log('token.sub : ', token?.sub);
-            if(token){
-            dispatch(callGetMemberAPI({memberId : token.sub}));
+          const token = decodeJwt(window.localStorage.getItem("accessToken"));
+          if (token) {
+            console.log("로그인 성공! 유효한 토큰:", token);
             navigate("/");
-            } else {
-                console.error("유효하지 않은 토큰!!");
-            }
+          } else {
+            console.error("유효하지 않은 토큰!!");
+          }
         }
-    }
+      };
+      
 
     return (
         <>

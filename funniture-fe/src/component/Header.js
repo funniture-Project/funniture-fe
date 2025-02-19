@@ -8,7 +8,7 @@ import headerCss from './headerfooter.module.css'
 import decodeJwt from '../utils/tokenUtils';
 
 function Header({ setSelectCategory }) {
-
+    const {user} = useSelector(state => state.member);
     const [isLogin, setIsLogin] = useState(false);
 
     const navigate = useNavigate();

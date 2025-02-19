@@ -11,14 +11,30 @@ import AuthorityLayout from './layouts/AuthorityLayout';
 import AdminMain from './pages/admin/AdminMain';
 import AdminUser from './pages/admin/AdminUser';
 import ListPage from './pages/common/ListPage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Login from './pages/login/Login';
 import Signup from './pages/login/Singup';
 import OwnerProducts from './pages/owner/OwnerProducts';
 import AdminProduct from './pages/admin/AdminProduct';
 import Inquiry from './pages/user/Inquiry';
+import Orders from './pages/user/Orders';
+import { useDispatch, useSelector } from 'react-redux';
+import { callGetMemberAPI } from './apis/MemberAPI';
+import decodeJwt from './utils/tokenUtils';
 
 function App() {
+  const token = decodeJwt(window.localStorage.getItem("accessToken"));
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (token && token.sub) {
+      console.log("유효한 토큰:", token);
+      dispatch(callGetMemberAPI({ memberId: token.sub }));
+    } else {
+      console.error("유효하지 않은 토큰 또는 sub 값 없음!");
+    }
+  }, [token]);
 
   // 선택한 검색 카테고리 관리
   const [selectCategory, setSelectCategory] = useState([])
@@ -30,7 +46,10 @@ function App() {
         selectCompany={selectCompany} setSelectCompany={setSelectCompany} />} >
 
         <Route index element={<Main />} />
-        <Route path='mypage' element={<MyPage />} />
+        <Route path='/mypage' element={<MyPage />}>
+          <Route index element={<Orders/>}/>
+        </Route>
+
         <Route path='list' element={<ListPage selectCategory={selectCategory} selectCompany={selectCompany} />} />
         <Route path='test' element={<Test />} />
         <Route path='inquiry' element={<Inquiry />} />
