@@ -17,6 +17,7 @@ import Signup from './pages/login/Singup';
 import OwnerProducts from './pages/owner/OwnerProducts';
 import AdminProduct from './pages/admin/AdminProduct';
 import Inquiry from './pages/user/Inquiry';
+import Orders from './pages/user/Orders';
 
 function App() {
 
@@ -30,7 +31,10 @@ function App() {
         selectCompany={selectCompany} setSelectCompany={setSelectCompany} />} >
 
         <Route index element={<Main />} />
-        <Route path='mypage' element={<MyPage />} />
+        <Route path='/mypage' element={<MyPage />}>
+          <Route index element={<Orders/>}/>
+        </Route>
+
         <Route path='list' element={<ListPage selectCategory={selectCategory} selectCompany={selectCompany} />} />
         <Route path='test' element={<Test />} />
         <Route path='inquiry' element={<Inquiry />} />
