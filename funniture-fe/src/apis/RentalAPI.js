@@ -1,6 +1,8 @@
 
 const baseRentalUrl = 'http://localhost:8080/api/v1/rental'
 
+// ---------------------------------------------------- 관리자 -------------------------------------------------------------
+
 export async function getAdminRentalList() {
    
 
@@ -47,3 +49,23 @@ export async function getStoreList() {
     return await fetch('http://localhost:8080/api/v1/product/ownerlist?categoryCode=1&categoryCode=2').then(res => res.json());
 }
 
+// ---------------------------------------------------- 사용자 -------------------------------------------------------------
+
+export async function getUserOrderList(memberId, period) {
+    
+    const url = new URL(baseRentalUrl + `/user?memberId=${memberId}`);
+
+    // period 값이 존재하면 URL에 추가
+    if (period) {
+        url.searchParams.append("period", period);
+    }
+    console.log('url', url);
+
+    const response = await fetch(url);
+    console.log('response', response);
+    
+    const data = await response.json();
+    console.log('data', data);
+
+    return data;
+}
