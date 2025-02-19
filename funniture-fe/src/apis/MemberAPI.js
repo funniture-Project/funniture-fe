@@ -1,7 +1,9 @@
 import { json } from "react-router-dom";
 import { POST_REGISTER , POST_LOGIN , GET_MEMBER} from "../redux/modules/MemberModule";
+import { useDispatch } from "react-redux";
+import api from "./Apis";
 
-
+// 회원 가입
 export const callSignupAPI = ({ form }) => {
     const requestURL = `http://localhost:8080/api/v1/auth/signup`;
 
@@ -23,14 +25,14 @@ export const callSignupAPI = ({ form }) => {
 
         console.log('회원 가입 데이터 서버에 보내고 리턴된 result : ', result);
         alert(result.message);
-        if (result.status == 201) {
+        if (result.status == 200) {
             console.log('result.status : ' , result.status);
             dispatch({type : POST_REGISTER, payload : result});
         }
     };
 };
 
-
+// 로그인 할 때 서버에 데이터를 보내고, 토큰 정보를 리턴 받음
 export const callLoginAPI = ({ form }) => {
     const loginURL = `http://localhost:8080/api/v1/auth/login`
     console.log('form', form);
@@ -49,7 +51,6 @@ export const callLoginAPI = ({ form }) => {
         }).then(res => res.json());
 
         console.log('로그인 시도 후 반환 받은 데이터 result : ', result);
-
         if (result.status == 200) {
             console.log('로그인 성공 result.status : ', result.status);
             window.localStorage.setItem('accessToken', result.userInfo.accessToken);
@@ -65,21 +66,54 @@ export const callLoginAPI = ({ form }) => {
     }
 }
 
+// 로그인 한 회원의 대한 정보를 불러오는 구문
 export const callGetMemberAPI = ({memberId}) => {
-    const memberRequestURL = `http://localhost:8080/api/v1/member/${memberId}`;
+    return async (dispatch) => {
+         const result = await api.get(`/member/${memberId}`)
+         console.log('로그인한 회원 정보 resposne : ', result);
+         
+         dispatch({type: GET_MEMBER, payload:result.data});
+     };
+ };
 
-    return async (dispatch, getState) => {
-        const result = await fetch(memberRequestURL,{
-            method : 'GET',
-            headers: {
-                'Content-Type' : 'application/json',
-                Accept: '*/*',
-                Authorization : 'Bearer' + window.localStorage.getItem('accessToken'),
-            },
-        }).then((res) => res.json());
+// 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.
+// export const callSignupAPI =
+// ({form}) =>
+//     async (dispatch) => {
+//         try {
+//           console.log('실행') 
+//           console.log("api : ", api)
+//         const response = await api.post('/auth/signup', {
+//           email : form.email,
+//           userName : form.userName,
+//           password : form.password,
+//         });
+//         if (response.status !== 200) throw new Error(response.error);
+//         dispatch({type : POST_REGISTER, payload : response});
+//         alert('회원가입을 완료하였습니다. ');
+//       }
+//        catch (error) {
+//         // dispatch({ type: types.REGISTER_USER_FAIL, payload: error.error });
+//         console.log('test', error);
+//         //   alert('회원가입에 실패하였습니다.');
+//       }
+//     };
 
-        console.log('callGetMemberAPI result : ', result);
+// export const callGetMemberAPI = ({memberId}) => {
+//     const memberRequestURL = `http://localhost:8080/api/v1/member/${memberId}`;
 
-        dispatch({type: GET_MEMBER, payload:result});
-    }
-}
+//     return async (dispatch, getState) => {
+//         const result = await fetch(memberRequestURL,{
+//             method : 'GET',
+//             headers: {
+//                 'Content-Type' : 'application/json',
+//                 Accept: '*/*',
+//                 Authorization : 'Bearer' + window.localStorage.getItem('accessToken'),
+//             },
+//         }).then((res) => res.json());
+
+//         console.log('callGetMemberAPI result : ', result);
+
+//         dispatch({type: GET_MEMBER, payload:result});
+//     }
+// }

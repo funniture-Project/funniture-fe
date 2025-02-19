@@ -11,7 +11,7 @@ function Signup () {
 
     const dispatch = useDispatch();
 
-    const selector = useSelector(state => state.memberReducer);
+    const selector = useSelector(state => state.member);
 
     const [form , setForm] = useState({
         email:'',
