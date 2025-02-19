@@ -25,43 +25,99 @@
         .Btns {
             width: 100%;
             display: flex;
-            justify-content: end;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
 
-            >button {
-                margin-left: 10px;
+            .BtnsLeft {
+                display: flex;
+
+                input {
+                    display: none;
+                }
+
+                label:first-of-type,
+                label:nth-of-type(2) {
+                    border-right: solid 2px black;
+                }
+
+                label {
+                    font-weight: 700;
+                    padding: 0px 5px;
+                    color: #AAA9A9;
+                    font-size: 1.1em;
+                    display: flex;
+                    width: max-content;
+                    min-width: 95px;
+                    align-items: center;
+                    justify-content: start;
+
+                    div {
+                        border-radius: 50%;
+                        height: 90%;
+                        aspect-ratio: 1/1;
+                        margin-left: 8px;
+                        font-size: 0.6em;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        background-color: #AAA9A9;
+                    }
+                }
+
+                input[type='radio']:checked+label {
+                    color: #7F5539;
+                }
+
+                input[type='radio']:checked+label div {
+                    background-color: #7F5539;
+                }
             }
 
-            .StatusBtn {
-                width: 18%;
-                height: 100%;
-                border: solid 2px #7F5539;
-                border-radius: 5px;
+            .BtnsRight {
+                width: 30%;
                 display: flex;
+                justify-content: end;
                 align-items: center;
                 box-sizing: border-box;
-                justify-content: space-between;
 
-                select {
-                    padding: 0px 10px;
-                    border-top-left-radius: 5px;
-                    border-bottom-left-radius: 5px;
-                    border: none;
-                    width: 50%;
+                >button {
                     height: 100%;
-                    font-family: 'Paperlogy';
+                    margin-left: 10px;
+                    border: solid 2px #7F5539;
                 }
 
-                select:focus-visible {
-                    border: none;
-                    outline: none;
-                }
+                .StatusBtn {
+                    width: 60%;
+                    height: 100%;
+                    border: solid 2px #7F5539;
+                    border-radius: 5px;
+                    display: flex;
+                    align-items: center;
+                    box-sizing: border-box;
+                    justify-content: space-between;
 
-                button {
-                    width: 50%;
-                    border-radius: 0;
-                    margin-left: 5px;
+                    select {
+                        padding: 0px 10px;
+                        border-top-left-radius: 5px;
+                        border-bottom-left-radius: 5px;
+                        border: none;
+                        width: 50%;
+                        height: 100%;
+                        font-family: 'Paperlogy';
+                    }
+
+                    select:focus-visible {
+                        border: none;
+                        outline: none;
+                    }
+
+                    button {
+                        width: 50%;
+                        border-radius: 0;
+                        margin-left: 5px;
+                    }
                 }
             }
 
@@ -88,6 +144,10 @@
             padding: 20px;
             box-sizing: border-box;
 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
             .productItem {
                 display: flex;
                 padding: 15px 30px;
@@ -95,20 +155,32 @@
                 justify-content: space-between;
                 align-items: center;
 
-                min-height: 140px;
+                min-height: 115px;
 
                 border: solid 1px black;
                 border-radius: 5px;
 
                 margin-bottom: 10px;
 
-                input[type='checkbox'] {
+                .checkboxDiv {
                     width: 20px;
-                    aspect-ratio: 1/1;
+                    display: flex;
+                    align-items: center;
+
+                    input[type='checkbox'] {
+                        width: 20px;
+                        aspect-ratio: 1/1;
+                        margin: 0;
+                    }
+                }
+
+                >div {
+                    width: 10%;
                 }
 
                 .imgBox {
-                    width: 13%;
+                    min-width: 100px;
+                    width: 11%;
                     aspect-ratio: 1 / 1;
                     border: solid 1px black;
                     display: flex;
@@ -130,7 +202,6 @@
                     justify-content: space-around;
 
                     .productName {
-                        margin-bottom: 10px;
                         word-break: keep-all;
                     }
 
@@ -143,12 +214,32 @@
                     }
                 }
 
-                .productStatus {
-                    color: white;
-                    background-color: #0675CF;
-                    border-radius: 30px;
-                    padding: 5px 15px;
+                .statusTotalBox {
+                    max-width: 15%;
+                    width: fit-content;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+
+                    .productStatus {
+                        color: white;
+                        background-color: #0675CF;
+                        border-radius: 30px;
+                        padding: 5px 15px;
+                        text-align: center;
+                        width: fit-content;
+                        max-width: 60%;
+                    }
+
+                    .optionBox {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: start;
+                        justify-content: center;
+                        margin-top: 10px;
+                    }
                 }
+
 
                 .editBtns {
                     display: flex;
@@ -175,7 +266,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                height: 2.5%;
+                height: 30px;
 
                 >div {
                     margin: 0;
