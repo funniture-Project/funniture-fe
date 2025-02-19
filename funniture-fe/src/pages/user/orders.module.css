@@ -26,6 +26,14 @@
     margin-left: 1%;
     background-color: #B08968;
     color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 선택된 기간  */
+.rentalPeriodSelector > div.selected {
+    background-color: #7F5539; /* 선택된 항목 강조 색상 */
+    font-weight: bold;
 }
 
 /* 주문리스트 컨테이너 */
@@ -94,10 +102,11 @@
 }
 
 .ordersInfo > div:first-child {
-    background-color: rgb(214, 210, 210);
-    width: 35%;
+    background-color: rgb(223, 219, 219);
+    width: fit-content;
     border-radius: 5px;
-    justify-content: center;
+    color: black;
+    padding: 0.5% 1%;
 }
 
 .ordersInfo > div:nth-child(2) {
