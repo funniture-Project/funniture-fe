@@ -4,12 +4,11 @@
 
     .mypageMenu {
         width: 34%;
-        border: solid 1px red;
         max-height: 60vh;
         box-sizing: border-box;
 
         position: sticky;
-        top: 109px;
+        top: 100px;
 
         border-radius: 15px;
         border: solid 3px #B08968;
@@ -173,7 +172,9 @@
 
 .mypageContent {
     width: 64%;
-    border: solid 1px blue;
+    border: solid 3px #B08968;
+    border-radius: 15px;
+    display: flex;
 }
 
 }
