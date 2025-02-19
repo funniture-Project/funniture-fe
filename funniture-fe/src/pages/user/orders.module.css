@@ -1,0 +1,144 @@
+/* mypageContent 내부에 전체적인 margin 을 주기위한 컨테이너 */
+.ordersContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 3% 5%;
+    box-sizing: border-box;
+}
+
+/* 타이틀 => 주문/배송 */
+.orderPageTitle {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: #7F5539;
+}
+
+/* 개월수선택 Box => 주문일로 필터링  */
+.rentalPeriodSelector {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.rentalPeriodSelector > div {
+    border-radius: 20px;
+    padding: 0.5% 1.8%;
+    margin-left: 1%;
+    background-color: #B08968;
+    color: white;
+}
+
+/* 주문리스트 컨테이너 */
+.orderListContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.orderListItem{
+    border: solid 2px #B08968;
+    width: 100%;
+    height: 25%;
+    display: flex;
+    flex-direction: column;
+    padding: 0% 5%;
+    padding-bottom: 1%;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+/* 주문 리스트 */
+.statusAndProductImgBox {
+    display: flex;
+    width: 100%;
+    height: 80%;
+    box-sizing: border-box;
+}
+
+.status {
+    height: 20%;
+    font-size: 1.2em;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.productImg {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    border: solid 1.5px rgb(122, 119, 119);
+}
+
+.productImg img {
+    width: 85%;
+    aspect-ratio: 1 /1;
+}
+
+
+/* 주문 정보 */
+.ordersInfo {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    margin-left: 20px;
+}
+
+.ordersInfo > div {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    
+}
+
+.ordersInfo > div:first-child {
+    background-color: rgb(214, 210, 210);
+    width: 35%;
+    border-radius: 5px;
+    justify-content: center;
+}
+
+.ordersInfo > div:nth-child(2) {
+    font-size: 0.8em;
+    color: gray;
+}
+
+.ordersInfo > div:nth-child(4) {
+    font-weight: 600;
+}
+
+.ordersInfo > div > a {
+    color: green;
+    text-decoration: none;
+}
+
+/* 문의 버튼 */
+.inquiryButton {
+    display: flex;
+    width: 20%;
+    height: 100%;
+    font-size: 1.2em;
+    color: white;
+}
+
+.inquiryButton > div {
+    margin-top: 55%;
+    margin-left: 25%;
+    display: flex;
+    width: 50%;
+    height: 20%;
+    padding: 0% 10%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-size: 0.8em;
+    background-color: #B08968;
+}
+
+
+
+
+
+
