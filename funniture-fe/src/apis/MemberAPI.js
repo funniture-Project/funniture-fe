@@ -58,6 +58,7 @@ export const callLoginAPI = ({ form }) => {
             return true;
         } else {
             console.log('로그인 실패 : ', result.status);
+            console.log('result.failType : '  , result.failType);
             alert(result.failType);
             return false;
         }

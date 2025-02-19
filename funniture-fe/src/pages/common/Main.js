@@ -1,9 +1,10 @@
+import { useSelector } from 'react-redux'
 import decodeJwt from '../../utils/tokenUtils'
 import './main.css'
 
 function Main() {
 
-    console.log("이건 뭐냐 : ", decodeJwt(localStorage.getItem('token')))
+   
 
     return (
         <div>
