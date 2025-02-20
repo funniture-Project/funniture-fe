@@ -136,7 +136,9 @@ export async function getProductListByOwnerNo(ownerNo) {
 export async function getProductDetailInfo(productNo) {
     const url = `/product/${productNo}`
 
-    console.log("url : ", url)
+    const response = await getData(url)
+
+    return response
 }
 
 // 공용
