@@ -47,7 +47,7 @@
 .orderListItem{
     border: solid 2px #B08968;
     width: 100%;
-    height: 25%;
+    height: 170px;
     display: flex;
     flex-direction: column;
     padding: 0% 5%;
@@ -81,7 +81,7 @@
 }
 
 .productImg img {
-    width: 85%;
+    width: 80%;
     aspect-ratio: 1 /1;
 }
 
@@ -118,7 +118,7 @@
     font-weight: 600;
 }
 
-.ordersInfo > div > a {
+.link {
     color: green;
     text-decoration: none;
 }
