@@ -1,131 +1,210 @@
-import './signup.css'
+import './signup.css';
 import { useNavigate } from 'react-router-dom';
 import mainLogo from '../../assets/images/mainLogo.png';
 import { useDispatch, useSelector } from 'react-redux';
-import {useEffect, useState} from 'react';
-import MemberAPI, { callSignupAPI , callSendEmailAPI , callCertificationAPI } from '../../apis/MemberAPI';
+import { useState, useEffect } from 'react';
+import MemberAPI, {
+  callSignupAPI,
+  callSendEmailAPI,
+  callCertificationAPI,
+} from '../../apis/MemberAPI';
 
-function Signup () {
+function Signup() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-    const navigate = useNavigate();
+  const storedCode = useSelector((state) => state.member.verificationCode);
 
-    const dispatch = useDispatch();
+  const [form, setForm] = useState({
+    email: '',
+    userName: '',
+    verificationCode: '',
+    password: '',
+    confirmPassword: '',
+  });
 
-    const selector = useSelector(state => state.member);
-    const storedCode = useSelector((state) => state.member.verificationCode);
+  const [emailValid, setEmailValid] = useState(false); // 이메일 유효성 검사
+  const [emailSent, setEmailSent] = useState(false); // 이메일 발송 여부
+  const [isCodeReady, setIsCodeReady] = useState(false); // 인증번호가 정확히 입력되었는지 여부
+  const [codeVerified, setCodeVerified] = useState(false); // 인증 성공 여부
+  const [isSignupEnabled, setIsSignupEnabled] = useState(false); // 회원가입 버튼 활성화 여부
 
-    const isPasswordValid = (password) => {
-        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        return passwordRegex.test(password);
-    }
+  // 비밀번호 유효성 검사 함수
+  const isPasswordValid = (password) => {
+    const passwordRegex =
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
+  };
 
-    const isPasswordMach = (password , confirmPassword) => {
-        return password === confirmPassword;
-    }
+  // 비밀번호와 확인 일치 여부 확인 함수
+  const isPasswordMatch = (password, confirmPassword) => {
+    return password === confirmPassword;
+  };
 
-    const [form , setForm] = useState({
-        email:'',
-        userName:'',
-        verificationCode:'',
-        password:'',
-        confirmPassword:''
+  // 입력값 변경 핸들러
+  const onChangeHandler = (e) => {
+    const { name, value } = e.target;
+
+    setForm({
+      ...form,
+      [name]: value,
     });
 
-    useEffect(() => {
-        
-    });
+    if (name === 'email') {
+      setEmailValid(value.includes('@') && value.includes('.')); // 이메일 유효성 검사
+    }
 
-    const onChangeHandler = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
-    };
-    
-    const signUpHandler = () => {
-        const {password , confirmPassword} = form;
+    if (name === 'verificationCode') {
+      setIsCodeReady(value.trim().length === 6); // 인증번호가 정확히 입력되었는지 확인
+    }
+  };
 
-        if(!isPasswordValid(password)){
-            alert('비밀번호는 최소 8자 이상이며 영문, 숫자, 특수문자를 포함해야 합니다.')
-            return;
-        }
+  // 회원가입 버튼 활성화 여부 확인 함수
+  const checkSignupEnabled = () => {
+    const { userName, password, confirmPassword } = form;
+    if (
+      userName.trim() !== '' && // 이름 입력 여부
+      isPasswordValid(password) && // 비밀번호 유효성 검사
+      isPasswordMatch(password, confirmPassword) // 비밀번호와 확인 일치 여부
+    ) {
+      setIsSignupEnabled(true);
+    } else {
+      setIsSignupEnabled(false);
+    }
+  };
 
-        if(!isPasswordMach(password, confirmPassword)){
-            alert('비밀번호가 일치하지 않습니다.')
-            return;
-        }
+  // form 상태 변경 시 회원가입 버튼 활성화 여부 확인
+  useEffect(() => {
+    checkSignupEnabled();
+  }, [form]);
 
-        dispatch(callSignupAPI({
-            form:form
-        })).then(()=>{navigate("/login")});
+  // 인증번호 발송 핸들러
+  const sendEmailHandler = () => {
+    dispatch(callSendEmailAPI({ form }));
+    setEmailSent(true); // 이메일 발송 후 인증하기 버튼 표시
+  };
 
-    };
+  // 인증번호 확인 핸들러
+  const certificationHandler = () => {
+    const enteredCode = form.verificationCode;
 
-    const sendEmailHandler = () => {
-        dispatch(callSendEmailAPI({
-            form: form
-        }));
-    };
+    if (enteredCode === storedCode) {
+      alert('인증 성공!');
+      setCodeVerified(true); // 인증 성공 시 다음 단계로 진행
+    } else {
+      alert('인증 실패. 올바른 인증번호를 입력해주세요.');
+      setCodeVerified(false);
+    }
+  };
 
-    const certificationHandler = () => {
-        const enteredCode = form.verificationCode; // 사용자가 입력한 인증번호
-        console.log('사용자가 입력한 인증번호 : ' , enteredCode);
-        const storedCode2 = storedCode; // Redux에 저장된 인증번호
-        console.log('Redux에 저장된 인증번호 : ' , storedCode2);
+  // 회원가입 핸들러
+  const signUpHandler = () => {
+    dispatch(callSignupAPI({ form })).then(() => navigate('/login'));
+  };
 
-        if (enteredCode === storedCode2) {
-            alert('인증 성공!');
-            // 다음 단계 작성해야 함
-        } else {
-            alert('인증 실패. 올바른 인증번호를 입력해주세요.');
-        }
-    };
-    
-    
-    return (
-        <>
-        <div>
-            <div className="loginLayout">
-                <div className="loginContainer">
-                    <div className="loginMainLogo">
-                        <img src={mainLogo} alt="메인 로고" onClick={() => navigate('/')} />
-                    </div>
-                        <div className="loginForm">
-                            <label style={{ fontWeight: 'bold' }}> 회원가입 </label>
-
-                            <div className="loginInput">
-                                <input type="email" name="email" onChange={onChangeHandler}
-                                    placeholder='이메일을 입력해 주세요.'/>
-                            </div>
-
-                            <div className='verification'>
-                                <input type="text" name="verificationCode" onChange={onChangeHandler}
-                                    placeholder='인증번호 입력'/>
-                                <button onClick={sendEmailHandler}>인증번호 발송</button>
-                            </div>
-                            
-                            <div className='loginInput'>
-                                <button onClick={certificationHandler}>인증하기</button>
-                                
-                                <input type="text" name="userName" onChange={onChangeHandler}
-                                    placeholder="이름을 입력해 주세요."/>
-
-                                <input type="password" name="password" onChange={onChangeHandler}
-                                    placeholder="비밀번호 입력"/>
-
-                                <input type="password" name="confirmPassword" onChange={onChangeHandler}
-                                    placeholder="비밀번호 확인" />
-                            </div>
-                        </div>
-                        <button className="signupBtn"
-                                onClick={signUpHandler}
-                                >회원가입</button>
-                </div>
-            </div>
-        </div>   
-        </>
+  // 조건부 렌더링: 인증하기 버튼
+  let renderVerificationButton;
+  if (emailSent) {
+    renderVerificationButton = (
+      <div className="verification">
+        <button 
+          onClick={certificationHandler} 
+          disabled={!isCodeReady}
+        >
+          인증하기
+        </button>
+      </div>
     );
+  }
 
+  // 조건부 렌더링: 이름 및 비밀번호 입력 필드
+  let renderUserInputs;
+  if (codeVerified) {
+    renderUserInputs = (
+      <div className="loginInput">
+        <input
+          type="text"
+          name="userName"
+          onChange={onChangeHandler}
+          placeholder="이름을 입력해 주세요."
+        />
+        <input
+          type="password"
+          name="password"
+          onChange={onChangeHandler}
+          placeholder="비밀번호 입력"
+        />
+        <input
+          type="password"
+          name="confirmPassword"
+          onChange={onChangeHandler}
+          placeholder="비밀번호 확인"
+        />
+      </div>
+    );
+  }
+
+  // 조건부 렌더링: 회원가입 버튼
+  let renderSignupButton;
+  if (codeVerified) {
+    renderSignupButton = (
+      <button 
+        className="signupBtn" 
+        onClick={signUpHandler} 
+        disabled={!isSignupEnabled}
+      >
+        회원가입
+      </button>
+    );
+  }
+
+  return (
+     <div>
+        <div className="loginLayout">
+          <div className="loginContainer">
+            <div className="loginMainLogo">
+              <img src={mainLogo} alt="메인 로고" onClick={() => navigate('/')} />
+            </div>
+            <div className="loginForm">
+              <label style={{ fontWeight: 'bold' }}>회원가입</label>
+
+              {/* 이메일 입력 */}
+              <div className="loginInput">
+                <input
+                  type="email"
+                  name="email"
+                  onChange={onChangeHandler}
+                  placeholder="이메일을 입력해 주세요."
+                />
+              </div>
+
+              {/* 인증번호 입력 및 발송 버튼 */}
+              <div className="verificationInput">
+                <input
+                  type="text"
+                  name="verificationCode"
+                  onChange={onChangeHandler}
+                  placeholder="인증번호 입력"
+                />
+                <button onClick={sendEmailHandler} disabled={!emailValid}>
+                  인증번호 발송
+                </button>
+              </div>
+
+              {/* 인증하기 버튼 */}
+              {renderVerificationButton}
+
+              {/* 이름 및 비밀번호 입력 */}
+              {renderUserInputs}
+
+              {/* 회원가입 버튼 */}
+              {renderSignupButton}
+            </div>
+            <div style={{marginLeft:'450px', marginTop:'270px'}} onClick={() => {navigate('/login')}}>돌아 가기</div>
+          </div>
+        </div>
+     </div>
+   );
 }
 
 export default Signup;
