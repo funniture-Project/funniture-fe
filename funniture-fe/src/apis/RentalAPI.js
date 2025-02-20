@@ -64,6 +64,16 @@ export async function getUserOrderList(memberId, period) {
     return data;
 }
 
+export async function getOrderDetail(id) {
+    const url = `/rental/${id}`
+
+    const response = await getData(url);
+
+    console.log(response)
+
+    return response
+}
+
 // 공용
 const getData = async (url, query) => {
     let response
