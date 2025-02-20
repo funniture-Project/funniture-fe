@@ -1,6 +1,7 @@
 import OrdersCss from './orders.module.css';
 import { useState, useEffect } from 'react';
 import {getUserOrderList} from '../../apis/RentalAPI';
+import { Link } from "react-router-dom";
 
 function Orders() {
     
@@ -87,7 +88,7 @@ function Orders() {
                                     <div>상품명 : {item.productName}</div>
                                     <div>{item.rentalPrice} 원</div>
                                     <div>
-                                        <a href="#">주문상세 &gt;</a>
+                                        <Link to={`/mypage/orders/${item.rentalNo}`} className={OrdersCss.link}>주문상세 &gt;</Link>
                                     </div>
                                 </div>
                                 <div className={OrdersCss.inquiryButton}>

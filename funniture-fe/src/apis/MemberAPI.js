@@ -1,6 +1,5 @@
-import { json } from "react-router-dom";
-import { POST_REGISTER, POST_LOGIN, GET_MEMBER } from "../redux/modules/MemberModule";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { POST_REGISTER , POST_LOGIN , GET_MEMBER, GET_EMAIL} from "../redux/modules/MemberModule";
 import api from "./Apis";
 
 // 회원 가입
@@ -75,6 +74,37 @@ export const callGetMemberAPI = ({ memberId }) => {
         dispatch({ type: GET_MEMBER, payload: result.data });
     };
 };
+
+ // 회원 가입 시, 이메일 인증번호 보내는 구문
+export const callSendEmailAPI = ({form}) => {
+    return async (dispatch) => {
+        const result = await api.post(`/email/${form.email}`,{
+            email : form.email
+        });
+        alert('인증 번호 발송이 완료되었습니다.');
+        console.log('인증번호가 서버에 잘 다녀 왔나 result : ' , result);
+
+        dispatch({type: GET_EMAIL, payload: result.data});
+    };
+};
+
+export const callCertificationAPI = ({ email, verification }) => {
+    return async (dispatch) => {
+        try {
+            const response = await api.post('/email/verify', { email, verification });
+            if (response.data.success) {
+                alert('인증 성공!');
+                dispatch({ type: 'CERTIFICATION_SUCCESS' });
+            } else {
+                alert('인증 실패. 다시 시도해주세요.');
+            }
+        } catch (error) {
+            console.error('인증 요청 중 오류 발생:', error);
+            alert('서버 오류가 발생했습니다.');
+        }
+    };
+};
+
 
 // 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.
 // export const callSignupAPI =
