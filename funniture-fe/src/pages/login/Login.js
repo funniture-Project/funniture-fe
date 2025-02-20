@@ -72,7 +72,7 @@ function Login() {
                             <img src={mainLogo} alt="메인 로고" onClick={() => navigate('/')} />
                         </div>
                         <div className="loginForm">
-                            <label style={{ fontWeight: 'bold' }}> 환영합니다 고객님! </label>
+                            <label style={{ fontWeight: 'bold', fontSize: '18px' }}> 환영합니다 고객님! </label>
 
                             <div className="loginInput">
                                 <input
@@ -90,13 +90,22 @@ function Login() {
                             </div>
 
                             <div className="loginBtn">
-                                <button
-                                    onClick={onClickLoginHandler}
-                                >로그인
-                                </button>
+                                <button onClick={onClickLoginHandler}>로그인</button>
+                            </div>
+
+                            <div className="additionalOptions">
+                                <span style={{color:'#898888'}}>비밀번호 찾기</span>
+                                <span onClick={() => navigate('/signup')}>이메일로 회원가입</span>
+                            </div>
+
+                            <div className="socialLogin">
+                                <label style={{color:'#898888'}}>다른 방법으로 로그인</label>
+                                <div className="socialButtons">
+                                    <button className="socialButton naver">N</button>
+                                    <button className="socialButton google">G</button>
+                                </div>
                             </div>
                         </div>
-                        <div onClick={() => navigate('/signup')}>이메일로 회원가입</div>
                     </div>
                 </div>
             </div>
