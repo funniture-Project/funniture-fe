@@ -18,7 +18,7 @@ const actions = createActions({
 const categoryReducer = handleActions({
     [GET_CATEGORY_LIST]: (state, { payload, refCategory }) => (
         {
-            refCategoryCode: refCategory,
+            refCategoryCode: payload.refCategory,
             categoryList: payload.categoryList,
         }),
 }, initialState)

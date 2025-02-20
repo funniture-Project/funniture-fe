@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getProductList } from "../../apis/ProductAPI";
 import './listpage.css'
 import { useSelector } from "react-redux";
@@ -8,6 +8,7 @@ function ListPage({ selectCategory, selectCompany }) {
 
     const { refCategoryCode } = useSelector(state => state.category)
     const location = useLocation();
+    const navigate = useNavigate();
 
     // location.state
     const searchKey = location.state ? Object.keys(location.state)[0] : null
@@ -60,10 +61,6 @@ function ListPage({ selectCategory, selectCompany }) {
         getData(conditions)
     }, [conditions, refCategoryCode])
 
-    useEffect(() => {
-        console.log('productList : ', productList)
-    }, [productList])
-
     return (
         <div className="wholeContentBox">
             {/* 필터링 조건 */}
@@ -85,7 +82,7 @@ function ListPage({ selectCategory, selectCompany }) {
                     </div>) :
                     (<div className="productListBox">
                         {productList.map(product => (
-                            <div className="productItem" data-product-no={product.productNo}>
+                            <div className="productItem" data-product-no={product.productNo} onClick={() => navigate(`/${product.productNo}`)}>
                                 <div>
                                     <img src={require(`../../assets/images/${product.productImageLink}`)} alt="상품 사진" />
                                     <div>{product.storeName}</div>
