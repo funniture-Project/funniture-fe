@@ -7,18 +7,21 @@ const initialState = {
         memberId: '',
         memberRole: '',
         email: ''
-    }
+    },
+    verificationCode:''
 };
 
 // 액션 정의
 export const POST_REGISTER = 'member/POST_REGISTER';
 export const POST_LOGIN = 'member/POST_LOGIN';
 export const GET_MEMBER = 'member/GET_MEMBER';
+export const GET_EMAIL = 'member/GET_EMAIL';
 
 const actions = createActions({
     [POST_REGISTER]: () => { },
     [POST_LOGIN]: () => { },
-    [GET_MEMBER]: () => { }
+    [GET_MEMBER]: () => { },
+    [GET_EMAIL]: () => { }
 });
 
 const memberReducer = handleActions({
@@ -36,7 +39,11 @@ const memberReducer = handleActions({
                 email: payload.results.result.email
             }
         }
-    )
+    ),
+    [GET_EMAIL]: (state, { payload }) => ({
+        ...state,
+        verificationCode: payload.results.result
+    })
 }, initialState);
 
 export default memberReducer;
