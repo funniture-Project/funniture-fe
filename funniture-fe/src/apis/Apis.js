@@ -1,45 +1,45 @@
-import axios from 'axios';
-import decodeJwt from '../utils/tokenUtils';
+    import axios from 'axios';
+    import decodeJwt from '../utils/tokenUtils';
 
 const MONGO_URL = process.env.REACT_APP_MONGO_URL;
 const BACK_PROXY = process.env.REACT_APP_BACKEND_PROXY;
 const LOCAL_BACKEND = process.env.REACT_APP_LOCAL_BACKEND;
-console.log('process.env.REACT_APP_BACKEND_PROXY', LOCAL_BACKEND);
 
-const api = axios.create({
-    // baseURL: `${REACT_APP_PROD_BACKEND}/api`,
-    baseURL: LOCAL_BACKEND,
-    // REACT_APP_LOCAL_BACKEND=http://localhost:5000/api
-    // baseURL: MONGO_URL,
-    // baseURL: `${BACK_PROXY}`,
-    headers: {
-        'Content-Type': 'application/json',
-        Accept: '*/*',
-        authorization: `Bearer ${localStorage.getItem('accesstoken')}`,
-    },
-});
 
-// 아래 구문은 axios에서 제공하는 것들로 신경안 써도 됨
-api.interceptors.request.use(
-    (request) => {
-        // console.log('Starting Request', request);
-        request.headers.authorization = `Bearer ${localStorage.getItem('accesstoken')}`;
-        return request;
-    },
-    function (error) {
-        console.log('REQUEST ERROR', error);
-    },
-);
+    const api = axios.create({
+        // baseURL: `${REACT_APP_PROD_BACKEND}/api`,
+        baseURL: LOCAL_BACKEND,
+        // REACT_APP_LOCAL_BACKEND=http://localhost:5000/api
+        // baseURL: MONGO_URL,
+        // baseURL: `${BACK_PROXY}`,
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: '*/*',
+            authorization: `Bearer ${localStorage.getItem('accesstoken')}`,
+        },
+    });
 
-api.interceptors.response.use(
-    (response) => {
-        return response;
-    },
-    function (error) {
-        error = error.response;
-        console.log('RESPONSE ERROR', error);
-        return Promise.reject(error);
-    },
-);
+    // 아래 구문은 axios에서 제공하는 것들로 신경안 써도 됨
+    api.interceptors.request.use(
+        (request) => {
+            // console.log('Starting Request', request);
+            request.headers.authorization = `Bearer ${localStorage.getItem('accesstoken')}`;
+            return request;
+        },
+        function (error) {
+            console.log('REQUEST ERROR', error);
+        },
+    );
 
-export default api;
+    api.interceptors.response.use(
+        (response) => {
+            return response;
+        },
+        function (error) {
+            error = error.response;
+            console.log('RESPONSE ERROR', error);
+            return Promise.reject(error);
+        },
+    );
+
+    export default api;
