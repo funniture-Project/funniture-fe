@@ -4,7 +4,6 @@ import decodeJwt from '../utils/tokenUtils';
 const MONGO_URL = process.env.REACT_APP_MONGO_URL;
 const BACK_PROXY = process.env.REACT_APP_BACKEND_PROXY;
 const LOCAL_BACKEND = process.env.REACT_APP_LOCAL_BACKEND;
-console.log('process.env.REACT_APP_BACKEND_PROXY', LOCAL_BACKEND);
 
 const api = axios.create({
     // baseURL: `${REACT_APP_PROD_BACKEND}/api`,

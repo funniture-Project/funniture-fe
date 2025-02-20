@@ -49,6 +49,14 @@
     border-radius: 5px;
 }
 
+.loginBtn.enabled {
+    background-color: #B08968; /* 활성화 색상 */
+}
+
+.loginBtn button:disabled {
+    cursor: not-allowed; /* 비활성화 시 커서 변경 */
+}
+
 .loginBtn button {
     width: 100%;
     height: 100%;
