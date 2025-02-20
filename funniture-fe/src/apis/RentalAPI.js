@@ -1,3 +1,4 @@
+import api from "./Apis";
 
 const baseRentalUrl = 'http://localhost:8080/api/v1/rental'
 
@@ -5,12 +6,16 @@ const baseRentalUrl = 'http://localhost:8080/api/v1/rental'
 
 export async function getAdminRentalList() {
 
-    return await fetch(baseRentalUrl).then(res => res.json());
+    const url = '/rental'
+
+    const response = await getData(url);
+
+    return response
 }
 
 export async function getAdminRentalListWithCriteria(criteria) {
 
-    const url = new URL(baseRentalUrl)
+    const url = '/rental';
     const params = new URLSearchParams();
 
     if (criteria.rentalState) {
@@ -29,19 +34,9 @@ export async function getAdminRentalListWithCriteria(criteria) {
         params.append('rentalNo', criteria.rentalNo);
     }
 
-    url.search = params;
+    const response = await getData(url, params)
 
-    console.log('요청 url : ', url)
-
-    const response = await fetch(url);
-    console.log('response', response)
-    const data = await response.json();
-
-    // 응답 구조 확인 후 리턴
-    console.log('응답 데이터:', data);  // 응답 데이터 확인
-
-    // 구조를 정확히 파악하고 adminRentalList를 반환
-    return data;
+    return response
 }
 
 export async function getStoreList() {
@@ -67,4 +62,17 @@ export async function getUserOrderList(memberId, period) {
     console.log('data', data);
 
     return data;
+}
+
+// 공용
+const getData = async (url, query) => {
+    let response
+
+    if (!query) {
+        response = await api.get(url)
+    } else {
+        response = await api.get(url, { params: query })
+    }
+
+    return response?.data
 }
