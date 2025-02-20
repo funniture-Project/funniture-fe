@@ -10,23 +10,23 @@ export const callSignupAPI = ({ form }) => {
         console.log('MemberAPI의 dispatch : ', dispatch);
         console.log('MemberAPI의 getState : ', getState);
         const result = await fetch(requestURL, {
-         method: 'POST',
-         headers: {
-            'Content-Type' : 'application/json',
-            Accept: '*/*',
-         },
-         body: JSON.stringify({
-            email : form.email,
-            userName : form.userName,
-            password : form.password
-         }),
-    }).then(res => res.json());
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: '*/*',
+            },
+            body: JSON.stringify({
+                email: form.email,
+                userName: form.userName,
+                password: form.password
+            }),
+        }).then(res => res.json());
 
         console.log('회원 가입 데이터 서버에 보내고 리턴된 result : ', result);
         alert(result.message);
         if (result.status == 200) {
-            console.log('result.status : ' , result.status);
-            dispatch({type : POST_REGISTER, payload : result});
+            console.log('result.status : ', result.status);
+            dispatch({ type: POST_REGISTER, payload: result });
         }
     };
 };
@@ -36,16 +36,16 @@ export const callLoginAPI = ({ form }) => {
     const loginURL = `http://localhost:8080/api/v1/auth/login`
     console.log('form', form);
     return async (dispatch, getState) => {
-        const result = await fetch(loginURL,{
-            method : 'POST',
-            headers : {
+        const result = await fetch(loginURL, {
+            method: 'POST',
+            headers: {
                 'Content-Type': 'application/json',
                 Accept: '*/*',
                 'Access-Control-Allow-Origin': '*', // 모든 도멘인에서 접근할 수 있음을 의미 (특정도메인을 넣고싶으면 * 대신 http://test.com)
             },
-            body : JSON.stringify({
-                email : form.email,
-                password : form.password
+            body: JSON.stringify({
+                email: form.email,
+                password: form.password
             }),
         }).then(res => res.json());
 
@@ -58,7 +58,7 @@ export const callLoginAPI = ({ form }) => {
             return true;
         } else {
             console.log('로그인 실패 : ', result.status);
-            console.log('result.failType : '  , result.failType);
+            console.log('result.failType : ', result.failType);
             alert(result.failType);
             return false;
         }
@@ -66,14 +66,14 @@ export const callLoginAPI = ({ form }) => {
 }
 
 // 로그인 한 회원의 대한 정보를 불러오는 구문
-export const callGetMemberAPI = ({memberId}) => {
+export const callGetMemberAPI = ({ memberId }) => {
     return async (dispatch) => {
-         const result = await api.get(`/member/${memberId}`)
-         console.log('로그인한 회원 정보 resposne : ', result);
-         
-         dispatch({type: GET_MEMBER, payload:result.data});
-     };
- };
+        const result = await api.get(`/member/${memberId}`)
+        //  console.log('로그인한 회원 정보 resposne : ', result);
+
+        dispatch({ type: GET_MEMBER, payload: result.data });
+    };
+};
 
  // 회원 가입 시, 이메일 인증번호 보내는 구문
 export const callSendEmailAPI = ({form}) => {
@@ -111,7 +111,7 @@ export const callCertificationAPI = ({ email, verification }) => {
 // ({form}) =>
 //     async (dispatch) => {
 //         try {
-//           console.log('실행') 
+//           console.log('실행')
 //           console.log("api : ", api)
 //         const response = await api.post('/auth/signup', {
 //           email : form.email,
