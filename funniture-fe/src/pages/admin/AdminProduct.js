@@ -4,7 +4,7 @@ import { ReactComponent as SearchIcon } from '../../assets/icon/search-icon.svg'
 import { ReactComponent as ResetCondition } from '../../assets/icon/rotate-right-solid.svg'
 import Pagination from "../../component/Pagination";
 import { useEffect, useState } from "react";
-import { getOwnerAllList, getCategory, getProductList, changeProductStatus } from "../../apis/ProductAPI";
+import { getOwnerAllList, getSubAllCategory, getProductList, changeProductStatus } from "../../apis/ProductAPI";
 function AdminProduct() {
     const [storeList, setStoreList] = useState([]);
     const [categoryList, setCategoryList] = useState([]);
@@ -24,7 +24,7 @@ function AdminProduct() {
         async function getSetDataList() {
             const [storeData, categoryData, productData] = await Promise.all([
                 getOwnerAllList(),
-                getCategory(),
+                getSubAllCategory(),
                 getProductList()
             ])
 

@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { callGetMemberAPI } from './apis/MemberAPI';
 import decodeJwt from './utils/tokenUtils';
 import OwnerRegister from './pages/owner/OwnerRegister';
+import ProductDetailPage from './pages/common/ProductDetailPage';
 
 function App() {
   const token = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -52,6 +53,8 @@ function App() {
         </Route>
 
         <Route path='list' element={<ListPage selectCategory={selectCategory} selectCompany={selectCompany} />} />
+        <Route path=':id' element={<ProductDetailPage />} />
+
         <Route path='test' element={<Test />} />
         <Route path='inquiry' element={<Inquiry />} />
 
