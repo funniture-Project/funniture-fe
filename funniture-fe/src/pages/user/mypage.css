@@ -164,11 +164,27 @@
     text-align: center;
     border-radius: 5px;
     background-color: #B08968;
-    color: white;
     cursor: pointer;
     box-shadow: 2px 2.5px 5px rgb(110, 110, 110); /* x, y, blur, 색상 */
 }
 
+.tab {
+    padding: 2%;
+    text-align: center;
+    border-radius: 5px;
+    background-color: #B08968;
+    cursor: pointer;
+    box-shadow: 2px 2.5px 5px rgb(110, 110, 110);
+}
+
+.tab.active {
+    background-color: #7F5539; /* 활성화된 탭에 색을 적용 */
+}
+
+.link {
+    color: white;
+    text-decoration: none;
+}
 
 .mypageContent {
     width: 64%;

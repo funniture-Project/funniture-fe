@@ -23,6 +23,8 @@ import { callGetMemberAPI } from './apis/MemberAPI';
 import decodeJwt from './utils/tokenUtils';
 import OwnerRegister from './pages/owner/OwnerRegister';
 import ProductDetailPage from './pages/common/ProductDetailPage';
+import DetailOrder from './pages/user/DetailOrder';
+import OrdersReturn from './pages/user/OrdersReturn';
 
 function App() {
   const token = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -50,6 +52,8 @@ function App() {
         <Route index element={<Main />} />
         <Route path='/mypage' element={<MyPage />}>
           <Route index element={<Orders />} />
+          <Route path='orders/:id' element={<DetailOrder />} />
+          <Route path='returns' element={<OrdersReturn />} />
         </Route>
 
         <Route path='list' element={<ListPage selectCategory={selectCategory} selectCompany={selectCompany} />} />

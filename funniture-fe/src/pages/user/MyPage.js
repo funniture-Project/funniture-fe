@@ -5,8 +5,16 @@ import sackDollarIcon from "../../assets/icon/sack-dollar-solid.svg";
 import clockRotateIcon from "../../assets/icon/clock-rotate-left-solid.svg";
 import truckIcon from "../../assets/icon/truck-solid.svg";
 import checkIcon from "../../assets/icon/check-solid.svg";
+import { Link } from "react-router-dom";
+import { useState } from 'react';
 
 function MyPage() {
+
+    const [activeTab, setActiveTab] = useState('orders');
+
+    const handleTabClick = (tab) => {
+        setActiveTab(tab);
+    };
 
     return (
         <div className='mypage'>
@@ -56,18 +64,50 @@ function MyPage() {
                 <div className='userMypageTap'>
                     <div className='tapTitle'>나의 활동</div>
                     <div className='myPageSubTapTitle'>
-                        <div>주문/배송</div>
-                        <div>사용상품/반납</div>
-                        <div>문의내역</div>
-                        <div>리뷰</div>
-                        <div>관심상품</div>
-                        <div>최근본상품</div>
+                        <div 
+                            onClick={() => handleTabClick('orders')}
+                            className={`tab ${activeTab === 'orders' ? 'active' : ''}`}>
+                            <Link to={`/mypage`} className='link'>주문/배송</Link>
+                        </div>
+                        <div 
+                            onClick={() => handleTabClick('return')}
+                            className={`tab ${activeTab === 'return' ? 'active' : ''}`}>
+                            <Link to={`/mypage/returns`} className='link'>사용상품/반납</Link>
+                        </div>
+                        <div 
+                            onClick={() => handleTabClick('inquiries')}
+                            className={`tab ${activeTab === 'inquiries' ? 'active' : ''}`}>
+                            <Link to={`/mypage`} className='link'>문의내역</Link>
+                        </div>
+                        <div 
+                            onClick={() => handleTabClick('reviews')}
+                            className={`tab ${activeTab === 'reviews' ? 'active' : ''}`}>
+                            <Link to={`/mypage`} className='link'>리뷰</Link>
+                        </div>
+                        <div 
+                            onClick={() => handleTabClick('favorites')}
+                            className={`tab ${activeTab === 'favorites' ? 'active' : ''}`}>
+                            <Link to={`/mypage`} className='link'>관심상품</Link>
+                        </div>
+                        <div 
+                            onClick={() => handleTabClick('recent')}
+                            className={`tab ${activeTab === 'recent' ? 'active' : ''}`}>
+                            <Link to={`/mypage`} className='link'>최근본상품</Link>
+                        </div>
                     </div>
 
                     <div className='tapTitle'>정보 관리</div>
                     <div className='myPageSubTapTitle'>
-                        <div>회원정보수정</div>
-                        <div>배송지관리</div>
+                        <div 
+                            onClick={() => handleTabClick('info')}
+                            className={`tab ${activeTab === 'info' ? 'active' : ''}`}>
+                            <Link to={`/mypage`} className='link'>회원정보수정</Link>
+                        </div>
+                        <div 
+                            onClick={() => handleTabClick('address')}
+                            className={`tab ${activeTab === 'address' ? 'active' : ''}`}>
+                            <Link to={`/mypage`} className='link'>배송지관리</Link>
+                        </div>
                     </div>
                 </div>
             </div>
