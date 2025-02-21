@@ -1,6 +1,15 @@
 import RentalRegistCss from './rentalRegist.module.css'
+import { useLocation } from 'react-router-dom';
 
 function RentalRegist () {
+
+    const location = useLocation();
+    console.log(location)
+   
+    const {selectRentalOption} = location.state  //
+    const {productInfo} = location.state
+    const {rentalNum} = location.state
+ 
 
     return(
         <div>
@@ -23,18 +32,18 @@ function RentalRegist () {
 
                     <h3>주문상품</h3>
                     <div className={RentalRegistCss.orderItemSection}>
-                        <div>LG헬로🏡</div>
+                        <div>{productInfo.ownerInfo.storeName}</div>
                         <div className={RentalRegistCss.rentalInfoSubSection}>
                             <img className={RentalRegistCss.rentalProductImg} src={require(`../../assets/images/testImg.JPG`)} alt="상품 이미지" />
                             <div>
-                                <div>상품명 : 쿠쿠_전기밥솥_10인용</div>
-                                <div>약정기간 : 36개월</div>
-                                <div>A/S횟수 : 2</div>
+                                <div>상품명 : {productInfo.productName}</div>
+                                <div>약정기간 : {selectRentalOption.rentalTerm}개월</div>
+                                <div>A/S횟수 : {selectRentalOption.asNumber}회</div>
                             </div>
                         </div>
                         <div>
                             <div>수량</div>
-                            <div>1 개</div>
+                            <div>{rentalNum}개</div>
                         </div>
                     </div>
 
@@ -44,14 +53,14 @@ function RentalRegist () {
                                 <div>할인/쿠폰</div>
                                 <div>사용</div>
                             </div>
-                            <div>- 2,900 원</div>
+                            <div>- {selectRentalOption.rentalPrice * 0.1} 원</div>
                         </div>
                         <hr className={RentalRegistCss.rentalRegistHr}/>
                         <div>
                             <div>이번달 결제금액</div>
                             <div>
-                                <div>29,000 원</div>
-                                <div>26,100 원</div>
+                                <div>{selectRentalOption.rentalPrice} 원</div>
+                                <div>{selectRentalOption.rentalPrice - selectRentalOption.rentalPrice * 0.1} 원</div>
                             </div>
                         </div>
                     </div>
@@ -81,24 +90,24 @@ function RentalRegist () {
                         <div className={RentalRegistCss.payInfoSection}>
                             <div>
                                 <div>할인쿠폰 사용</div>
-                                <div>2,900 원</div>
+                                <div>{selectRentalOption.rentalPrice * 0.1} 원</div>
                             </div>
                             <div>
                                 <div>포인트 사용</div>
-                                <div>1,000 원</div>
+                                <div>{selectRentalOption.rentalPrice - selectRentalOption.rentalPrice * 0.1} 원</div>
                             </div>
                             <div>
                                 <div>렌탈가</div>
-                                <div>29,000 원</div>
+                                <div>{selectRentalOption.rentalPrice}  원</div>
                             </div>
                             <hr className={RentalRegistCss.rentalRegistHr}/>
                             <div>
                                 <div>이번달 결제금액</div>
-                                <div>25,100 원</div>
+                                <div>{selectRentalOption.rentalPrice - selectRentalOption.rentalPrice * 0.1} 원</div>
                             </div>
                             <div>
                                 <div>다음달 결제금액</div>
-                                <div>29,000 원</div>
+                                <div>{selectRentalOption.rentalPrice} 원</div>
                             </div>
                         </div>
 
@@ -106,7 +115,7 @@ function RentalRegist () {
                         <div className={RentalRegistCss.pointAddSection}>
                             <div>
                                 <div>구매적립</div>
-                                <div>2,510 <span>원</span></div>
+                                <div>{selectRentalOption.rentalPrice * 0.01}  <span>원</span></div>
                             </div>
                             <div>
                                 <div>리뷰적립</div>
