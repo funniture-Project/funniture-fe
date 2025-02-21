@@ -25,6 +25,7 @@ import OwnerRegister from './pages/owner/OwnerRegister';
 import ProductDetailPage from './pages/common/ProductDetailPage';
 import DetailOrder from './pages/user/DetailOrder';
 import OrdersReturn from './pages/user/OrdersReturn';
+import RentalRegist from './pages/user/RentalRegist';
 
 function App() {
   const token = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -55,6 +56,8 @@ function App() {
           <Route path='orders/:id' element={<DetailOrder />} />
           <Route path='returns' element={<OrdersReturn />} />
         </Route>
+
+        <Route path='/rental' element={<RentalRegist />} />
 
         <Route path='list' element={<ListPage selectCategory={selectCategory} selectCompany={selectCompany} />} />
         <Route path=':id' element={<ProductDetailPage />} />
