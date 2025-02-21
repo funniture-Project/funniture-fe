@@ -26,7 +26,8 @@ import ProductDetailPage from './pages/common/ProductDetailPage';
 import DetailOrder from './pages/user/DetailOrder';
 import OrdersReturn from './pages/user/OrdersReturn';
 import FindPass from './pages/login/FindPass';
-import EditInfo from './pages/user/EditInfo';
+import UserConform from './pages/user/UserConform';
+import EditsInfo from './pages/user/EditsInfo';
 
 function App() {
   const token = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -56,7 +57,8 @@ function App() {
           <Route index element={<Orders />} />
           <Route path='orders/:id' element={<DetailOrder />} />
           <Route path='returns' element={<OrdersReturn />} />
-          <Route path='edit' element={<EditInfo />} />
+          <Route path='edit' element={<UserConform />} />
+          <Route path='edits' element={<EditsInfo />} />
         </Route>
 
         <Route path='list' element={<ListPage selectCategory={selectCategory} selectCompany={selectCompany} />} />
