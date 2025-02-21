@@ -3,10 +3,12 @@ import './editInfo.css';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import decodeJwt from '../../utils/tokenUtils';
+import { callLoginAPI } from '../../apis/MemberAPI';
 
 function EditInfo () {
 
     const selector = useSelector(state => state.member);
+    console.log('selector : ', selector);
     const dispatch = useDispatch();
 
     const [password , setPassword] = useState({
