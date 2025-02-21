@@ -14,15 +14,15 @@ function Login() {
         password: ''
     });
 
-    const [isLoginEnabled, setIsLoginEnabled] = useState(false); // 로그인 버튼 활성화 여부
+    // const [isLoginEnabled, setIsLoginEnabled] = useState(false); // 로그인 버튼 활성화 여부
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
     // 비밀번호 길이에 따라 로그인 버튼 활성화 여부 업데이트
-    useEffect(() => {
-        setIsLoginEnabled(form.password.length >= 8);
-    }, [form.password]);
+    // useEffect(() => {
+    //     setIsLoginEnabled(form.password.length >= 8);
+    // }, [form.password]);
 
     const onChangeHandler = (e) => {
         setForm({
@@ -70,10 +70,11 @@ function Login() {
                                 />
                             </div>
 
-                            <div className={`loginBtn ${isLoginEnabled ? 'enabled' : ''}`}>
+                            {/* <div className={`loginBtn ${isLoginEnabled ? 'enabled' : ''}`}> */}
+                            <div>
                                 <button 
                                     onClick={onClickLoginHandler} 
-                                    disabled={!isLoginEnabled}
+                                    // disabled={!isLoginEnabled}
                                 >
                                     로그인
                                 </button>
