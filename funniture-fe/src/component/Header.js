@@ -55,16 +55,17 @@ function Header({ setSelectCategory }) {
 
     function BeforeLogin() { // | 는 시각적으로 버튼 구분
         return (
-            <div>
-                <div onClick={() => navigate('/login')}>로그인</div>
+            <div class={headerCss.loginBtn} onClick={() => navigate('/login')}>
+                <div>로그인</div>
             </div>
         );
     }
 
     function AfterLogin() {
+
         return (
-            <div>
-                <div onClick={onClickLogoutHandler}>로그아웃</div>
+            <div class={headerCss.loginBtn} onClick={onClickLogoutHandler}>
+                <div>로그아웃</div>
             </div>
         );
     }
@@ -109,9 +110,7 @@ function Header({ setSelectCategory }) {
                     <img src={searchIcon} alt="검색 아이콘" onClick={searchFunction} />
                 </div>
                 <MyPageImage style={{ fill: "#B08968", width: "2.5%" }} onClick={moveMyPage} />
-                <div className={headerCss.loginBtn}>
-                    {isLogin ? <AfterLogin /> : <BeforeLogin />}
-                </div>
+                {isLogin ? <AfterLogin /> : <BeforeLogin />}
             </div>
         </header>
     )

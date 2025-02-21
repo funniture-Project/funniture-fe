@@ -43,7 +43,10 @@ function ProductDetailPage() {
                     {/* 상품 요약정보 */}
                     <div className={PDCSS.summaryInfoBox}>
                         <div className={PDCSS.imgBox}>
-                            <img src={require(`../../assets/images/${productInfo?.productImageLink}`)} alt="상품 이미지" />
+                            <img src={productInfo.productImageLink == 'a.jpg'
+                                ? require(`../../assets/images/${productInfo.productImageLink}`)
+                                : productInfo.productImageLink}
+                                alt="상품 사진" />
                         </div>
                         <div className={PDCSS.summaryInfo}>
                             <div className={PDCSS.productNoBox}>
@@ -182,8 +185,7 @@ function ProductDetailPage() {
                     </div>
 
                     {/* 상품 상세 정보 */}
-                    <div>
-
+                    <div className={PDCSS.productDetailInfo} dangerouslySetInnerHTML={{ __html: productInfo.productContent }}>
                     </div>
                 </div>
             ) : <div>상품을 찾을 수 없습니다.</div>}

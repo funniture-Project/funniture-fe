@@ -213,6 +213,7 @@
                         border: none;
                         font-size: 2em;
                         text-align: center;
+                        cursor: pointer;
                     }
                 }
             }
@@ -241,4 +242,25 @@
             }
         }
     }
+
+    .submitBtnBox {
+        width: 100%;
+        display: flex;
+        justify-content: end;
+        align-items: center;
+
+        button {
+            background-color: #7F5539;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            font-family: 'Paperlogy';
+        }
+    }
+}
+
+button {
+    cursor: pointer;
 }

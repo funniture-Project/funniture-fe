@@ -119,7 +119,10 @@ function OwnerProducts() {
                                                 />
                                             </div>
                                             <div className={OwProductCss.imgBox}>
-                                                <img src={require(`../../assets/images/${product.productImageLink}`)} alt="상품 이미지" />
+                                                <img src={product.productImageLink == 'a.jpg'
+                                                    ? require(`../../assets/images/${product.productImageLink}`)
+                                                    : product.productImageLink}
+                                                    alt="상품 사진" />
                                             </div>
                                             <div>{product.productNo}</div>
                                             <div className={OwProductCss.productInfo}>
