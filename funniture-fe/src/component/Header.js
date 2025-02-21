@@ -11,6 +11,7 @@ import { ReactComponent as MyPageImage } from "../assets/images/circle-user.svg"
 function Header({ setSelectCategory }) {
     const { user } = useSelector(state => state.member);
     const [isLogin, setIsLogin] = useState(false);
+    const [userRole, setUserRole] = useState('');
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -23,12 +24,27 @@ function Header({ setSelectCategory }) {
         dispatch(getCategory(refCategory))
     }
 
+    // useEffect(() => {
+    //     setCategoryData(refCategory)
+    //     if (window.localStorage.getItem('accessToken')) {
+    //         setIsLogin(prev => !prev)
+    //     }
+    // }, [])
+    // 초기화: 로그인 상태 및 사용자 역할 확인
     useEffect(() => {
-        setCategoryData(refCategory)
-        if (window.localStorage.getItem('accessToken')) {
-            setIsLogin(prev => !prev)
+        setCategoryData(refCategory);
+
+        const token = window.localStorage.getItem('accessToken');
+        if (token) {
+            const decodedToken = decodeJwt(token);
+            // exp : 토큰의 만료 시간 나타내고 초단위 저장
+            // 현재 시간(Date.now() / 1000)이 토큰의 만료 시간(decodedToken.exp)보다 작은지 확인
+            if (decodedToken && decodedToken.exp > Date.now() / 1000) {
+                setIsLogin(true);
+                setUserRole(decodedToken.memberRole); // 사용자 역할 저장
+            }
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         setCategoryData(refCategory)
@@ -77,17 +93,14 @@ function Header({ setSelectCategory }) {
     }
 
     const moveMyPage = () => {
-        const token = decodeJwt(window.localStorage.getItem('accessToken'));
-        console.log('token', token);
-        console.log(token.memberRole);
-        if (token.memberRole == 'USER') {
-            navigate('/mypage')
-        } else if (token.memberRole == 'OWNER') {
-            navigate('/owner')
-        } else if (token.memberRole == 'ADMIN') {
-            navigate('/admin')
+        if (userRole === 'USER') {
+            navigate('/mypage');
+        } else if (userRole === 'OWNER') {
+            navigate('/owner');
+        } else if (userRole === 'ADMIN') {
+            navigate('ADMIN');
         } else {
-            console.log('얜 뭐냐.');
+            console.error('유저의 권한을 확인할 수 없습니다.')
         }
     }
 
@@ -109,7 +122,8 @@ function Header({ setSelectCategory }) {
                     <input id='headerSearchText' type="text" ref={searchText} placeholder='검색어를 입력하세요' onChange={changeHandler} onKeyUp={enterFunction} />
                     <img src={searchIcon} alt="검색 아이콘" onClick={searchFunction} />
                 </div>
-                <MyPageImage style={{ fill: "#B08968", width: "2.5%" }} onClick={moveMyPage} />
+                {/* 헤더에서 isLogin으로 관리해야 로그인 한 인원만 마이페이지 버튼이 보인다 */}
+                {isLogin && (<MyPageImage style={{ fill: "#B08968", width: "2.5%" }} onClick={moveMyPage} />)}
                 {isLogin ? <AfterLogin /> : <BeforeLogin />}
             </div>
         </header>

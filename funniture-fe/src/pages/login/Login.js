@@ -81,7 +81,7 @@ function Login() {
                             </div>
 
                             <div className="additionalOptions">
-                                <span style={{color:'#898888'}}>비밀번호 찾기</span>
+                                <span onClick={() => navigate('/find')} style={{color:'#898888'}}>비밀번호 찾기</span>
                                 <span onClick={() => navigate('/signup')}>이메일로 회원가입</span>
                             </div>
 

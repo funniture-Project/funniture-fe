@@ -20,10 +20,11 @@
 
 /* 주문번호&주문일 */
 .orderHeader {
-    border: 1px solid #7F5539;
+    border: 2px solid #7F5539;
     width: fit-content;
-    padding: 0.5% 1%;
+    padding: 5px 15px;
     border-radius: 7px;
+    margin: 2px 0px;
 }
 .orderHeader > div {
     display: flex;
@@ -46,7 +47,7 @@
     flex-direction: column;
     width: 100%;
     box-sizing: border-box;
-    border: 1px solid #7F5539;
+    border: 1px solid black;
     border-radius: 7px;
 }
 .productInfo {
@@ -69,7 +70,7 @@
 .productInfo > div:nth-child(2)> div {
     align-items: center;
     background-color: #B08968;
-    box-shadow: 2px 2.5px 5px rgb(110, 110, 110); /* x, y, blur, 색상 */
+    box-shadow: 0px 2.5px 5px rgb(110, 110, 110); /* x, y, blur, 색상 */
     border-radius: 5px;
     padding: 2px 10px;
     color: white;
@@ -112,6 +113,7 @@
 }
 
 .orderInfo > div {
+    margin: 2px 0px;
     width: 100%;
     display: flex;  /* 내부 요소도 flex 적용 */
     flex-direction: row; /* 가로 정렬 */
@@ -125,19 +127,21 @@
     padding: 0.5%;
     border-radius: 20px;
     align-items: center;
+    font-size: 0.9em;
 } 
 
 .orderInfoContainer > div:nth-child(3) > div:nth-child(1) {
     background-color: white;
-    border: 1px solid black;
+    color: rgb(90, 88, 88);
+    border: 1px solid rgb(90, 88, 88);
     margin: 0% 2%;
-    padding: 1px;
+    padding: 1px 8px;
 } 
 
 /* 배송지 */
 .deliveryContainer {
     box-sizing: border-box;
-    border: 1px solid #7F5539;
+    border: 1px solid black;
     border-radius: 7px;
     padding: 1% 2.5%;
 }
@@ -157,13 +161,17 @@
     justify-content: flex-end;
     align-items: center;
     background-color: #B08968;
-    box-shadow: 2px 2.5px 5px rgb(110, 110, 110); /* x, y, blur, 색상 */
+    box-shadow: 0px 2.5px 5px rgb(110, 110, 110); /* x, y, blur, 색상 */
     border-radius: 5px;
     padding: 2px 10px;
     color: white; 
 }
 
-.deliveryContainer > div:nth-child(2),
+.deliveryContainer > div:nth-child(2) {
+    margin: 2px 0px;
+    font-size: 0.8em;
+}
+
 .deliveryContainer > div:nth-child(3) {
     font-size: 0.95em;
 }
@@ -175,25 +183,26 @@
 }
 
 .deliveryContainer > div:nth-child(4) > select {
+    padding: 3px;
     width: 50%;
-    border: 1px solid #7F5539;
+    border: 2px solid #7F5539;
     border-radius: 5px;
 }
 
 .deliveryContainer > div:nth-child(4) > div {
     align-items: center;
     background-color: #B08968;
-    box-shadow: 2px 2.5px 5px rgb(110, 110, 110); /* x, y, blur, 색상 */
+    box-shadow: 0px 2.5px 5px rgb(156, 155, 155); /* x, y, blur, 색상 */
     border-radius: 5px;
     padding: 2px 10px;
     color: white; 
 }
 
 /* 결제정보 */
-.paymentContainer{
+.paymentContainer {
     
     box-sizing: border-box;
-    border: 1px solid #7F5539;
+    border: 1px solid black;
     border-radius: 7px;
     display: flex;
     flex-direction: column;
@@ -225,7 +234,8 @@
     display: flex;
     justify-content: space-between; /* 왼쪽 텍스트 - 오른쪽 금액을 양끝으로 정렬 */
     align-items: center; /* 수직 정렬 */
-    margin-left: 10px;
+    margin: 2px 0px 2px 10px;
+    color: rgb(90, 89, 89);
 }
 
 .paymentContainer > div:nth-child(4) {
@@ -234,18 +244,13 @@
     justify-content: space-between; /* 왼쪽 텍스트 - 오른쪽 금액을 양끝으로 정렬 */
     align-items: center; /* 수직 정렬 */
     font-size: 1.4em;
-    color: rgb(90, 89, 89);
+    
 }
-
-
-
-
-
 
 /* 포인트혜택 */
 .pointContainer {
     box-sizing: border-box;
-    border: 1px solid #7F5539;
+    border: 1px solid black;
     border-radius: 7px;
     display: flex;
     flex-direction: column;
@@ -258,9 +263,19 @@
     align-items: center; /* 수직 정렬 */
     font-size: 1.2em;
     font-weight: 600;
+
+    >div{
+        span{
+            font-size: 0.8em;
+        }
+    }
+}
+
+.pointContainer > div> div:ntn-child(2) > span {
+    font-size: 0.3em;
 }
 
 .pointContainer > div > p {
     color: gray;
-    margin: 0px 0px 15px 15px;
+    margin: 2px 0px 15px 15px;
 }

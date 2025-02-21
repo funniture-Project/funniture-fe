@@ -57,7 +57,7 @@ function DetailOrder() {
                         <div className={DetailOrderCss.orderInfo}>
                             <div>상품명 : {order.productName}</div>
                             <div>대여 기간 : {order.rentalTerm} 개월</div>
-                            <div>대여 가격 : {order.rentalPrice} 원</div>
+                            <div>A/S 횟수 : {order.asNumber} 회</div>
                         </div>
                     </div>
                     <div>
@@ -121,11 +121,11 @@ function DetailOrder() {
                 <div>
                     <div>
                         <div>구매적립</div>
-                        <div>{(order.rentalPrice * 0.1)} 원</div>
+                        <div>{(order.rentalPrice * 0.1)} <span>원</span></div>
                     </div>
                     <div>
                         <div>리뷰적립</div>
-                        <div>최대 150원</div>
+                        <div><span>최대</span> 150 <span>원</span></div>
                     </div>
                     <p> &#40;동일상품의 상품/한달리뷰 적립은 각 1회로 제한&#41; </p>
                 </div>
