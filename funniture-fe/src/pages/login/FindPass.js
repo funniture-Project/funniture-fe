@@ -1,15 +1,11 @@
-import './signup.css';
 import { useNavigate } from 'react-router-dom';
 import mainLogo from '../../assets/images/mainLogo.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
-import MemberAPI, {
-  callSignupAPI,
-  callSendEmailAPI,
-  callCertificationAPI,
-} from '../../apis/MemberAPI';
+import MemberAPI, {} from '../../apis/MemberAPI';
+import { callSendEmailAPI , callChangePassAPI } from '../../apis/MemberAPI';
 
-function Signup() {
+function FindPass() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -17,7 +13,6 @@ function Signup() {
 
   const [form, setForm] = useState({
     email: '',
-    userName: '',
     verificationCode: '',
     password: '',
     confirmPassword: '',
@@ -27,7 +22,7 @@ function Signup() {
   const [emailSent, setEmailSent] = useState(false); // 이메일 발송 여부
   const [isCodeReady, setIsCodeReady] = useState(false); // 인증번호가 정확히 입력되었는지 여부
   const [codeVerified, setCodeVerified] = useState(false); // 인증 성공 여부
-  const [isSignupEnabled, setIsSignupEnabled] = useState(false); // 회원가입 버튼 활성화 여부
+  const [isPasswordEnabled, setIsPasswordEnabled] = useState(false); // 비밀번호 버튼 활성화 여부
 
   // 비밀번호 유효성 검사 함수
   const isPasswordValid = (password) => {
@@ -59,17 +54,16 @@ function Signup() {
     }
   };
 
-  // 회원가입 버튼 활성화 여부 확인 함수
+  // 비밀번호 변경 버튼 활성화 여부 확인 함수
   const checkSignupEnabled = () => {
-    const { userName, password, confirmPassword } = form;
+    const { password, confirmPassword } = form;
     if (
-      userName.trim() !== '' && // 이름 입력 여부
       isPasswordValid(password) && // 비밀번호 유효성 검사
       isPasswordMatch(password, confirmPassword) // 비밀번호와 확인 일치 여부
     ) {
-      setIsSignupEnabled(true);
+      setIsPasswordEnabled(true);
     } else {
-      setIsSignupEnabled(false);
+      setIsPasswordEnabled(false);
     }
   };
 
@@ -97,9 +91,9 @@ function Signup() {
     }
   };
 
-  // 회원가입 핸들러
-  const signUpHandler = () => {
-    dispatch(callSignupAPI({ form })).then(() => navigate('/login'));
+  // 비밀번호 변경 핸들러
+  const changePassHandler = () => {
+    dispatch(callChangePassAPI({ form })).then(() => navigate('/login'));
   };
 
   // 조건부 렌더링: 인증하기 버튼
@@ -123,12 +117,6 @@ function Signup() {
     renderUserInputs = (
       <div className="loginInput">
         <input
-          type="text"
-          name="userName"
-          onChange={onChangeHandler}
-          placeholder="이름을 입력해 주세요."
-        />
-        <input
           type="password"
           name="password"
           onChange={onChangeHandler}
@@ -145,15 +133,15 @@ function Signup() {
   }
 
   // 조건부 렌더링: 회원가입 버튼
-  let renderSignupButton;
+  let renderModifyPasswordButton;
   if (codeVerified) {
-    renderSignupButton = (
+    renderModifyPasswordButton = (
       <button 
         className="signupBtn" 
-        onClick={signUpHandler} 
-        disabled={!isSignupEnabled}
+        onClick={changePassHandler} 
+        disabled={!isPasswordEnabled}
       >
-        회원가입
+        비밀번호 변경
       </button>
     );
   }
@@ -166,7 +154,7 @@ function Signup() {
               <img src={mainLogo} alt="메인 로고" onClick={() => navigate('/')} />
             </div>
             <div className="loginForm">
-              <label style={{ fontWeight: 'bold' }}>회원가입</label>
+              <label style={{ fontWeight: 'bold' }}>비밀번호 찾기</label>
 
               {/* 이메일 입력 */}
               <div className="loginInput">
@@ -197,8 +185,8 @@ function Signup() {
               {/* 이름 및 비밀번호 입력 */}
               {renderUserInputs}
 
-              {/* 회원가입 버튼 */}
-              {renderSignupButton}
+              {/* 비밀번호 변경 버튼 */}
+              {renderModifyPasswordButton}
             </div>
             <div style={{marginLeft:'450px', marginTop:'270px'}} onClick={() => {navigate('/login')}}>돌아 가기</div>
           </div>
@@ -207,4 +195,4 @@ function Signup() {
    );
 }
 
-export default Signup;
+export default FindPass;

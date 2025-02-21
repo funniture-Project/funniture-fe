@@ -105,6 +105,23 @@ export const callCertificationAPI = ({ email, verification }) => {
     };
 };
 
+// 로그인 페이지에서 비밀번호 변경 로직
+
+export const callChangePassAPI = ({form}) => {
+    const requestURL = `http://localhost:8080/api/v1/member/findPass`
+
+    return async (dispatch,getState) => {
+        console.log('비빌번호 변경 요청 서버에 잘 갔나.');
+        const result = api.post(requestURL, {
+            email : form.email,
+            password : form.password
+        })
+        console.log('서버에 잘 다녀왔나 result : ' , result);
+        alert('비밀번호 변경이 완료되었습니다.');
+    }
+
+}
+
 
 // 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.
 // export const callSignupAPI =
