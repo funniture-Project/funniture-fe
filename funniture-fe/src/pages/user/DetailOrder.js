@@ -57,7 +57,7 @@ function DetailOrder() {
                         <div className={DetailOrderCss.orderInfo}>
                             <div>상품명 : {order.productName}</div>
                             <div>대여 기간 : {order.rentalTerm} 개월</div>
-                            <div>대여 가격 : {order.rentalPrice} 원</div>
+                            <div>A/S 횟수 : {order.asNumber} 회</div>
                         </div>
                     </div>
                     <div>
