@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProductDetailInfo } from "../../apis/ProductAPI";
 import PDCSS from './productDetail.module.css'
+import { useNavigate } from "react-router-dom";
 
 function ProductDetailPage() {
     const { id } = useParams();
@@ -11,6 +12,30 @@ function ProductDetailPage() {
     const [selectTerm, setSelectTerm] = useState()
 
     const [productInfo, setProductInfo] = useState();
+
+    // 렌탈 갯수
+    const [rentalNum, setRentalNum] = useState(1); 
+
+    // 예약등록페이지로 데이터 보내기
+    const navigate = useNavigate();
+
+    const movePage = () => {
+        console.log("🚀 productInfo:", productInfo); // 여기에 추가
+        console.log("🚀 selectRentalOption:", selectRentalOption);
+    
+        navigate('/rental', {
+            state: {
+                selectRentalOption,
+                productInfo,
+                rentalNum
+            },
+        });
+    };
+
+    const handleChange = (e) => {
+        setRentalNum(e.target.value);
+    }
+    
 
 
     useEffect(() => {
@@ -106,14 +131,14 @@ function ProductDetailPage() {
                                 <div>
                                     <div>갯수</div>
                                     <div>
-                                        <input type="number" min={1} max={10} defaultValue={1} />
+                                        <input type="number" min={1} max={10} defaultValue={1} value={rentalNum} onChange={handleChange}  />
                                         <span>개</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div>
-                                <button>예약하기</button>
+                                <button onClick={movePage}>예약하기</button>
                             </div>
                         </div>
                     </div>
