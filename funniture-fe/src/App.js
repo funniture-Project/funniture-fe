@@ -25,6 +25,7 @@ import OwnerRegister from './pages/owner/OwnerRegister';
 import ProductDetailPage from './pages/common/ProductDetailPage';
 import DetailOrder from './pages/user/DetailOrder';
 import OrdersReturn from './pages/user/OrdersReturn';
+import FindPass from './pages/login/FindPass';
 
 function App() {
   const token = decodeJwt(window.localStorage.getItem("accessToken"));
@@ -72,6 +73,7 @@ function App() {
 
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<Signup />} />
+      <Route path='/find' element={<FindPass />} />
 
       <Route path='/admin' element={<AdminLayout />}>
 
