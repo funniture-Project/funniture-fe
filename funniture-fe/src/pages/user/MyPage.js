@@ -101,7 +101,7 @@ function MyPage() {
                         <div 
                             onClick={() => handleTabClick('info')}
                             className={`tab ${activeTab === 'info' ? 'active' : ''}`}>
-                            <Link to={`/mypage`} className='link'>회원정보수정</Link>
+                            <Link to={`/mypage/edit`} className='link'>회원정보수정</Link>
                         </div>
                         <div 
                             onClick={() => handleTabClick('address')}
