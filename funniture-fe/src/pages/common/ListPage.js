@@ -84,7 +84,10 @@ function ListPage({ selectCategory, selectCompany }) {
                         {productList.map(product => (
                             <div className="productItem" data-product-no={product.productNo} onClick={() => navigate(`/${product.productNo}`)}>
                                 <div>
-                                    <img src={require(`../../assets/images/${product.productImageLink}`)} alt="상품 사진" />
+                                    <img src={product.productImageLink == 'a.jpg'
+                                        ? require(`../../assets/images/${product.productImageLink}`)
+                                        : product.productImageLink}
+                                        alt="상품 사진" />
                                     <div>{product.storeName}</div>
                                     <div>{product.productName}</div>
                                     <div>

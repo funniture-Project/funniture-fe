@@ -141,6 +141,26 @@ export async function getProductDetailInfo(productNo) {
     return response
 }
 
+// 상품 등록하기
+export async function registerProduct(formData, rentalOptions, productImage) {
+    console.log("API formData : ", formData)
+    console.log("API rentalOptions : ", rentalOptions)
+    console.log("API productImage : ", productImage)
+
+    const url = "/product/register"
+
+    const data = new FormData();
+    data.append("formData", new Blob([JSON.stringify(formData)], { type: "application/json" })); // formData를 JSON 문자열로 추가
+    data.append("rentalOptions", new Blob([JSON.stringify(rentalOptions)], { type: "application/json" })); // rentalOptions를 JSON 문자열로 추가
+    data.append("productImage", productImage);
+
+    await api.post(url, data, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+}
+
 // 공용
 const getData = async (url, query) => {
     let response

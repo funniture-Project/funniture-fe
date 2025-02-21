@@ -71,16 +71,17 @@ function Header({ setSelectCategory }) {
 
     function BeforeLogin() { // | 는 시각적으로 버튼 구분
         return (
-            <div>
-                <div onClick={() => navigate('/login')}>로그인</div>
+            <div class={headerCss.loginBtn} onClick={() => navigate('/login')}>
+                <div>로그인</div>
             </div>
         );
     }
 
     function AfterLogin() {
+
         return (
-            <div>
-                <div onClick={onClickLogoutHandler}>로그아웃</div>
+            <div class={headerCss.loginBtn} onClick={onClickLogoutHandler}>
+                <div>로그아웃</div>
             </div>
         );
     }
@@ -123,9 +124,7 @@ function Header({ setSelectCategory }) {
                 </div>
                 {/* 헤더에서 isLogin으로 관리해야 로그인 한 인원만 마이페이지 버튼이 보인다 */}
                 {isLogin && (<MyPageImage style={{ fill: "#B08968", width: "2.5%" }} onClick={moveMyPage} />)}
-                <div className={headerCss.loginBtn}>
-                    {isLogin ? <AfterLogin /> : <BeforeLogin />}
-                </div>
+                {isLogin ? <AfterLogin /> : <BeforeLogin />}
             </div>
         </header>
     )
