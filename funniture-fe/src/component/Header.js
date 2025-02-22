@@ -24,12 +24,6 @@ function Header({ setSelectCategory }) {
         dispatch(getCategory(refCategory))
     }
 
-    // useEffect(() => {
-    //     setCategoryData(refCategory)
-    //     if (window.localStorage.getItem('accessToken')) {
-    //         setIsLogin(prev => !prev)
-    //     }
-    // }, [])
     // 초기화: 로그인 상태 및 사용자 역할 확인
     useEffect(() => {
         setCategoryData(refCategory);
