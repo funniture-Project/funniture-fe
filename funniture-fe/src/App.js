@@ -27,6 +27,8 @@ import DetailOrder from './pages/user/DetailOrder';
 import OrdersReturn from './pages/user/OrdersReturn';
 import RentalRegist from './pages/user/RentalRegist';
 import FindPass from './pages/login/FindPass';
+import UserConform from './pages/user/UserConform';
+import EditsInfo from './pages/user/EditsInfo';
 
 
 function App() {
@@ -57,6 +59,8 @@ function App() {
           <Route index element={<Orders />} />
           <Route path='orders/:id' element={<DetailOrder />} />
           <Route path='returns' element={<OrdersReturn />} />
+          <Route path='edit' element={<UserConform />} />
+          <Route path='edits' element={<EditsInfo />} />
         </Route>
 
         <Route path='/rental' element={<RentalRegist />} />

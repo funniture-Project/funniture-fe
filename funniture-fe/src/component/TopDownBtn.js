@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import btnsCss from './topdownbtn.module.css'
-import OneBtnModal from './OneBtnModal';
+import BtnModal from './BtnModal';
+import TestContent from './TestContent';
 
 function TopDownBtn() {
 
     const [btnShow, setBtnShow] = useState(false)
-    const [showOneBtnModal, setShowOneBtnModal] = useState(false)
+    const [showBtnModal, setShowBtnModal] = useState(false)
 
     useEffect(() => {
 
@@ -33,14 +34,45 @@ function TopDownBtn() {
                 <img src={require('../assets/icon/down-arrow.svg').default} alt="down 스크롤 버튼" />
             </div>
             <div>
-                <img src={require('../assets/images/logo-image-white.png')} alt="채팅 연결 버튼" onClick={() => { setShowOneBtnModal(!showOneBtnModal) }} />
+                <img src={require('../assets/images/logo-image-white.png')} alt="채팅 연결 버튼" onClick={() => { setShowBtnModal(!showBtnModal) }} />
             </div>
 
-            <OneBtnModal
-                showOneBtnModal={showOneBtnModal}
-                setShowOneBtnModal={setShowOneBtnModal}
+            {/* <BtnModal
+                showBtnModal={showBtnModal}
+                setShowBtnModal={setShowBtnModal}
+                // btnText="확인"
+                modalContext="로그인 후 이용 가능합니다."
+                modalSize="lg"
+                childContent={<TestContent />}
+            /> */}
+
+            {/* <BtnModal
+                showBtnModal={showBtnModal}
+                setShowBtnModal={setShowBtnModal}
                 btnText="확인"
+                modalContext="로그인 후 이용 가능합니다."
+                modalSize="sm"
+            /> */}
+
+            {/* <BtnModal
+                showBtnModal={showBtnModal}
+                setShowBtnModal={setShowBtnModal}
+                btnText="확인"
+                secondBtnText="취소"
+                modalContext="로그인 후 이용 가능합니다."
+                modalSize="md"
+            /> */}
+
+            <BtnModal
+                showBtnModal={showBtnModal}
+                setShowBtnModal={setShowBtnModal}
+                btnText="확인"
+                secondBtnText="취소"
+                modalContext="로그인 후 이용 가능합니다."
+                modalSize="xl"
+                childContent={<TestContent />}
             />
+
         </ div>
     )
 

@@ -7,13 +7,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import headerCss from './headerfooter.module.css'
 import decodeJwt from '../utils/tokenUtils';
 import { ReactComponent as MyPageImage } from "../assets/images/circle-user.svg"
-import OneBtnModal from './OneBtnModal';
 
 function Header({ setSelectCategory }) {
     const { user } = useSelector(state => state.member);
     const [isLogin, setIsLogin] = useState(false);
     const [userRole, setUserRole] = useState('');
-    const [showOneBtnModal, setShowOneBtnModal] = useState(false)
 
     const navigate = useNavigate();
     const dispatch = useDispatch();

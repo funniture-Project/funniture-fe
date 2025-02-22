@@ -20,7 +20,7 @@
     justify-content: flex-end;
 }
 
-.rentalPeriodSelector > div {
+.rentalPeriodSelector>div {
     border-radius: 20px;
     padding: 0.5% 1.8%;
     margin-left: 1%;
@@ -31,8 +31,9 @@
 }
 
 /* 선택된 기간  */
-.rentalPeriodSelector > div.selected {
-    background-color: #7F5539; /* 선택된 항목 강조 색상 */
+.rentalPeriodSelector>div.selected {
+    background-color: #7F5539;
+    /* 선택된 항목 강조 색상 */
     font-weight: bold;
 }
 
@@ -44,7 +45,7 @@
     flex-direction: column;
 }
 
-.orderListItem{
+.orderListItem {
     border: solid 2px #B08968;
     width: 100%;
     height: 170px;
@@ -94,14 +95,14 @@
     margin-left: 20px;
 }
 
-.ordersInfo > div {
+.ordersInfo>div {
     display: flex;
     flex: 1;
     align-items: center;
-    
+
 }
 
-.ordersInfo > div:first-child {
+.ordersInfo>div:first-child {
     background-color: rgb(223, 219, 219);
     width: fit-content;
     border-radius: 5px;
@@ -109,12 +110,12 @@
     padding: 0.5% 1%;
 }
 
-.ordersInfo > div:nth-child(2) {
+.ordersInfo>div:nth-child(2) {
     font-size: 0.8em;
     color: gray;
 }
 
-.ordersInfo > div:nth-child(4) {
+.ordersInfo>div:nth-child(4) {
     font-weight: 600;
 }
 
@@ -132,11 +133,11 @@
     color: white;
 }
 
-.inquiryButton > div {
+.inquiryButton>div {
     margin-top: 55%;
     margin-left: 25%;
     display: flex;
-    width: 50%;
+    width: 100%;
     height: 20%;
     padding: 0% 10%;
     align-items: center;
@@ -145,9 +146,3 @@
     font-size: 0.8em;
     background-color: #B08968;
 }
-
-
-
-
-
-

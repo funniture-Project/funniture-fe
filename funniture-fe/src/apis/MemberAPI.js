@@ -69,7 +69,7 @@ export const callLoginAPI = ({ form }) => {
 export const callGetMemberAPI = ({ memberId }) => {
     return async (dispatch) => {
         const result = await api.get(`/member/${memberId}`)
-        console.log('로그인한 회원 정보 resposne : ', result);
+        console.log('callGetMemberAPI 로그인한 회원 정보 resposne : ', result);
 
         dispatch({ type: GET_MEMBER, payload: result.data });
     };
@@ -120,6 +120,22 @@ export const callChangePassAPI = ({ form }) => {
         alert('비밀번호 변경이 완료되었습니다.');
     }
 
+}
+
+// 개인 정보 변경 전, 비밀번호 검증 로직
+export const callConfirmPassword = (memberId, password) => {
+    const requestURL = `http://localhost:8080/api/v1/member/conform`
+
+    return async (dispatch, getState) => {
+        console.log('서버에 보낼 memberId :', memberId);
+        console.log('서버에 보낼 password :', password);
+        const result = api.post({
+            memberId: memberId,
+            password: password
+        });
+        console.log('개인정보 변경 전 비번 확인 : ', result);
+
+    }
 }
 
 

@@ -6,7 +6,14 @@ const initialState = {
     user: {
         memberId: '',
         memberRole: '',
-        email: ''
+        email: '',
+        userName:'',
+        phoneNumber:'',
+        signupDate:'',
+        isConsulting: '',
+        hasImage: '',
+        imageId: '',
+        imageLink: ''
     },
     verificationCode: ''
 };
@@ -37,7 +44,14 @@ const memberReducer = handleActions({
             user: {
                 memberId: payload.results.result.memberId,
                 memberRole: payload.results.result.memberRole,
-                email: payload.results.result.email
+                email: payload.results.result.email,
+                userName: payload.results.result.username,
+                phoneNumber: payload.results.result.phoneNumber,
+                signupDate: payload.results.result.signupDate,
+                isConsulting: payload.results.result.isConsulting,
+                hasImage: payload.results.result.hasImage,
+                imageId: payload.results.result.imageId,
+                imageLink: payload.results.result.imageLink
             }
         }
     ),
