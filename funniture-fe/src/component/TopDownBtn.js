@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import btnsCss from './topdownbtn.module.css'
+import OneBtnModal from './OneBtnModal';
 
 function TopDownBtn() {
 
     const [btnShow, setBtnShow] = useState(false)
+    const [showOneBtnModal, setShowOneBtnModal] = useState(false)
 
     useEffect(() => {
 
@@ -31,8 +33,14 @@ function TopDownBtn() {
                 <img src={require('../assets/icon/down-arrow.svg').default} alt="down 스크롤 버튼" />
             </div>
             <div>
-                <img src={require('../assets/images/logo-image-white.png')} alt="채팅 연결 버튼" />
+                <img src={require('../assets/images/logo-image-white.png')} alt="채팅 연결 버튼" onClick={() => { setShowOneBtnModal(!showOneBtnModal) }} />
             </div>
+
+            <OneBtnModal
+                showOneBtnModal={showOneBtnModal}
+                setShowOneBtnModal={setShowOneBtnModal}
+                btnText="확인"
+            />
         </ div>
     )
 

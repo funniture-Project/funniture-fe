@@ -7,11 +7,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import headerCss from './headerfooter.module.css'
 import decodeJwt from '../utils/tokenUtils';
 import { ReactComponent as MyPageImage } from "../assets/images/circle-user.svg"
+import OneBtnModal from './OneBtnModal';
 
 function Header({ setSelectCategory }) {
     const { user } = useSelector(state => state.member);
     const [isLogin, setIsLogin] = useState(false);
     const [userRole, setUserRole] = useState('');
+    const [showOneBtnModal, setShowOneBtnModal] = useState(false)
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -24,12 +26,6 @@ function Header({ setSelectCategory }) {
         dispatch(getCategory(refCategory))
     }
 
-    // useEffect(() => {
-    //     setCategoryData(refCategory)
-    //     if (window.localStorage.getItem('accessToken')) {
-    //         setIsLogin(prev => !prev)
-    //     }
-    // }, [])
     // 초기화: 로그인 상태 및 사용자 역할 확인
     useEffect(() => {
         setCategoryData(refCategory);

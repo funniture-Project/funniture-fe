@@ -8,7 +8,7 @@ const initialState = {
         memberRole: '',
         email: ''
     },
-    verificationCode:''
+    verificationCode: ''
 };
 
 // 액션 정의
@@ -26,7 +26,7 @@ const actions = createActions({
 
 const memberReducer = handleActions({
     [POST_REGISTER]: (state, { payload }) => ({
-        user : {email : payload.results.result.email}
+        user: { email: payload.results.result.email }
     }),
     [POST_LOGIN]: (state, { payload }) => (
         { token: payload.token }

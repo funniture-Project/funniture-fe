@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { POST_REGISTER , POST_LOGIN , GET_MEMBER, GET_EMAIL} from "../redux/modules/MemberModule";
+import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL } from "../redux/modules/MemberModule";
 import api from "./Apis";
 
 // 회원 가입
@@ -69,22 +69,22 @@ export const callLoginAPI = ({ form }) => {
 export const callGetMemberAPI = ({ memberId }) => {
     return async (dispatch) => {
         const result = await api.get(`/member/${memberId}`)
-        //  console.log('로그인한 회원 정보 resposne : ', result);
+        console.log('로그인한 회원 정보 resposne : ', result);
 
         dispatch({ type: GET_MEMBER, payload: result.data });
     };
 };
 
- // 회원 가입 시, 이메일 인증번호 보내는 구문
-export const callSendEmailAPI = ({form}) => {
+// 회원 가입 시, 이메일 인증번호 보내는 구문
+export const callSendEmailAPI = ({ form }) => {
     return async (dispatch) => {
-        const result = await api.post(`/email/${form.email}`,{
-            email : form.email
+        const result = await api.post(`/email/${form.email}`, {
+            email: form.email
         });
         alert('인증 번호 발송이 완료되었습니다.');
-        console.log('인증번호가 서버에 잘 다녀 왔나 result : ' , result);
+        console.log('인증번호가 서버에 잘 다녀 왔나 result : ', result);
 
-        dispatch({type: GET_EMAIL, payload: result.data});
+        dispatch({ type: GET_EMAIL, payload: result.data });
     };
 };
 
@@ -107,16 +107,16 @@ export const callCertificationAPI = ({ email, verification }) => {
 
 // 로그인 페이지에서 비밀번호 변경 로직
 
-export const callChangePassAPI = ({form}) => {
+export const callChangePassAPI = ({ form }) => {
     const requestURL = `http://localhost:8080/api/v1/member/findPass`
 
-    return async (dispatch,getState) => {
+    return async (dispatch, getState) => {
         console.log('비빌번호 변경 요청 서버에 잘 갔나.');
         const result = api.post(requestURL, {
-            email : form.email,
-            password : form.password
+            email: form.email,
+            password: form.password
         })
-        console.log('서버에 잘 다녀왔나 result : ' , result);
+        console.log('서버에 잘 다녀왔나 result : ', result);
         alert('비밀번호 변경이 완료되었습니다.');
     }
 
