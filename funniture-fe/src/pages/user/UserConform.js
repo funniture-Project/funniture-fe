@@ -1,5 +1,5 @@
 import OrdersCss from './orders.module.css';
-import './editInfo.css';
+import './userInfo.css';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import decodeJwt from '../../utils/tokenUtils';
@@ -37,7 +37,7 @@ function UserConform () {
         if (isAuthenticated) {
             // 인증 성공 시 페이지 이동
             alert('인증 성공!');
-            navigate("/edits");
+            navigate("/mypage/edits");
         } else {
             // 인증 실패 시 경고 메시지 표시
             alert('비밀번호를 확인해 주세요.');
