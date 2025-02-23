@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL } from "../redux/modules/MemberModule";
 import api from "./Apis";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 // 회원 가입
 export const callSignupAPI = ({ form }) => {
@@ -34,37 +35,47 @@ export const callSignupAPI = ({ form }) => {
 
 // 로그인 할 때 서버에 데이터를 보내고, 토큰 정보를 리턴 받음
 export const callLoginAPI = ({ form }) => {
-    const loginURL = `http://localhost:8080/api/v1/auth/login`
+    const loginURL = `http://localhost:8080/api/v1/auth/login`;
     console.log('form', form);
-    return async (dispatch, getState) => {
-        const result = await fetch(loginURL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: '*/*',
-                'Access-Control-Allow-Origin': '*', // 모든 도멘인에서 접근할 수 있음을 의미 (특정도메인을 넣고싶으면 * 대신 http://test.com)
-            },
-            body: JSON.stringify({
-                email: form.email,
-                password: form.password
-            }),
-        }).then(res => res.json());
 
-        console.log('로그인 시도 후 반환 받은 데이터 result : ', result);
-        if (result.status == 200) {
-            console.log('로그인 성공 result.status : ', result.status);
-            window.localStorage.setItem('accessToken', result.userInfo.accessToken);
-            dispatch({ type: POST_LOGIN, payload: result });
-            alert(result.message);
-            return true;
-        } else {
-            console.log('로그인 실패 : ', result.status);
-            console.log('result.failType : ', result.failType);
-            alert(result.failType);
-            return false;
+    return async (dispatch, getState) => {
+        try {
+            const result = await fetch(loginURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: '*/*',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                body: JSON.stringify({
+                    email: form.email,
+                    password: form.password,
+                }),
+            }).then((res) => res.json());
+
+            console.log('로그인 시도 후 반환 받은 데이터 result : ', result);
+
+            if (result.status === 200) {
+                console.log('로그인 성공 result.status : ', result.status);
+                window.localStorage.setItem('accessToken', result.userInfo.accessToken);
+                dispatch({ type: POST_LOGIN, payload: result });
+
+                // 로그인 성공 시 true 반환
+                return { success: true, message: result.message };
+            } else {
+                console.log('로그인 실패 : ', result.status);
+                console.log('result.failType : ', result.failType);
+
+                // 로그인 실패 시 false 반환
+                return { success: false, message: result.failType };
+            }
+        } catch (error) {
+            console.error('로그인 요청 중 오류 발생:', error);
+            return { success: false, message: '네트워크 오류' };
         }
-    }
-}
+    };
+};
+
 
 // 로그인 한 회원의 대한 정보를 불러오는 구문
 export const callGetMemberAPI = ({ memberId }) => {

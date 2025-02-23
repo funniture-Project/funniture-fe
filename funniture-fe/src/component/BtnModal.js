@@ -3,10 +3,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ModalCss from './BtnModal.module.css'
 
 function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
-    modalContext, modalTitle, modalSize, childContent }) {
+    modalContext, modalTitle, modalSize, childContent , onClose }) {
 
-    const handleClose = () => setShowBtnModal(false);
+    // const handleClose = () => setShowBtnModal(false);
 
+    // 로그인 시 모달창 띄우려고 onClose 추가
+    const handleClose = () => {
+        setShowBtnModal(false); // 모달 닫기
+        if (onClose) {
+            onClose(); // onClose 콜백 호출
+        }
+    };
     return (
         <>
             <Modal show={showBtnModal}
