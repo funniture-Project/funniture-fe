@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL } from "../redux/modules/MemberModule";
 import api from "./Apis";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // 회원 가입
 export const callSignupAPI = ({ form }) => {
@@ -106,7 +107,6 @@ export const callCertificationAPI = ({ email, verification }) => {
 };
 
 // 로그인 페이지에서 비밀번호 변경 로직
-
 export const callChangePassAPI = ({ form }) => {
     const requestURL = `http://localhost:8080/api/v1/member/findPass`
 
@@ -122,21 +122,39 @@ export const callChangePassAPI = ({ form }) => {
 
 }
 
-// 개인 정보 변경 전, 비밀번호 검증 로직
+// 사용자 개인 정보 변경 전, 비밀번호 검증 로직
 export const callConfirmPassword = (memberId, password) => {
-    const requestURL = `http://localhost:8080/api/v1/member/conform`
+    const requestURL = `http://localhost:8080/api/v1/member/conform`;
 
     return async (dispatch, getState) => {
-        console.log('서버에 보낼 memberId :', memberId);
-        console.log('서버에 보낼 password :', password);
-        const result = api.post({
-            memberId: memberId,
-            password: password
-        });
-        console.log('개인정보 변경 전 비번 확인 : ', result);
+        console.log('서버에 보낼 memberId:', memberId);
+        console.log('서버에 보낼 password:', password);
 
-    }
-}
+        try {
+            const response = await api.post(requestURL, { memberId, password });
+
+            // 응답 데이터 확인
+            console.log('서버 응답:', response.data);
+
+            // 응답 데이터의 status 값을 기반으로 성공/실패 판단
+            if (response.data.httpStatusCode === 201) {
+                console.log('인증 성공');
+                return true; // 인증 성공
+            } else if (response.data.httpStatusCode === 404) {
+                console.log('인증 실패');
+                return false; // 인증 실패
+            }
+        } catch (error) {
+            // 네트워크 오류 또는 기타 예외 처리
+            console.error('비밀번호 확인 요청 중 오류 발생:', error);
+            alert('서버와 통신 중 문제가 발생했습니다. 다시 시도해주세요.');
+            return false;
+        }
+    };
+};
+
+
+
 
 
 // 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.

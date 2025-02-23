@@ -25,16 +25,31 @@ function UserConform () {
         [e.target.name] : e.target.value});
     }
 
-    // 근데 비밀번호가 맞는 사람만 들어갈 수 있어야 함.
-    const onClickHandler = () => {
+    const onClickHandler = async () => {
         const memberId = member.user.memberId;
-        console.log('스토어에 꺼낸 memberId : ', memberId);
-        console.log('password : ', password);
-        // 아이디와 입력한 비밀번호를 보내야겠지?
-        dispatch(callConfirmPassword(memberId, password));
-
-        navigate("/edits");
-    }
+        const enteredPassword = password.password;
+    
+        console.log('enteredPassword : ', enteredPassword);
+    
+        // 비밀번호 검증 API 호출
+        const isAuthenticated = await dispatch(callConfirmPassword(memberId, enteredPassword));
+    
+        if (isAuthenticated) {
+            // 인증 성공 시 페이지 이동
+            alert('인증 성공!');
+            navigate("/edits");
+        } else {
+            // 인증 실패 시 경고 메시지 표시
+            alert('비밀번호를 확인해 주세요.');
+        }
+    };
+    
+    const onKeyDownHandler = (e) => {
+        if (e.key === 'Enter') {
+            onClickHandler(); // 엔터 키가 눌리면 버튼 클릭 핸들러 호출
+        }
+    };
+    
 
     return (
         <>
@@ -55,6 +70,7 @@ function UserConform () {
                         name="password"
                         placeholder="비밀번호 입력"
                         onChange={onChangeHandler}
+                        onKeyDown={onKeyDownHandler}
                         />
                         <button onClick={onClickHandler}>회원 확인</button>
                     </div>
