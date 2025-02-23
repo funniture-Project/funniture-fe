@@ -62,6 +62,12 @@ function Login() {
         }
     };
 
+    const onKeyDownHandler = (e) => {
+        if (e.key === 'Enter') {
+            onClickLoginHandler(); // 엔터 키가 눌리면 버튼 클릭 핸들러 호출
+        }
+    };
+    
     return (
         <>
             <div>
@@ -85,12 +91,13 @@ function Login() {
                                     placeholder='비밀번호 입력'
                                     name="password"
                                     onChange={onChangeHandler}
+                                    onKeyDown={onKeyDownHandler}
                                 />
                             </div>
 
                             <div>
                                 <button 
-                                    onClick={onClickLoginHandler} 
+                                    onClick={onClickLoginHandler}
                                 >
                                     로그인
                                 </button>

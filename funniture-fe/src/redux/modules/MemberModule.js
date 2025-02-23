@@ -15,6 +15,7 @@ const initialState = {
         imageId: '',
         imageLink: ''
     },
+    address : '',
     verificationCode: ''
 };
 
@@ -23,12 +24,14 @@ export const POST_REGISTER = 'member/POST_REGISTER';
 export const POST_LOGIN = 'member/POST_LOGIN';
 export const GET_MEMBER = 'member/GET_MEMBER';
 export const GET_EMAIL = 'member/GET_EMAIL';
+export const GET_ADDRESS = 'member/GET_ADDRESS';
 
 const actions = createActions({
     [POST_REGISTER]: () => { },
     [POST_LOGIN]: () => { },
     [GET_MEMBER]: () => { },
-    [GET_EMAIL]: () => { }
+    [GET_EMAIL]: () => { },
+    [GET_ADDRESS]: () => { }
 });
 
 const memberReducer = handleActions({
@@ -58,6 +61,10 @@ const memberReducer = handleActions({
     [GET_EMAIL]: (state, { payload }) => ({
         ...state,
         verificationCode: payload.results.result
+    }),
+    [GET_ADDRESS]: (state, { payload }) => ({
+        ...state,
+        address: payload.results.result.address // 서버에서 받은 주소 데이터를 state에 저장
     })
 }, initialState);
 

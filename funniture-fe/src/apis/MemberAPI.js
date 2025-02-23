@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL } from "../redux/modules/MemberModule";
+import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL, GET_ADDRESS } from "../redux/modules/MemberModule";
 import api from "./Apis";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -148,7 +148,7 @@ export const callConfirmPassword = (memberId, password) => {
             console.log('서버 응답:', response.data);
 
             // 응답 데이터의 status 값을 기반으로 성공/실패 판단
-            if (response.data.httpStatusCode === 201) {
+            if (response.data.httpStatusCode === 200) {
                 console.log('인증 성공');
                 return true; // 인증 성공
             } else if (response.data.httpStatusCode === 404) {
@@ -164,9 +164,65 @@ export const callConfirmPassword = (memberId, password) => {
     };
 };
 
+// 전화번호 바꾸는 로직
+export const callChangePhoneAPI = ({memberId,phoneNumber}) => {
+    const requestURL = `http://localhost:8080/api/v1/member/modify/phone`;
 
+    return async (dispatch, getState) => {
+        const response = await api.put(requestURL, {
+            memberId : memberId,
+            phoneNumber : phoneNumber});
 
+        console.log('서버에 잘 다녀왔나 response : ' , response);
 
+        if (response.data.httpStatusCode === 201) {
+            console.log('전화번호 변경 성공');
+            alert('전화번호가 변경되었습니다.')
+        } else if (response.data.httpStatusCode === 404) {
+            console.log('전화번호 변경 실패');
+            alert('전화번호를 변경하지 못하였습니다.')
+        }
+    };
+};
+
+export const callChangePasswordAPI = ({memberId , password}) => {
+    const requestURL = `http://localhost:8080/api/v1/member/modify/password`;
+
+    return async (dispatch, getState) => {
+        const response = await api.put(requestURL, {
+            memberId : memberId,
+            password : password
+        })
+        console.log('마이페이지 비번 변경 서버 잘 다녀왔나 : ', response)
+
+        if (response.data.httpStatusCode === 201) {
+            console.log('비밀번호 변경 성공');
+            return;
+        } else if (response.data.httpStatusCode === 404) {
+            console.log('전화번호 변경 실패');
+            return;
+        }
+    }
+}
+
+// 얘 왜 안 될까????????????? 프론트, 서버 다 안 찍힌다. 
+export const callBasicAddressAPI = ({memberId}) => {
+    const requestURL = `http://localhost:8080/api/v1/deliveryaddress?memberId=${memberId}`;
+    return async (dispatch, getState) => {
+        const response = await api.get(requestURL)
+        console.log('기본 배송지 주소 조회, 서버 잘 다녀왔나 : ', response)
+
+        if (response.data.status === 200) {
+            console.log('배송지 내역 조회 성공');
+            dispatch({ type: GET_ADDRESS, payload: response.data.address });
+        } else if (response.data.status === 204) {
+            console.log('배송지 내역 없음');
+            dispatch({ type: GET_ADDRESS, payload: '' });
+        } else {
+            console.log('토큰 유효하지 않음');
+        }
+    }
+}
 
 // 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.
 // export const callSignupAPI =
