@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import decodeJwt from '../../utils/tokenUtils';
 import { callLoginAPI } from '../../apis/MemberAPI';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { callChangePhoneAPI, callChangePasswordAPI, callChangeAddressAPI } from '../../apis/MemberAPI';
+import { callChangePhoneAPI, callChangePasswordAPI, callChangeAddressAPI, callChangeImageAPI } from '../../apis/MemberAPI';
+import basicImage from '../../assets/images/Adobe Express - file.png'
 
 function EditsInfo () {
 
@@ -99,20 +100,28 @@ function EditsInfo () {
         navigate('/login');
     };
     
+    const imageOnClickHandler = () => {
+        dispatch(callChangeImageAPI({
+            memberId: member.user.memberId,
+        }));
+    }
 
     return (
         <>
             <div className={OrdersCss.ordersContainer}>
                 <div className={OrdersCss.orderPageTitle}>회원정보 관리</div>    
                 <div className="editMypageInfo">
-                    <div>
+                    <div className='basicImage'>
                         <span>프로필 사진</span>
-                        <input
+                        {/* <input
                             type="text"
                             name="imageLink"
                             value={form.imageLink}
-                            onChange={onChangeHandler} />
-                        <button>프로필 사진 변경</button>
+                            onChange={onChangeHandler} /> */}
+                            <img src={basicImage} alt='기본 프로필 이미지'/>
+                                <input type="file" id='uploadImg' name='uploadImg'/>
+                                <label htmlFor="uploadImg">파일선택</label>
+                        <button onClick={imageOnClickHandler}>프로필 사진 변경</button>
                     </div>
                     <div>
                         <span>휴대 전화</span>

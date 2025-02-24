@@ -44,3 +44,14 @@
 .editMypageInfo button:hover {
     background-color: #5A3C2A; /* 버튼 호버 시 색상 변경 */
 }
+
+/* 마이페이지 기본 이미지 */
+.basicImage img {
+    background-color:whitesmoke;
+    max-width: 20%;
+    height: auto;
+}
+
+.basicImage button{
+    margin-left: 20%;
+}

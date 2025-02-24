@@ -132,13 +132,13 @@ function Signup() {
           type="password"
           name="password"
           onChange={onChangeHandler}
-          placeholder="비밀번호 입력"
+          placeholder="영문 + 숫자 + 특수문자 포함하여 8자 이상 입력"
         />
         <input
           type="password"
           name="confirmPassword"
           onChange={onChangeHandler}
-          placeholder="비밀번호 확인"
+          placeholder="비밀번호를 동일하게 입력해 주세요."
         />
       </div>
     );

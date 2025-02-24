@@ -224,7 +224,10 @@ export const callChangeAddressAPI = ({memberId , address}) => {
             return;
         }
     };
+}
 
+export const callChangeImageAPI = () => {
+    
 }
 
 // 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.
