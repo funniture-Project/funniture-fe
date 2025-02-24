@@ -27,6 +27,7 @@ function EditsInfo () {
                 newPassword: '',
                 confirmNewPassword: ''
             });
+            setPreviewImage(member.user.imageLink || basicImage);
         }
     }, [member]); // member.user 변경될 때 마다 form 상태 업데이트.
 
@@ -41,6 +42,8 @@ function EditsInfo () {
         newPassword : '',
         confirmNewPassword : ''
     });
+
+    const [previewImage , setPreviewImage] = useState(basicImage);
 
   // 비밀번호 유효성 검사 함수
     const isPasswordValid = (newPassword) => {
@@ -99,10 +102,22 @@ function EditsInfo () {
         alert('비밀번호 변경이 완료되었습니다. 로그인 페이지로 이동합니다.');
         navigate('/login');
     };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0]; // 사용자가 선택한 파일 가져오기
+        if (file) {
+            setPreviewImage(URL.createObjectURL(file)); // 미리보기용 URL 생성
+            setForm({
+                ...form,
+                imageLink: file, // 선택한 파일 객체를 form 상태에 저장
+            });
+        }
+    };
     
     const imageOnClickHandler = () => {
         dispatch(callChangeImageAPI({
             memberId: member.user.memberId,
+            imageLink: form.imageLink
         }));
     }
 
@@ -113,14 +128,16 @@ function EditsInfo () {
                 <div className="editMypageInfo">
                     <div className='basicImage'>
                         <span>프로필 사진</span>
-                        {/* <input
-                            type="text"
-                            name="imageLink"
-                            value={form.imageLink}
-                            onChange={onChangeHandler} /> */}
-                            <img src={basicImage} alt='기본 프로필 이미지'/>
-                                <input type="file" id='uploadImg' name='uploadImg'/>
-                                <label htmlFor="uploadImg">파일선택</label>
+                    {/* previewImage 상태를 src로 설정 */}
+                        <img src={previewImage} alt="프로필 미리보기" style={{ width: '150px', height: '150px' }} />
+                                <input
+                                    type="file"
+                                    id='uploadImg'
+                                    name='uploadImg'
+                                    onChange={handleImageChange}
+                                    style={{display:'none'}}/>
+                                <label className='uploadLabel'
+                                htmlFor="uploadImg">파일선택</label>
                         <button onClick={imageOnClickHandler}>프로필 사진 변경</button>
                     </div>
                     <div>
