@@ -206,23 +206,23 @@ export const callChangePasswordAPI = ({memberId , password}) => {
 }
 
 // 얘 왜 안 될까????????????? 프론트, 서버 다 안 찍힌다. 
-export const callBasicAddressAPI = ({memberId}) => {
-    const requestURL = `http://localhost:8080/api/v1/deliveryaddress?memberId=${memberId}`;
-    return async (dispatch, getState) => {
-        const response = await api.get(requestURL)
-        console.log('기본 배송지 주소 조회, 서버 잘 다녀왔나 : ', response)
+// export const callBasicAddressAPI = ({memberId}) => {
+//     const requestURL = `http://localhost:8080/api/v1/deliveryaddress?memberId=${memberId}`;
+//     return async (dispatch, getState) => {
+//         const response = await api.get(requestURL)
+//         console.log('기본 배송지 주소 조회, 서버 잘 다녀왔나 : ', response)
 
-        if (response.data.status === 200) {
-            console.log('배송지 내역 조회 성공');
-            dispatch({ type: GET_ADDRESS, payload: response.data.address });
-        } else if (response.data.status === 204) {
-            console.log('배송지 내역 없음');
-            dispatch({ type: GET_ADDRESS, payload: '' });
-        } else {
-            console.log('토큰 유효하지 않음');
-        }
-    }
-}
+//         if (response.data.status === 200) {
+//             console.log('배송지 내역 조회 성공');
+//             dispatch({ type: GET_ADDRESS, payload: response.data.address });
+//         } else if (response.data.status === 204) {
+//             console.log('배송지 내역 없음');
+//             dispatch({ type: GET_ADDRESS, payload: '' });
+//         } else {
+//             console.log('토큰 유효하지 않음');
+//         }
+//     }
+// }
 
 // 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.
 // export const callSignupAPI =
