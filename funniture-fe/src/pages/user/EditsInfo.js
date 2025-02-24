@@ -5,14 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import decodeJwt from '../../utils/tokenUtils';
 import { callLoginAPI } from '../../apis/MemberAPI';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { callChangePhoneAPI, callChangePasswordAPI, callBasicAddressAPI } from '../../apis/MemberAPI';
+import { callChangePhoneAPI, callChangePasswordAPI, callChangeAddressAPI } from '../../apis/MemberAPI';
 
 function EditsInfo() {
 
     const member = useSelector(state => state.member);
     console.log('member : ', member);
     console.log('member.user : ', member.user);
-    console.log('member.address : ', member.address);
+    console.log('member.user.address : ', member.user.address);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ function EditsInfo() {
             setForm({
                 imageLink: member.user.imageLink || '',
                 phoneNumber: member.user.phoneNumber || '',
-                address: member.address.address || '',
+                address: member.user.address || '',
                 newPassword: '',
                 confirmNewPassword: ''
             });
@@ -66,6 +66,13 @@ function EditsInfo() {
             phoneNumber: form.phoneNumber
         }));
     };
+
+    const addressOnClickHandler = () => {
+        dispatch(callChangeAddressAPI({
+            memberId: member.user.memberId,
+            address: form.address
+        }))
+    }
 
     const passwordOnClickHandler = () => {
         const { newPassword, confirmNewPassword } = form;
@@ -123,7 +130,7 @@ function EditsInfo() {
                             name="address"
                             value={form.address || ''}
                             onChange={onChangeHandler} />
-                        <button>주소 변경</button>
+                        <button onClick={addressOnClickHandler}>주소 변경</button>
                     </div>
                     <div>
                         <span>새 비밀번호</span>
