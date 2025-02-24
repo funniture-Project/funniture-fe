@@ -29,6 +29,7 @@ import RentalRegist from './pages/user/RentalRegist';
 import FindPass from './pages/login/FindPass';
 import UserConform from './pages/user/UserConform';
 import EditsInfo from './pages/user/EditsInfo';
+import { resetMember } from './redux/modules/MemberModule';
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
       dispatch(callGetMemberAPI({ memberId: token.sub }));
     } else {
       console.error("유효하지 않은 토큰 또는 sub 값 없음!");
+      dispatch(resetMember()); // 유효하지 않은 경우 Redux 상태 초기화
     }
   }, [token]);
 
