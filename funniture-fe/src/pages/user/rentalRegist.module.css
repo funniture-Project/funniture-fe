@@ -344,5 +344,32 @@
     color: gray;
 }
 
+.discountSection > div > div > span {
+    margin-left: 3px;
+    font-size: 0.9em;
+    align-self: end;
+}
+
+.discountSection > div > div:nth-child(2) > div > span {
+  
+    font-size: 0.85em;
+    align-self: end;
+}
+
+.pointSection > div > div > span {
+    font-size: 0.85em;
+    align-self: end;
+}
+
+.payInfoSection > div > div > span {
+    font-size: 0.85em;
+    align-self: end;
+}
+
+.pointAddSection > div > div > span {
+    font-size: 0.85em;
+    align-self: end;
+}
+
 
 

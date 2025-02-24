@@ -8,7 +8,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { callChangePhoneAPI, callChangePasswordAPI, callChangeAddressAPI, callChangeImageAPI } from '../../apis/MemberAPI';
 import basicImage from '../../assets/images/Adobe Express - file.png'
 
-function EditsInfo () {
+function EditsInfo() {
 
     const member = useSelector(state => state.member);
     console.log('member : ', member);
@@ -36,23 +36,23 @@ function EditsInfo () {
     // });
 
     const [form, setForm] = useState({
-        imageLink : '',
-        phoneNumber : '',
-        address : '',
-        newPassword : '',
-        confirmNewPassword : ''
+        imageLink: '',
+        phoneNumber: '',
+        address: '',
+        newPassword: '',
+        confirmNewPassword: ''
     });
 
     const [previewImage , setPreviewImage] = useState(basicImage);
 
-  // 비밀번호 유효성 검사 함수
+    // 비밀번호 유효성 검사 함수
     const isPasswordValid = (newPassword) => {
-    const passwordRegex =
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        const passwordRegex =
+            /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
         return passwordRegex.test(newPassword);
     };
-    
-  // 비밀번호와 확인 일치 여부 확인 함수
+
+    // 비밀번호와 확인 일치 여부 확인 함수
     const isPasswordMatch = (newPassword, confirmNewPassword) => {
         return newPassword === confirmNewPassword;
     };
@@ -77,28 +77,28 @@ function EditsInfo () {
             address: form.address
         }))
     }
-    
+
     const passwordOnClickHandler = () => {
         const { newPassword, confirmNewPassword } = form;
-    
+
         // 비밀번호 유효성 검사
         if (!isPasswordValid(newPassword)) {
             alert('비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.');
             return;
         }
-    
+
         // 비밀번호 확인 일치 여부 검사
         if (!isPasswordMatch(newPassword, confirmNewPassword)) {
             alert('새 비밀번호와 확인 비밀번호가 일치하지 않습니다.');
             return;
         }
-    
+
         // 모든 조건을 만족하면 서버로 요청 전송
         dispatch(callChangePasswordAPI({
             memberId: member.user.memberId,
             password: newPassword
         }));
-    
+
         alert('비밀번호 변경이 완료되었습니다. 로그인 페이지로 이동합니다.');
         navigate('/login');
     };
@@ -124,7 +124,7 @@ function EditsInfo () {
     return (
         <>
             <div className={OrdersCss.ordersContainer}>
-                <div className={OrdersCss.orderPageTitle}>회원정보 관리</div>    
+                <div className={OrdersCss.orderPageTitle}>회원정보 관리</div>
                 <div className="editMypageInfo">
                     <div className='basicImage'>
                         <span>프로필 사진</span>

@@ -4,7 +4,7 @@ import categoryReducer from "./CategoryModuls";
 import memberReducer from "./MemberModule";
 
 export default combineReducers({
-    // product: productReducer,
+    product: productReducer,
     category: categoryReducer,
-    member : memberReducer
+    member: memberReducer
 })

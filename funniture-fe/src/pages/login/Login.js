@@ -52,7 +52,7 @@ function Login() {
     const handleCloseModal = () => {
         setShowBtnModal(false); // 모달 닫기
         console.log('모달 닫기 핸들러 동작했는지');
-        
+
         // 로그인 성공일 경우에만 페이지 이동
         if (isLoginSuccess) {
             console.log('로그인 성공 - "/" 페이지로 이동');
@@ -67,7 +67,7 @@ function Login() {
             onClickLoginHandler(); // 엔터 키가 눌리면 버튼 클릭 핸들러 호출
         }
     };
-    
+
     return (
         <>
             <div>
@@ -96,7 +96,7 @@ function Login() {
                             </div>
 
                             <div>
-                                <button 
+                                <button
                                     onClick={onClickLoginHandler}
                                 >
                                     로그인
@@ -104,12 +104,12 @@ function Login() {
                             </div>
 
                             <div className="additionalOptions">
-                                <span onClick={() => navigate('/find')} style={{color:'#898888'}}>비밀번호 찾기</span>
+                                <span onClick={() => navigate('/find')} style={{ color: '#898888' }}>비밀번호 찾기</span>
                                 <span onClick={() => navigate('/signup')}>이메일로 회원가입</span>
                             </div>
 
                             <div className="socialLogin">
-                                <label style={{color:'#898888'}}>다른 방법으로 로그인</label>
+                                <label style={{ color: '#898888' }}>다른 방법으로 로그인</label>
                                 <div className="socialButtons">
                                     <button className="socialButton naver">N</button>
                                     <button className="socialButton google">G</button>
@@ -128,7 +128,8 @@ function Login() {
                     btnText="확인"
                     modalContext={modalMessage}
                     modalSize="sm"
-                    onClose={handleCloseModal} // 모달 닫기 시 호출될 함수 전달
+                    onSuccess={handleCloseModal} // 모달 닫기 시 호출될 함수 전달
+                    onClose={handleCloseModal}
                 />
             )}
         </>

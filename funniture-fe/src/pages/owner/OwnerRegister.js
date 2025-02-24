@@ -1,10 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import OwRegisterCss from './ownerRegister.module.css'
 import { getSubAllCategory, registerProduct } from '../../apis/ProductAPI';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import BtnModal from '../../component/BtnModal';
 
 function OwnerRegister() {
+    const dispatch = useDispatch();
     const { user } = useSelector(state => state.member)
+    const { loading, error, msg } = useSelector(state => state.product)
+    const [showBtnModal, setShowBtnModal] = useState(false)
 
     const [productName, setProductName] = useState('');
     const [refCategory, setRefCategory] = useState(1)
@@ -23,6 +27,8 @@ function OwnerRegister() {
     const [productImage, setProductImage] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [rentalOptions, setRentalOptions] = useState([]);
+
+    const [modalMSg, setModalMSg] = useState('')
 
     // 전체 카테고리 데이터 부르기 
     useEffect(() => {
@@ -112,10 +118,38 @@ function OwnerRegister() {
     // form제출
     const submitForm = useCallback((e) => {
         e.preventDefault();
-        console.log("submitForm : 실행")
 
         const formData = new FormData(e.target)
 
+        // 예외처리
+
+        // 상품명
+        if (formData.get("productName").trim() < 1 || formData.get("productName").trim() > 30) {
+            setShowBtnModal(true)
+            setModalMSg("상품명은 1글자 이상 20글자 이하로 작성해주셔야 합니다.")
+            return;
+        }
+
+        // 가격
+        const rentalOptionPrice = document.querySelectorAll("input[name = 'rentalPrice']")
+
+        const zeroPrice = Array.from(rentalOptionPrice).some(option => parseInt(option.value) <= 0)
+        if (zeroPrice) {
+            setShowBtnModal(true)
+            setModalMSg("렌탈가는 0원으로 설정될 수 없습니다.")
+            return;
+        }
+
+        // 재고
+        const totalStockInput = document.querySelector("input[name = 'totalStock']")
+
+        if (totalStockInput.value <= 0) {
+            setShowBtnModal(true)
+            setModalMSg("초기 재고는 1개 이상이여야합니다.")
+            return;
+        }
+
+        // 보낼 데이터 생성
         setSendFormData(prev => ({
             ...prev,
             productName: formData.get("productName").trim(),
@@ -145,15 +179,95 @@ function OwnerRegister() {
 
     useEffect(() => {
         if (isSubmitting && rentalOptions.length) {
-            registerProduct(sendFormData, rentalOptions, productImage)
-            setIsSubmitting(false)
+            (async () => {
+                try {
+                    const response = await registerProduct(dispatch, sendFormData, rentalOptions, productImage)
+
+                    console.log("response : ", response)
+
+                    // 등록 성공
+                    if (response.httpStatusCode == 201) {
+                        setSendFormData(prev => ({
+                            ...prev,
+                            productName: '',
+                            totalStock: 0,
+                            categoryCode: 1,
+                            regularPrice: 1,
+                            productContent: null
+                        }))
+
+                        setProductName('')
+                        setProductImage(null)
+                        setRefCategory(1)
+                        setRentalOptions([])
+                        clearRentalOptions();
+
+                        const inputList = document.querySelectorAll("input")
+                        inputList.forEach(tag => {
+                            if (tag.name == 'uploadImg') {
+                                tag.value = null
+                            } else if (tag.name == "rentalPrice" || tag.name == "asNum") {
+                                tag.value = 0
+                            } else {
+                                tag.value = 1
+                            }
+                        })
+
+                        const selectOption = document.querySelectorAll("select")
+
+                        selectOption.forEach(select => {
+                            if (select.name == "categoryCode") {
+                                select.value = 3
+                            } else {
+                                select.value = 1
+                            }
+                        })
+
+                        const description = document.querySelector("textarea")
+                        description.value = ''
+
+                        // 이미지 미리보기 비우기기
+                        const imgShowBox = document.getElementById("imgShowBox")
+                        imgShowBox.style.backgroundImage = null
+
+                    }
+                } catch (error) {
+                    console.log("error 발생 : ", error)
+                    console.log("error.data.errors[0].defaultMessage; : ", error.data.errors[0].defaultMessage)
+                    error = error.data.errors[0].defaultMessage;  // msg 값을 직접 변경
+                } finally {
+                    setIsSubmitting(false)
+                    setShowBtnModal(true)
+                }
+            })
+                ();
         }
     }, [rentalOptions])
 
+    // 추가된 옵션만 지우는 함수
+    function clearRentalOptions() {
+        // rentalContainerRef.current에서 rentalInfoItem 클래스를 가진 모든 자식 요소 찾기
+        const rentalOptionItems = rentalContainerRef.current.querySelectorAll('[name="rentalInfoItem"]');
+
+        // 첫 번째 항목을 제외한 나머지 항목들을 제거
+        for (let i = 1; i < rentalOptionItems.length; i++) {
+            rentalContainerRef.current.removeChild(rentalOptionItems[i]);
+        }
+    }
+
     useEffect(() => {
-        console.log("sendFormData : ", sendFormData)
-        console.log("rentalOptions : ", rentalOptions)
-    }, [sendFormData])
+        console.log("modalMSg : ", modalMSg)
+    }, [modalMSg])
+
+    useEffect(() => {
+        console.log("loading 변경 입니다. : ", loading)
+        console.log("msg : ", msg)
+        console.log("error : ", error)
+        if (!loading) {
+            setModalMSg(msg.trim() != '' ? msg : error)
+        }
+    }, [loading])
+
 
     return (
         <div className={OwRegisterCss.wholeContainer}>
@@ -208,7 +322,7 @@ function OwnerRegister() {
                     <div className={OwRegisterCss.InfoInputTitle}>정상 구매가</div>
                     <div className={OwRegisterCss.description}>일반적으로 구매했을 때의 가격을 작성해주세요</div>
                     <div className={OwRegisterCss.productPriceBox}>
-                        <input type="number" min={0} defaultValue={1} name='regularPrice' />
+                        <input type="number" min={1} defaultValue={1000} name='regularPrice' />
                         <div>원</div>
                     </div>
                 </div>
@@ -271,7 +385,7 @@ function OwnerRegister() {
                     <div className={OwRegisterCss.description}>필터링에 사용되는 카테고리 입니다.</div>
                     <div className={OwRegisterCss.productCategoryBox}>
                         <div className={OwRegisterCss.stockBox}>
-                            <input type="number" min={0} defaultValue={1} name='totalStock' />
+                            <input type="number" min={1} defaultValue={1} name='totalStock' />
                             <div>개</div>
                         </div>
                     </div>
@@ -281,6 +395,13 @@ function OwnerRegister() {
                     <button type='submit' onClick={() => { setIsSubmitting(true) }}>등록하기</button>
                 </div>
             </form>
+
+            <BtnModal
+                showBtnModal={showBtnModal}
+                setShowBtnModal={setShowBtnModal}
+                btnText="확인"
+                modalContext={modalMSg}
+            />
         </div >
     )
 

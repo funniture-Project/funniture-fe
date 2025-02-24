@@ -14,15 +14,13 @@ function ProductDetailPage() {
     const [productInfo, setProductInfo] = useState();
 
     // 렌탈 갯수
-    const [rentalNum, setRentalNum] = useState(1); 
+    const [rentalNum, setRentalNum] = useState(1);
 
     // 예약등록페이지로 데이터 보내기
     const navigate = useNavigate();
 
     const movePage = () => {
-        console.log("🚀 productInfo:", productInfo); // 여기에 추가
-        console.log("🚀 selectRentalOption:", selectRentalOption);
-    
+
         navigate('/rental', {
             state: {
                 selectRentalOption,
@@ -35,14 +33,14 @@ function ProductDetailPage() {
     const handleChange = (e) => {
         setRentalNum(e.target.value);
     }
-    
+
 
 
     useEffect(() => {
         async function getData() {
             const response = await getProductDetailInfo(id)
 
-            console.log("response 입니다 : ", response)
+            // console.log("response 입니다 : ", response)
             if (response) {
                 setProductInfo(response.results?.result)
                 if (response.results?.result.rentalOptionList?.length > 0) {
@@ -57,8 +55,8 @@ function ProductDetailPage() {
     }, [id])
 
     useEffect(() => {
-        console.log('productInfo : ', productInfo)
-        console.log('selectRentalOption : ', selectRentalOption)
+        // console.log('productInfo : ', productInfo)
+        // console.log('selectRentalOption : ', selectRentalOption)
     }, [productInfo, selectRentalOption])
 
     return (
@@ -134,7 +132,7 @@ function ProductDetailPage() {
                                 <div>
                                     <div>갯수</div>
                                     <div>
-                                        <input type="number" min={1} max={10} defaultValue={1} value={rentalNum} onChange={handleChange}  />
+                                        <input type="number" min={1} max={10} defaultValue={1} value={rentalNum} onChange={handleChange} />
                                         <span>개</span>
                                     </div>
                                 </div>
@@ -179,17 +177,17 @@ function ProductDetailPage() {
                                 <tr>
                                     <td colSpan={2}>
                                         <div className={PDCSS.descriptionTitle}>브랜드명 : </div>
-                                        <div>삼성</div>
+                                        <div>{productInfo.ownerInfo.storeName}</div>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div className={PDCSS.descriptionTitle}>모델명 : </div>
-                                        <div>CRP-LHLR10</div>
+                                        <div className={PDCSS.descriptionTitle}>상품 번호 : </div>
+                                        <div>{productInfo.productNo}</div>
                                     </td>
                                     <td>
-                                        <div className={PDCSS.descriptionTitle}>색상 : </div>
-                                        <div>화이트</div>
+                                        <div className={PDCSS.descriptionTitle}>모델 명 : </div>
+                                        <div>{productInfo.productName}</div>
                                     </td>
                                 </tr>
                                 <tr>
@@ -197,12 +195,12 @@ function ProductDetailPage() {
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div className={PDCSS.descriptionTitle}>담당자 : </div>
-                                        <div>홍길동</div>
+                                        <div className={PDCSS.descriptionTitle}>사업자 번호 : </div>
+                                        <div>{productInfo.ownerInfo.storeNo}</div>
                                     </td>
                                     <td>
-                                        <div className={PDCSS.descriptionTitle}>문의 번호 : </div>
-                                        <div>010 - 1111 - 1111</div>
+                                        <div className={PDCSS.descriptionTitle}>주소(문의 번호로 변경 예정) : </div>
+                                        <div>{productInfo.ownerInfo.storeAdress}</div>
                                     </td>
                                 </tr>
                             </tbody>
