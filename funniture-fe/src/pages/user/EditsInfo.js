@@ -27,7 +27,8 @@ function EditsInfo() {
     const [showPasswordModal, setShowPasswordModal] = useState(false); // 비밀번호 변경 성공 모달
     const [showPasswordErrorModal, setShowPasswordErrorModal] = useState(false); // 비밀번호 유효성 검사 실패 모달
     const [passwordErrorMessage, setPasswordErrorMessage] = useState(''); // 비밀번호 오류 메시지
-    const [showImageErrorModal , setShowImageErrorModal] = useState(false);
+    const [showImageErrorModal , setShowImageErrorModal] = useState(false); // 변경할 이미지 선택 안 하고 누를때
+    const [showImageSuccessModal , setShowImageSuccessModal] = useState(false);
 
     // 사용자 개인정보 바꾸기 전에 기존 데이터 가져와야 함.
     useEffect(() => {
@@ -139,27 +140,43 @@ function EditsInfo() {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0]; // 사용자가 선택한 파일 가져오기
+        console.log('선택된 파일:', file);
+    
         if (file) {
             setPreviewImage(URL.createObjectURL(file)); // 미리보기용 URL 생성
             setForm({
                 ...form,
                 imageLink: file, // 선택한 파일 객체를 form 상태에 저장
             });
+        } else {
+            setForm({
+                ...form,
+                imageLink: '', // 파일이 선택되지 않은 경우 빈 문자열로 설정
+            });
         }
-        e.target.value = ''; // 입력 필드 초기화
+    
+        e.target.value = ''; // 입력 필드 초기화 (같은 파일 다시 선택 가능)
     };
     
+    
     const imageOnClickHandler = () => {
-        if(!form.imageLink || form.imageLink === ''){
-            // 파일이 선택되지 않은 경우
+        console.log('imageOnClickHandler 호출됨');
+        console.log('현재 form.imageLink 값:', form.imageLink);
+    
+        if (!form.imageLink || !(form.imageLink instanceof File)) {
+            console.log('조건 만족: !form.imageLink 또는 form.imageLink가 File 객체가 아님');
             setShowImageErrorModal(true); // 오류 모달 표시
             return;
         }
+    
+        console.log('파일이 선택되었습니다:', form.imageLink);
         dispatch(callChangeImageAPI({
             memberId: member.user.memberId,
-            imageLink: form.imageLink
+            imageLink: form.imageLink,
         }));
-    }
+        setShowImageSuccessModal(true);
+    };
+    
 
     // 탈퇴 확인 모달 열기
     const openConfirmModal = () => {
@@ -336,6 +353,19 @@ function EditsInfo() {
                     modalSize="sm"
                     onSuccess={() => setShowImageErrorModal(false)} // "확인" 버튼 클릭 시 모달 닫기
                     onClose={() => setShowImageErrorModal(false)}   // 닫기 버튼 클릭 시 모달 닫기
+                />
+            )}
+
+                {/* 이미지 변경 성공 모달 */}
+                {showImageSuccessModal && (
+                <BtnModal
+                    showBtnModal={showImageSuccessModal}
+                    setShowBtnModal={setShowImageSuccessModal}
+                    btnText="확인"
+                    modalContext="프로필 이미지가 변경되었습니다."
+                    modalSize="sm"
+                    onSuccess={() => setShowImageSuccessModal(false)} // "확인" 버튼 클릭 시 모달 닫기
+                    onClose={() => setShowImageSuccessModal(false)}   // 닫기 버튼 클릭 시 모달 닫기
                 />
             )}
         </>

@@ -259,7 +259,7 @@ export const callChangeImageAPI = ({ memberId, imageLink }) => {
         
             if (response.data.httpStatusCode === 201) {
                 console.log('프로필 사진 변경 성공');
-                alert('프로필 사진이 변경되었습니다.');
+                // alert('프로필 사진이 변경되었습니다.');
             } else if (response.data.httpStatusCode === 400) {
                 console.log('프로필 사진 변경 실패');
                 alert('프로필 사진 변경에 실패했습니다.');
