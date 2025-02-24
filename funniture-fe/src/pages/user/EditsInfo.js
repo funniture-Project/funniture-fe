@@ -12,7 +12,7 @@ function EditsInfo () {
     const member = useSelector(state => state.member);
     console.log('member : ', member);
     console.log('member.user : ', member.user);
-    console.log('member.address : ', member.address);
+    console.log('member.user.address : ', member.user.address);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ function EditsInfo () {
             setForm({
                 imageLink: member.user.imageLink || '',
                 phoneNumber: member.user.phoneNumber || '',
-                address: member.address.address || '',
+                address: member.user.address || '',
                 newPassword: '',
                 confirmNewPassword: ''
             });
