@@ -246,6 +246,7 @@
                 width: 100%;
                 border: solid 1px #8a8a8a;
                 padding: 10px;
+                text-align: center;
             }
 
             tbody {
