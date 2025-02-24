@@ -75,6 +75,7 @@ function App() {
           <Route index element={<OwnerMyPage />} />
           <Route path='product' element={<OwnerProducts />} />
           <Route path='register' element={<OwnerRegister />} />
+          <Route path='edit' element={<OwnerRegister />} />
         </Route>
 
       </Route>
