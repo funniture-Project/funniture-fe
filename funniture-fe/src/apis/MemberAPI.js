@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL } from "../redux/modules/MemberModule";
 import api from "./Apis";
+import imageApi from "./Apis";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -224,8 +225,61 @@ export const callChangeAddressAPI = ({memberId , address}) => {
             return;
         }
     };
-
 }
+
+export const callChangeImageAPI = ({ memberId, imageLink }) => {
+    const requestURL = `http://localhost:8080/api/v1/member/modify/imageLink`;
+
+    console.log('callChangeImageAPI에 memberId 잘 넘어 오는지 : ', memberId);
+    console.log('callChangeImageAPI에 imageLink 잘 넘어 오는지 : ', imageLink);
+
+    return async (dispatch, getState) => {
+        const formData = new FormData();
+
+        // JSON 데이터 생성 (객체 형식으로 만들어 줘야 함!!)
+        const memberData = {
+            memberId: memberId, // 문자열 데이터
+        };
+
+        // FormData에 JSON 데이터 추가
+        formData.append(
+            "formData",
+            new Blob([JSON.stringify(memberData)], { type: "application/json" })
+        );
+
+        // FormData에 파일 추가 (파일 객체 그대로 추가)
+        formData.append("imageLink", imageLink);
+
+        try {
+            const response = await api.put(requestURL, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+        
+            console.log('프로필 사진 변경 서버에 잘 다녀 왔는지 : ', response);
+        
+            if (response.data.httpStatusCode === 201) {
+                console.log('프로필 사진 변경 성공');
+                alert('프로필 사진이 변경되었습니다.');
+            } else if (response.data.httpStatusCode === 400) {
+                console.log('프로필 사진 변경 실패');
+                alert('프로필 사진 변경에 실패했습니다.');
+            } else {
+                console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
+                alert('알 수 없는 오류가 발생했습니다.');
+            }
+        } catch (error) {
+            console.error('프로필 사진 변경 중 오류 발생: ', error);
+            alert('서버와 통신 중 오류가 발생했습니다.');
+        }
+        
+    };
+};
+
+
+
+
 
 // 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.
 // export const callSignupAPI =
