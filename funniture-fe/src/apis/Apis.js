@@ -19,6 +19,15 @@ const LOCAL_BACKEND = process.env.REACT_APP_LOCAL_BACKEND;
         },
     });
 
+    // 이미지 파일 전송용 Axios 인스턴스
+    const imageApi = axios.create({
+        baseURL: LOCAL_BACKEND,
+        headers: {
+            Accept: '*/*', // 모든 응답 허용
+            authorization: `Bearer ${localStorage.getItem('accesstoken')}`,
+        },
+    });
+
     // 아래 구문은 axios에서 제공하는 것들로 신경안 써도 됨
     api.interceptors.request.use(
         (request) => {

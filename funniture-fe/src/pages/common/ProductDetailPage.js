@@ -20,8 +20,6 @@ function ProductDetailPage() {
     const navigate = useNavigate();
 
     const movePage = () => {
-        console.log("🚀 productInfo:", productInfo); // 여기에 추가
-        console.log("🚀 selectRentalOption:", selectRentalOption);
 
         navigate('/rental', {
             state: {
@@ -42,7 +40,7 @@ function ProductDetailPage() {
         async function getData() {
             const response = await getProductDetailInfo(id)
 
-            console.log("response 입니다 : ", response)
+            // console.log("response 입니다 : ", response)
             if (response) {
                 setProductInfo(response.results?.result)
                 if (response.results?.result.rentalOptionList?.length > 0) {
@@ -57,8 +55,8 @@ function ProductDetailPage() {
     }, [id])
 
     useEffect(() => {
-        console.log('productInfo : ', productInfo)
-        console.log('selectRentalOption : ', selectRentalOption)
+        // console.log('productInfo : ', productInfo)
+        // console.log('selectRentalOption : ', selectRentalOption)
     }, [productInfo, selectRentalOption])
 
     return (
