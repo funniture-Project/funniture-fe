@@ -1,5 +1,6 @@
 import { GET_CATEGORY_LIST } from '../redux/modules/CategoryModuls'
 import api from "./Apis";
+import { REGISTER_PRODUCT_FAIL, REGISTER_PRODUCT_REQUEST, REGISTER_PRODUCT_SUCCESS } from '../redux/modules/productReducer';
 
 const baseProductUrl = 'http://localhost:8080/api/v1/product'
 
@@ -142,10 +143,12 @@ export async function getProductDetailInfo(productNo) {
 }
 
 // 상품 등록하기
-export async function registerProduct(formData, rentalOptions, productImage) {
+export async function registerProduct(dispatch, formData, rentalOptions, productImage) {
     console.log("API formData : ", formData)
     console.log("API rentalOptions : ", rentalOptions)
     console.log("API productImage : ", productImage)
+
+    dispatch({ type: REGISTER_PRODUCT_REQUEST })
 
     const url = "/product/register"
 
@@ -154,11 +157,28 @@ export async function registerProduct(formData, rentalOptions, productImage) {
     data.append("rentalOptions", new Blob([JSON.stringify(rentalOptions)], { type: "application/json" })); // rentalOptions를 JSON 문자열로 추가
     data.append("productImage", productImage);
 
-    await api.post(url, data, {
+    const response = await api.post(url, data, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
     })
+
+    if (response?.data.httpStatusCode == 201) {
+        dispatch({
+            type: REGISTER_PRODUCT_SUCCESS,
+            payload: {
+                msg: response.data.message
+            },
+        })
+    } else {
+        dispatch({
+            type: REGISTER_PRODUCT_FAIL,
+            payload: {
+                error: response.data.message
+            },
+        })
+    }
+    return response?.data
 }
 
 // 공용
