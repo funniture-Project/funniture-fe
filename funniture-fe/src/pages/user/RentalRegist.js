@@ -1,15 +1,65 @@
 import RentalRegistCss from './rentalRegist.module.css'
 import { useLocation } from 'react-router-dom';
+import { useState , useEffect } from 'react';
+import { getDefaultDeliveryAddressList } from '../../apis/DeliveryAddressAPI';
+import { getCurrentPoint } from '../../apis/PointAPI';
 
 function RentalRegist () {
 
     const location = useLocation();
-    console.log(location)
    
-    const {selectRentalOption} = location.state  //
-    const {productInfo} = location.state
-    const {rentalNum} = location.state
+    const {selectRentalOption} = location.state  // 렌탈 조건 정보
+    const {productInfo} = location.state         // 상품 정보
+    const {rentalNum} = location.state           // 렌탈 갯수
+
+    const [deliveryAddressList, setDeliveryAddressList] = useState([]); // 변경버튼 누를 시 -> 배송지 전체 조회(모달창)
+    const [defaultAddress, setDefaultAddress] = useState([]);   // 기본배송지 조회
+    const [currentPoint, setCurrentPoint] = useState({});
+
+    // 기본 배송지 불러오기
+    async function getDefaultAddressData(memberId) {
+        try {
+            const data = await getDefaultDeliveryAddressList(memberId);
+            setDefaultAddress(data.results.defaultAddressList[0]);
+            
+        } catch (error) {
+            console.error('기본배송지를 불러오는 데 실패 : ', error);
+        }
+    }
+
+    // 보유 포인트 불러오기 
+    async function getCurrentPointData(memberId) {
+        try {
+            const data = await getCurrentPoint(memberId);
+            setCurrentPoint(data.results);
+            console.log('data', data);
+        } catch (error) {
+            console.error('보유 포인트를 불러오는 데 실패 : ', error);
+        }
+    }
+    
+    useEffect(() => {
+        getDefaultAddressData("MEM011");
+    }, []);
+
+    useEffect(() => {
+        getCurrentPointData("MEM011");
+    }, [])
  
+
+    // 계산 되는 것 변수 처리
+    const totalRentalPrice = selectRentalOption.rentalPrice * rentalNum; // 총 렌탈 가격
+    const discountAmount = totalRentalPrice * 0.1; // 할인 금액 (10%) => 나중에 할인쿠폰 하면 0.1 도 할인쿠폰마다 달라져야함
+    const finalPriceThisMonth = totalRentalPrice - discountAmount; // 이번 달 결제 금액
+    const pointEarned = totalRentalPrice * 0.01; // 구매 적립 포인트
+
+    // 숫자를 1,000 형식으로 변환
+    const formatNumber = (num) => {
+        if (typeof num !== "number" || isNaN(num)) {
+            return "0";  // 값이 없거나 숫자가 아니면 기본값 0 반환
+        }
+        return num.toLocaleString();
+    };
 
     return(
         <div>
@@ -20,11 +70,11 @@ function RentalRegist () {
                     <h3>배송지</h3>
                     <div className={RentalRegistCss.deliverySection}>
                         <div>
-                            <div>정은미(은미네)</div>
+                            <div>{defaultAddress.receiver}({defaultAddress.destinationName})</div>
                             <div>변경</div>
                         </div>
-                        <div>010-4125-3938</div>
-                        <div>서울 서대문구 연세로 8-1 버티고타워 7층</div>
+                        <div>{defaultAddress.destinationPhone}</div>
+                        <div>{defaultAddress.destinationAddress}</div>
                         <select>
                             <option value="">배송 메모를 선택해주세요.</option>
                         </select>
@@ -53,14 +103,14 @@ function RentalRegist () {
                                 <div>할인/쿠폰</div>
                                 <div>사용</div>
                             </div>
-                            <div>- {selectRentalOption.rentalPrice * 0.1} 원</div>
+                            <div>- {formatNumber(discountAmount)} <span>원</span></div>
                         </div>
                         <hr className={RentalRegistCss.rentalRegistHr}/>
                         <div>
                             <div>이번달 결제금액</div>
                             <div>
-                                <div>{selectRentalOption.rentalPrice} 원</div>
-                                <div>{selectRentalOption.rentalPrice - selectRentalOption.rentalPrice * 0.1} 원</div>
+                                <div>{formatNumber(totalRentalPrice)} 원</div>
+                                <div>{formatNumber(finalPriceThisMonth)} <span>원</span></div>
                             </div>
                         </div>
                     </div>
@@ -69,7 +119,7 @@ function RentalRegist () {
                     <div className={RentalRegistCss.pointSection}>
                         <div>
                             <div>보유포인트</div>
-                            <div>5,000 원</div>
+                            <div>{formatNumber(currentPoint.availablePoints)} <span>원</span></div>
                         </div>
                         <div className={RentalRegistCss.pointSubSection}>
                             <div>
@@ -90,24 +140,24 @@ function RentalRegist () {
                         <div className={RentalRegistCss.payInfoSection}>
                             <div>
                                 <div>할인쿠폰 사용</div>
-                                <div>{selectRentalOption.rentalPrice * 0.1} 원</div>
+                                <div>{formatNumber(discountAmount)} <span>원</span></div>
                             </div>
                             <div>
                                 <div>포인트 사용</div>
-                                <div>{selectRentalOption.rentalPrice - selectRentalOption.rentalPrice * 0.1} 원</div>
+                                <div>{formatNumber(finalPriceThisMonth)} <span>원</span></div>
                             </div>
                             <div>
                                 <div>렌탈가</div>
-                                <div>{selectRentalOption.rentalPrice}  원</div>
+                                <div>{formatNumber(selectRentalOption.rentalPrice)} <span>원</span> {"*"} {rentalNum} <span>개</span></div>
                             </div>
                             <hr className={RentalRegistCss.rentalRegistHr}/>
                             <div>
                                 <div>이번달 결제금액</div>
-                                <div>{selectRentalOption.rentalPrice - selectRentalOption.rentalPrice * 0.1} 원</div>
+                                <div>{formatNumber(finalPriceThisMonth)} <span>원</span></div>
                             </div>
                             <div>
                                 <div>다음달 결제금액</div>
-                                <div>{selectRentalOption.rentalPrice} 원</div>
+                                <div>{formatNumber(totalRentalPrice)} <span>원</span></div>
                             </div>
                         </div>
 
@@ -115,7 +165,7 @@ function RentalRegist () {
                         <div className={RentalRegistCss.pointAddSection}>
                             <div>
                                 <div>구매적립</div>
-                                <div>{selectRentalOption.rentalPrice * 0.01}  <span>원</span></div>
+                                <div>{pointEarned} <span>원</span></div>
                             </div>
                             <div>
                                 <div>리뷰적립</div>

@@ -55,13 +55,10 @@ export async function getUserOrderList(memberId, period) {
     }
     console.log('url', url);
 
-    const response = await fetch(url);
+    const response = await getData(url);
     console.log('response', response);
-    
-    const data = await response.json();
-    console.log('data', data);
 
-    return data;
+    return response;
 }
 
 export async function getOrderDetail(id) {
