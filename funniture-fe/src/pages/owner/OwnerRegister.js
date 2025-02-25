@@ -325,8 +325,8 @@ function OwnerRegister() {
                         }
                     } catch (error) {
                         console.log("error 발생 : ", error)
-                        console.log("error.data.errors[0].defaultMessage; : ", error.data?.errors[0].defaultMessage)
-                        error = error.data?.errors[0].defaultMessage;  // msg 값을 직접 변경
+                        console.log("error.data.errors[0].defaultMessage; : ", error.data?.errors)
+                        error = error.data?.errors;  // msg 값을 직접 변경
                     } finally {
                         setIsSubmitting(false)
                         setShowBtnModal(true)
