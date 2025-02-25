@@ -272,6 +272,15 @@
     }
 
     .productDetailInfo {
-        border: solid 1px red;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+        /* border: solid 1px #7F5539; */
+        padding: 10px 10px;
+
+        img {
+            max-width: 100%;
+        }
     }
 }

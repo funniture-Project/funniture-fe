@@ -3,53 +3,23 @@ import Pagination from '../../component/Pagination'
 import { useEffect, useState } from 'react'
 import { changeProductStatus, getProductListByOwnerNo } from '../../apis/ProductAPI'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 function OwnerProducts() {
     const [searchFilter, setSearchFilter] = useState('판매중')
-    const [productAllList, setProductAllList] = useState([])
-    const [productStopList, setProductStopList] = useState(localStorage.getItem('productStopList') ? JSON.parse(localStorage.getItem('productStopList')) : [])
-    const [productSaleList, setProductSaleList] = useState(localStorage.getItem('productSaleList') ? JSON.parse(localStorage.getItem('productSaleList')) : [])
-    const [notAbleList, setNotAbleList] = useState(localStorage.getItem('notAbleList') ? JSON.parse(localStorage.getItem('notAbleList')) : [])
+    const { ownerAllProductList } = useSelector(state => state.product)
+    const [productStopList, setProductStopList] = useState([])
+    const [productSaleList, setProductSaleList] = useState([])
+    const [notAbleList, setNotAbleList] = useState([])
     const [errorMsg, setErrorMsg] = useState('')
     const { user } = useSelector(state => state.member)
 
     const navigate = useNavigate();
-
-    // 로컬 스토리지에서 데이터 불러오기
-    function loadFromLocalStorage(key) {
-        const data = localStorage.getItem(key);
-        return data ? JSON.parse(data) : [];
-    }
-
-    // 로컬 스토리지에 데이터 저장
-    function saveToLocalStorage(key, data) {
-        localStorage.setItem(key, JSON.stringify(data));
-    }
+    const dispatch = useDispatch();
 
     async function getData(ownerNo) {
-
-        const data = await getProductListByOwnerNo(ownerNo)
-
-        if (data.results?.result.length > 0) {
-            const allProduct = data.results.result
-            setProductAllList(allProduct)
-
-            setProductStopList(allProduct.filter(product => product.productStatus == '판매종료'))
-            setNotAbleList(allProduct.filter(product => product.productStatus == '판매불가'))
-            setProductSaleList(allProduct.filter(product => product.productStatus != '판매불가' && product.productStatus != '판매종료'))
-
-        } else {
-            setErrorMsg(data.message)
-        }
+        dispatch(getProductListByOwnerNo(ownerNo))
     }
-
-    useEffect(() => {
-        // 로컬 스토리지에 저장
-        saveToLocalStorage('productStopList', productStopList);
-        saveToLocalStorage('productSaleList', productSaleList);
-        saveToLocalStorage('notAbleList', notAbleList);
-    }, [notAbleList])
 
     useEffect(() => {
         console.log("제공자 정보 : ", user)
@@ -57,7 +27,19 @@ function OwnerProducts() {
         if (user) {
             getData(user.memberId)
         }
-    }, [])
+    }, [user])
+
+    useEffect(() => {
+        console.log("ownerAllProductList : ", ownerAllProductList)
+    }, [ownerAllProductList])
+
+    useEffect(() => {
+        if (ownerAllProductList.length > 0) {
+            setProductStopList(ownerAllProductList.filter(product => product.productStatus == '판매종료'))
+            setNotAbleList(ownerAllProductList.filter(product => product.productStatus == '판매불가'))
+            setProductSaleList(ownerAllProductList.filter(product => product.productStatus != '판매불가' && product.productStatus != '판매종료'))
+        }
+    }, [ownerAllProductList])
 
     async function changeStatus() {
         const checkList = [...document.querySelectorAll('input[type=checkbox]:checked')].map(tag => tag.value)
@@ -130,7 +112,7 @@ function OwnerProducts() {
                 <div className={OwProductCss.productList}>
                     {(searchFilter === '판매중' ? productSaleList :
                         searchFilter === '판매종료' ? productStopList : notAbleList).length == 0 ?
-                        <div>
+                        <div className={OwProductCss.noProductBox}>
                             <div>상품이 없습니다.</div>
                         </div> :
                         <>

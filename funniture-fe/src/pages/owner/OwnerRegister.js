@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import OwRegisterCss from './ownerRegister.module.css'
-import { getSubAllCategory, modifyProductInfo, registerProduct } from '../../apis/ProductAPI';
+import { getSubAllCategory, modifyProductInfo, registerProduct, uploadQuillImg } from '../../apis/ProductAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import BtnModal from '../../component/BtnModal';
 import { useLocation, useNavigate } from 'react-router-dom';
+import ReactQuill, { Quill } from 'react-quill-new';
+import { ImageResize } from 'quill-image-resize-module-ts';
 
 function OwnerRegister() {
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user } = useSelector(state => state.member)
@@ -37,7 +40,7 @@ function OwnerRegister() {
             asNumber: 0,
         }
     ]);
-    // const rentalContainerRef = useRef(null); // 📌 옵션 리스트를 감싸는 div 참조
+    const [description, setDescription] = useState('')
 
     const [modalMSg, setModalMSg] = useState('')
 
@@ -85,7 +88,6 @@ function OwnerRegister() {
         }
     }
 
-
     // 옵션 추가
     function addRentalOption() {
         const newOption = {
@@ -123,9 +125,65 @@ function OwnerRegister() {
         console.log("변경된 rentalOptions (비동기 체크):", rentalOptions);
     }, [rentalOptions]);
 
+    // react-quill 이미지 주소 바꿔치기
+
+
+
+    // img태그의 src만 추출하는 정규식
+    const gainSource = /(<img[^>]*src\s*=\s*[\"']?([^>\"']+)[\"']?[^>]*>)/g
+    // const gainSource = /<img[^>]*src\s*=\s*['"]([^'"]+)['"][^>]*>/g;
+
+    function data64ToFile(img64) {
+        const filename = `image_${new Date().getTime()}.png`;
+
+        const [header, base64Data] = img64.split(",")
+
+        // MIME 타입 추출 (예: "image/png")
+        const mime = header.match(/:(.*?);/)[1];
+
+        // Base64로 인코딩된 데이터에서 실제 데이터만 추출
+        const binary = atob(base64Data);
+
+        // 바이너리 데이터를 ArrayBuffer로 변환
+        const arrayBuffer = new ArrayBuffer(binary.length);
+        const uintArray = new Uint8Array(arrayBuffer);
+
+        // binary 데이터를 uintArray에 복사
+        for (let i = 0; i < binary.length; i++) {
+            uintArray[i] = binary.charCodeAt(i);
+        }
+
+        // Blob 객체 생성
+        const blob = new Blob([arrayBuffer], { type: mime });
+
+        // Blob 객체를 File 객체로 변환
+        return new File([blob], filename, { type: mime });
+    }
+
+    async function saveQuillImg(description) {
+        let updatedDescription = description
+
+        const matches = description.match(/<img[^>]*src\s*=\s*["']([^"']+)["'][^>]*>/g);
+
+        if (matches) {
+            for (let imgTag of matches) {
+                const img64 = imgTag.match(/src\s*=\s*["']([^"']+)["']/)[1];
+
+                if (img64.startsWith("data:image")) {
+                    const switchFile = data64ToFile(img64)
+                    const uploadUrl = await uploadQuillImg(switchFile)
+
+                    if (uploadUrl) {
+                        updatedDescription = updatedDescription.replace(img64, uploadUrl.url);
+                    }
+                }
+            }
+        }
+        return updatedDescription
+    }
 
     // form제출
-    const submitForm = useCallback((e) => {
+    const submitForm = useCallback(async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target)
@@ -133,19 +191,19 @@ function OwnerRegister() {
         // 예외처리
 
         // 상품명
-        if (formData.get("productName").trim() < 1 || formData.get("productName").trim() > 30) {
+        if (formData.get("productName")?.trim() < 1 || formData.get("productName")?.trim() > 30) {
             setShowBtnModal(true)
             setModalMSg("상품명은 1글자 이상 20글자 이하로 작성해주셔야 합니다.")
             return;
         }
 
         // 렌탈 가격
-        const zeroPrice = rentalOptions.some((option) => option.rentalPrice <= 0);
-        if (zeroPrice) {
-            setShowBtnModal(true)
-            setModalMSg("렌탈가는 0원으로 설정될 수 없습니다.")
-            return;
-        }
+        // const zeroPrice = rentalOptions.some((option) => option.rentalPrice <= 0);
+        // if (zeroPrice) {
+        //     setShowBtnModal(true)
+        //     setModalMSg("렌탈가는 0원으로 설정될 수 없습니다.")
+        //     return;
+        // }
 
         // 재고
         const totalStockInput = document.querySelector("input[name = 'totalStock']")
@@ -156,21 +214,31 @@ function OwnerRegister() {
             return;
         }
 
+        let updatedDescription = description;
+
+        console.log("src 변경전 updatedDescription : ", updatedDescription)
+
+        if (gainSource.test(description)) {  // description에 이미지가 있을 때만 처리
+            updatedDescription = await saveQuillImg(description);
+
+            console.log("src 변경한 updatedDescription : ", updatedDescription)
+        }
+
         // 보낼 데이터 생성
         setSendFormData(prev => ({
             ...prev,
-            productName: formData.get("productName").trim(),
+            productName: formData.get("productName")?.trim(),
             ownerNo: user.memberId,
             totalStock: parseInt(formData.get("totalStock")),
             categoryCode: parseInt(formData.get("categoryCode")),
             regularPrice: parseInt(formData.get("regularPrice")),
-            productContent: formData.get("productContent"),
+            productContent: updatedDescription,
         }))
     }, [isSubmitting])
 
     useEffect(() => {
         if (isSubmitting && rentalOptions.length) {
-            // 상품 정보 수정정
+            // 상품 정보 수정
             if (editProduct) {
                 (async () => {
 
@@ -257,8 +325,8 @@ function OwnerRegister() {
                         }
                     } catch (error) {
                         console.log("error 발생 : ", error)
-                        console.log("error.data.errors[0].defaultMessage; : ", error.data.errors[0].defaultMessage)
-                        error = error.data.errors[0].defaultMessage;  // msg 값을 직접 변경
+                        console.log("error.data.errors[0].defaultMessage; : ", error.data?.errors[0].defaultMessage)
+                        error = error.data?.errors[0].defaultMessage;  // msg 값을 직접 변경
                     } finally {
                         setIsSubmitting(false)
                         setShowBtnModal(true)
@@ -279,7 +347,7 @@ function OwnerRegister() {
         console.log("msg : ", msg)
         console.log("error : ", error)
         if (!loading) {
-            setModalMSg(msg.trim() != '' ? msg : error)
+            setModalMSg(msg?.trim() != '' ? msg : error)
         }
     }, [loading])
 
@@ -296,8 +364,9 @@ function OwnerRegister() {
                 totalStock: editProduct.totalStock,
                 categoryCode: editProduct.category.categoryCode,
                 regularPrice: editProduct.regularPrice,
-                productContent: editProduct.productContent
             }))
+
+            setDescription(editProduct.productContent)
 
             setProductName(editProduct.productName)
             setProductImage(null)
@@ -330,6 +399,26 @@ function OwnerRegister() {
             }
         }
     }, [editProduct])
+
+    // react quill 모듈 등록
+    Quill.register('modules/ImageResize', ImageResize);
+
+    const quillModules = {
+        toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['link', 'image'],
+            ['clean']
+        ],
+        ImageResize: {
+            modules: ['Resize', 'DisplaySize']
+        },
+    }
+
+    useEffect(() => {
+        console.log("description : ", description)
+    }, [description])
 
     return (
         <div className={OwRegisterCss.wholeContainer}>
@@ -398,7 +487,7 @@ function OwnerRegister() {
                             <div className={OwRegisterCss.InfoInputTitle}>가격</div>
                             <div className={OwRegisterCss.description}>렌탈 기간에 따른 가격을 작성해주세요</div>
                         </div>
-                        <button onClick={addRentalOption}>추가하기</button>
+                        <button type='button' onClick={addRentalOption}>추가하기</button>
                     </div>
                     <div className={OwRegisterCss.productRentalOptionBox}>
                         <div className={`${OwRegisterCss.RentalInfoItem} ${OwRegisterCss.RentalInfoItemTitle}`}>
@@ -492,8 +581,14 @@ function OwnerRegister() {
                     <div className={OwRegisterCss.InfoInputTitle}>상세 설명</div>
                     <div className={OwRegisterCss.description}>상품에 대한 설명을 작성해주세요.</div>
                     <div className={OwRegisterCss.productDescriptionBox}>
-                        <textarea name="productContent" id="productContent">
-                        </textarea>
+                        <ReactQuill
+                            className={OwRegisterCss.quillBox}
+                            style={{ width: "100%", minHeight: "150px" }}
+                            modules={quillModules}
+                            name="productContent" id="productContent"
+                            onChange={setDescription}
+                            value={description}
+                        />
                     </div>
                 </div>
 
@@ -523,6 +618,15 @@ function OwnerRegister() {
                 btnText="확인"
                 modalContext={modalMSg}
             />
+
+            <style>
+                {`
+                    .ql-container {
+                        border: solid 1px red;
+                        flex : 1;
+                    }
+                `}
+            </style>
         </div >
     )
 

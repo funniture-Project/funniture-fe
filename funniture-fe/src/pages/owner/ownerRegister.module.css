@@ -114,7 +114,7 @@
 
         .productDescriptionBox {
             width: 100%;
-            height: 150px;
+            min-height: 150px;
             border: solid 1px black;
             display: flex;
             align-items: center;
@@ -264,4 +264,9 @@
 
 button {
     cursor: pointer;
+}
+
+.quillBox {
+    display: flex;
+    flex-direction: column;
 }
