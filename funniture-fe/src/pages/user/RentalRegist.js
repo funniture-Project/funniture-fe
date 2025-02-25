@@ -10,16 +10,15 @@ import DeliveryAddressModal from './DeliveryAddressModal';
 function RentalRegist () {
 
     const location = useLocation();
-   
+    
+    // 상품 상세페이지에서 넘어오는 데이터
     const {selectRentalOption} = location.state  // 렌탈 조건 정보
     const {productInfo} = location.state         // 상품 정보
     const {rentalNum} = location.state           // 렌탈 갯수
 
-    const [deliveryAddressList, setDeliveryAddressList] = useState([]); // 변경버튼 누를 시 -> 배송지 전체 조회(모달창)
-    const [currentPoint, setCurrentPoint] = useState({});   // 보유 포인트 조회
-    const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 모달창
+    // 예약 등록 페이지 조회 데이터
     const [defaultAddress, setDefaultAddress] = useState([]);   // 기본배송지 조회
-    const [selectedAddress, setSelectedAddress] = useState(null); // 선택 된 배송지 상태 
+    const [currentPoint, setCurrentPoint] = useState({});   // 보유 포인트 조회
 
     // 기본 배송지 불러오기
     async function getDefaultAddressData(memberId) {
@@ -43,14 +42,6 @@ function RentalRegist () {
         }
     }
 
-    // 배송지 선택 모달 열기 핸들러
-    // 모달 열기 핸들러
-    const onClickHandler = async () => {
-        const data = await getDeliveryAddressListData("MEM011");  // 모달이 열릴 때 API 호출
-        setDeliveryAddressList(data.results.addressList);
-        setShowBtnModal(true);
-    };
-    
     useEffect(() => {
         getDefaultAddressData("MEM011");
     }, []);
@@ -58,15 +49,29 @@ function RentalRegist () {
     useEffect(() => {
         getCurrentPointData("MEM011");
     }, [])
+    
+// ------------------------------------------------ 배송지 변경 ------------------------------------------------
+
+const [deliveryAddressList, setDeliveryAddressList] = useState([]); // 전체 배송지리스트 조회(모달창)
+const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모달창 상태
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false); // 변경 완료 모달 상태
+
+    // 배송지 선택 모달 열기 핸들러
+    // 모달 열기 핸들러
+    const onClickHandler = async () => {
+        const data = await getDeliveryAddressListData("MEM011");  // 모달이 열릴 때 API 호출
+        setDeliveryAddressList(data.results.addressList);
+        setShowBtnModal(true);
+    };
 
     // 배송지 선택 후, 상태 갱신
     const handleAddressSelect = (address) => {
-        setSelectedAddress(address);  // 선택된 주소 상태로 설정
-        setDefaultAddress(address);   // 기본 배송지로 반영
+        setDefaultAddress(address);   // 기본 배송지 변경
+        setShowBtnModal(false);       // 배송지 변경 모달 닫기
+        setShowConfirmationModal(true); // 변경 완료 모달 띄우기
     };
- 
 
-    // 계산 되는 것 변수 처리
+    // 계산 되는 것 변수 처리(할인가격, 렌탈 가격, 구매 적립 포인트)
     const totalRentalPrice = selectRentalOption.rentalPrice * rentalNum; // 총 렌탈 가격
     const discountAmount = totalRentalPrice * 0.1; // 할인 금액 (10%) => 나중에 할인쿠폰 하면 0.1 도 할인쿠폰마다 달라져야함
     const finalPriceThisMonth = totalRentalPrice - discountAmount; // 이번 달 결제 금액
@@ -90,7 +95,7 @@ function RentalRegist () {
                         <h3>배송지</h3>
                         <div className={RentalRegistCss.deliverySection}>
                             <div>
-                                <div>{defaultAddress ? defaultAddress.receiver : '배송지 없음'}</div>
+                                <div>{defaultAddress ? defaultAddress.receiver : '배송지 없음'} ({defaultAddress.destinationName})</div>
                                 <div className={RentalRegistCss.deliveryChangeBtn} onClick={onClickHandler}>변경</div>
                             </div>
                             <div>{defaultAddress ? defaultAddress.destinationPhone : ''}</div>
@@ -201,7 +206,7 @@ function RentalRegist () {
                 </div>
             </div>
 
-            {/* 모달 */}
+            {/* 배송지 변경 모달 */}
             {showBtnModal && (
                 <BtnModal
                 showBtnModal={showBtnModal}
@@ -209,9 +214,28 @@ function RentalRegist () {
                 // btnText="확인"
                 modalContext="로그인 후 이용 가능합니다."
                 modalSize="lg"
-                childContent={<DeliveryAddressModal deliveryAddressList={deliveryAddressList} onAddressSelect={handleAddressSelect}/>}
+                childContent={<DeliveryAddressModal 
+                    deliveryAddressList={deliveryAddressList} // 전체 배송지 리스트
+                    onAddressSelect={handleAddressSelect} // ✔ 선택됨이 업데이트되기위한 핸들러
+                    defaultAddress={defaultAddress} // 기본 배송지 전달
+                    />
+                    }
                 />
             )}
+
+            {/* 변경 완료 모달 */}
+            {showConfirmationModal && (
+                <BtnModal
+                    showBtnModal={showConfirmationModal}
+                    setShowBtnModal={setShowConfirmationModal}
+                    modalContext="배송지가 변경되었습니다."
+                    modalSize="sm"
+                    btnText="확인"
+                    onClose={() => setShowConfirmationModal(false)} // 확인 후 모달 닫기
+                />
+            )}
+
+            
         </>
     );
 }
