@@ -307,6 +307,10 @@ export const callWithdrawAPI = ({ memberId }) => {
     };
 }
 
+// 사용자가 제공자로 전환 신청할 때 서버에 넘길 사업자 데이터들
+export const callRegisterOwnerAPI = () => {
+    
+}
 
 
 // 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.

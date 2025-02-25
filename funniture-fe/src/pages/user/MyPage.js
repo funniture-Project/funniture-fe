@@ -116,6 +116,12 @@ function MyPage() {
                             className={`tab link ${activeTab === 'address' ? 'active' : ''}`}>
                             <div>배송지관리</div>
                         </Link>
+                        <Link
+                            to={`/mypage/convert`}
+                            onClick={() => handleTabClick('address')}
+                            className={`tab link ${activeTab === 'address' ? 'active' : ''}`}>
+                            <div>제공자 전환</div>
+                        </Link>
                     </div>
                 </div>
             </div>
