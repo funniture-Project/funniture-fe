@@ -3,16 +3,29 @@ import Pagination from '../../component/Pagination'
 import { useEffect, useState } from 'react'
 import { changeProductStatus, getProductListByOwnerNo } from '../../apis/ProductAPI'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 function OwnerProducts() {
     const [searchFilter, setSearchFilter] = useState('판매중')
     const [productAllList, setProductAllList] = useState([])
-    const [productStopList, setProductStopList] = useState([])
-    const [productSaleList, setProductSaleList] = useState([])
-    const [notAbleList, setNotAbleList] = useState([])
+    const [productStopList, setProductStopList] = useState(localStorage.getItem('productStopList') ? JSON.parse(localStorage.getItem('productStopList')) : [])
+    const [productSaleList, setProductSaleList] = useState(localStorage.getItem('productSaleList') ? JSON.parse(localStorage.getItem('productSaleList')) : [])
+    const [notAbleList, setNotAbleList] = useState(localStorage.getItem('notAbleList') ? JSON.parse(localStorage.getItem('notAbleList')) : [])
     const [errorMsg, setErrorMsg] = useState('')
+    const { user } = useSelector(state => state.member)
 
     const navigate = useNavigate();
+
+    // 로컬 스토리지에서 데이터 불러오기
+    function loadFromLocalStorage(key) {
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : [];
+    }
+
+    // 로컬 스토리지에 데이터 저장
+    function saveToLocalStorage(key, data) {
+        localStorage.setItem(key, JSON.stringify(data));
+    }
 
     async function getData(ownerNo) {
 
@@ -25,13 +38,25 @@ function OwnerProducts() {
             setProductStopList(allProduct.filter(product => product.productStatus == '판매종료'))
             setNotAbleList(allProduct.filter(product => product.productStatus == '판매불가'))
             setProductSaleList(allProduct.filter(product => product.productStatus != '판매불가' && product.productStatus != '판매종료'))
+
         } else {
             setErrorMsg(data.message)
         }
     }
 
     useEffect(() => {
-        getData("MEM001")
+        // 로컬 스토리지에 저장
+        saveToLocalStorage('productStopList', productStopList);
+        saveToLocalStorage('productSaleList', productSaleList);
+        saveToLocalStorage('notAbleList', notAbleList);
+    }, [notAbleList])
+
+    useEffect(() => {
+        console.log("제공자 정보 : ", user)
+
+        if (user) {
+            getData(user.memberId)
+        }
     }, [])
 
     async function changeStatus() {
@@ -49,7 +74,7 @@ function OwnerProducts() {
                 tag.checked = false
             })
 
-            getData("MEM001")
+            getData(user.memberId)
         }
     }
 
@@ -63,7 +88,7 @@ function OwnerProducts() {
                 tag.checked = false
             })
 
-            getData("MEM001")
+            getData(user.memberId)
         }
     }
 
@@ -128,7 +153,7 @@ function OwnerProducts() {
                                             <div className={OwProductCss.productInfo}>
                                                 <div className={OwProductCss.productName}>{product.productName}</div>
                                                 <div style={{ marginTop: product.rentalOptionList.length > 0 ? "10px" : null }}>
-                                                    {product.rentalOptionList.map(option => (
+                                                    {product.rentalOptionList.filter(option => option.active == true).map(option => (
                                                         <div className={OwProductCss.productRentalInfo}>
                                                             <div>{option.rentalTerm}개월</div>
                                                             <div>{option.rentalPrice} 원</div>
@@ -148,7 +173,9 @@ function OwnerProducts() {
                                                 </div>
                                             </div>
                                             <div className={OwProductCss.editBtns} >
-                                                <button style={{ display: `${product.productStatus != '판매종료' && product.productStatus != '판매불가' ? "block" : "none"}` }}>수정하기</button>
+                                                <button onClick={() => navigate("/owner/edit", { state: { product: product } })}
+                                                    style={{ display: `${product.productStatus != '판매종료' && product.productStatus != '판매불가' ? "block" : "none"}` }}
+                                                >수정하기</button>
                                                 <button onClick={() => NotSale(`${product.productNo}`)}
                                                     style={{ display: `${product.productStatus != '판매종료' && product.productStatus != '판매불가' ? "block" : "none"}` }}>
                                                     판매 종료

@@ -1,6 +1,6 @@
 import { GET_CATEGORY_LIST } from '../redux/modules/CategoryModuls'
 import api from "./Apis";
-import { REGISTER_PRODUCT_FAIL, REGISTER_PRODUCT_REQUEST, REGISTER_PRODUCT_SUCCESS } from '../redux/modules/productReducer';
+import { EDIT_PRODUCT_REQUEST, REGISTER_PRODUCT_FAIL, REGISTER_PRODUCT_REQUEST, REGISTER_PRODUCT_SUCCESS } from '../redux/modules/productReducer';
 
 const baseProductUrl = 'http://localhost:8080/api/v1/product'
 
@@ -178,6 +178,34 @@ export async function registerProduct(dispatch, formData, rentalOptions, product
             },
         })
     }
+    return response?.data
+}
+
+// 상품 정보 수정하기
+export async function modifyProductInfo({ dispatch, formData, rentalOptions, productImage, productNo }) {
+    dispatch({ type: EDIT_PRODUCT_REQUEST })
+
+    console.log("API 전달 할 데이터 formData : ", formData)
+    console.log("API 전달 할 데이터 rentalOptions : ", rentalOptions)
+    console.log("API 전달 할 데이터 productImage : ", productImage)
+
+    const data = new FormData();
+    data.append("formData", new Blob([JSON.stringify(formData)], { type: "application/json" })); // formData를 JSON 문자열로 추가
+    data.append("rentalOptions", new Blob([JSON.stringify(rentalOptions)], { type: "application/json" })); // rentalOptions를 JSON 문자열로 추가
+    if (productImage != null) {
+        data.append("productImage", productImage);
+    }
+
+    const url = `/product/modify/${productNo}`
+
+    const response = await api.put(url, data, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+
+    console.log("수정API 응답 : ", response)
+
     return response?.data
 }
 
