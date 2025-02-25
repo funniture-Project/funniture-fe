@@ -36,9 +36,13 @@ function Header({ setSelectCategory }) {
             if (decodedToken && decodedToken.exp > Date.now() / 1000) {
                 setIsLogin(true);
                 setUserRole(decodedToken.memberRole); // 사용자 역할 저장
+            } else {
+                setIsLogin(false);
             }
+        } else{
+            setIsLogin(false); // 토큰 없으면 로그아웃 상태
         }
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         setCategoryData(refCategory)

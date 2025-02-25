@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL } from "../redux/modules/MemberModule";
+import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL, RESET_MEMBER } from "../redux/modules/MemberModule";
 import api from "./Apis";
 import imageApi from "./Apis";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -65,10 +65,10 @@ export const callLoginAPI = ({ form }) => {
                 return { success: true, message: result.message };
             } else {
                 console.log('로그인 실패 : ', result.status);
-                console.log('result.failType : ', result.failType);
+                console.log('result.failType : ', result.message);
 
                 // 로그인 실패 시 false 반환
-                return { success: false, message: result.failType };
+                return { success: false, message: result.message };
             }
         } catch (error) {
             console.error('로그인 요청 중 오류 발생:', error);
@@ -178,10 +178,8 @@ export const callChangePhoneAPI = ({memberId,phoneNumber}) => {
 
         if (response.data.httpStatusCode === 201) {
             console.log('전화번호 변경 성공');
-            alert('전화번호가 변경되었습니다.')
         } else if (response.data.httpStatusCode === 404) {
             console.log('전화번호 변경 실패');
-            alert('전화번호를 변경하지 못하였습니다.')
         }
     };
 };
@@ -218,7 +216,6 @@ export const callChangeAddressAPI = ({memberId , address}) => {
 
         if(response.data.httpStatusCode === 201){
             console.log('주소 변경 성공');
-            alert('주소 변경 성공!');
             return;
         } else if (response.data.httpStatusCode === 404) {
             console.log('주소 변경 실패')
@@ -227,6 +224,7 @@ export const callChangeAddressAPI = ({memberId , address}) => {
     };
 }
 
+// 마이페이지에서 이미지 변경 요청
 export const callChangeImageAPI = ({ memberId, imageLink }) => {
     const requestURL = `http://localhost:8080/api/v1/member/modify/imageLink`;
 
@@ -261,7 +259,7 @@ export const callChangeImageAPI = ({ memberId, imageLink }) => {
         
             if (response.data.httpStatusCode === 201) {
                 console.log('프로필 사진 변경 성공');
-                alert('프로필 사진이 변경되었습니다.');
+                // alert('프로필 사진이 변경되었습니다.');
             } else if (response.data.httpStatusCode === 400) {
                 console.log('프로필 사진 변경 실패');
                 alert('프로필 사진 변경에 실패했습니다.');
@@ -277,7 +275,16 @@ export const callChangeImageAPI = ({ memberId, imageLink }) => {
     };
 };
 
+// 탈퇴하기 눌렀을 때 동작하는 애 
+export const callWithdrawAPI = ({memberId}) => {
+    const requestURL = `http://localhost:8080/api/v1/member/withdraw/${memberId}`;
 
+    return async () => {
+        const response = await api.put(requestURL)
+        
+        console.log('회원 탈퇴 요청 서버에 잘 다녀 왔나. response : ' , response);
+    };
+}
 
 
 
