@@ -9,6 +9,7 @@ import MemberAPI, {
   callCertificationAPI,
   callGetMemberEmailAPI
 } from '../../apis/MemberAPI';
+import Timer from './Timer';
 
 function Signup() {
   const navigate = useNavigate();
@@ -36,7 +37,10 @@ function Signup() {
   const [passwordMessage, setPasswordMessage] = useState(''); // 비밀번호 유효성 메시지
   const [confirmPasswordMessage, setConfirmPasswordMessage] = useState(''); // 비밀번호 확인 메시지
 
-
+  // 타이머 관련 상태
+  const [showTimer, setShowTimer] = useState(false);
+  const [resetTimerTrigger, setResetTimerTrigger] = useState(false);
+  const [showPasswordFields, setShowPasswordFields] = useState(false);
 
   // 비밀번호 유효성 검사 함수
   const isPasswordValid = (password) => {
@@ -127,6 +131,13 @@ function Signup() {
     dispatch(callSendEmailAPI({ form }));
     setEmailSent(true); // 이메일 발송 후 상태 업데이트
     setShowVerificationButton(true); // 인증하기 버튼 다시 표시
+
+        // 타이머 리셋 및 표시
+        setResetTimerTrigger((prev) => !prev);
+        setShowTimer(true);
+        // 재발송 시 비밀번호 입력창 숨김
+        setShowPasswordFields(false);
+        setCodeVerified(false);
 };
 
 
@@ -138,6 +149,11 @@ function Signup() {
         alert('인증 성공!');
         setCodeVerified(true);
         setShowVerificationButton(false); // 인증 성공 시 버튼 숨김
+
+        // 인증 완료 시 타이머 숨김
+        setShowTimer(false);
+        // 인증 완료 시 비밀번호 입력창 표시
+        setShowPasswordFields(true);
     } else {
         alert('인증 실패. 올바른 인증번호를 입력해주세요.');
         setCodeVerified(false);
@@ -165,49 +181,6 @@ function Signup() {
       );
   }
   
-
-  // 조건부 렌더링: 이름 및 비밀번호 입력 필드
-  let renderUserInputs;
-  if (codeVerified) {
-      renderUserInputs = (
-        <div className="loginInput">
-          <input
-            type="text"
-            name="userName"
-            onChange={onChangeHandler}
-            placeholder="이름을 입력해 주세요."
-          />
-          
-          {/* 비밀번호 입력 */}
-          <input
-            type="password"
-            name="password"
-            onChange={onChangeHandler}
-            placeholder="영문 + 숫자 + 특수문자 포함하여 8자 이상 입력"
-          />
-          {passwordMessage && (
-            <small style={{ color: 'red', fontSize: '10px' }}>
-              {passwordMessage}
-            </small>
-          )}
-
-          {/* 비밀번호 확인 입력 */}
-          <input
-            type="password"
-            name="confirmPassword"
-            onChange={onChangeHandler}
-            placeholder="비밀번호를 동일하게 입력해 주세요."
-          />
-          {confirmPasswordMessage && (
-            <small style={{ color: confirmPasswordMessage.includes('일치합니다') ? 'blue' : 'red', fontSize: '10px' }}>
-              {confirmPasswordMessage}
-            </small>
-          )}
-        </div>
-      );
-  }
-
-
   // 조건부 렌더링: 회원가입 버튼
   let renderSignupButton;
   if (codeVerified) {
@@ -265,11 +238,36 @@ function Signup() {
                 </button>
               </div>
 
+                {/* 타이머 표시 */}
+{showTimer && <Timer onExpire={() => setShowVerificationButton(false)} resetTrigger={resetTimerTrigger} />}
+
               {/* 인증하기 버튼 */}
               {renderVerificationButton}
 
               {/* 이름 및 비밀번호 입력 */}
-              {renderUserInputs}
+              {showPasswordFields && (
+              <>
+                <div className="loginInput">
+                <input
+                    type="text"
+                    name="userName"
+                    onChange={onChangeHandler}
+                    placeholder="이름을 입력해 주세요."/>
+                </div>
+                <div className="loginInput">
+                  <input type="password" name="password" onChange={onChangeHandler} placeholder="영문 + 숫자 + 특수문자 포함하여 8자 이상 입력" />
+                  {passwordMessage && <small style={{ color: 'red', fontSize: '10px' }}>{passwordMessage}</small>}
+                </div>
+                <div className="loginInput">
+                  <input type="password" name="confirmPassword" onChange={onChangeHandler} placeholder="비밀번호를 동일하게 입력해 주세요." />
+                  {confirmPasswordMessage && (
+                    <small style={{ color: confirmPasswordMessage.includes('일치합니다') ? 'blue' : 'red', fontSize: '10px' }}>
+                      {confirmPasswordMessage}
+                    </small>
+                  )}
+                </div>
+              </>
+            )}
 
               {/* 회원가입 버튼 */}
               {renderSignupButton}

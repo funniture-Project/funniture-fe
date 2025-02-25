@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import MemberAPI, {} from '../../apis/MemberAPI';
 import { callSendEmailAPI , callChangePassAPI, callGetMemberEmailAPI } from '../../apis/MemberAPI';
+import Timer from './Timer';
 
 function FindPass() {
   const navigate = useNavigate();
@@ -30,6 +31,11 @@ function FindPass() {
   const [showVerificationButton, setShowVerificationButton] = useState(true); // 인증하기 버튼 표시 여부
   const [passwordMessage, setPasswordMessage] = useState(''); // 비밀번호 유효성 메시지
   const [confirmPasswordMessage, setConfirmPasswordMessage] = useState(''); // 비밀번호 확인 메시지
+
+  // 타이머 관련 상태
+  const [showTimer, setShowTimer] = useState(false);
+  const [resetTimerTrigger, setResetTimerTrigger] = useState(false);
+  const [showPasswordFields, setShowPasswordFields] = useState(false);
 
   // 비밀번호 유효성 검사 함수
   const isPasswordValid = (password) => {
@@ -118,6 +124,13 @@ function FindPass() {
     dispatch(callSendEmailAPI({ form }));
     setEmailSent(true); // 이메일 발송 후 인증하기 버튼 표시
     setShowVerificationButton(true); // 인증하기 버튼 다시 표시
+
+        // 타이머 리셋 및 표시
+        setResetTimerTrigger((prev) => !prev);
+        setShowTimer(true);
+            // 재발송 시 비밀번호 입력창 숨김
+    setShowPasswordFields(false);
+    setCodeVerified(false);
   };
 
   // 인증번호 확인 핸들러
@@ -128,6 +141,11 @@ function FindPass() {
       alert('인증 성공!');
       setCodeVerified(true); // 인증 성공 시 다음 단계로 진행
       setShowVerificationButton(false); // 인증 성공 시 버튼 숨김
+
+      // 인증 완료 시 타이머 숨김
+      setShowTimer(false);
+      // 인증 완료 시 비밀번호 입력창 표시
+      setShowPasswordFields(true);
     } else {
       alert('인증 실패. 올바른 인증번호를 입력해주세요.');
       setCodeVerified(false);
@@ -155,35 +173,35 @@ function FindPass() {
   }
 
   // 조건부 렌더링: 비밀번호 입력 필드
-  let renderUserInputs;
-  if (codeVerified) {
-    renderUserInputs = (
-      <div className="loginInput">
-        <input
-          type="password"
-          name="password"
-          onChange={onChangeHandler}
-          placeholder="영문 + 숫자 + 특수문자 포함하여 8자 이상 입력"
-        />
-          {passwordMessage && (
-            <small style={{ color: 'red', fontSize: '10px' }}>
-              {passwordMessage}
-            </small>
-          )}
-        <input
-          type="password"
-          name="confirmPassword"
-          onChange={onChangeHandler}
-          placeholder="비밀번호를 동일하게 입력해 주세요."
-        />
-          {confirmPasswordMessage && (
-            <small style={{ color: confirmPasswordMessage.includes('일치합니다') ? 'blue' : 'red', fontSize: '10px' }}>
-              {confirmPasswordMessage}
-            </small>
-          )}
-      </div>
-    );
-  }
+  // let renderUserInputs;
+  // if (codeVerified) {
+  //   renderUserInputs = (
+  //     <div className="loginInput">
+  //       <input
+  //         type="password"
+  //         name="password"
+  //         onChange={onChangeHandler}
+  //         placeholder="영문 + 숫자 + 특수문자 포함하여 8자 이상 입력"
+  //       />
+  //         {passwordMessage && (
+  //           <small style={{ color: 'red', fontSize: '10px' }}>
+  //             {passwordMessage}
+  //           </small>
+  //         )}
+  //       <input
+  //         type="password"
+  //         name="confirmPassword"
+  //         onChange={onChangeHandler}
+  //         placeholder="비밀번호를 동일하게 입력해 주세요."
+  //       />
+  //         {confirmPasswordMessage && (
+  //           <small style={{ color: confirmPasswordMessage.includes('일치합니다') ? 'blue' : 'red', fontSize: '10px' }}>
+  //             {confirmPasswordMessage}
+  //           </small>
+  //         )}
+  //     </div>
+  //   );
+  // }
 
   // 조건부 렌더링: 비밀번호 변경 버튼
   let renderModifyPasswordButton;
@@ -238,16 +256,33 @@ function FindPass() {
                   placeholder="인증번호 입력"
                 />
                 {/* 회원가입과 !isEmailDuplicate 요기만 다름. */}
-                <button onClick={sendEmailHandler} disabled={!emailValid || !isEmailDuplicate}>
+                <button onClick={sendEmailHandler}>
                     {emailSent ? '재발송' : '인증번호 발송'}
                 </button>
               </div>
 
+{/* 타이머 표시 */}
+{showTimer && <Timer onExpire={() => setShowVerificationButton(false)} resetTrigger={resetTimerTrigger} />}
+
               {/* 인증하기 버튼 */}
               {renderVerificationButton}
 
-              {/* 비밀번호 입력 */}
-              {renderUserInputs}
+              {showPasswordFields && (
+              <>
+                <div className="loginInput">
+                  <input type="password" name="password" onChange={onChangeHandler} placeholder="영문 + 숫자 + 특수문자 포함하여 8자 이상 입력" />
+                  {passwordMessage && <small style={{ color: 'red', fontSize: '10px' }}>{passwordMessage}</small>}
+                </div>
+                <div className="loginInput">
+                  <input type="password" name="confirmPassword" onChange={onChangeHandler} placeholder="비밀번호를 동일하게 입력해 주세요." />
+                  {confirmPasswordMessage && (
+                    <small style={{ color: confirmPasswordMessage.includes('일치합니다') ? 'blue' : 'red', fontSize: '10px' }}>
+                      {confirmPasswordMessage}
+                    </small>
+                  )}
+                </div>
+              </>
+            )}
 
               {/* 비밀번호 변경 버튼 */}
               {renderModifyPasswordButton}
