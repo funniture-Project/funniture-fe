@@ -1,17 +1,23 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import OwRegisterCss from './ownerRegister.module.css'
-import { getSubAllCategory, registerProduct } from '../../apis/ProductAPI';
+import { getSubAllCategory, modifyProductInfo, registerProduct, uploadQuillImg } from '../../apis/ProductAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import BtnModal from '../../component/BtnModal';
+import { useLocation, useNavigate } from 'react-router-dom';
+import ReactQuill, { Quill } from 'react-quill-new';
+import { ImageResize } from 'quill-image-resize-module-ts';
 
 function OwnerRegister() {
+
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { user } = useSelector(state => state.member)
     const { loading, error, msg } = useSelector(state => state.product)
     const [showBtnModal, setShowBtnModal] = useState(false)
 
     const [productName, setProductName] = useState('');
     const [refCategory, setRefCategory] = useState(1)
+    const [categoryCode, setCategoryCode] = useState(null);
 
     const [allCategoryList, setAllCategoryList] = useState([])
     const [categoryList, setCategoryList] = useState([])
@@ -26,7 +32,15 @@ function OwnerRegister() {
     })
     const [productImage, setProductImage] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [rentalOptions, setRentalOptions] = useState([]);
+    const [rentalOptions, setRentalOptions] = useState([
+        {
+            rentalInfoNo: null,
+            rentalTerm: 1,
+            rentalPrice: 0,
+            asNumber: 0,
+        }
+    ]);
+    const [description, setDescription] = useState('')
 
     const [modalMSg, setModalMSg] = useState('')
 
@@ -47,7 +61,7 @@ function OwnerRegister() {
     // 하위 카테고리 세팅
     useEffect(() => {
         settingCategoryList();
-    }, [refCategory])
+    }, [refCategory, allCategoryList])
 
     function settingCategoryList() {
         const filtered = allCategoryList.filter(category => category.refCategoryCode == refCategory)
@@ -71,52 +85,105 @@ function OwnerRegister() {
         reader.onload = (e) => {
             console.log("e.target : ", e.target)
             imgShowBox.style.backgroundImage = `url(${e.target.result})`
-
-            // setUploadImg64(reader.result); // Base64로 변환된 데이터 저장
         }
     }
 
-    const rentalContainerRef = useRef(null); // 📌 옵션 리스트를 감싸는 div 참조
-
     // 옵션 추가
     function addRentalOption() {
-        const newItem = document.createElement('div');
-        newItem.className = OwRegisterCss.RentalInfoItem;
-        newItem.setAttribute('name', 'rentalInfoItem')
+        const newOption = {
+            rentalInfoNo: null,
+            rentalTerm: 1,
+            rentalPrice: 0,
+            asNumber: 0
+        }
 
-        newItem.innerHTML = `
-            <div class=${OwRegisterCss.rentalTerm}>
-                <select name="rentalTerm" id="rentalTerm" >
-                    <option value="1">1개월</option>
-                    <option value="3">3개월</option>
-                    <option value="9">9개월</option>
-                    <option value="12">12개월</option>
-                    <option value="24">24개월</option>
-                    <option value="36">36개월</option>
-                </select>
-            </div>
-            <div class=${OwRegisterCss.rentalCost}>
-                <input type="number" min=0 value=0 name='rentalPrice'/>
-                <div>원</div>
-            </div>
-            <div class=${OwRegisterCss.rentalAS} >
-                <input type="number" min=0 value=0 name='asNum' />
-                <div>번</div>
-            </div>
-            <div class="${OwRegisterCss.removeBtn} removeBtnEvent">
-                <button>-</button>
-            </div>
-        `
+        setRentalOptions(prev => [...prev, newOption]);
+    }
 
-        newItem.querySelector(".removeBtnEvent").addEventListener("click", () => {
-            rentalContainerRef.current.removeChild(newItem);
-        })
+    // 옵션 삭제
+    function removeOption(indexToRemove) {
+        // setRentalOptions((prevOptions) =>
+        //     prevOptions.filter((_, index) => index !== indexToRemove)
+        // );
 
-        rentalContainerRef.current.appendChild(newItem);
+        setRentalOptions(prevOptions => {
+            const newOptions = [...prevOptions];  // 깊은 복사
+            newOptions.splice(indexToRemove, 1);  // 해당 index 삭제
+            return newOptions;
+        });
+    }
+
+    // 옵션 변경 핸들러
+    function handleOptionChange(index, field, value) {
+        const updatedOptions = rentalOptions.map((option, i) =>
+            i === index ? { ...option, [field]: value } : option
+        );
+        setRentalOptions(updatedOptions);
+    }
+
+    useEffect(() => {
+        console.log("변경된 rentalOptions (비동기 체크):", rentalOptions);
+    }, [rentalOptions]);
+
+    // react-quill 이미지 주소 바꿔치기
+
+
+
+    // img태그의 src만 추출하는 정규식
+    const gainSource = /(<img[^>]*src\s*=\s*[\"']?([^>\"']+)[\"']?[^>]*>)/g
+    // const gainSource = /<img[^>]*src\s*=\s*['"]([^'"]+)['"][^>]*>/g;
+
+    function data64ToFile(img64) {
+        const filename = `image_${new Date().getTime()}.png`;
+
+        const [header, base64Data] = img64.split(",")
+
+        // MIME 타입 추출 (예: "image/png")
+        const mime = header.match(/:(.*?);/)[1];
+
+        // Base64로 인코딩된 데이터에서 실제 데이터만 추출
+        const binary = atob(base64Data);
+
+        // 바이너리 데이터를 ArrayBuffer로 변환
+        const arrayBuffer = new ArrayBuffer(binary.length);
+        const uintArray = new Uint8Array(arrayBuffer);
+
+        // binary 데이터를 uintArray에 복사
+        for (let i = 0; i < binary.length; i++) {
+            uintArray[i] = binary.charCodeAt(i);
+        }
+
+        // Blob 객체 생성
+        const blob = new Blob([arrayBuffer], { type: mime });
+
+        // Blob 객체를 File 객체로 변환
+        return new File([blob], filename, { type: mime });
+    }
+
+    async function saveQuillImg(description) {
+        let updatedDescription = description
+
+        const matches = description.match(/<img[^>]*src\s*=\s*["']([^"']+)["'][^>]*>/g);
+
+        if (matches) {
+            for (let imgTag of matches) {
+                const img64 = imgTag.match(/src\s*=\s*["']([^"']+)["']/)[1];
+
+                if (img64.startsWith("data:image")) {
+                    const switchFile = data64ToFile(img64)
+                    const uploadUrl = await uploadQuillImg(switchFile)
+
+                    if (uploadUrl) {
+                        updatedDescription = updatedDescription.replace(img64, uploadUrl.url);
+                    }
+                }
+            }
+        }
+        return updatedDescription
     }
 
     // form제출
-    const submitForm = useCallback((e) => {
+    const submitForm = useCallback(async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target)
@@ -124,21 +191,19 @@ function OwnerRegister() {
         // 예외처리
 
         // 상품명
-        if (formData.get("productName").trim() < 1 || formData.get("productName").trim() > 30) {
+        if (formData.get("productName")?.trim() < 1 || formData.get("productName")?.trim() > 30) {
             setShowBtnModal(true)
             setModalMSg("상품명은 1글자 이상 20글자 이하로 작성해주셔야 합니다.")
             return;
         }
 
-        // 가격
-        const rentalOptionPrice = document.querySelectorAll("input[name = 'rentalPrice']")
-
-        const zeroPrice = Array.from(rentalOptionPrice).some(option => parseInt(option.value) <= 0)
-        if (zeroPrice) {
-            setShowBtnModal(true)
-            setModalMSg("렌탈가는 0원으로 설정될 수 없습니다.")
-            return;
-        }
+        // 렌탈 가격
+        // const zeroPrice = rentalOptions.some((option) => option.rentalPrice <= 0);
+        // if (zeroPrice) {
+        //     setShowBtnModal(true)
+        //     setModalMSg("렌탈가는 0원으로 설정될 수 없습니다.")
+        //     return;
+        // }
 
         // 재고
         const totalStockInput = document.querySelector("input[name = 'totalStock']")
@@ -149,125 +214,211 @@ function OwnerRegister() {
             return;
         }
 
+        let updatedDescription = description;
+
+        console.log("src 변경전 updatedDescription : ", updatedDescription)
+
+        if (gainSource.test(description)) {  // description에 이미지가 있을 때만 처리
+            updatedDescription = await saveQuillImg(description);
+
+            console.log("src 변경한 updatedDescription : ", updatedDescription)
+        }
+
         // 보낼 데이터 생성
         setSendFormData(prev => ({
             ...prev,
-            productName: formData.get("productName").trim(),
+            productName: formData.get("productName")?.trim(),
             ownerNo: user.memberId,
             totalStock: parseInt(formData.get("totalStock")),
             categoryCode: parseInt(formData.get("categoryCode")),
             regularPrice: parseInt(formData.get("regularPrice")),
-            productContent: formData.get("productContent"),
+            productContent: updatedDescription,
         }))
-
-        const rentalOptionList = document.querySelectorAll("div[name='rentalInfoItem']")
-        console.log("rentalOptionList : ", rentalOptionList)
-
-        const options = []
-        rentalOptionList.forEach(option => {
-            const rentalOption = {
-                rentalTerm: parseInt(option.querySelector("[name='rentalTerm']").value),
-                rentalPrice: parseInt(option.querySelector("[name='rentalPrice']").value),
-                asNumber: parseInt(option.querySelector("[name='asNum']").value),
-            }
-
-            options.push(rentalOption)
-        })
-
-        setRentalOptions(options)
     }, [isSubmitting])
 
     useEffect(() => {
         if (isSubmitting && rentalOptions.length) {
-            (async () => {
-                try {
-                    const response = await registerProduct(dispatch, sendFormData, rentalOptions, productImage)
+            // 상품 정보 수정
+            if (editProduct) {
+                (async () => {
 
-                    console.log("response : ", response)
+                    console.log("수정하러 출발!!!!!!!!!!!")
 
-                    // 등록 성공
-                    if (response.httpStatusCode == 201) {
-                        setSendFormData(prev => ({
-                            ...prev,
-                            productName: '',
-                            totalStock: 0,
-                            categoryCode: 1,
-                            regularPrice: 1,
-                            productContent: null
-                        }))
+                    console.log("전달 전의 수정 sendFormData : ", sendFormData)
+                    console.log("전달 전의 수정 rentalOptions : ", rentalOptions)
+                    console.log("전달전의 productImage : ", productImage)
 
-                        setProductName('')
-                        setProductImage(null)
-                        setRefCategory(1)
-                        setRentalOptions([])
-                        clearRentalOptions();
+                    try {
+                        const response = await modifyProductInfo({ dispatch, formData: sendFormData, rentalOptions, productImage, productNo: editProduct.productNo })
 
-                        const inputList = document.querySelectorAll("input")
-                        inputList.forEach(tag => {
-                            if (tag.name == 'uploadImg') {
-                                tag.value = null
-                            } else if (tag.name == "rentalPrice" || tag.name == "asNum") {
-                                tag.value = 0
-                            } else {
-                                tag.value = 1
-                            }
-                        })
-
-                        const selectOption = document.querySelectorAll("select")
-
-                        selectOption.forEach(select => {
-                            if (select.name == "categoryCode") {
-                                select.value = 3
-                            } else {
-                                select.value = 1
-                            }
-                        })
-
-                        const description = document.querySelector("textarea")
-                        description.value = ''
-
-                        // 이미지 미리보기 비우기기
-                        const imgShowBox = document.getElementById("imgShowBox")
-                        imgShowBox.style.backgroundImage = null
-
+                        if (response?.httpStatusCode == 204) {
+                            navigate("/owner/product")
+                        }
+                    } catch (error) {
+                        console.log("error 발생 : ", error)
+                        console.log("error.data : ", error.data)
+                        // error = error.data.errors[0].defaultMessage;  // msg 값을 직접 변경
+                    } finally {
+                        setIsSubmitting(false)
                     }
-                } catch (error) {
-                    console.log("error 발생 : ", error)
-                    console.log("error.data.errors[0].defaultMessage; : ", error.data.errors[0].defaultMessage)
-                    error = error.data.errors[0].defaultMessage;  // msg 값을 직접 변경
-                } finally {
-                    setIsSubmitting(false)
-                    setShowBtnModal(true)
-                }
-            })
-                ();
-        }
-    }, [rentalOptions])
+                })
 
-    // 추가된 옵션만 지우는 함수
-    function clearRentalOptions() {
-        // rentalContainerRef.current에서 rentalInfoItem 클래스를 가진 모든 자식 요소 찾기
-        const rentalOptionItems = rentalContainerRef.current.querySelectorAll('[name="rentalInfoItem"]');
+                    ();
+            } else {
+                // 새롭게 등록록
+                (async () => {
+                    console.log("등록하러 출발!!!!!!!!!!!")
+                    try {
+                        const response = await registerProduct(dispatch, sendFormData, rentalOptions, productImage)
 
-        // 첫 번째 항목을 제외한 나머지 항목들을 제거
-        for (let i = 1; i < rentalOptionItems.length; i++) {
-            rentalContainerRef.current.removeChild(rentalOptionItems[i]);
+                        console.log("response : ", response)
+
+                        // 등록 성공
+                        if (response.httpStatusCode == 201) {
+                            setSendFormData(prev => ({
+                                ...prev,
+                                productName: '',
+                                totalStock: 0,
+                                categoryCode: 1,
+                                regularPrice: 1,
+                                productContent: null
+                            }))
+
+                            const inputList = document.querySelectorAll("input")
+                            inputList.forEach(tag => {
+                                if (tag.name == 'uploadImg') {
+                                    tag.value = null
+                                } else {
+                                    tag.value = 1
+                                }
+                            })
+
+                            setProductName('')
+                            setProductImage(null)
+                            setRefCategory(1)
+                            setRentalOptions([
+                                {
+                                    rentalInfoNo: null,
+                                    rentalTerm: 1,
+                                    rentalPrice: 0,
+                                    asNumber: 0,
+                                }
+                            ])
+
+                            const selectOption = document.querySelectorAll("select")
+
+                            selectOption.forEach(select => {
+                                if (select.name == "categoryCode") {
+                                    select.value = 3
+                                } else {
+                                    select.value = 1
+                                }
+                            })
+
+                            const description = document.querySelector("textarea")
+                            description.value = ''
+
+                            // 이미지 미리보기 비우기기
+                            const imgShowBox = document.getElementById("imgShowBox")
+                            imgShowBox.style.backgroundImage = null
+
+                        }
+                    } catch (error) {
+                        console.log("error 발생 : ", error)
+                        console.log("error.data.errors[0].defaultMessage; : ", error.data?.errors[0].defaultMessage)
+                        error = error.data?.errors[0].defaultMessage;  // msg 값을 직접 변경
+                    } finally {
+                        setIsSubmitting(false)
+                        setShowBtnModal(true)
+                    }
+                })
+                    ();
+            }
         }
-    }
+    }, [sendFormData])
 
     useEffect(() => {
         console.log("modalMSg : ", modalMSg)
-    }, [modalMSg])
+        console.log("sendFormData : ", sendFormData)
+    }, [sendFormData, modalMSg])
 
     useEffect(() => {
         console.log("loading 변경 입니다. : ", loading)
         console.log("msg : ", msg)
         console.log("error : ", error)
         if (!loading) {
-            setModalMSg(msg.trim() != '' ? msg : error)
+            setModalMSg(msg?.trim() != '' ? msg : error)
         }
     }, [loading])
 
+    // 여기서 부터 수정 관련
+    const location = useLocation();
+
+    const editProduct = location.state?.product;
+    console.log("location.state.product : ", location.state?.product)
+
+    useEffect(() => {
+        if (editProduct) {
+            setSendFormData(({
+                productName: editProduct.productName,
+                totalStock: editProduct.totalStock,
+                categoryCode: editProduct.category.categoryCode,
+                regularPrice: editProduct.regularPrice,
+            }))
+
+            setDescription(editProduct.productContent)
+
+            setProductName(editProduct.productName)
+            setProductImage(null)
+            setRentalOptions(editProduct.rentalOptionList.filter(option => option.active == true))
+
+            const inputList = document.querySelectorAll("input")
+            inputList.forEach(tag => {
+                if (tag.name == "regularPrice") {
+                    tag.value = editProduct.regularPrice
+                } else if (tag.name == "totalStock") {
+                    tag.value = editProduct.totalStock
+                }
+            })
+
+            setRefCategory(editProduct.category.refCategoryCode)
+            setCategoryCode(editProduct.category.categoryCode)
+
+
+            const description = document.querySelector("textarea")
+            if (description) {
+                description.value = editProduct.productContent;
+            }
+
+            // 이미지 미리보기
+            const imgShowBox = document.getElementById("imgShowBox")
+            if (imgShowBox) {
+                imgShowBox.style.backgroundImage = editProduct.productImageLink == 'a.jpg'
+                    ? null
+                    : `url(${editProduct.productImageLink})`
+            }
+        }
+    }, [editProduct])
+
+    // react quill 모듈 등록
+    Quill.register('modules/ImageResize', ImageResize);
+
+    const quillModules = {
+        toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['link', 'image'],
+            ['clean']
+        ],
+        ImageResize: {
+            modules: ['Resize', 'DisplaySize']
+        },
+    }
+
+    useEffect(() => {
+        console.log("description : ", description)
+    }, [description])
 
     return (
         <div className={OwRegisterCss.wholeContainer}>
@@ -297,11 +448,13 @@ function OwnerRegister() {
                             value={refCategory}
                             onChange={(e) => setRefCategory(Number(e.target.value))}
                         >
-                            <option value="1">가전</option>
-                            <option value="2">가구</option>
+                            <option value="1" >가전</option>
+                            <option value="2" >가구</option>
                         </select>
-                        <select name="categoryCode" id="categoryCode">
-                            {categoryList.map(category => <option value={category.categoryCode}>{category.categoryName}</option>)}
+                        <select name="categoryCode" id="categoryCode" value={categoryCode} onChange={(e) => { setCategoryCode(e.target.value) }}>
+                            {categoryList.map(category => <option value={category.categoryCode} name="categoryCode">
+                                {category.categoryName}
+                            </option>)}
                         </select>
                     </div>
                 </div>
@@ -334,38 +487,92 @@ function OwnerRegister() {
                             <div className={OwRegisterCss.InfoInputTitle}>가격</div>
                             <div className={OwRegisterCss.description}>렌탈 기간에 따른 가격을 작성해주세요</div>
                         </div>
-                        <button onClick={addRentalOption}>추가하기</button>
+                        <button type='button' onClick={addRentalOption}>추가하기</button>
                     </div>
-                    <div className={OwRegisterCss.productRentalOptionBox} ref={rentalContainerRef}>
+                    <div className={OwRegisterCss.productRentalOptionBox}>
                         <div className={`${OwRegisterCss.RentalInfoItem} ${OwRegisterCss.RentalInfoItemTitle}`}>
                             <div className={OwRegisterCss.rentalTerm}>기간</div>
                             <div className={OwRegisterCss.rentalCost}>가격</div>
                             <div className={OwRegisterCss.rentalAS}>A/S 가능 횟수</div>
                             <div className={OwRegisterCss.removeBtn}></div>
                         </div>
-                        <div className={`${OwRegisterCss.RentalInfoItem}`} name="rentalInfoItem">
-                            <div className={OwRegisterCss.rentalTerm}>
-                                <select name="rentalTerm" id="rentalTerm" >
-                                    <option value="1">1개월</option>
-                                    <option value="3">3개월</option>
-                                    <option value="9">9개월</option>
-                                    <option value="12">12개월</option>
-                                    <option value="24">24개월</option>
-                                    <option value="36">36개월</option>
-                                </select>
-                            </div>
-                            <div className={OwRegisterCss.rentalCost}>
-                                <input type="number" min={0} defaultValue={0} name='rentalPrice' />
-                                <div>원</div>
-                            </div>
-                            <div className={OwRegisterCss.rentalAS}>
-                                <input type="number" min={0} defaultValue={0} name='asNum' />
-                                <div>번</div>
-                            </div>
-                            <div className={OwRegisterCss.removeBtn}>
-                                <button style={{ opacity: "0" }}>-</button>
-                            </div>
-                        </div>
+                        {/* 수정일 경우 */}
+                        {editProduct && rentalOptions.length >= 1 ? (
+                            rentalOptions.map((option, index) => (
+                                <div className={`${OwRegisterCss.RentalInfoItem}`} name="rentalInfoItem"
+                                    key={option.rentalInfoNo || `option-${index}`} data-rental-info-no={option.rentalInfoNo}>
+                                    <div className={OwRegisterCss.rentalTerm}>
+                                        <select name="rentalTerm" id="rentalTerm" value={option.rentalTerm}
+                                            onChange={(e) => handleOptionChange(index, "rentalTerm", e.target.value)}
+                                        >
+                                            <option value="1">1개월</option>
+                                            <option value="2">2개월</option>
+                                            <option value="3">3개월</option>
+                                            <option value="4">4개월</option>
+                                            <option value="5">5개월</option>
+                                            <option value="6">6개월</option>
+                                            <option value="7">7개월</option>
+                                            <option value="8">8개월</option>
+                                            <option value="9">9개월</option>
+                                            <option value="10">10개월</option>
+                                            <option value="11">11개월</option>
+                                            <option value="12">12개월</option>
+                                            <option value="24">24개월</option>
+                                            <option value="36">36개월</option>
+                                        </select>
+                                    </div>
+                                    <div className={OwRegisterCss.rentalCost}>
+                                        <input type="number" min={0}
+                                            name='rentalPrice' value={option.rentalPrice}
+                                            onChange={(e) => handleOptionChange(index, "rentalPrice", e.target.value)}
+                                        />
+                                        <div>원</div>
+                                    </div>
+                                    <div className={OwRegisterCss.rentalAS}>
+                                        <input type="number" min={0}
+                                            name='asNum' value={option.asNumber}
+                                            onChange={(e) => handleOptionChange(index, "asNumber", e.target.value)}
+                                        />
+                                        <div>번</div>
+                                    </div>
+                                    <div className={OwRegisterCss.removeBtn}
+                                        onClick={() => removeOption(index)}>
+                                        <button>-</button>
+                                    </div>
+                                </div>
+                            ))
+                        ) :
+                            (
+                                rentalOptions.map((option, index) => (
+                                    <div className={`${OwRegisterCss.RentalInfoItem}`} name="rentalInfoItem">
+                                        <div className={OwRegisterCss.rentalTerm}>
+                                            <select name="rentalTerm" id="rentalTerm" value={option.rentalTerm} onChange={(e) => handleOptionChange(index, "rentalTerm", e.target.value)}>
+                                                <option value="1">1개월</option>
+                                                <option value="3">3개월</option>
+                                                <option value="9">9개월</option>
+                                                <option value="12">12개월</option>
+                                                <option value="24">24개월</option>
+                                                <option value="36">36개월</option>
+                                            </select>
+                                        </div>
+                                        <div className={OwRegisterCss.rentalCost}>
+                                            <input type="number" min={0} value={option.rentalPrice}
+                                                name='rentalPrice' onChange={(e) => handleOptionChange(index, "rentalPrice", e.target.value)} />
+                                            <div>원</div>
+                                        </div>
+                                        <div className={OwRegisterCss.rentalAS}>
+                                            <input type="number" min={0} value={option.asNumber}
+                                                name='asNum'
+                                                onChange={(e) => handleOptionChange(index, "asNumber", e.target.value)} />
+                                            <div>번</div>
+                                        </div>
+                                        <div className={OwRegisterCss.removeBtn}>
+                                            <button disabled={index > 0 ? false : true} style={{ opacity: index > 0 ? "1" : "0" }} onClick={() => removeOption(index)}>-</button>
+                                        </div>
+                                    </div>
+                                ))
+                            )
+                        }
                     </div>
                 </div>
 
@@ -374,8 +581,14 @@ function OwnerRegister() {
                     <div className={OwRegisterCss.InfoInputTitle}>상세 설명</div>
                     <div className={OwRegisterCss.description}>상품에 대한 설명을 작성해주세요.</div>
                     <div className={OwRegisterCss.productDescriptionBox}>
-                        <textarea name="productContent" id="productContent">
-                        </textarea>
+                        <ReactQuill
+                            className={OwRegisterCss.quillBox}
+                            style={{ width: "100%", minHeight: "150px" }}
+                            modules={quillModules}
+                            name="productContent" id="productContent"
+                            onChange={setDescription}
+                            value={description}
+                        />
                     </div>
                 </div>
 
@@ -392,7 +605,10 @@ function OwnerRegister() {
                 </div>
 
                 <div className={OwRegisterCss.submitBtnBox}>
-                    <button type='submit' onClick={() => { setIsSubmitting(true) }}>등록하기</button>
+                    {editProduct
+                        ? <button type='submit' onClick={() => { setIsSubmitting(true) }}>저장하기</button>
+                        : <button type='submit' onClick={() => { setIsSubmitting(true) }}>등록하기</button>
+                    }
                 </div>
             </form>
 
@@ -402,6 +618,15 @@ function OwnerRegister() {
                 btnText="확인"
                 modalContext={modalMSg}
             />
+
+            <style>
+                {`
+                    .ql-container {
+                        border: solid 1px red;
+                        flex : 1;
+                    }
+                `}
+            </style>
         </div >
     )
 
