@@ -11,7 +11,7 @@ import AuthorityLayout from './layouts/AuthorityLayout';
 import AdminMain from './pages/admin/AdminMain';
 import AdminUser from './pages/admin/AdminUser';
 import ListPage from './pages/common/ListPage';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Login from './pages/login/Login';
 import Signup from './pages/login/Singup';
 import OwnerProducts from './pages/owner/OwnerProducts';
@@ -30,14 +30,25 @@ import FindPass from './pages/login/FindPass';
 import UserConform from './pages/user/UserConform';
 import EditsInfo from './pages/user/EditsInfo';
 import { resetMember } from './redux/modules/MemberModule';
-
+import FavoritesPage from './pages/user/FavoritesPage';
+import RecentProduct from './pages/user/Recentproduct';
 
 function App() {
-  const token = decodeJwt(window.localStorage.getItem("accessToken"));
+  // const token = useMemo(() => (decodeJwt(window.localStorage.getItem("accessToken"))), [])
+  // const token = decodeJwt(window.localStorage.getItem("accessToken"))
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    console.log("토큰 세팅")
+    if (window.localStorage.getItem("accessToken")) {
+      setToken(decodeJwt(window.localStorage.getItem("accessToken")))
+    }
+  }, [window.localStorage.getItem("accessToken")])
 
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log("token : ", token)
     if (token && token.sub) {
       console.log("유효한 토큰:", token);
       dispatch(callGetMemberAPI({ memberId: token.sub }));
@@ -51,6 +62,29 @@ function App() {
   const [selectCategory, setSelectCategory] = useState([])
   const [selectCompany, setSelectCompany] = useState([])
 
+  const { user } = useSelector(state => state.member)
+
+  useEffect(() => {
+    if (user) {
+      console.log("user : ", user)
+      console.log("userRole : ", user.memberRole)
+
+      if (user.memberRole == "ADMIN" || user.memberRole == "OWNER") {
+        if (localStorage.getItem("recent")) {
+          localStorage.removeItem("recent")
+        }
+      } else {
+        console.log("recent 생성")
+
+        const existingRecent = localStorage.getItem("recent");
+
+        if (existingRecent === null) { // only when there is no recent data
+          localStorage.setItem("recent", JSON.stringify([]));
+        }
+      }
+    }
+  }, [user])
+
   return (
     <Routes>
       <Route path='/' element={<UserLayout selectCategory={selectCategory} setSelectCategory={setSelectCategory}
@@ -63,6 +97,8 @@ function App() {
           <Route path='returns' element={<OrdersReturn />} />
           <Route path='edit' element={<UserConform />} />
           <Route path='edits' element={<EditsInfo />} />
+          <Route path='favorites' element={<FavoritesPage />} />
+          <Route path='recent' element={<RecentProduct />} />
         </Route>
 
         <Route path='/rental' element={<RentalRegist />} />
