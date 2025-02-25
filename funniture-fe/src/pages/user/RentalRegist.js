@@ -2,6 +2,7 @@ import RentalRegistCss from './rentalRegist.module.css'
 import { useLocation } from 'react-router-dom';
 import { useState , useEffect } from 'react';
 import { getDefaultDeliveryAddressList } from '../../apis/DeliveryAddressAPI';
+import { getDeliveryAddressListData } from '../../apis/DeliveryAddressAPI';
 import { getCurrentPoint } from '../../apis/PointAPI';
 import BtnModal from '../../component/BtnModal';
 import DeliveryAddressModal from './DeliveryAddressModal';
@@ -15,13 +16,10 @@ function RentalRegist () {
     const {rentalNum} = location.state           // 렌탈 갯수
 
     const [deliveryAddressList, setDeliveryAddressList] = useState([]); // 변경버튼 누를 시 -> 배송지 전체 조회(모달창)
-    const [defaultAddress, setDefaultAddress] = useState([]);   // 기본배송지 조회
     const [currentPoint, setCurrentPoint] = useState({});   // 보유 포인트 조회
     const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 모달창
-    
-    const onClickHandler = () => {
-        setShowBtnModal(true);
-    }
+    const [defaultAddress, setDefaultAddress] = useState([]);   // 기본배송지 조회
+    const [selectedAddress, setSelectedAddress] = useState(null); // 선택 된 배송지 상태 
 
     // 기본 배송지 불러오기
     async function getDefaultAddressData(memberId) {
@@ -44,6 +42,14 @@ function RentalRegist () {
             console.error('보유 포인트를 불러오는 데 실패 : ', error);
         }
     }
+
+    // 배송지 선택 모달 열기 핸들러
+    // 모달 열기 핸들러
+    const onClickHandler = async () => {
+        const data = await getDeliveryAddressListData("MEM011");  // 모달이 열릴 때 API 호출
+        setDeliveryAddressList(data.results.addressList);
+        setShowBtnModal(true);
+    };
     
     useEffect(() => {
         getDefaultAddressData("MEM011");
@@ -52,6 +58,12 @@ function RentalRegist () {
     useEffect(() => {
         getCurrentPointData("MEM011");
     }, [])
+
+    // 배송지 선택 후, 상태 갱신
+    const handleAddressSelect = (address) => {
+        setSelectedAddress(address);  // 선택된 주소 상태로 설정
+        setDefaultAddress(address);   // 기본 배송지로 반영
+    };
  
 
     // 계산 되는 것 변수 처리
@@ -78,11 +90,11 @@ function RentalRegist () {
                         <h3>배송지</h3>
                         <div className={RentalRegistCss.deliverySection}>
                             <div>
-                                <div>{defaultAddress.receiver}({defaultAddress.destinationName})</div>
-                                <div onClick={onClickHandler}>변경</div>
+                                <div>{defaultAddress ? defaultAddress.receiver : '배송지 없음'}</div>
+                                <div className={RentalRegistCss.deliveryChangeBtn} onClick={onClickHandler}>변경</div>
                             </div>
-                            <div>{defaultAddress.destinationPhone}</div>
-                            <div>{defaultAddress.destinationAddress}</div>
+                            <div>{defaultAddress ? defaultAddress.destinationPhone : ''}</div>
+                            <div>{defaultAddress ? defaultAddress.destinationAddress : ''}</div>
                             <select>
                                 <option value="">배송 메모를 선택해주세요.</option>
                             </select>
@@ -197,7 +209,7 @@ function RentalRegist () {
                 // btnText="확인"
                 modalContext="로그인 후 이용 가능합니다."
                 modalSize="lg"
-                childContent={<DeliveryAddressModal/>}
+                childContent={<DeliveryAddressModal deliveryAddressList={deliveryAddressList} onAddressSelect={handleAddressSelect}/>}
                 />
             )}
         </>

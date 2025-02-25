@@ -8,6 +8,14 @@ export async function getDefaultDeliveryAddressList(memberId) {
     return response;
 }
 
+export async function getDeliveryAddressListData(memberId) {
+
+    const url = `/deliveryaddress/${memberId}`
+
+    const response = await getData(url);
+
+    return response;
+}
 
 // 공용
 const getData = async (url, query) => {
