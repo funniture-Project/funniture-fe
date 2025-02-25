@@ -9,7 +9,7 @@
 .addressHr {
   width: 100%;
   border: 1.5px solid  rgb(87, 81, 81);
-  margin: 5px 0px;
+  margin: 8px 0px 0px 0px;
 }
 
 .modalHeader {
@@ -51,8 +51,14 @@
   margin-left: 2%;
 }
 
+.addressInfoContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .addressTitle {
-  margin-top: 2%;
+  margin-top: 8px;
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -81,7 +87,6 @@
   margin-left: 10px;
   padding: 0px 10px;
   background-color: #7F5539;
-  box-shadow: 0px 2.5px 5px rgb(110, 110, 110);
   color: white;
   border-radius: 5px;
 }
@@ -93,7 +98,24 @@
   margin-right: 15px;
 }
 
-.addressTitle > div:nth-child(1) > div:nth-child(2) > div {
+.defaultAddress {
+  display: flex;
+  align-items: center;
+  color: #B08968;
+  font-weight: 600;
+  font-size: 1.1em;
+}
+
+.defaultAddress > span {
+  display: flex;
+  align-items: center;
+  margin-right: 2px;
+  font-weight: 600;
+  font-size: 1.05em;
+  color: rgba(94, 91, 91, 0.781);
+}
+
+.otherAddress {
   display: flex;
   align-items: center;
   background-color: #B08968;
