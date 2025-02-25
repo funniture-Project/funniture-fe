@@ -1,11 +1,11 @@
 import RentalRegistCss from './rentalRegist.module.css'
 import { useLocation } from 'react-router-dom';
 import { useState , useEffect } from 'react';
-import { getDefaultDeliveryAddressList } from '../../apis/DeliveryAddressAPI';
-import { getDeliveryAddressListData } from '../../apis/DeliveryAddressAPI';
+import { getDefaultDeliveryAddressList, getDeliveryAddressListData } from '../../apis/DeliveryAddressAPI';
 import { getCurrentPoint } from '../../apis/PointAPI';
 import BtnModal from '../../component/BtnModal';
 import DeliveryAddressModal from './DeliveryAddressModal';
+import { postRentalReservation } from '../../apis/RentalAPI'; 
 
 function RentalRegist () {
 
@@ -49,6 +49,31 @@ function RentalRegist () {
     useEffect(() => {
         getCurrentPointData("MEM011");
     }, [])
+
+    // 렌탈 등록 !!
+    const handlePaymentClick = async () => {
+        try {
+            // 필요한 데이터 준비
+            const rentalData = {
+                memberId: "MEM011", // 실제 로그인된 memberId로 대체
+                productNo: productInfo.productNo,
+                rentalNumber: rentalNum,
+                rentalInfoNo: selectRentalOption.rentalInfoNo,
+                destinationNo: defaultAddress.destinationNo
+            };
+        
+            // API 호출
+            const response = await postRentalReservation(rentalData);
+        
+            // 성공 시 처리할 로직
+            console.log('예약 등록 성공:', response);
+            // 예: 예약 성공 후 페이지 이동, 모달 열기 등
+        
+        } catch (error) {
+            console.error('예약 등록 실패:', error);
+            // 실패 시 처리할 로직
+        }
+        };
     
 // ------------------------------------------------ 배송지 변경 ------------------------------------------------
 
@@ -84,6 +109,8 @@ const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모
         }
         return num.toLocaleString();
     };
+
+
 
     return(
         <>
@@ -149,7 +176,7 @@ const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모
                             <div className={RentalRegistCss.pointSubSection}>
                                 <div>
                                     <div>사용</div>
-                                    <div>1,000</div>
+                                    <div>{formatNumber(finalPriceThisMonth)}</div>
                                     <div>X</div>
                                 </div>
                                 <div>
@@ -201,7 +228,7 @@ const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모
                     </div>
                     
                 </div>
-                <div className={RentalRegistCss.buttonContainer}>
+                <div className={RentalRegistCss.buttonContainer} onClick={handlePaymentClick}>
                     <div>결제하기</div>
                 </div>
             </div>

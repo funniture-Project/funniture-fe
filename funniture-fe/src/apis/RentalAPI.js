@@ -71,6 +71,18 @@ export async function getOrderDetail(id) {
     return response
 }
 
+// 예약 등록 API 호출 함수
+export const postRentalReservation = async (rentalData) => {
+    try {
+        const url = `/rental/regist`;  // 예약 등록을 위한 엔드포인트
+        const response = await api.post(url, rentalData);  // POST 요청
+        return response.data;  // 응답 데이터 반환
+    } catch (error) {
+        console.error('예약 등록 API 호출 실패:', error);
+        throw error;  // 오류를 throw하여 호출자에게 전달
+    }
+};
+
 // 공용
 const getData = async (url, query) => {
     let response
