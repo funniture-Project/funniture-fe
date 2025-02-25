@@ -1,3 +1,10 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
 .loginLayout{
     background-color: #B08968;
     display: flex;
@@ -31,12 +38,22 @@
     gap: 10px;
 }
 
-.loginInput input{
+/* .loginInput input{
     width: 300px;
     height:50px;
     border-radius: 10px;
     border: 1px solid #ccc;
+} */
+
+.loginInput input {
+    width: 300px; /* 고정 너비 */
+    height: 50px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box; /* 패딩과 보더를 포함한 크기 계산 */
+    overflow: hidden; /* 텍스트가 넘칠 경우 숨김 */
 }
+
 
 .loginBtn {
     display: flex;
