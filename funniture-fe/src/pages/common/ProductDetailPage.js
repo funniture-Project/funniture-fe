@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getProductDetailInfo } from "../../apis/ProductAPI";
 import PDCSS from './productDetail.module.css'
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function ProductDetailPage() {
     const { id } = useParams();
@@ -13,6 +14,8 @@ function ProductDetailPage() {
 
     const [productInfo, setProductInfo] = useState();
 
+    const { user } = useSelector(state => state.member)
+
     // 렌탈 갯수
     const [rentalNum, setRentalNum] = useState(1);
 
@@ -20,7 +23,6 @@ function ProductDetailPage() {
     const navigate = useNavigate();
 
     const movePage = () => {
-
         navigate('/rental', {
             state: {
                 selectRentalOption,
@@ -33,8 +35,6 @@ function ProductDetailPage() {
     const handleChange = (e) => {
         setRentalNum(e.target.value);
     }
-
-
 
     useEffect(() => {
         async function getData() {
@@ -55,9 +55,21 @@ function ProductDetailPage() {
     }, [id])
 
     useEffect(() => {
-        // console.log('productInfo : ', productInfo)
-        // console.log('selectRentalOption : ', selectRentalOption)
-    }, [productInfo, selectRentalOption])
+        console.log('productInfo : ', productInfo)
+
+        if (user.memberRole == "USER") {
+            let recent = localStorage.getItem("recent")
+            recent = recent ? JSON.parse(recent) : []
+
+            if (productInfo?.productNo) {
+                // 중복 제거 후 배열의 맨 앞에 추가
+                recent = [productInfo.productNo, ...recent.filter(no => no !== productInfo.productNo)].slice(0, 10);
+            }
+
+            // 다시 localStorage에 저장
+            localStorage.setItem("recent", JSON.stringify(recent));
+        }
+    }, [productInfo])
 
     return (
         <>

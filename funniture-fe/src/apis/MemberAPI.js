@@ -37,7 +37,7 @@ export const callSignupAPI = ({ form }) => {
 // 최초 회원 가입 할 때 이메일 입력 시, 중복된 이메일인지 체크하는 API
 export const callGetMemberEmailAPI = async (email) => {
     const requestURL = `http://localhost:8080/api/v1/auth/validation/${email}`;
-    
+
     try {
         const response = await api.get(requestURL); // 서버에서 이메일 중복 여부 확인
         const isDuplicate = response.data.results.response; // 서버에서 반환된 값 (true/false)
@@ -78,6 +78,8 @@ export const callLoginAPI = ({ form }) => {
                 console.log('로그인 성공 result.status : ', result.status);
                 window.localStorage.setItem('accessToken', result.userInfo.accessToken);
                 dispatch({ type: POST_LOGIN, payload: result });
+
+                dispatch(callGetMemberAPI(result.userInfo))
 
                 // 로그인 성공 시 true 반환
                 return { success: true, message: result.message };
@@ -184,15 +186,16 @@ export const callConfirmPassword = (memberId, password) => {
 };
 
 // 전화번호 바꾸는 로직
-export const callChangePhoneAPI = ({memberId,phoneNumber}) => {
+export const callChangePhoneAPI = ({ memberId, phoneNumber }) => {
     const requestURL = `http://localhost:8080/api/v1/member/modify/phone`;
 
     return async (dispatch, getState) => {
         const response = await api.put(requestURL, {
-            memberId : memberId,
-            phoneNumber : phoneNumber});
+            memberId: memberId,
+            phoneNumber: phoneNumber
+        });
 
-        console.log('서버에 잘 다녀왔나 response : ' , response);
+        console.log('서버에 잘 다녀왔나 response : ', response);
 
         if (response.data.httpStatusCode === 201) {
             console.log('전화번호 변경 성공');
@@ -202,13 +205,13 @@ export const callChangePhoneAPI = ({memberId,phoneNumber}) => {
     };
 };
 
-export const callChangePasswordAPI = ({memberId , password}) => {
+export const callChangePasswordAPI = ({ memberId, password }) => {
     const requestURL = `http://localhost:8080/api/v1/member/modify/password`;
 
     return async (dispatch, getState) => {
         const response = await api.put(requestURL, {
-            memberId : memberId,
-            password : password
+            memberId: memberId,
+            password: password
         })
         console.log('마이페이지 비번 변경 서버 잘 다녀왔나 : ', response)
 
@@ -222,17 +225,17 @@ export const callChangePasswordAPI = ({memberId , password}) => {
     }
 }
 
-export const callChangeAddressAPI = ({memberId , address}) => {
+export const callChangeAddressAPI = ({ memberId, address }) => {
     const requestURL = `http://localhost:8080/api/v1/member/modify/address`;
 
-    return async (dispatch,getState) => {
-        const response = await api.put(requestURL,{
+    return async (dispatch, getState) => {
+        const response = await api.put(requestURL, {
             memberId: memberId,
-            address : address
+            address: address
         })
         console.log('주소 변경 요청 서버에 잘 다녀 왔는지');
 
-        if(response.data.httpStatusCode === 201){
+        if (response.data.httpStatusCode === 201) {
             console.log('주소 변경 성공');
             return;
         } else if (response.data.httpStatusCode === 404) {
@@ -272,9 +275,9 @@ export const callChangeImageAPI = ({ memberId, imageLink }) => {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-        
+
             console.log('프로필 사진 변경 서버에 잘 다녀 왔는지 : ', response);
-        
+
             if (response.data.httpStatusCode === 201) {
                 console.log('프로필 사진 변경 성공');
                 // alert('프로필 사진이 변경되었습니다.');
@@ -289,18 +292,18 @@ export const callChangeImageAPI = ({ memberId, imageLink }) => {
             console.error('프로필 사진 변경 중 오류 발생: ', error);
             alert('서버와 통신 중 오류가 발생했습니다.');
         }
-        
+
     };
 };
 
 // 탈퇴하기 눌렀을 때 동작하는 애 
-export const callWithdrawAPI = ({memberId}) => {
+export const callWithdrawAPI = ({ memberId }) => {
     const requestURL = `http://localhost:8080/api/v1/member/withdraw/${memberId}`;
 
     return async () => {
         const response = await api.put(requestURL)
-        
-        console.log('회원 탈퇴 요청 서버에 잘 다녀 왔나. response : ' , response);
+
+        console.log('회원 탈퇴 요청 서버에 잘 다녀 왔나. response : ', response);
     };
 }
 

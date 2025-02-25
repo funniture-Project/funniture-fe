@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import OwMypageCss from './ownermypage.module.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getProductListByOwnerNo } from '../../apis/ProductAPI';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,23 +10,24 @@ function OwnerMyPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate()
 
-    const saleProductNum = useRef(0);
-    const stopProductNum = useRef(0);
-    const noAbleProductNum = useRef(0);
+    const [saleProductNum, setSaleProductNum] = useState(0);
+    const [stopProductNum, setStopProductNum] = useState(0);
+    const [noAbleProductNum, setNoAbleProductNum] = useState(0);
 
     async function getData(userId) {
+        console.log("데이터 부르기")
         dispatch(getProductListByOwnerNo(userId))
     }
 
     useEffect(() => {
         console.log("userInfo : ", user.memberId)
         getData(user.memberId)
-    }, [user.memberId])
+    }, [user])
 
     useEffect(() => {
-        stopProductNum.current = ownerAllProductList.filter(product => product.productStatus == '판매종료').length
-        saleProductNum.current = ownerAllProductList.filter(product => product.productStatus == '판매중').length
-        noAbleProductNum.current = ownerAllProductList.filter(product => product.productStatus == '판매불가').length
+        setStopProductNum(ownerAllProductList.filter(product => product.productStatus == '판매종료').length)
+        setSaleProductNum(ownerAllProductList.filter(product => product.productStatus == '판매중').length)
+        setNoAbleProductNum(ownerAllProductList.filter(product => product.productStatus == '판매불가').length)
     }, [ownerAllProductList])
 
     return (
@@ -51,15 +52,15 @@ function OwnerMyPage() {
                             <div>
                                 <div>
                                     <div>판매 중 : </div>
-                                    <div><span>{saleProductNum.current}</span> 건</div>
+                                    <div><span>{saleProductNum}</span> 건</div>
                                 </div>
                                 <div>
                                     <div>판매 중단 : </div>
-                                    <div><span>{stopProductNum.current}</span> 건</div>
+                                    <div><span>{stopProductNum}</span> 건</div>
                                 </div>
                                 <div>
                                     <div>판매 불가 : </div>
-                                    <div><span>{noAbleProductNum.current}</span> 건</div>
+                                    <div><span>{noAbleProductNum}</span> 건</div>
                                 </div>
                             </div>
                         </div>
