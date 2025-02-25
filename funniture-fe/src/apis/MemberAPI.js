@@ -34,6 +34,24 @@ export const callSignupAPI = ({ form }) => {
     };
 };
 
+// 최초 회원 가입 할 때 이메일 입력 시, 중복된 이메일인지 체크하는 API
+export const callGetMemberEmailAPI = async (email) => {
+    const requestURL = `http://localhost:8080/api/v1/auth/validation/${email}`;
+    
+    try {
+        const response = await api.get(requestURL); // 서버에서 이메일 중복 여부 확인
+        const isDuplicate = response.data.results.response; // 서버에서 반환된 값 (true/false)
+
+        console.log('isDuplacate : ', isDuplicate);
+
+        return isDuplicate; // true: 중복 이메일 존재, false: 중복 이메일 없음
+    } catch (error) {
+        console.error('Error checking email:', error);
+        return true; // 에러 발생 시 기본적으로 중복 처리 (보수적으로 처리)
+    }
+};
+
+
 // 로그인 할 때 서버에 데이터를 보내고, 토큰 정보를 리턴 받음
 export const callLoginAPI = ({ form }) => {
     const loginURL = `http://localhost:8080/api/v1/auth/login`;
