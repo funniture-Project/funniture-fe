@@ -49,7 +49,7 @@ function ListPage({ selectCategory, selectCompany }) {
         const productResponse = await getProductList(conditions, refCategoryCode)
 
         if (productResponse.results?.result) {
-            setProductList(productResponse.results.result)
+            setProductList(productResponse.results.result.filter(product => product.productStatus != "판매불가" && product.productStatus != "판매종료"))
             setError('')
         } else {
             setError(productResponse.message)
@@ -60,6 +60,10 @@ function ListPage({ selectCategory, selectCompany }) {
     useEffect(() => {
         getData(conditions)
     }, [conditions, refCategoryCode])
+
+    useEffect(() => {
+        console.log("상품 목록 : ", productList)
+    }, [productList])
 
     return (
         <div className="wholeContentBox">

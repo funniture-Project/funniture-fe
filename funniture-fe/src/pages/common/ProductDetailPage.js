@@ -151,7 +151,10 @@ function ProductDetailPage() {
                             </div>
 
                             <div>
-                                <button onClick={movePage}>예약하기</button>
+                                <button onClick={movePage}
+                                    style={{ backgroundColor: `${productInfo.productStatus}` == "품절" ? "#aaa8a8" : "예약하기" }}
+                                >
+                                    {productInfo.productStatus == "품절" ? "품절" : "예약하기"}</button>
                             </div>
                         </div>
                     </div>
