@@ -39,13 +39,13 @@ function MyPage() {
                 </div>
 
                 <div className='rentalStatusIconBox'>
-                    <div><img src={sackDollarIcon} alt="예약완료 아이콘"/></div>
-                    <hr/>
-                    <div><img src={clockRotateIcon} alt="배송준비중 아이콘"/></div>
-                    <hr/>
-                    <div><img src={truckIcon} alt="배송중 아이콘"/></div>
-                    <hr/>
-                    <div><img src={checkIcon} alt="배송완료 아이콘"/></div>
+                    <div><img src={sackDollarIcon} alt="예약완료 아이콘" /></div>
+                    <hr />
+                    <div><img src={clockRotateIcon} alt="배송준비중 아이콘" /></div>
+                    <hr />
+                    <div><img src={truckIcon} alt="배송중 아이콘" /></div>
+                    <hr />
+                    <div><img src={checkIcon} alt="배송완료 아이콘" /></div>
                 </div>
                 <div className='rentalStatusBox'>
                     <div>예약완료</div>
@@ -59,55 +59,69 @@ function MyPage() {
                     <div>5</div>
                     <div>10</div>
                 </div>
-                
+
 
                 <div className='userMypageTap'>
                     <div className='tapTitle'>나의 활동</div>
                     <div className='myPageSubTapTitle'>
-                        <div 
+                        <Link
+                            to={`/mypage`}
                             onClick={() => handleTabClick('orders')}
-                            className={`tab ${activeTab === 'orders' ? 'active' : ''}`}>
-                            <Link to={`/mypage`} className='link'>주문/배송</Link>
-                        </div>
-                        <div 
+                            className={`tab link ${activeTab === 'orders' ? 'active' : ''}`}>
+                            <div>주문/배송</div>
+                        </Link>
+                        <Link
+                            to={`/mypage/returns`}
                             onClick={() => handleTabClick('return')}
-                            className={`tab ${activeTab === 'return' ? 'active' : ''}`}>
-                            <Link to={`/mypage/returns`} className='link'>사용상품/반납</Link>
-                        </div>
-                        <div 
+                            className={`tab link ${activeTab === 'return' ? 'active' : ''}`}>
+                            <div>사용상품/반납</div>
+                        </Link>
+                        <Link
+                            to={`/mypage`}
                             onClick={() => handleTabClick('inquiries')}
-                            className={`tab ${activeTab === 'inquiries' ? 'active' : ''}`}>
-                            <Link to={`/mypage`} className='link'>문의내역</Link>
-                        </div>
-                        <div 
+                            className={`tab link ${activeTab === 'inquiries' ? 'active' : ''}`}>
+                            <div>문의내역</div>
+                        </Link>
+                        <Link
+                            to={`/mypage`}
                             onClick={() => handleTabClick('reviews')}
-                            className={`tab ${activeTab === 'reviews' ? 'active' : ''}`}>
-                            <Link to={`/mypage`} className='link'>리뷰</Link>
-                        </div>
-                        <div 
+                            className={`tab link ${activeTab === 'reviews' ? 'active' : ''}`}>
+                            <div>리뷰</div>
+                        </Link>
+                        <Link
+                            to={`/mypage/favorites`}
                             onClick={() => handleTabClick('favorites')}
-                            className={`tab ${activeTab === 'favorites' ? 'active' : ''}`}>
-                            <Link to={`/mypage`} className='link'>관심상품</Link>
-                        </div>
-                        <div 
+                            className={`tab link ${activeTab === 'favorites' ? 'active' : ''}`}>
+                            <div>관심상품</div>
+                        </Link>
+                        <Link
+                            to={`/mypage/recent`}
                             onClick={() => handleTabClick('recent')}
-                            className={`tab ${activeTab === 'recent' ? 'active' : ''}`}>
-                            <Link to={`/mypage`} className='link'>최근본상품</Link>
-                        </div>
+                            className={`tab link ${activeTab === 'recent' ? 'active' : ''}`}>
+                            <div>최근본상품</div>
+                        </Link>
                     </div>
 
                     <div className='tapTitle'>정보 관리</div>
                     <div className='myPageSubTapTitle'>
-                        <div 
+                        <Link
+                            to={`/mypage/edit`}
                             onClick={() => handleTabClick('info')}
-                            className={`tab ${activeTab === 'info' ? 'active' : ''}`}>
-                            <Link to={`/mypage/edit`} className='link'>회원정보수정</Link>
-                        </div>
-                        <div 
+                            className={`tab link ${activeTab === 'info' ? 'active' : ''}`}>
+                            <div>회원정보수정</div>
+                        </Link>
+                        <Link
+                            to={`/mypage`}
                             onClick={() => handleTabClick('address')}
-                            className={`tab ${activeTab === 'address' ? 'active' : ''}`}>
-                            <Link to={`/mypage`} className='link'>배송지관리</Link>
-                        </div>
+                            className={`tab link ${activeTab === 'address' ? 'active' : ''}`}>
+                            <div>배송지관리</div>
+                        </Link>
+                        <Link
+                            to={`/mypage/convert`}
+                            onClick={() => handleTabClick('address')}
+                            className={`tab link ${activeTab === 'address' ? 'active' : ''}`}>
+                            <div>제공자 전환</div>
+                        </Link>
                     </div>
                 </div>
             </div>

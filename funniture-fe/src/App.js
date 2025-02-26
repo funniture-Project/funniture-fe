@@ -11,7 +11,7 @@ import AuthorityLayout from './layouts/AuthorityLayout';
 import AdminMain from './pages/admin/AdminMain';
 import AdminUser from './pages/admin/AdminUser';
 import ListPage from './pages/common/ListPage';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Login from './pages/login/Login';
 import Signup from './pages/login/Singup';
 import OwnerProducts from './pages/owner/OwnerProducts';
@@ -31,14 +31,29 @@ import UserConform from './pages/user/UserConform';
 import EditsInfo from './pages/user/EditsInfo';
 import { resetMember } from './redux/modules/MemberModule';
 import OwnerRental from './pages/owner/OwnerRental';
+import FavoritesPage from './pages/user/FavoritesPage';
+import RecentProduct from './pages/user/Recentproduct';
+import Convert from './pages/user/Convert';
+import AppConvert from './pages/user/AppConvert';
+import AdminOwner from './pages/admin/AdminOwner';
+import AdminLeaver from './pages/admin/AdminLeaver';
+import AdminConvert from './pages/admin/AdminConvert';
 
 
 function App() {
-  const token = decodeJwt(window.localStorage.getItem("accessToken"));
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    console.log("토큰 세팅")
+    if (window.localStorage.getItem("accessToken")) {
+      setToken(decodeJwt(window.localStorage.getItem("accessToken")))
+    }
+  }, [window.localStorage.getItem("accessToken")])
 
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log("token : ", token)
     if (token && token.sub) {
       console.log("유효한 토큰:", token);
       dispatch(callGetMemberAPI({ memberId: token.sub }));
@@ -52,6 +67,24 @@ function App() {
   const [selectCategory, setSelectCategory] = useState([])
   const [selectCompany, setSelectCompany] = useState([])
 
+  const { user } = useSelector(state => state.member)
+
+  useEffect(() => {
+    if (user) {
+      if (user.memberRole == "ADMIN" || user.memberRole == "OWNER") {
+        if (localStorage.getItem("recent")) {
+          localStorage.removeItem("recent")
+        }
+      } else {
+        const existingRecent = localStorage.getItem("recent");
+
+        if (existingRecent === null) { // only when there is no recent data
+          localStorage.setItem("recent", JSON.stringify([]));
+        }
+      }
+    }
+  }, [user])
+
   return (
     <Routes>
       <Route path='/' element={<UserLayout selectCategory={selectCategory} setSelectCategory={setSelectCategory}
@@ -64,6 +97,10 @@ function App() {
           <Route path='returns' element={<OrdersReturn />} />
           <Route path='edit' element={<UserConform />} />
           <Route path='edits' element={<EditsInfo />} />
+          <Route path='favorites' element={<FavoritesPage />} />
+          <Route path='recent' element={<RecentProduct />} />
+          <Route path='convert' element={<Convert />} />
+          <Route path='appConvert' element={<AppConvert />} />
         </Route>
 
         <Route path='/rental' element={<RentalRegist />} />
@@ -95,6 +132,9 @@ function App() {
 
         <Route path='authority' element={<AuthorityLayout />}>
           <Route path='user' element={<AdminUser />} />
+          <Route path='owner' element={<AdminOwner />} />
+          <Route path='convert' element={<AdminConvert />} />
+          <Route path='leaver' element={<AdminLeaver />} />
         </Route>
 
         <Route path='product' element={<AdminProduct />} />

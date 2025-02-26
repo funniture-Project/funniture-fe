@@ -1,6 +1,6 @@
 import { GET_CATEGORY_LIST } from '../redux/modules/CategoryModuls'
 import api from "./Apis";
-import { EDIT_PRODUCT_REQUEST, REGISTER_PRODUCT_FAIL, REGISTER_PRODUCT_REQUEST, REGISTER_PRODUCT_SUCCESS } from '../redux/modules/productReducer';
+import { EDIT_PRODUCT_REQUEST, GET_PRODUCTLIST_BY_OWNERNO, REGISTER_PRODUCT_FAIL, REGISTER_PRODUCT_REQUEST, REGISTER_PRODUCT_SUCCESS } from '../redux/modules/productReducer';
 
 const baseProductUrl = 'http://localhost:8080/api/v1/product'
 
@@ -123,14 +123,29 @@ export async function changeProductStatus(productNoList, changeStatueValue) {
 }
 
 // 제공자 별 상품 리스트 조회
-export async function getProductListByOwnerNo(ownerNo) {
-    console.log("ownerNo : ", ownerNo)
+export function getProductListByOwnerNo(ownerNo) {
 
-    const url = `/product/owner?ownerNo=${ownerNo}`
+    return async (dispatch) => {
+        try {
+            console.log("ownerNo : ", ownerNo)
 
-    const response = await getData(url)
+            const url = `/product/owner?ownerNo=${ownerNo}`
 
-    return response
+            const response = await getData(url)
+
+            console.log("제공자의 전체 상품 정보 response : ", response)
+
+            dispatch({
+                type: GET_PRODUCTLIST_BY_OWNERNO,
+                payload: {
+                    allProductList: response?.results.result
+                }
+            })
+
+        } catch (error) {
+
+        }
+    }
 }
 
 // 상품 상세 정보가져오기
@@ -207,6 +222,41 @@ export async function modifyProductInfo({ dispatch, formData, rentalOptions, pro
     console.log("수정API 응답 : ", response)
 
     return response?.data
+}
+
+// react quill 이미지 업로드
+export async function uploadQuillImg(switchFile) {
+    console.log("switchFile : ", switchFile)
+
+    const url = `/product/quillimg`
+
+    const formData = new FormData();
+    formData.append("file", switchFile);
+
+    const response = await api.post(url, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+
+    console.log("uploadUrlData : ", response)
+
+    return response?.data
+}
+
+// 최근 본 상품 정보 가져오기
+export async function getResentProduct(recentList) {
+    console.log("전송하는 데이터 : ", recentList)
+
+    const url = "/product/recentlist"
+
+    const response = await api.post(url, recentList)
+
+    console.log("상품 정보 결과 : ", response)
+
+    if (response?.status == 200) {
+        return response?.data
+    }
 }
 
 // 공용

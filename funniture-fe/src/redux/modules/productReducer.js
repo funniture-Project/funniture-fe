@@ -4,6 +4,7 @@ let initialState = {
     loading: false,
     error: '',
     msg: '',
+    ownerAllProductList: []
 }
 
 // 액션 타입
@@ -13,6 +14,7 @@ export const REGISTER_PRODUCT_FAIL = 'product/REGISTER_PRODUCT_FAIL';
 export const EDIT_PRODUCT_REQUEST = 'product/EDIT_PRODUCT_REQUEST';
 export const EDIT_PRODUCT_SUCCESS = 'product/EDIT_PRODUCT_SUCCESS';
 export const EDIT_PRODUCT_FAIL = 'product/EDIT_PRODUCT_FAIL';
+export const GET_PRODUCTLIST_BY_OWNERNO = 'product/GET_PRODUCTLIST_BY_OWNERNO';
 
 
 // 액션 함수
@@ -23,6 +25,7 @@ const actions = createActions({
     [EDIT_PRODUCT_REQUEST]: () => { },
     [EDIT_PRODUCT_SUCCESS]: () => { },
     [EDIT_PRODUCT_FAIL]: () => { },
+    [GET_PRODUCTLIST_BY_OWNERNO]: () => { }
 });
 
 // 리듀서
@@ -71,6 +74,12 @@ const productReducer = handleActions({
             loading: false,
             error: payload.error,
             msg: ''
+        }
+    ),
+    [GET_PRODUCTLIST_BY_OWNERNO]: (state, { payload }) => (
+        {
+            loading: false,
+            ownerAllProductList: payload.allProductList
         }
     )
 }, initialState)
