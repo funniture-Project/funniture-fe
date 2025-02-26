@@ -34,6 +34,10 @@ import FavoritesPage from './pages/user/FavoritesPage';
 import RecentProduct from './pages/user/Recentproduct';
 import Convert from './pages/user/Convert';
 import AppConvert from './pages/user/AppConvert';
+import AdminOwner from './pages/admin/AdminOwner';
+import AdminLeaver from './pages/admin/AdminLeaver';
+import AdminConvert from './pages/admin/AdminConvert';
+
 
 function App() {
   // const token = useMemo(() => (decodeJwt(window.localStorage.getItem("accessToken"))), [])
@@ -133,6 +137,9 @@ function App() {
 
         <Route path='authority' element={<AuthorityLayout />}>
           <Route path='user' element={<AdminUser />} />
+          <Route path='owner' element={<AdminOwner />} />
+          <Route path='convert' element={<AdminConvert />} />
+          <Route path='leaver' element={<AdminLeaver />} />
         </Route>
 
         <Route path='product' element={<AdminProduct />} />
