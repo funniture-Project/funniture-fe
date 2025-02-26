@@ -7,6 +7,7 @@ import BtnModal from '../../component/BtnModal';
 import DeliveryAddressModal from './DeliveryAddressModal';
 import { postRentalReservation } from '../../apis/RentalAPI'; 
 import RentalSuccessModal from './RentalSuccessModal';
+import JSConfetti from "js-confetti";
 
 function RentalRegist () {
 
@@ -92,6 +93,7 @@ function RentalRegist () {
             // 성공 시 처리할 로직 -> 예약 성공 후 페이지 이동, 모달 열기!!
             console.log('예약 등록 성공:', response);
             setShowSuccessModal(true);  // 성공 모달 열기
+            handleClick();
         
         } catch (error) {
             console.error('예약 등록 실패:', error);
@@ -109,6 +111,18 @@ function RentalRegist () {
     // '메인으로 가기' 클릭 시 메인으로 이동
     const handleFail = () => {
         navigate('/'); 
+    };
+
+    // Confetti 쓸 준비
+    const jsConfetti = new JSConfetti();
+
+    // 색종이 커스터마이징
+    const handleClick = () => {
+        jsConfetti.addConfetti({
+        confettiNumber: 1500,
+        confettiColors : ['#FF8FA3', '#FFBE7D', '#FAE27F', '#7EC8E3', '#6FE7C2', '#C28FEF'],
+        emojiSize: 30,
+        });
     };
 
     // 계산 되는 것 변수 처리(할인가격, 렌탈 가격, 구매 적립 포인트)

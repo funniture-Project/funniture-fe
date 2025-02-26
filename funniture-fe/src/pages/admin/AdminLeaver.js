@@ -2,22 +2,22 @@ import './adminUser.module.css'
 import AdminTop from '../../component/adminpage/AdminTop';
 import RentalCss from './rental.module.css';
 import { useState, useEffect } from 'react';
-import { getAdminRentalList } from '../../apis/RentalAPI';
-import { getStoreList } from '../../apis/RentalAPI';
-import { callUserListByAdminAPI } from '../../apis/AdminAPI'
 import Pagination from '../../component/Pagination';
+import { callLeaverUserByAdminAPI } from '../../apis/AdminAPI';
 import { useNavigate } from 'react-router-dom';
 
-function AdminUser() {
+function AdminLeaver() {
 
     const navigate = useNavigate();
 
     // 회원 정보 리스트를 저장할 상태
-    const [userList, setUserList] = useState([]); // 여러 회원 정보를 저장하는 배열
+    const [leaverUserList, setLeaverUserList] = useState([]); // 여러 제공자 정보를 저장하는 배열
 
     useEffect(() => {
-        callUserListByAdminAPI(setUserList);
+        console.log('관리자 페이지, 제공자 useEffect 실행');
+        callLeaverUserByAdminAPI(setLeaverUserList);
     }, []);
+
 
     return (
         <>
@@ -45,21 +45,21 @@ function AdminUser() {
                             </div>
 
                             {/* 테이블 데이터 */}
-                            {userList.length === 0 ? (
+                            {leaverUserList.length === 0 ? (
                                 // 데이터가 없을 경우 표시할 메시지
                                 <div className={RentalCss.noResultsMessage}>
                                     <p>검색 조건에 맞는 회원 정보가 없습니다.</p>
                                 </div>
                             ) : (
                                 // 데이터가 있을 경우 렌더링
-                                userList.map((user) => (
-                                    <div key={user.memberId} className={RentalCss.rentalItems}>
-                                        <div style={{ width: '15%' }}><p>{user.memberId}</p></div>
-                                        <div style={{ width: '10%' }}><p>{user.userName}</p></div>
-                                        <div style={{ width: '20%' }}><p>{user.phoneNumber}</p></div>
-                                        <div style={{ width: '15%' }}><p>{user.email}</p></div>
-                                        <div style={{ width: '27%' }}><p>{user.signupDate}</p></div>
-                                        <div style={{ width: '13%' }}><p>{user.pointDTO.currentPoint}</p></div>
+                                leaverUserList.map((leaver) => (
+                                    <div key={leaverUserList.memberId} className={RentalCss.rentalItems}>
+                                        <div style={{ width: '15%' }}><p>{leaver.memberId}</p></div>
+                                        <div style={{ width: '10%' }}><p>{leaver.userName}</p></div>
+                                        <div style={{ width: '20%' }}><p>{leaver.phoneNumber}</p></div>
+                                        <div style={{ width: '15%' }}><p>{leaver.email}</p></div>
+                                        <div style={{ width: '27%' }}><p>{leaver.signupDate}</p></div>
+                                        <div style={{ width: '13%' }}><p>{leaver.pointDTO.currentPoint}</p></div>
                                     </div>
                                 ))
                             )}
@@ -73,4 +73,4 @@ function AdminUser() {
     )
 }
 
-export default AdminUser;
+export default AdminLeaver;
