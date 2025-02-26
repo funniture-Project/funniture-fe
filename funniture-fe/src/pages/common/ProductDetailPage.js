@@ -128,8 +128,8 @@ function ProductDetailPage() {
                                 <div>
                                     <div>약정기간</div>
                                     <div>
-                                        {productInfo?.rentalOptionList.length > 0 ?
-                                            productInfo.rentalOptionList.map(option => (
+                                        {productInfo?.rentalOptionList.filter(option => option.active == true).length > 0 ?
+                                            productInfo.rentalOptionList.filter(option => option.active == true).map(option => (
                                                 <>
                                                     <input type="radio" name="rentalTerm" id={option.rentalTerm} value={option.rentalTerm}
                                                         checked={selectTerm == `${option.rentalTerm}` ? true : false}

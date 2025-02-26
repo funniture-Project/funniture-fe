@@ -29,6 +29,7 @@
             height: fit-content;
             padding: 10px;
             box-sizing: border-box;
+            min-height: 275px;
 
             >div {
                 align-self: flex-start;
@@ -41,9 +42,12 @@
                 aspect-ratio: 1/1;
                 box-sizing: border-box;
                 padding: 5px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
 
                 img {
-                    max-width: 100%;
+                    max-width: 93%;
                     max-height: 100%;
                 }
             }
@@ -65,6 +69,16 @@
                 font-size: 0.8em;
                 color: #04b361;
             }
+        }
+
+        .NoRecentProduct {
+            width: 100%;
+            height: calc(100% - 1.5em);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            font-weight: 700;
         }
     }
 }

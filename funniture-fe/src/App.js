@@ -36,8 +36,6 @@ import Convert from './pages/user/Convert';
 import AppConvert from './pages/user/AppConvert';
 
 function App() {
-  // const token = useMemo(() => (decodeJwt(window.localStorage.getItem("accessToken"))), [])
-  // const token = decodeJwt(window.localStorage.getItem("accessToken"))
   const [token, setToken] = useState('');
 
   useEffect(() => {
@@ -68,16 +66,11 @@ function App() {
 
   useEffect(() => {
     if (user) {
-      console.log("user : ", user)
-      console.log("userRole : ", user.memberRole)
-
       if (user.memberRole == "ADMIN" || user.memberRole == "OWNER") {
         if (localStorage.getItem("recent")) {
           localStorage.removeItem("recent")
         }
       } else {
-        console.log("recent 생성")
-
         const existingRecent = localStorage.getItem("recent");
 
         if (existingRecent === null) { // only when there is no recent data
