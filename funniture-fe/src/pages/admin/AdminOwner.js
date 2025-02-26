@@ -1,4 +1,3 @@
-import './adminUser.module.css'
 import AdminTop from '../../component/adminpage/AdminTop';
 import RentalCss from './rental.module.css';
 import { useState, useEffect } from 'react';
@@ -25,7 +24,7 @@ function AdminOwner() {
                 <div className={RentalCss.rentalSearchBox}>
                     <div className={RentalCss.searchReset}></div>
                 </div>
-                    <div className="adminSelectButton">
+                    <div className={RentalCss.adminSelectButton}>
                         <button onClick={()=>{navigate('/admin/authority/user')}} className="active">사용자</button>
                         <button onClick={()=>{navigate('/admin/authority/owner')}}>제공자</button>
                         <button onClick={()=>{navigate('/admin/authority/convert')}}>전환요청</button>
