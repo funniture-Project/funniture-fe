@@ -225,7 +225,6 @@ export async function modifyProductInfo({ dispatch, formData, rentalOptions, pro
 }
 
 // react quill 이미지 업로드
-
 export async function uploadQuillImg(switchFile) {
     console.log("switchFile : ", switchFile)
 
@@ -243,6 +242,21 @@ export async function uploadQuillImg(switchFile) {
     console.log("uploadUrlData : ", response)
 
     return response?.data
+}
+
+// 최근 본 상품 정보 가져오기
+export async function getResentProduct(recentList) {
+    console.log("전송하는 데이터 : ", recentList)
+
+    const url = "/product/recentlist"
+
+    const response = await api.post(url, recentList)
+
+    console.log("상품 정보 결과 : ", response)
+
+    if (response?.status == 200) {
+        return response?.data
+    }
 }
 
 // 공용
