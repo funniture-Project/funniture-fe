@@ -7,7 +7,6 @@ function AuthorityLayout() {
         <>
             <AdminTop title={'회원 정보'} />
 
-            <div>여기는 회원정보 페이지</div>
             <Outlet />
         </>
     )
