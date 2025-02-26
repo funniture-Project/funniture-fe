@@ -32,6 +32,8 @@ import EditsInfo from './pages/user/EditsInfo';
 import { resetMember } from './redux/modules/MemberModule';
 import FavoritesPage from './pages/user/FavoritesPage';
 import RecentProduct from './pages/user/Recentproduct';
+import Convert from './pages/user/Convert';
+import AppConvert from './pages/user/AppConvert';
 
 function App() {
   // const token = useMemo(() => (decodeJwt(window.localStorage.getItem("accessToken"))), [])
@@ -99,6 +101,8 @@ function App() {
           <Route path='edits' element={<EditsInfo />} />
           <Route path='favorites' element={<FavoritesPage />} />
           <Route path='recent' element={<RecentProduct />} />
+          <Route path='convert' element={<Convert />} />
+          <Route path='appConvert' element={<AppConvert />} />
         </Route>
 
         <Route path='/rental' element={<RentalRegist />} />
