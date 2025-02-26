@@ -30,6 +30,7 @@ import FindPass from './pages/login/FindPass';
 import UserConform from './pages/user/UserConform';
 import EditsInfo from './pages/user/EditsInfo';
 import { resetMember } from './redux/modules/MemberModule';
+import OwnerRental from './pages/owner/OwnerRental';
 
 
 function App() {
@@ -78,6 +79,7 @@ function App() {
           <Route path='product' element={<OwnerProducts />} />
           <Route path='register' element={<OwnerRegister />} />
           <Route path='edit' element={<OwnerRegister />} />
+          <Route path='rentals' element={<OwnerRental />} />
         </Route>
 
       </Route>

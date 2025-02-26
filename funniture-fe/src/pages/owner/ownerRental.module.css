@@ -1,0 +1,111 @@
+.container{
+    border: solid 2px #7F5539;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.ownerRentalTab {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+
+        >div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer; 
+            border-right: solid 3px rgb(168, 163, 163);
+            padding: 0px 8px;
+        }
+
+        >div:last-child{
+            border: none;
+        }
+}
+
+.periodContainer{
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    height: 8%;
+        >div {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        >div:nth-child(1){
+            color: #7F5539;
+        }
+
+        >div:nth-child(2),
+        >div:nth-child(3),
+        >div:nth-child(4){
+            color: white;
+            background-color: #B08968;
+            padding: 0px 15px;
+            border-radius: 15px;
+        }
+}
+
+.rentalContainer{
+    width: 100%;
+    height: 72%;
+        
+    .rentalTable{
+        width: 100%;
+        border-collapse: collapse; /* 세로줄 제거 */
+        text-align: center;
+        font-size: 0.95em;
+    }
+    
+    .rentalTable thead {
+        background-color: #d3d3d3; /* 회색 배경 */
+        font-weight: bold;
+    }
+    
+    .rentalTable th{
+        padding: 8px;
+    }
+
+    .rentalTable td {
+        padding: 10px;
+    }
+    
+    .rentalTable tbody tr {
+        border-bottom: 1px solid #5e5a5abb; /* 가로줄만 유지 */
+    }
+    
+    .rentalTable tbody tr:hover {
+        background-color: #f5f5f5; /* 마우스 오버 효과 */
+    }
+
+}
+
+
+
+.pagingContainer{
+    width: 100%;
+    height: 10%;
+        
+        >div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+
+            >div{
+                margin: 0;
+                height: fit-content;
+            }
+        }
+}
+
