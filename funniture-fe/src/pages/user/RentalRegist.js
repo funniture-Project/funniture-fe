@@ -1,11 +1,12 @@
 import RentalRegistCss from './rentalRegist.module.css'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useState , useEffect } from 'react';
 import { getDefaultDeliveryAddressList, getDeliveryAddressListData } from '../../apis/DeliveryAddressAPI';
 import { getCurrentPoint } from '../../apis/PointAPI';
 import BtnModal from '../../component/BtnModal';
 import DeliveryAddressModal from './DeliveryAddressModal';
 import { postRentalReservation } from '../../apis/RentalAPI'; 
+import RentalSuccessModal from './RentalSuccessModal';
 
 function RentalRegist () {
 
@@ -50,36 +51,13 @@ function RentalRegist () {
         getCurrentPointData("MEM011");
     }, [])
 
-    // 렌탈 등록 !!
-    const handlePaymentClick = async () => {
-        try {
-            // 필요한 데이터 준비
-            const rentalData = {
-                memberId: "MEM011", // 실제 로그인된 memberId로 대체
-                productNo: productInfo.productNo,
-                rentalNumber: rentalNum,
-                rentalInfoNo: selectRentalOption.rentalInfoNo,
-                destinationNo: defaultAddress.destinationNo
-            };
-        
-            // API 호출
-            const response = await postRentalReservation(rentalData);
-        
-            // 성공 시 처리할 로직
-            console.log('예약 등록 성공:', response);
-            // 예: 예약 성공 후 페이지 이동, 모달 열기 등
-        
-        } catch (error) {
-            console.error('예약 등록 실패:', error);
-            // 실패 시 처리할 로직
-        }
-        };
     
 // ------------------------------------------------ 배송지 변경 ------------------------------------------------
 
-const [deliveryAddressList, setDeliveryAddressList] = useState([]); // 전체 배송지리스트 조회(모달창)
-const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모달창 상태
+    const [deliveryAddressList, setDeliveryAddressList] = useState([]); // 전체 배송지리스트 조회(모달창)
+    const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모달창 상태
     const [showConfirmationModal, setShowConfirmationModal] = useState(false); // 변경 완료 모달 상태
+    const [showSuccessModal, setShowSuccessModal] = useState(false); // 등록 완료 모달 상태
 
     // 배송지 선택 모달 열기 핸들러
     // 모달 열기 핸들러
@@ -94,6 +72,43 @@ const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모
         setDefaultAddress(address);   // 기본 배송지 변경
         setShowBtnModal(false);       // 배송지 변경 모달 닫기
         setShowConfirmationModal(true); // 변경 완료 모달 띄우기
+    };
+
+    // ------------------------------------------------ 렌탈 등록 ------------------------------------------------
+
+    // 렌탈 등록 핸들러
+    const handlePaymentClick = async () => {
+        try {
+            const rentalData = {
+                memberId: "MEM011", // 나중에 로그인 된 memberId로 대체
+                productNo: productInfo.productNo,
+                rentalNumber: rentalNum,
+                rentalInfoNo: selectRentalOption.rentalInfoNo,
+                destinationNo: defaultAddress.destinationNo
+            };
+        
+            const response = await postRentalReservation(rentalData);
+        
+            // 성공 시 처리할 로직 -> 예약 성공 후 페이지 이동, 모달 열기!!
+            console.log('예약 등록 성공:', response);
+            setShowSuccessModal(true);  // 성공 모달 열기
+        
+        } catch (error) {
+            console.error('예약 등록 실패:', error);
+        }
+        };
+
+    // 예약 성공 모달 마이페이지, 메인 보내기
+    const navigate = useNavigate();
+
+    // '주문내역 확인' 클릭 시 마이페이지로 이동
+    const handleSuccess = () => {
+        navigate('/mypage'); 
+    };
+
+    // '메인으로 가기' 클릭 시 메인으로 이동
+    const handleFail = () => {
+        navigate('/'); 
     };
 
     // 계산 되는 것 변수 처리(할인가격, 렌탈 가격, 구매 적립 포인트)
@@ -262,6 +277,20 @@ const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모
                 />
             )}
 
+            {/* 성공 모달 */}
+            {showSuccessModal && (
+                <BtnModal
+                    showBtnModal={showSuccessModal}
+                    setShowBtnModal={setShowSuccessModal}
+                    modalSize="md"
+                    childContent={<RentalSuccessModal />}
+                    btnText="주문내역 확인"
+                    secondBtnText="메인으로 가기"
+                    onSuccess= {handleSuccess}
+                    onFail= {handleFail}
+                    onClose={() => setShowSuccessModal(false)} // 확인 후 모달 닫기
+                />
+            )}
             
         </>
     );
