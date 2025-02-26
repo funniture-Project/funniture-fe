@@ -32,7 +32,7 @@ function OwnerLayout() {
                         <div>등록 상품</div>
                     </NavLink>
 
-                    <NavLink to="/owner/rentallist" className={({ isActive }) => (isActive ? "selectedMenu" : "")}>
+                    <NavLink to="/owner/rentals" className={({ isActive }) => (isActive ? "selectedMenu" : "")}>
                         <div>예약 조회</div>
                     </NavLink>
 
