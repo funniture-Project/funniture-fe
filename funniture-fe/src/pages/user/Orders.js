@@ -10,7 +10,6 @@ function Orders() {
         period: 'ALL',     // period=1MONTH, 3MONTH
         searchDate: ''  // searchDate=2025-02-06
     });
-    const [selectedPeriod, setSelectedPeriod] = useState('ALL'); // 선택된 개월 수
 
     async function getData(memberId, period) {
         try {
@@ -34,7 +33,6 @@ function Orders() {
             ...prev,
             period: period
         }));
-        setSelectedPeriod(period);
     };
 
 
@@ -44,19 +42,19 @@ function Orders() {
             <div className={OrdersCss.rentalPeriodSelector}>
                 <div
                     onClick={() => handleChange('ALL')}
-                    className={selectedPeriod === 'ALL' ? OrdersCss.selected : ''}
+                    className={searchOrder.period === 'ALL' ? OrdersCss.selected : ''}
                 >
                     전체
                 </div>
                 <div
                     onClick={() => handleChange('1MONTH')}
-                    className={selectedPeriod === '1MONTH' ? OrdersCss.selected : ''}
+                    className={searchOrder.period === '1MONTH' ? OrdersCss.selected : ''}
                 >
                     1개월
                 </div>
                 <div
                     onClick={() => handleChange('3MONTH')}
-                    className={selectedPeriod === '3MONTH' ? OrdersCss.selected : ''}
+                    className={searchOrder.period === '3MONTH' ? OrdersCss.selected : ''}
                 >
                     3개월
                 </div>

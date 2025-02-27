@@ -47,16 +47,20 @@ export async function getStoreList() {
 
 export async function getUserOrderList(memberId, period) {
     
-    const url = new URL(baseRentalUrl + `/user?memberId=${memberId}`);
+    // const url = new URL(baseRentalUrl + `/user?memberId=${memberId}`);
+    const url = '/rental/user'
+    const params = new URLSearchParams()
+
 
     // period 값이 존재하면 URL에 추가
-    if (period) {
-        url.searchParams.append("period", period);
+    if (memberId){
+        params.append("memberId", memberId)
     }
-    console.log('url', url);
+    if (period) {
+        params.append("period", period);
+    }
 
-    const response = await getData(url);
-    console.log('response', response);
+    const response = await getData(url, params)
 
     return response;
 }
@@ -82,6 +86,30 @@ export const postRentalReservation = async (rentalData) => {
         throw error; 
     }
 };
+
+// ---------------------------------------------------- 제공자 -------------------------------------------------------------
+
+export const getOwnerRentalList = async (ownerNo, period, rentalTab) => {
+    const url = `/rental/owner`
+    const params = new URLSearchParams()
+
+   
+    if(ownerNo) {
+        params.append("ownerNo", ownerNo)
+    }
+    // period 값이 존재하면 URL에 추가
+    if (period) {
+        params.append("period", period);
+    }
+    if (rentalTab) {
+        params.append("rentalTab", rentalTab)
+    }
+
+    console.log("period API!", period)
+    const response = await getData(url, params)
+
+    return response;
+}
 
 // 공용
 const getData = async (url, query) => {

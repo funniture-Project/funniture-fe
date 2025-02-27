@@ -33,11 +33,23 @@ export const callOwnerListByAdminAPI = async (setOwnerList) => {
     }
 };
 
+// 사용자 → 제공자 전환 요청 데이터 불러오는 로직
+export const callConvertByAdminAPI = async (setConvertList) => {
+    const requestURL = `http://localhost:8080/api/v1/admin/convertApp`;
+    try {
+        const response = await api.get(requestURL);
+
+        console.log('관리자 페이지 전환 요청 데이터 요청 서버에 잘 다녀왔나? response : ', response);
+
+        // 서버에서 받은 데이터를 userList 상태에 저장
+        if (response.data) {
+            setConvertList(response.data.results.result);
+        }
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+    }
+}
+
 export const callLeaverUserByAdminAPI = () => {
 
 }
-
-export const callConvertByAdminAPI = () => {
-    
-}
-
