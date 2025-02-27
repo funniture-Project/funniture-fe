@@ -92,12 +92,13 @@ function Header({ setSelectCategory }) {
     }
 
     const moveMyPage = () => {
+        console.log("현재 유저 역할:", userRole); // 디버깅용
         if (userRole === 'USER') {
             navigate('/mypage');
         } else if (userRole === 'OWNER') {
             navigate('/owner');
         } else if (userRole === 'ADMIN') {
-            navigate('ADMIN');
+            navigate('/admin');
         } else {
             console.error('유저의 권한을 확인할 수 없습니다.')
         }
