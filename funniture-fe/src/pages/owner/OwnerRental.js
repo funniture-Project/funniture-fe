@@ -6,17 +6,15 @@ import {getOwnerRentalList} from '../../apis/RentalAPI';
 function OwnerRental() {
 
     const [rentalList, setRentalList] = useState([]);   // 제공자별 예약 리스트
-    const [period , setPeriod ] = useState(''); // 1WEEK, 1MONTH, 3MONTH
-    const [rentalTab, setRentalTab] = useState('');
+    const [period , setPeriod ] = useState(''); // 1WEEK, 1MONTH, 3MONTH 만료기간별 필터링
+    const [rentalTab, setRentalTab] = useState(''); // 예약, 배송, 반납 탭별 필터링
+    const [rentalStateFilter, setRentalStateFilter] = useState(''); // 예약 상태 필터링
 
-
-    
     async function getData(ownerNo, period, rentalTab) {
         try {
             const data = await getOwnerRentalList(ownerNo, period, rentalTab);
             const rentals = data.results.ownerRentalList;
             setRentalList(rentals);
-            console.log("period", period)
 
         } catch (error) {
             console.error('Error fetching rentals list:', error);
@@ -37,10 +35,24 @@ function OwnerRental() {
     // 탭 선택 핸들러
     const handleTabChange = (rentalTab) => {
         setRentalTab(rentalTab);
+        setRentalStateFilter('');
     }
 
+    // 상태 필터링 핸들러
+    const handleStatusChange = (e) => {
+        setRentalStateFilter(e.target.value);
+    };
+
+    // 예약진행상태로 필터링
+    const filteredRentalList = rentalList.filter((rental) => {
+        if (rentalStateFilter) {
+            return rental.rentalState === rentalStateFilter;
+        }
+        return true; // 필터가 없으면 전체 렌탈 리스트 반환
+    });
 
 
+    // 예약진행상태마다 스타일 다르게 적용하기 위해서
     const getStatusClass = (status) => {
         console.log('status', status);
 
@@ -96,30 +108,14 @@ function OwnerRental() {
             </div>
             <div className={OwnerRentalCSS.periodContainer}>
                 <div>계약만료기간</div>
-                <div
-                    onClick={() => handlePeriodChange('')}
-                    className={period === '' ? OwnerRentalCSS.selected : ''}
-                >
-                    전체
-                </div>
-                <div
-                    onClick={() => handlePeriodChange('1WEEK')}
-                    className={period === '1WEEK' ? OwnerRentalCSS.selected : ''}
-                >
-                    1주일
-                </div>
-                <div
-                    onClick={() => handlePeriodChange('1MONTH')}
-                    className={period === '1MONTH' ? OwnerRentalCSS.selected : ''}
-                >
-                    1개월
-                </div>
-                <div
-                    onClick={() => handlePeriodChange('3MONTH')}
-                    className={period === '3MONTH' ? OwnerRentalCSS.selected : ''}
-                >
-                    3개월
-                </div>
+                <div onClick={() => handlePeriodChange('')}
+                     className={period === '' ? OwnerRentalCSS.selected : ''}>전체</div>
+                <div onClick={() => handlePeriodChange('1WEEK')}
+                     className={period === '1WEEK' ? OwnerRentalCSS.selected : ''}>1주일</div>
+                <div onClick={() => handlePeriodChange('1MONTH')}
+                     className={period === '1MONTH' ? OwnerRentalCSS.selected : ''}>1개월</div>
+                <div onClick={() => handlePeriodChange('3MONTH')}
+                     className={period === '3MONTH' ? OwnerRentalCSS.selected : ''}>3개월</div>
             </div>
             <div className={OwnerRentalCSS.rentalContainer}>
                 <table className={OwnerRentalCSS.rentalTable}>
@@ -134,12 +130,52 @@ function OwnerRental() {
                             <th style={{width : "7%"}}>약정기간</th>
                             <th style={{width : "7%"}}>A/S 횟수</th>
                             <th style={{width : "19%"}}>사용 날짜 / 만료 날짜</th>
-                            <th style={{width : "10%"}}>예약 진행 상태</th>
+                            <th style={{width : "10%"}}>
+                                <select 
+                                    onChange={handleStatusChange} 
+                                    value={rentalStateFilter} 
+                                    className={OwnerRentalCSS.statusSelect}
+                                >
+                                    {rentalTab == "예약" ? (
+                                        <>
+                                            <option value="">예약진행상태</option>
+                                            <option value="예약대기">예약대기</option>
+                                            <option value="예약완료">예약완료</option>
+                                            <option value="예약취소">예약취소</option>
+                                        </>
+                                    ) : rentalTab == "배송" ? (
+                                        <>
+                                            <option value="">배송진행상태</option>
+                                            <option value="배송중">배송중</option>
+                                            <option value="배송완료">배송완료</option>
+                                        </>
+                                    ) : rentalTab == "반납" ? (
+                                        <>
+                                            <option value="">반납진행상태</option>
+                                        <option value="반납요청">반납요청</option>
+                                            <option value="수거중">수거중</option>
+                                            <option value="반납완료">반납완료</option>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <option value="">예약진행상태</option>
+                                            <option value="예약대기">예약대기</option>
+                                            <option value="예약완료">예약완료</option>
+                                            <option value="예약취소">예약취소</option>
+                                            <option value="배송중">배송중</option>
+                                            <option value="배송완료">배송완료</option>
+                                            <option value="반납요청">반납요청</option>
+                                            <option value="수거중">수거중</option>
+                                            <option value="반납완료">반납완료</option>
+                                        </>
+                                    )}
+                                </select>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                    {rentalList.length > 0 ? (
-                        rentalList.map((rental, index) => (
+                    {filteredRentalList.length > 0 ? (
+                            filteredRentalList.map((rental, index) => (
                             <tr key={rental.rentalNo || index}>
                                 <td><input type="checkbox" className={OwnerRentalCSS.rowCheckbox} /></td>
                                 <td>{rental.rentalNo}</td>
