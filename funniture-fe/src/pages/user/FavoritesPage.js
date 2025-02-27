@@ -1,34 +1,59 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FaCss from './favoritesPage.module.css'
 import { useEffect, useState } from 'react';
-import { getFavoriteList } from '../../apis/FavoriteAPI';
+import { getFavoriteInfoList, updateFavoriteList } from '../../apis/FavoriteAPI';
 import { useNavigate } from 'react-router-dom';
 
 function FavoritesPage() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const { user } = useSelector(state => state.member)
     const [favoriteList, setFavoriteList] = useState([])
 
     useEffect(() => {
         async function getDate() {
-            const response = await getFavoriteList(user.memberId)
+            const response = await getFavoriteInfoList(user.memberId)
 
-            setFavoriteList(response.result.filter(item => (item.productStatus != "판매불가")))
+            if (response?.result) {
+                setFavoriteList(response.result.filter(item => (item.productStatus != "판매불가")))
+            }
         }
+
         getDate();
     }, [user])
 
+    function removeFavorite(productNo) {
+        console.log("지울꺼 : ", productNo)
+        setFavoriteList(prev => prev.filter(item => item.productNo != productNo))
+    }
+
     useEffect(() => {
         console.log("favoriteList : ", favoriteList)
+
+        const updateSendData = []
+
+        favoriteList.map(item => {
+            updateSendData.push(item.productNo)
+        })
+
+        console.log("updateSendData : ", updateSendData)
+
+        updateFavoriteList(user.memberId, updateSendData)
     }, [favoriteList])
+
+    const [test, setTest] = useState([])
+
+    useEffect(() => {
+        console.log("test : ", test)
+    }, [test])
 
     return (
         <div className={FaCss.wholeContainer}>
             <div className={FaCss.orderPageTitle}>관심 상품</div>
 
             <div className={FaCss.favoritesList}>
-                {favoriteList.map(item => (
+                {favoriteList.length > 0 ? favoriteList.map(item => (
                     <div className={FaCss.favoritesItem}>
                         <div className={FaCss.imageBox}>
                             <img src={item.productImageLink == 'a.jpg'
@@ -39,7 +64,12 @@ function FavoritesPage() {
                         <div className={FaCss.itemInfo}>
                             <div>
                                 <div>{item.productName}</div>
-                                <div>월 {item.priceListAsIntegers[item.priceListAsIntegers.length - 1]} ~</div>
+                                <div>월
+                                    <span>
+                                        {parseInt(item.priceListAsIntegers[item.priceListAsIntegers.length - 1]).toLocaleString()}
+                                    </span>
+                                    원 ~
+                                </div>
                             </div>
                             <div className={FaCss.productStatusBox}>
                                 <div
@@ -55,10 +85,16 @@ function FavoritesPage() {
                         </div>
                         <div className={FaCss.btnBox}>
                             <button onClick={() => navigate(`/${item.productNo}`)}>주문하기</button>
-                            <button>취소하기</button>
+                            <button onClick={() => removeFavorite(item.productNo)}>취소하기</button>
                         </div>
                     </div>
-                ))}
+                )) :
+                    <div className={FaCss.noFavoriteMsg}>
+                        <div>
+                            관심 상품이 없습니다.
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     )
