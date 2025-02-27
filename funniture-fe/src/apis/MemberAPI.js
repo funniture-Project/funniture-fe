@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL, RESET_MEMBER } from "../redux/modules/MemberModule";
+import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL, RESET_MEMBER, POST_OWNERDATA } from "../redux/modules/MemberModule";
 import api from "./Apis";
 import imageApi from "./Apis";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -412,7 +412,14 @@ export const callRegisterOwnerAPI = ({
 
             if (response.data.httpStatusCode === 201) {
                 console.log('제공자 전환 신청 성공');
+                console.log('서버 응답 데이터:', response.data.results.result); // 추가
                 alert('제공자 신청이 완료되었습니다.');
+
+                // 성공적으로 데이터를 받아왔을 때 Redux 스토어에 저장
+                dispatch({
+                    type: POST_OWNERDATA,
+                    payload: response.data.results.result // 서버에서 반환된 데이터 저장
+                });
             } else if (response.data.httpStatusCode === 400) {
                 console.log('제공자 전환 신청 실패');
                 alert('제공자 신청에 실패했습니다.');
@@ -426,6 +433,7 @@ export const callRegisterOwnerAPI = ({
         }
     };
 };
+
 
 // 사용자가 제공자 전환 신청을 했는지 여부 확인을 위함
 export const checkOwnerStatusAPI = async (memberId) => {
@@ -488,55 +496,29 @@ export const callUpdateOwnerAPI = ({
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            
-            console.log('재신청 서버 응답:', response);
-            
+
+            console.log('제공자 전환 재신청신청 서버 응답:', response);
+
+            if (response.data.httpStatusCode === 201) {
+                console.log('제공자 전환 재신청 성공');
+                alert('제공자 재신청이 완료되었습니다.');
+
+                // 성공적으로 데이터를 받아왔을 때 Redux 스토어에 저장
+                dispatch({
+                    type: POST_OWNERDATA,
+                    payload: response.data.results.result // 서버에서 반환된 데이터 저장
+                });
+            } else if (response.data.httpStatusCode === 400) {
+                console.log('제공자 전환 재신청 실패');
+                alert('제공자 재신청에 실패했습니다.');
+            } else {
+                console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
+                alert('알 수 없는 오류가 발생했습니다.');
+            }
         } catch (error) {
-            console.error('재신청 중 오류 발생:', error);
+            console.error('제공자 전환 재신청 중 오류 발생:', error);
+            alert('서버와 통신 중 오류가 발생했습니다.');
         }
     };
 };
 
-
-
-// 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.
-// export const callSignupAPI =
-// ({form}) =>
-//     async (dispatch) => {
-//         try {
-//           console.log('실행')
-//           console.log("api : ", api)
-//         const response = await api.post('/auth/signup', {
-//           email : form.email,
-//           userName : form.userName,
-//           password : form.password,
-//         });
-//         if (response.status !== 200) throw new Error(response.error);
-//         dispatch({type : POST_REGISTER, payload : response});
-//         alert('회원가입을 완료하였습니다. ');
-//       }
-//        catch (error) {
-//         // dispatch({ type: types.REGISTER_USER_FAIL, payload: error.error });
-//         console.log('test', error);
-//         //   alert('회원가입에 실패하였습니다.');
-//       }
-//     };
-
-// export const callGetMemberAPI = ({memberId}) => {
-//     const memberRequestURL = `http://localhost:8080/api/v1/member/${memberId}`;
-
-//     return async (dispatch, getState) => {
-//         const result = await fetch(memberRequestURL,{
-//             method : 'GET',
-//             headers: {
-//                 'Content-Type' : 'application/json',
-//                 Accept: '*/*',
-//                 Authorization : 'Bearer' + window.localStorage.getItem('accessToken'),
-//             },
-//         }).then((res) => res.json());
-
-//         console.log('callGetMemberAPI result : ', result);
-
-//         dispatch({type: GET_MEMBER, payload:result});
-//     }
-// }
