@@ -10,22 +10,34 @@ function OwnerRental() {
     const [rentalTab, setRentalTab] = useState(''); // 예약, 배송, 반납 탭별 필터링
     const [rentalStateFilter, setRentalStateFilter] = useState(''); // 예약 상태 필터링
 
-    async function getData(ownerNo, period, rentalTab) {
-        try {
-            const data = await getOwnerRentalList(ownerNo, period, rentalTab);
-            const rentals = data.results.ownerRentalList;
-            setRentalList(rentals);
+    // 페이징 상태 관리
+    const [pageInfo, setPageInfo] = useState(null);  // pageInfo 상태 추가
+    const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
 
+    async function getData(ownerNo, period, rentalTab, pageNum) {
+        try {
+            const data = await getOwnerRentalList(ownerNo, period, rentalTab, pageNum);
+            const rentals = data.results.ownerRentalList;
+            const pageInfo = data.results.pageInfo;
+            setRentalList(rentals);
+            setPageInfo(pageInfo);
+          
         } catch (error) {
             console.error('Error fetching rentals list:', error);
             setRentalList([]);
         }
     }
 
-    // 검색 조건 변경 시 데이터 다시 불러오기
-    useEffect(() => {
-        getData("MEM001", period, rentalTab);
-    }, [period, rentalTab]);
+    // 페이지 변경 시 데이터 가져오기
+    const handlePageChange = (newPageNum) => {
+
+        setPageNum(newPageNum);  // pageNum 변경
+    };
+
+     // 검색 조건 변경 시 데이터 다시 불러오기
+     useEffect(() => {
+        getData("MEM001", period, rentalTab, pageNum);
+    }, [pageNum, period, rentalTab]);  // pageInfo 제거하고, period, rentalTab, pageNum만 의존성으로 설정
 
     // 기간 선택 핸들러
     const handlePeriodChange = (period) => {
@@ -54,7 +66,6 @@ function OwnerRental() {
 
     // 예약진행상태마다 스타일 다르게 적용하기 위해서
     const getStatusClass = (status) => {
-        console.log('status', status);
 
         switch (status) {
           case "예약대기":
@@ -205,9 +216,14 @@ function OwnerRental() {
                     </tbody>
                 </table>
             </div>
+            
+            {/* 페이징 컴포넌트 가져오기 */}
             <div className={OwnerRentalCSS.pagingContainer}>
                 <div>
-                {<Pagination/>}
+                    <Pagination 
+                    pageInfo={pageInfo} 
+                    onPageChange={handlePageChange} 
+                    />
                 </div>
             </div>
         </div>
