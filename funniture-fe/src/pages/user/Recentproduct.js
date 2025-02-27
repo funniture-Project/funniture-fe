@@ -53,7 +53,7 @@ function RecentProduct() {
                         <div>{item.productName}</div>
                         <div className={RecentCss.productPrice}>
                             {item.priceListAsIntegers.length > 0
-                                ? item.priceListAsIntegers[item.priceListAsIntegers.length - 1] + " 원 ~"
+                                ? parseInt(item.priceListAsIntegers[item.priceListAsIntegers.length - 1]).toLocaleString() + " 원 ~"
                                 : "가격 정보 없음"}
                         </div>
                         <div>

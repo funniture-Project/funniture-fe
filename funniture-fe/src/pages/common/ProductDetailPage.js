@@ -3,10 +3,12 @@ import { useParams } from "react-router-dom";
 import { getProductDetailInfo } from "../../apis/ProductAPI";
 import PDCSS from './productDetail.module.css'
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getFavoriteList, updateFavoriteList } from "../../apis/FavoriteAPI";
 
 function ProductDetailPage() {
     const { id } = useParams();
+    const dispatch = useDispatch();
 
     const [selectedTab, setSelectedTab] = useState('detailInfo');
     const [selectRentalOption, setSelectRentalOption] = useState({})
@@ -15,6 +17,44 @@ function ProductDetailPage() {
     const [productInfo, setProductInfo] = useState();
 
     const { user } = useSelector(state => state.member)
+
+    const [favoriteProductNo, setFavoriteProductNo] = useState([])
+
+    useEffect(() => {
+        if (user.memberRole == "USER") {
+            dispatch(getFavoriteList(user.memberId))
+        }
+    }, [user])
+
+    const { favoriteList } = useSelector(state => state.favorite)
+
+    useEffect(() => {
+        if (user.memberRole == "USER") {
+            const array = []
+
+            favoriteList.map(item => {
+                array.push(item["productNo"])
+            })
+
+            console.log("favoriteList : ", favoriteList)
+            console.log("array : ", array)
+
+            setFavoriteProductNo(array)
+        }
+    }, [favoriteList])
+
+    useEffect(() => {
+        console.log("favoriteProductNo : ", favoriteProductNo)
+        updateFavoriteList(user.memberId, favoriteProductNo)
+    }, [favoriteProductNo])
+
+    function likeHandler(productNo) {
+        if (favoriteProductNo.includes(productNo)) {
+            setFavoriteProductNo(prev => prev.filter(item => item != productNo))
+        } else {
+            setFavoriteProductNo(prev => [...prev, productNo])
+        }
+    }
 
     // 렌탈 갯수
     const [rentalNum, setRentalNum] = useState(1);
@@ -36,11 +76,11 @@ function ProductDetailPage() {
         setRentalNum(e.target.value);
     }
 
+    // 대여정보
     useEffect(() => {
         async function getData() {
             const response = await getProductDetailInfo(id)
 
-            // console.log("response 입니다 : ", response)
             if (response) {
                 setProductInfo(response.results?.result)
                 if (response.results?.result.rentalOptionList?.length > 0) {
@@ -54,6 +94,7 @@ function ProductDetailPage() {
         getData();
     }, [id])
 
+    // 최근 본 상품
     useEffect(() => {
         console.log('productInfo : ', productInfo)
 
@@ -92,7 +133,14 @@ function ProductDetailPage() {
                             <div className={PDCSS.productNameBox}>
                                 <div>{productInfo?.productName}</div>
                                 <div>
-                                    <div>❤️</div>
+                                    {user.memberRole == "USER" ? (
+                                        <div onClick={() => likeHandler(productInfo.productNo)}>
+                                            {favoriteProductNo.includes(productInfo.productNo) ?
+                                                <img src={require("../../assets/icon/fulll-heart.svg").default} alt="관심 있는 상품" />
+                                                : <img src={require("../../assets/icon/empty-heart.svg").default} alt="관심 없는 상품" />
+                                            }
+                                        </div>
+                                    ) : null}
                                     <div>🔗</div>
                                 </div>
                             </div>
