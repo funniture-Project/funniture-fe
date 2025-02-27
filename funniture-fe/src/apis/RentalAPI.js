@@ -89,10 +89,11 @@ export const postRentalReservation = async (rentalData) => {
 
 // ---------------------------------------------------- 제공자 -------------------------------------------------------------
 
-export const getOwnerRentalList = async (ownerNo, period, rentalTab) => {
+export const getOwnerRentalList = async (ownerNo, period, rentalTab, pageNum) => {
     const url = `/rental/owner`
     const params = new URLSearchParams()
 
+    console.log("API에서도 pageNum 잘나오니?", pageNum)
    
     if(ownerNo) {
         params.append("ownerNo", ownerNo)
@@ -104,10 +105,12 @@ export const getOwnerRentalList = async (ownerNo, period, rentalTab) => {
     if (rentalTab) {
         params.append("rentalTab", rentalTab)
     }
+    if (pageNum) {
+        params.append("offset", pageNum)
+    }
 
-    console.log("period API!", period)
     const response = await getData(url, params)
-
+    console.log("API 응답 데이터:", response);
     return response;
 }
 
