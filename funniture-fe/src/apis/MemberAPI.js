@@ -307,10 +307,127 @@ export const callWithdrawAPI = ({ memberId }) => {
     };
 }
 
+export const callConvertImageAPI = ({ memberId, storeImage }) => {
+    const requestURL = `http://localhost:8080/api/v1/member/modify/asdasd`;
+
+    console.log('callChangeImageAPI에 memberId 잘 넘어 오는지 : ', memberId);
+    console.log('callChangeImageAPI에 storaImage 잘 넘어 오는지 : ', storeImage);
+
+    return async (dispatch, getState) => {
+        const formData = new FormData();
+
+        // JSON 데이터 생성 (객체 형식으로 만들어 줘야 함!!)
+        const memberData = {
+            memberId: memberId, // 문자열 데이터
+        };
+
+        // FormData에 JSON 데이터 추가
+        formData.append(
+            "formData",
+            new Blob([JSON.stringify(memberData)], { type: "application/json" })
+        );
+
+        // FormData에 파일 추가 (파일 객체 그대로 추가)
+        formData.append("storeImage", storeImage);
+
+        try {
+            const response = await api.put(requestURL, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            console.log('프로필 사진 변경 서버에 잘 다녀 왔는지 : ', response);
+
+            if (response.data.httpStatusCode === 201) {
+                console.log('프로필 사진 변경 성공');
+                // alert('프로필 사진이 변경되었습니다.');
+            } else if (response.data.httpStatusCode === 400) {
+                console.log('프로필 사진 변경 실패');
+                alert('프로필 사진 변경에 실패했습니다.');
+            } else {
+                console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
+                alert('알 수 없는 오류가 발생했습니다.');
+            }
+        } catch (error) {
+            console.error('프로필 사진 변경 중 오류 발생: ', error);
+            alert('서버와 통신 중 오류가 발생했습니다.');
+        }
+
+    };
+};
+
 // 사용자가 제공자로 전환 신청할 때 서버에 넘길 사업자 데이터들
-export const callRegisterOwnerAPI = () => {
-    
-}
+export const callRegisterOwnerAPI = ({
+    memberId,
+    storeName,
+    bank,
+    account,
+    storeImage,
+    storeNo,
+    storeAdress,
+    storePhone,
+    attachmentFile
+}) => {
+    const requestURL = `http://localhost:8080/api/v1/member/owner/register`;
+
+    return async (dispatch, getState) => {
+        const formData = new FormData();
+
+        // JSON 데이터 생성
+        const ownerData = {
+            memberId: memberId, // memberId 포함
+            storeName: storeName,
+            bank: bank,
+            account: account,
+            storeNo: storeNo,
+            storeAdress: storeAdress,
+            storePhone: storePhone
+        };
+
+        // FormData에 JSON 데이터 추가
+        formData.append(
+            "ownerData",
+            new Blob([JSON.stringify(ownerData)], { type: "application/json" })
+        );
+
+        // FormData에 이미지 파일 추가
+        if (storeImage instanceof File) {
+            formData.append("storeImage", storeImage);
+        }
+
+        // FormData에 첨부파일 추가
+        if (attachmentFile instanceof File) {
+            formData.append("attachmentFile", attachmentFile);
+        }
+
+        try {
+            const response = await api.post(requestURL, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            console.log('제공자 전환 신청 서버 응답:', response);
+
+            if (response.data.httpStatusCode === 201) {
+                console.log('제공자 전환 신청 성공');
+                alert('제공자 신청이 완료되었습니다.');
+            } else if (response.data.httpStatusCode === 400) {
+                console.log('제공자 전환 신청 실패');
+                alert('제공자 신청에 실패했습니다.');
+            } else {
+                console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
+                alert('알 수 없는 오류가 발생했습니다.');
+            }
+        } catch (error) {
+            console.error('제공자 전환 신청 중 오류 발생:', error);
+            alert('서버와 통신 중 오류가 발생했습니다.');
+        }
+    };
+};
+
+
 
 
 // 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.

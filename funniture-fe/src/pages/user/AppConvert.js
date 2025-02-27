@@ -3,11 +3,9 @@ import OrdersCss from './orders.module.css';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import decodeJwt from '../../utils/tokenUtils';
-import { callLoginAPI, callRegisterOwnerAPI } from '../../apis/MemberAPI';
+import { callRegisterOwnerAPI , callConvertImageAPI} from '../../apis/MemberAPI';
 import { Navigate, useNavigate } from 'react-router-dom';
-import {  callChangeImageAPI } from '../../apis/MemberAPI';
 import basicImage from '../../assets/images/Adobe Express - file.png'
-import { resetMember } from '../../redux/modules/MemberModule';
 import BtnModal from '../../component/BtnModal';
 
 function AppConvert() {
@@ -26,7 +24,7 @@ function AppConvert() {
         storeName: '',
         bank: '',
         account: '',
-        storaImage: '',
+        storeImage: '',
         storeNo: '',
         storeAdress: '',
         storePhone: '',
@@ -50,12 +48,12 @@ function AppConvert() {
             setPreviewImage(URL.createObjectURL(file)); // 미리보기용 URL 생성
             setForm({
                 ...form,
-                storaImage: file, // 선택한 파일 객체를 form 상태에 저장
+                storeImage: file, // 선택한 파일 객체를 form 상태에 저장
             });
         } else {
             setForm({
                 ...form,
-                storaImage: '', // 파일이 선택되지 않은 경우 빈 문자열로 설정
+                storeImage: '', // 파일이 선택되지 않은 경우 빈 문자열로 설정
             });
         }
     
@@ -65,28 +63,29 @@ function AppConvert() {
     
     const imageOnClickHandler = () => {
         console.log('imageOnClickHandler 호출됨');
-        console.log('현재 form.imageLink 값:', form.storaImage);
+        console.log('현재 form.imageLink 값:', form.storeImage);
     
-        if (!form.storaImage || !(form.storaImage instanceof File)) {
-            console.log('조건 만족: !form.imageLink 또는 form.imageLink가 File 객체가 아님');
+        if (!form.storeImage || !(form.storeImage instanceof File)) {
+            console.log('조건 만족: !form.storeImage 또는 form.storeImage File 객체가 아님');
             setShowImageErrorModal(true); // 오류 모달 표시
             return;
         }
     
-        console.log('파일이 선택되었습니다:', form.storaImage);
-        dispatch(callChangeImageAPI({
+        console.log('파일이 선택되었습니다:', form.storeImage);
+        dispatch(callConvertImageAPI({
             memberId: member.user.memberId,
-            storaImage: form.storaImage,
+            storeImage: form.storeImage,
         }));
         setShowImageSuccessModal(true);
     };
 
     const registerOnClickHandler = () => {
         dispatch(callRegisterOwnerAPI({
+            memberId: member.user.memberId,
             storeName: form.storeName,
             bank: form.bank,
             account: form.account,
-            storaImage: form.storaImage,
+            storeImage: form.storeImage,
             storeNo: form.storeNo,
             storeAdress: form.storeAdress,
             storePhone: form.storePhone,
@@ -180,10 +179,15 @@ function AppConvert() {
                     <div>
                         <span>첨부파일 (사업자 등록증) *</span>
                         <input
-                            type="text"
-                            name="storePhone"
-                            value={form.attechmentLink}
-                            onChange={onChangeHandler}
+                            type="file"
+                            name="attachmentFile"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                setForm({
+                                    ...form,
+                                    attachmentFile: file, // 선택한 파일 저장
+                                });
+                            }}
                         />
                     </div>
                     <button
