@@ -13,7 +13,7 @@ function AdminConvert() {
     const [convertList, setConvertList] = useState([]); // 여러 제공자 정보를 저장하는 배열
 
     useEffect(() => {
-        console.log('관리자 페이지, 제공자 useEffect 실행');
+        console.log('관리자 페이지, ,제공자 전환 useEffect 실행');
         callConvertByAdminAPI(setConvertList);
     }, []);
 
@@ -37,10 +37,9 @@ function AdminConvert() {
                             <div className={RentalCss.title}>
                                 <div style={{ width: "15%" }}><p>회원번호</p></div>
                                 <div style={{ width: "10%" }}><p>이름</p></div>
-                                <div style={{ width: "20%" }}><p>전화번호</p></div>
-                                <div style={{ width: "15%" }}><p>이메일</p></div>
-                                <div style={{ width: "27%" }}><p>회원가입일</p></div>
-                                <div style={{ width: "13%" }}><p>포인트</p></div>
+                                <div style={{ width: "23%" }}><p>전화번호</p></div>
+                                <div style={{ width: "18%" }}><p>이메일</p></div>
+                                <div style={{ width: "30%" }}><p>회원가입일</p></div>
                             </div>
 
                             {/* 테이블 데이터 */}
@@ -55,10 +54,9 @@ function AdminConvert() {
                                     <div key={convertList.memberId} className={RentalCss.rentalItems}>
                                         <div style={{ width: '15%' }}><p>{convert.memberId}</p></div>
                                         <div style={{ width: '10%' }}><p>{convert.userName}</p></div>
-                                        <div style={{ width: '20%' }}><p>{convert.phoneNumber}</p></div>
-                                        <div style={{ width: '15%' }}><p>{convert.email}</p></div>
-                                        <div style={{ width: '27%' }}><p>{convert.signupDate}</p></div>
-                                        <div style={{ width: '13%' }}><p>{convert.pointDTO.currentPoint}</p></div>
+                                        <div style={{ width: '23%' }}><p>{convert.phoneNumber}</p></div>
+                                        <div style={{ width: '18%' }}><p>{convert.email}</p></div>
+                                        <div style={{ width: '30%' }}><p>{convert.signupDate}</p></div>
                                     </div>
                                 ))
                             )}
