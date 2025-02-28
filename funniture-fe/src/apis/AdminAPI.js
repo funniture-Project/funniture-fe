@@ -17,6 +17,7 @@ export const callUserListByAdminAPI = async (setUserList) => {
     }
 };
 
+// 관리자 페이지의 제공자 정보 들고오는 애
 export const callOwnerListByAdminAPI = async (setOwnerList) => {
     const requestURL = `http://localhost:8080/api/v1/admin/ownerList`;
     try {
@@ -50,6 +51,7 @@ export const callConvertByAdminAPI = async (setConvertList) => {
     }
 }
 
+// 관리자 페이지에 모달에 들어갈 데이터 (수정해야 함)
 export const callConvertAppAPI = async () => {
     const requestURL = `http://localhost:8080/api/v1/admin/convertApp/modal`;
 
@@ -65,6 +67,31 @@ export const callConvertAppAPI = async () => {
 };
 
 
-export const callLeaverUserByAdminAPI = () => {
+export const callLeaverUserByAdminAPI = async (setLeaverUserList) => {
+    const requestURL = `http://localhost:8080/api/v1/admin/leaverList`
+    try {
+        const response = await api.get(requestURL);
 
+        console.log('관리자 페이지 전체 탈퇴자 정보 요청 서버에 잘 다녀왔나? response : ', response);
+
+        // 서버에서 받은 데이터를 userList 상태에 저장
+        if (response.data) {
+            setLeaverUserList(response.data.results.result);
+        }
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+    }
+}
+
+// 관리자 페이지 탈퇴자 목록에서 접근 권한 변경을 유저로 승인 했을 때 동작
+export const callChangeUserRoleAPI = async (userIds) => {
+    const requestURL = `http://localhost:8080/api/v1/admin/reactivate`
+    try {
+        const response = await api.post(requestURL, userIds );
+
+        console.log('관리자 페이지 전체 탈퇴자 정보 요청 서버에 잘 다녀왔나? response : ', response);
+
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+    }
 }
