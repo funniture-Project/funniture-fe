@@ -3,11 +3,21 @@ import RentalCss from './rental.module.css';
 import { useState, useEffect } from 'react';
 import Pagination from '../../component/Pagination';
 import { callOwnerListByAdminAPI } from '../../apis/AdminAPI';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , useLocation } from 'react-router-dom';
 
 function AdminOwner() {
 
     const navigate = useNavigate();
+    const location = useLocation(); // 현재 URL 경로 가져오기
+    const [activeTab, setActiveTab] = useState(location.pathname); // 기본 활성화 탭 설정
+
+    useEffect(() => {
+        setActiveTab(location.pathname); // URL 변경 시 activeTab 동기화
+    }, [location.pathname]);
+
+    const handleTabClick = (path) => {
+        navigate(path); // 경로 이동
+    };
 
     // 회원 정보 리스트를 저장할 상태
     const [ownerList, setOwnerList] = useState([]); // 여러 제공자 정보를 저장하는 배열
@@ -24,11 +34,23 @@ function AdminOwner() {
                 <div className={RentalCss.rentalSearchBox}>
                     <div className={RentalCss.searchReset}></div>
                 </div>
-                    <div className={RentalCss.adminSelectButton}>
-                        <button onClick={()=>{navigate('/admin/authority/user')}} className="active">사용자</button>
-                        <button onClick={()=>{navigate('/admin/authority/owner')}}>제공자</button>
-                        <button onClick={()=>{navigate('/admin/authority/convert')}}>전환요청</button>
-                        <button onClick={()=>{navigate('/admin/authority/leaver')}}>탈퇴자</button>
+                <div className={RentalCss.adminSelectButton}>
+                        <button
+                            onClick={() => handleTabClick('/admin/authority/user')}
+                            className={`${RentalCss.button} ${activeTab === '/admin/authority/user' ? RentalCss.active : ''}`}>사용자
+                        </button>
+                        <button
+                            onClick={() => handleTabClick('/admin/authority/owner')}
+                            className={`${RentalCss.button} ${activeTab === '/admin/authority/owner' ? RentalCss.active : ''}`}>제공자
+                        </button>
+                        <button
+                            onClick={() => handleTabClick('/admin/authority/convert')}
+                            className={`${RentalCss.button} ${activeTab === '/admin/authority/convert' ? RentalCss.active : ''}`}>전환요청
+                        </button>
+                        <button
+                            onClick={() => handleTabClick('/admin/authority/leaver')}
+                            className={`${RentalCss.button} ${activeTab === '/admin/authority/leaver' ? RentalCss.active : ''}`}>탈퇴자
+                        </button>
                         <button>접근권한변경</button>
                     </div>
                     <div className={RentalCss.rentalBox}>
