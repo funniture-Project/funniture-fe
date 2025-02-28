@@ -11,6 +11,7 @@ function AdminProduct() {
     const [productList, setProductList] = useState([])
     const [errorMsg, setErrorMsg] = useState('')
     const [changeStatue, setChangeStatue] = useState('')
+    const [pageInfo, setPageInfo] = useState(null);  // pageInfo 상태 추가
 
     const [searchCondition, setSearchCondition] = useState({
         ownerNo: [],
@@ -19,13 +20,15 @@ function AdminProduct() {
         searchText: ''
     })
 
+    const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
+
     useEffect(() => {
         // 제공자 목록 세팅
         async function getSetDataList() {
             const [storeData, categoryData, productData] = await Promise.all([
                 getOwnerAllList(),
                 getSubAllCategory(),
-                getProductList()
+                getProductList({ pageNum, paging: true })
             ])
 
             setStoreList(storeData.results.result)
@@ -36,23 +39,50 @@ function AdminProduct() {
 
             setCategoryList(subCategoryData)
 
+            console.log("페이징된 데이터임!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            console.log("productData : ", productData)
             //productList
             setProductList(productData.results?.result)
+            setPageInfo(productData.results?.pageInfo)
         }
 
         getSetDataList();
     }, [])
 
+    // 페이지 변경 시 데이터 가져오기
+    const handlePageChange = (newPageNum) => {
+
+        setPageNum(newPageNum);  // pageNum 변경
+    };
+
+    useEffect(() => {
+        console.log("페이지 변경")
+
+        async function getData() {
+            const response = await getProductList({ pageNum, paging: true })
+
+            console.log(response)
+
+            if (response) {
+                setProductList(response.results?.result)
+            }
+        }
+
+        getData();
+    }, [pageNum])
+
     async function searchEvent() {
 
-        const searchProduct = await getProductList(searchCondition)
+        const searchProduct = await getProductList({ conditions: searchCondition, pageNum: 1, paging: true })
 
         if (searchProduct.results) {
             setProductList(searchProduct.results?.result)
+            setPageInfo(searchProduct.results?.pageInfo)
             setErrorMsg('')
         } else {
             console.log("결과없음")
             setProductList([])
+            setPageInfo(null)
             setErrorMsg(searchProduct.message)
         }
     }
@@ -83,8 +113,9 @@ function AdminProduct() {
             searchText: ''
         });
 
-        const productListData = await getProductList();
+        const productListData = await getProductList({ pageNum: 1, paging: true });
         setProductList(productListData.results.result)
+        setPageInfo(productListData.results?.pageInfo)
 
         console.log("productListData : ", productListData.results.result)
     }
@@ -98,8 +129,9 @@ function AdminProduct() {
         console.log("response : ", response)
 
         if (response.httpStatusCode == 204) {
-            const productListData = await getProductList();
+            const productListData = await getProductList({ pageNum: 1, paging: true });
             setProductList(productListData.results.result)
+            setPageInfo(productListData.results?.pageInfo)
 
             document.querySelectorAll("input[name='productNo']").forEach(checkBox => {
                 checkBox.checked = false;
@@ -196,7 +228,10 @@ function AdminProduct() {
                         </div>
 
                         <div className={AdProductCss.paginationDiv}>
-                            <Pagination />
+                            <Pagination
+                                pageInfo={pageInfo}
+                                onPageChange={handlePageChange}
+                            />
                         </div>
                     </div>
                 </form>
