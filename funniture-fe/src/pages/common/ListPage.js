@@ -92,7 +92,7 @@ function ListPage({ selectCategory, selectCompany }) {
 
     // 검색 결과 데이터 가져오기
     async function getData(conditions) {
-        const productResponse = await getProductList(conditions, refCategoryCode)
+        const productResponse = await getProductList({ conditions, refCategoryCode })
 
         if (productResponse.results?.result) {
             setProductList(productResponse.results.result.filter(product => product.productStatus != "판매불가" && product.productStatus != "판매종료"))

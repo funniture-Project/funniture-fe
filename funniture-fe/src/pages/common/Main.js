@@ -6,6 +6,8 @@ function Main() {
     return (
         <div>
             <div className='mainContentBox'>
+                {/* <img src='https://res.cloudinary.com/dor26tdln/raw/upload/v1740707870/vafwl1exrkurtjmpma2p.pdf' alt="테스트" /> */}
+                {/* <iframe src='https://res.cloudinary.com/dor26tdln/raw/upload/v1740707870/vafwl1exrkurtjmpma2p.pdf'></iframe> */}
                 <div className='title'>
                     <img src={require(`../../assets/icon/review.svg`).default} alt="리뷰 아이콘" />
                     <span>Best</span> 리뷰
