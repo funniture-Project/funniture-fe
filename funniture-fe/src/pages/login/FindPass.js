@@ -256,7 +256,7 @@ function FindPass() {
                   placeholder="인증번호 입력"
                 />
                 {/* 회원가입과 !isEmailDuplicate 요기만 다름. */}
-                <button onClick={sendEmailHandler}>
+                <button onClick={sendEmailHandler} disabled={!emailValid || !isEmailDuplicate}>
                     {emailSent ? '재발송' : '인증번호 발송'}
                 </button>
               </div>

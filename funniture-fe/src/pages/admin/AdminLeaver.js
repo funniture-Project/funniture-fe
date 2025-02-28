@@ -3,12 +3,14 @@ import RentalCss from './rental.module.css';
 import { useState, useEffect } from 'react';
 import Pagination from '../../component/Pagination';
 import { callLeaverUserByAdminAPI , callChangeUserRoleAPI } from '../../apis/AdminAPI';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import BtnModal from '../../component/BtnModal';
 
 function AdminLeaver() {
 
     const navigate = useNavigate();
+    const location = useLocation(); // 현재 URL 경로 가져오기
+    const [activeTab, setActiveTab] = useState(location.pathname); // 기본 활성화 탭 설정
 
     // 회원 정보 리스트를 저장할 상태
     const [leaverUserList, setLeaverUserList] = useState([]); // 여러 제공자 정보를 저장하는 배열
@@ -16,7 +18,15 @@ function AdminLeaver() {
     const [showModal, setShowModal] = useState(false); // 접근 권한 변경 누를 때 뜨는 모달 
 
     useEffect(() => {
-        console.log('관리자 페이지, 제공자 useEffect 실행');
+        setActiveTab(location.pathname); // URL 변경 시 activeTab 동기화
+    }, [location.pathname]);
+
+    const handleTabClick = (path) => {
+        navigate(path); // 경로 이동
+    };
+
+    useEffect(() => {
+        console.log('관리자 페이지, 탈퇴자 useEffect 실행');
         callLeaverUserByAdminAPI(setLeaverUserList);
     }, []);
 
@@ -66,12 +76,24 @@ function AdminLeaver() {
                     <div className={RentalCss.searchReset}></div>
                 </div>
                     <div className={RentalCss.adminSelectButton}>
-                    <button onClick={()=>{navigate('/admin/authority/user')}} className="active">사용자</button>
-                        <button onClick={()=>{navigate('/admin/authority/owner')}}>제공자</button>
-                        <button onClick={()=>{navigate('/admin/authority/convert')}}>전환요청</button>
-                        <button onClick={()=>{navigate('/admin/authority/leaver')}}>탈퇴자</button>
+                        <button
+                            onClick={() => handleTabClick('/admin/authority/user')}
+                            className={`${RentalCss.button} ${activeTab === '/admin/authority/user' ? RentalCss.active : ''}`}>사용자
+                        </button>
+                        <button
+                            onClick={() => handleTabClick('/admin/authority/owner')}
+                            className={`${RentalCss.button} ${activeTab === '/admin/authority/owner' ? RentalCss.active : ''}`}>제공자
+                        </button>
+                        <button
+                            onClick={() => handleTabClick('/admin/authority/convert')}
+                            className={`${RentalCss.button} ${activeTab === '/admin/authority/convert' ? RentalCss.active : ''}`}>전환요청
+                        </button>
+                        <button
+                            onClick={() => handleTabClick('/admin/authority/leaver')}
+                            className={`${RentalCss.button} ${activeTab === '/admin/authority/leaver' ? RentalCss.active : ''}`}>탈퇴자
+                        </button>
                         <button onClick={handleAccessChangeClick}>접근권한변경</button>
-                    </div>
+                    </div>  
                     <div className={RentalCss.rentalBox}>
                         <div className={RentalCss.rentalSubBox}>
                             {/* 테이블 헤더 */}

@@ -89,9 +89,21 @@ export const callChangeUserRoleAPI = async (userIds) => {
     try {
         const response = await api.post(requestURL, userIds );
 
-        console.log('관리자 페이지 전체 탈퇴자 정보 요청 서버에 잘 다녀왔나? response : ', response);
+        console.log('관리자 페이지 탈퇴자를 유저로 변경 요청 서버에 잘 다녀왔나? response : ', response);
 
     } catch (error) {
         console.error('API 호출 중 오류 발생:', error);
     }
+}
+
+export const callChangeLimitRoleAPI = async (userIds) => {
+    const requestURL = `http://localhost:8080/api/v1/admin/deactivate`
+    try {
+        const response = await api.post(requestURL, userIds );
+
+        console.log('관리자 페이지 유저를 탈퇴자로 변경 요청 서버에 잘 다녀왔나? response : ', response);
+
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+    }   
 }
