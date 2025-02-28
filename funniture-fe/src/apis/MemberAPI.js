@@ -365,9 +365,9 @@ export const callRegisterOwnerAPI = ({
     account,
     storeImage,
     storeNo,
-    storeAdress,
+    storeAddress,
     storePhone,
-    attachmentFile
+    attachmentFile // 변수명 수정
 }) => {
     const requestURL = `http://localhost:8080/api/v1/member/owner/register`;
 
@@ -376,12 +376,12 @@ export const callRegisterOwnerAPI = ({
 
         // JSON 데이터 생성
         const ownerData = {
-            memberId: memberId, // memberId 포함
+            memberId: memberId,
             storeName: storeName,
             bank: bank,
             account: account,
             storeNo: storeNo,
-            storeAdress: storeAdress,
+            storeAddress: storeAddress,
             storePhone: storePhone
         };
 
@@ -396,9 +396,9 @@ export const callRegisterOwnerAPI = ({
             formData.append("storeImage", storeImage);
         }
 
-        // FormData에 첨부파일 추가
+        // FormData에 첨부파일 추가 (필드 이름 수정)
         if (attachmentFile instanceof File) {
-            formData.append("attachmentFile", attachmentFile);
+            formData.append("attachmentFile", attachmentFile); // 필드 이름 수정
         }
 
         try {
@@ -427,6 +427,75 @@ export const callRegisterOwnerAPI = ({
     };
 };
 
+// 사용자가 제공자 전환 신청을 했는지 여부 확인을 위함
+export const checkOwnerStatusAPI = async (memberId) => {
+    const requestURL = `http://localhost:8080/api/v1/member/owner/status/${memberId}`;
+    try {
+        const response = await api.get(requestURL);
+        console.log('사용자가 제공자 전환 신청을 했는지 여부 : ', response);
+        return response;
+    } catch (error) {
+        console.error('기존 신청 여부 확인 중 오류 발생:', error);
+        throw error;
+    }
+};
+
+// 재신청 시 돌아갈 구문
+export const callUpdateOwnerAPI = ({
+    memberId,
+    storeName,
+    bank,
+    account,
+    storeImage,
+    storeNo,
+    storeAddress,
+    storePhone,
+    attachmentFile
+}) => {
+    const requestURL = `http://localhost:8080/api/v1/member/owner/update`;
+
+    return async (dispatch, getState) => {
+        const formData = new FormData();
+
+        // JSON 데이터 생성
+        const ownerData = {
+            memberId,
+            storeName,
+            bank,
+            account,
+            storeNo,
+            storeAddress,
+            storePhone
+        };
+
+        // FormData에 JSON 데이터 추가
+        formData.append(
+            "ownerData",
+            new Blob([JSON.stringify(ownerData)], { type: "application/json" })
+        );
+
+        if (storeImage instanceof File) {
+            formData.append("storeImage", storeImage);
+        }
+
+        if (attachmentFile instanceof File) {
+            formData.append("attachmentFile", attachmentFile);
+        }
+
+        try {
+            const response = await api.post(requestURL, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            
+            console.log('재신청 서버 응답:', response);
+            
+        } catch (error) {
+            console.error('재신청 중 오류 발생:', error);
+        }
+    };
+};
 
 
 

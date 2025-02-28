@@ -3,7 +3,7 @@ import OrdersCss from './orders.module.css';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import decodeJwt from '../../utils/tokenUtils';
-import { callRegisterOwnerAPI , callConvertImageAPI} from '../../apis/MemberAPI';
+import { callRegisterOwnerAPI , callConvertImageAPI, checkOwnerStatusAPI ,callUpdateOwnerAPI } from '../../apis/MemberAPI';
 import { Navigate, useNavigate } from 'react-router-dom';
 import basicImage from '../../assets/images/Adobe Express - file.png'
 import BtnModal from '../../component/BtnModal';
@@ -20,18 +20,29 @@ function AppConvert() {
     const [showImageErrorModal , setShowImageErrorModal] = useState(false); // 변경할 이미지 선택 안 하고 누를때
     const [showImageSuccessModal , setShowImageSuccessModal] = useState(false);
 
+    const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false); // 기존 신청 여부
+
     const [form, setForm] = useState({
         storeName: '',
         bank: '',
         account: '',
         storeImage: '',
         storeNo: '',
-        storeAdress: '',
+        storeAddress: '',
         storePhone: '',
-        attechmentLink: ''
+        attachmentFile: ''
     });
 
     const [previewImage , setPreviewImage] = useState(basicImage);
+
+    // 페이지 로드 시 기존 신청 여부 확인
+    useEffect(() => {
+        if (member.user && member.user.memberId) {
+            checkOwnerStatusAPI(member.user.memberId).then(response => {
+                setIsAlreadyRegistered(response.data.results.isRegistered); // 서버에서 반환된 상태값
+            });
+        }
+    }, [member]);
 
     const onChangeHandler = (e) => {
         setForm({
@@ -63,7 +74,7 @@ function AppConvert() {
     
     const imageOnClickHandler = () => {
         console.log('imageOnClickHandler 호출됨');
-        console.log('현재 form.imageLink 값:', form.storeImage);
+        console.log('현재 form.storeImage 값:', form.storeImage);
     
         if (!form.storeImage || !(form.storeImage instanceof File)) {
             console.log('조건 만족: !form.storeImage 또는 form.storeImage File 객체가 아님');
@@ -87,12 +98,28 @@ function AppConvert() {
             account: form.account,
             storeImage: form.storeImage,
             storeNo: form.storeNo,
-            storeAdress: form.storeAdress,
+            storeAddress: form.storeAddress,
             storePhone: form.storePhone,
-            attechmentLink: form.attechmentLink
+            attachmentFile: form.attachmentFile
         }));
         alert('제공자 신청이 완료되었습니다.'); // 일단 얼러트
     }
+
+    const updateOnClickHandler = () => {
+        dispatch(callUpdateOwnerAPI({
+            memberId: member.user.memberId,
+            storeName: form.storeName,
+            bank: form.bank,
+            account: form.account,
+            storeImage: form.storeImage,
+            storeNo: form.storeNo,
+            storeAddress: form.storeAddress,
+            storePhone: form.storePhone,
+            attachmentFile: form.attachmentFile
+        }));
+        alert('제공자 재신청이 완료되었습니다.');
+    };
+
 
     return (
         <>
@@ -116,10 +143,10 @@ function AppConvert() {
                             name="bank"
                             value={form.bank || ''}
                             onChange={onChangeHandler} >
-                                <option>하나은행</option>
-                                <option>신한은행</option>
-                                <option>우리은행</option>
-                                <option>농협은행</option>
+                                <option value="하나은행">하나은행</option>
+                                <option value="신한은행">신한은행</option>
+                                <option value="우리은행">우리은행</option>
+                                <option value="농협은행">농협은행</option>
                         </select>
                     </div>
                     <div>
@@ -160,8 +187,8 @@ function AppConvert() {
                         <span>사업장 주소 *</span>
                         <input
                             type="text"
-                            name="storeAdress"
-                            value={form.storeAdress}
+                            name="storeAddress"
+                            value={form.storeAddress}
                             onChange={onChangeHandler}
                             placeholder="사업장이 위치한 주소를 입력해 주세요."
                         />
@@ -192,7 +219,9 @@ function AppConvert() {
                     </div>
                     <button
                         className='submitButton'
-                        onClick={registerOnClickHandler}>제출</button>
+                        onClick={isAlreadyRegistered ? updateOnClickHandler : registerOnClickHandler}>
+                        {isAlreadyRegistered ? '재신청' : '제출'}
+                    </button>
                 </div>
             </div>
         </>
