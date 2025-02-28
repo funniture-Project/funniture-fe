@@ -13,7 +13,6 @@ function AppConvert() {
     const member = useSelector(state => state.member);
     console.log('member : ', member);
     console.log('member.user : ', member.user);
-    console.log('member.user.address : ', member.user.address);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -43,6 +42,13 @@ function AppConvert() {
             });
         }
     }, [member]);
+
+    const owner = useSelector(state => state.member.owner);
+    useEffect(() => {
+        if (owner && owner.memberId) {
+            console.log('owner 데이터:', owner);
+        }
+    }, [owner]);
 
     const onChangeHandler = (e) => {
         setForm({

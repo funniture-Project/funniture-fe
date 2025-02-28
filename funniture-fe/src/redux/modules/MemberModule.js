@@ -16,7 +16,19 @@ const initialState = {
         imageLink: '',
         address: ''
     },
-    verificationCode: ''
+    verificationCode: '',
+    owner: {
+        account: '',
+        attechmentLink: '',
+        bank: '',
+        isRejected:'',
+        memberId:'',
+        storeAddress:'',
+        storeImage: '',
+        storeName: '',
+        storeNo: '',
+        storePhone: ''
+    }
 };
 
 // 액션 정의
@@ -25,6 +37,7 @@ export const POST_LOGIN = 'member/POST_LOGIN';
 export const GET_MEMBER = 'member/GET_MEMBER';
 export const GET_EMAIL = 'member/GET_EMAIL';
 export const RESET_MEMBER = 'member/RESET_MEMBER';
+export const POST_OWNERDATA = 'member/POST_OWNERDATA'; // 재공자 신청 , 재신청 했을 때 데이터 저장하는 액션!
 
 export const resetMember = () => ({
     type:RESET_MEMBER
@@ -35,6 +48,7 @@ const actions = createActions({
     [POST_LOGIN]: () => { },
     [GET_MEMBER]: () => { },
     [GET_EMAIL]: () => { },
+    [POST_OWNERDATA]: () => { },
 });
 
 const memberReducer = handleActions({
@@ -65,6 +79,21 @@ const memberReducer = handleActions({
     [GET_EMAIL]: (state, { payload }) => ({
         ...state,
         verificationCode: payload.results.result
+    }),
+    [POST_OWNERDATA]: (state, { payload }) => ({
+        ...state,
+        owner: {
+            account: payload.account,
+            attachmentFile: payload.attechmentLink,
+            bank: payload.bank,
+            isRejected: payload.isRejected,
+            memberId: payload.memberId,
+            storeAddress: payload.storeAddress,
+            storeImage: payload.storeImage,
+            storeName: payload.storeName,
+            storeNo: payload.storeNo,
+            storePhone: payload.storePhone
+        }
     }),
     [RESET_MEMBER]: () => initialState // 상태를 초기값으로 리셋
 }, initialState);

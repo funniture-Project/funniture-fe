@@ -50,6 +50,21 @@ export const callConvertByAdminAPI = async (setConvertList) => {
     }
 }
 
+export const callConvertAppAPI = async () => {
+    const requestURL = `http://localhost:8080/api/v1/admin/convertApp/modal`;
+
+    try {
+        const response = await api.get(requestURL); // 서버에서 이메일 중복 여부 확인
+        
+        console.log('관리자 페이지 모달 표시될 전환 요청 데이터 요청 서버에 잘 다녀왔나? response : ', response);
+
+    } catch (error) {
+        console.error('Error checking email:', error);
+        return true; // 에러 발생 시 기본적으로 중복 처리 (보수적으로 처리)
+    }
+};
+
+
 export const callLeaverUserByAdminAPI = () => {
 
 }
