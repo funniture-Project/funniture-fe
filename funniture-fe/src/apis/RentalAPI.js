@@ -4,40 +4,51 @@ const baseRentalUrl = 'http://localhost:8080/api/v1/rental'
 
 // ---------------------------------------------------- 관리자 -------------------------------------------------------------
 
-export async function getAdminRentalList() {
+export async function getAdminRentalList(searchRental, pageNum) {
+    
+    console.log('searchRental',searchRental )
 
     const url = '/rental'
-
-    const response = await getData(url);
-
-    return response
-}
-
-export async function getAdminRentalListWithCriteria(criteria) {
-
-    const url = '/rental';
     const params = new URLSearchParams();
 
-    if (criteria.rentalState) {
-        params.append('rentalState', criteria.rentalState);
+    if (searchRental.rentalState) {
+        params.append('rentalState', searchRental.rentalState);
     }
-    if (criteria.storeName) {
-        params.append('storeName', criteria.storeName);
+    if (searchRental.storeName) {
+        params.append('storeName', searchRental.storeName);
     }
-    if (criteria.categoryName) {
-        params.append('categoryName', criteria.categoryName);
+    if (searchRental.categoryName) {
+        params.append('categoryName', searchRental.categoryName);
     }
-    if (criteria.searchDate) {
-        params.append('searchDate', criteria.searchDate);
+    if (searchRental.searchDate) {
+        params.append('searchDate', searchRental.searchDate);
     }
-    if (criteria.rentalNo) {
-        params.append('rentalNo', criteria.rentalNo);
+    if (searchRental.rentalNo) {
+        params.append('rentalNo', searchRental.rentalNo);
+    }
+    if (pageNum) {
+        params.append("offset", pageNum)
     }
 
-    const response = await getData(url, params)
+    const response = await getData(url, params);
 
     return response
 }
+
+// export async function getAdminRentalListWithCriteria(criteria, pageNum) {
+
+//     const url = '/rental';
+//     const params = new URLSearchParams();
+
+    
+//     if(pageNum) {
+//         params.append('offset', pageNum)
+//     }
+
+//     const response = await getData(url, params)
+
+//     return response
+// }
 
 export async function getStoreList() {
     return await fetch('http://localhost:8080/api/v1/product/ownerlist?categoryCode=1&categoryCode=2').then(res => res.json());
