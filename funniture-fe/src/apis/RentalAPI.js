@@ -45,8 +45,7 @@ export async function getStoreList() {
 
 // ---------------------------------------------------- 사용자 -------------------------------------------------------------
 
-export async function getUserOrderList(memberId, period) {
-    
+export async function getUserOrderList(memberId, period, pageNum) {
     // const url = new URL(baseRentalUrl + `/user?memberId=${memberId}`);
     const url = '/rental/user'
     const params = new URLSearchParams()
@@ -58,6 +57,9 @@ export async function getUserOrderList(memberId, period) {
     }
     if (period) {
         params.append("period", period);
+    }
+    if (pageNum) {
+        params.append("offset", pageNum)
     }
 
     const response = await getData(url, params)

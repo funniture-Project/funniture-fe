@@ -2,6 +2,7 @@ import OrdersCss from './orders.module.css';
 import { useState, useEffect } from 'react';
 import { getUserOrderList } from '../../apis/RentalAPI';
 import { Link } from "react-router-dom";
+import Pagination from '../../component/Pagination';
 
 function Orders() {
 
@@ -10,23 +11,37 @@ function Orders() {
         period: 'ALL',     // period=1MONTH, 3MONTH
         searchDate: ''  // searchDate=2025-02-06
     });
+    
+    // 페이징 상태 관리
+    const [pageInfo, setPageInfo] = useState(null);  // pageInfo 상태 추가
+    const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
 
-    async function getData(memberId, period) {
+
+    async function getData(memberId, period, pageNum) {
         try {
-            const data = await getUserOrderList(memberId, period);
-            const orders = data.results.orderList;
+            const data = await getUserOrderList(memberId, period, pageNum);
+            const orders = data.results.userOrderList;
+            const pageInfo = data.results.pageInfo;
             setOrderList(orders);
-            console.log('orderList', orders);
+            setPageInfo(pageInfo);
+
         } catch (error) {
             console.error('Error fetching order list:', error);
         }
     }
 
+    // 페이지 변경 시 데이터 가져오기
+    const handlePageChange = (newPageNum) => {
+        setPageNum(newPageNum);  // pageNum 변경
+    };
+
+
     // 검색 조건 변경 시 데이터 다시 불러오기
     useEffect(() => {
-        getData("MEM011", searchOrder.period);
-    }, [searchOrder]);
+        getData("MEM011", searchOrder.period, pageNum);
+    }, [searchOrder, pageNum]);
 
+ 
     // 기간 선택 핸들러
     const handleChange = (period) => {
         setSearchOrder((prev) => ({
@@ -98,6 +113,16 @@ function Orders() {
                     ))
                 )
                 }
+            </div>
+
+            {/* 페이징 컴포넌트 가져오기 */}
+            <div className={OrdersCss.pagingContainer}>
+                <div>
+                    <Pagination 
+                    pageInfo={pageInfo} 
+                    onPageChange={handlePageChange} 
+                    />
+                </div>
             </div>
         </div>
 
