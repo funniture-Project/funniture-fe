@@ -3,7 +3,6 @@ import RentalCss from './rental.module.css';
 import { useState, useEffect } from 'react';
 import { getAdminRentalList } from '../../apis/RentalAPI';
 import { getStoreList } from '../../apis/RentalAPI';
-import { getAdminRentalListWithCriteria } from '../../apis/RentalAPI'
 import Pagination from '../../component/Pagination';
 
 function Rental() {
@@ -20,14 +19,41 @@ function Rental() {
     const [storeList, setStoreList] = useState([]); // selected-> option 에 추가할 회사
     const [expandedRow, setExpandedRow] = useState(null); // 사용자, 제공자정보 보여 줄 행 관리
 
+    // 페이징 상태 관리
+    const [pageInfo, setPageInfo] = useState(null);  // pageInfo 상태 추가
+    const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
+
+    async function getData(searchRental,pageNum) {
+
+            console.log('searchRental', searchRental)
+            try {
+                const data = await getAdminRentalList(searchRental,pageNum);
+                const rentals = data.results.adminRentalList;
+                const pageInfo = data.results.pageInfo;
+                
+                // API 호출 후 결과 처리
+                if (data && data.results && data.results.adminRentalList) {
+                    setRentalList(rentals); // 검색 결과 상태에 저장
+                } else {
+                    setRentalList([]); // 결과가 없을 경우 빈 리스트
+                }
+
+                setPageInfo(pageInfo);
+            } catch (error) {
+                console.error('Error fetching order list:', error);
+                setRentalList([]); // 오류 발생 시 빈 리스트로 설정
+            }
+        }
+
+    // 페이지 변경 시 데이터 가져오기
+    const handlePageChange = (newPageNum) => {
+        setPageNum(newPageNum);  // pageNum 변경
+    };
+
     // 예약 리스트
     useEffect(() => {
-        async function fetchData() {
-            const data = await getAdminRentalList();
-            setRentalList(data.results.adminRentalList);
-        }
-        fetchData();
-    }, []);
+        getData(searchRental, pageNum)
+    }, [pageNum]);
 
     // 회사 리스트
     useEffect(() => {
@@ -53,38 +79,30 @@ function Rental() {
         }));
     };
 
-    // 검색 실행 (버튼 클릭 시 실행)
-    const handleSearch = async () => {
-        try {
-            // 최신 검색 조건을 기반으로 필터링된 데이터 가져오기
-            const response = await getAdminRentalListWithCriteria(searchRental);
-
-            // API 호출 후 결과 처리
-            if (response && response.results && response.results.adminRentalList) {
-                setRentalList(response.results.adminRentalList); // 검색 결과 상태에 저장
-            } else {
-                setRentalList([]); // 결과가 없을 경우 빈 리스트
-            }
-        } catch (error) {
-            console.error("검색 실패:", error);
-            setRentalList([]); // 오류 발생 시 빈 리스트로 설정
-        }
+    const handleSearch = () => {
+        setPageNum(1);  // 검색 시 첫 번째 페이지로 초기화
+        getData(searchRental, 1);
     };
 
     // 초기화 실행 
     const handleReset = async () => {
-        setSearchRental({
+        const initialSearch = {
             rentalState: '',
             storeName: '',
             categoryName: '',
             searchDate: '',
             rentalNo: ''
-        });
-
+        };
+    
+        setSearchRental(initialSearch);  // 검색 조건 초기화
+        setPageNum(1);  // 1페이지로 이동
+    
         try {
-            // 전체 예약 리스트 다시 불러오기
-            const data = await getAdminRentalList();
+            // 최신 초기화된 검색 조건으로 데이터 요청
+            const data = await getAdminRentalList(initialSearch, 1);
+    
             setRentalList(data.results.adminRentalList);
+            setPageInfo(data.results.pageInfo); // 최신 페이지 정보 반영
         } catch (error) {
             console.error("초기화 후 전체 조회 실패:", error);
             setRentalList([]); // 오류 발생 시 리스트 초기화
@@ -98,13 +116,6 @@ function Rental() {
 
             <div className={RentalCss.adminRentalContent}>
                 <div className={RentalCss.rentalSearchBox}>
-                    <div className={RentalCss.searchReset}>
-                        <img
-                            src={require(`../../assets/icon/rotate-right-solid.svg`).default}
-                            alt="초기화 아이콘"
-                            onClick={handleReset}
-                        />
-                    </div>
 
                     <div className={RentalCss.rentalSearch}>
                         <select name="rentalState" value={searchRental.rentalState} onChange={handleChange}>
@@ -141,15 +152,21 @@ function Rental() {
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") {
                                     e.preventDefault(); // 엔터 입력 시 폼 제출 방지
-                                    handleSearch(); // 검색 실행
+                                    handleSearch();  // Enter 입력 시 검색 실행
                                 }
                             }}
                         />
-
+                    
+                        <img
+                            src={require(`../../assets/icon/rotate-right-solid.svg`).default}
+                            alt="초기화 아이콘"
+                            onClick={handleReset}
+                        />
+                
                         <img
                             src={require(`../../assets/icon/search-icon.svg`).default}
                             alt="검색 아이콘"
-                            onClick={handleSearch}
+                            onClick={() => getData(searchRental, 1)}
                         />
                     </div>
                 </div>
@@ -195,7 +212,15 @@ function Rental() {
                         }
                     </div>
 
-                    <Pagination />
+                    {/* 페이징 컴포넌트 가져오기 */}
+                    <div className={RentalCss.pagingContainer}>
+                        <div>
+                            <Pagination 
+                            pageInfo={pageInfo} 
+                            onPageChange={handlePageChange} 
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         </>
