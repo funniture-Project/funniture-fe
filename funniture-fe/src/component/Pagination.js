@@ -21,7 +21,6 @@ const Pagination = ({ pageInfo, onPageChange }) => {
 
     // 페이지 이동 함수
     const handlePageChange = (pageNum) => {
-        console.log("페이지 번호 변경:", pageNum);  // 페이지 번호 확인
         onPageChange(pageNum); // 페이지 변경을 부모 컴포넌트에 전달
     };
 
