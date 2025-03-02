@@ -129,15 +129,24 @@ function OwnerRental() {
                 </div>
             </div>
             <div className={OwnerRentalCSS.periodContainer}>
-                <div>계약만료기간</div>
-                <div onClick={() => handlePeriodChange('')}
-                     className={period === '' ? OwnerRentalCSS.selected : ''}>전체</div>
-                <div onClick={() => handlePeriodChange('1WEEK')}
-                     className={period === '1WEEK' ? OwnerRentalCSS.selected : ''}>1주일</div>
-                <div onClick={() => handlePeriodChange('1MONTH')}
-                     className={period === '1MONTH' ? OwnerRentalCSS.selected : ''}>1개월</div>
-                <div onClick={() => handlePeriodChange('3MONTH')}
-                     className={period === '3MONTH' ? OwnerRentalCSS.selected : ''}>3개월</div>
+                <div>
+                    <div>계약만료기간</div>
+                    <div onClick={() => handlePeriodChange('')}
+                        className={period === '' ? OwnerRentalCSS.selected : ''}>전체</div>
+                    <div onClick={() => handlePeriodChange('1WEEK')}
+                        className={period === '1WEEK' ? OwnerRentalCSS.selected : ''}>1주일</div>
+                    <div onClick={() => handlePeriodChange('1MONTH')}
+                        className={period === '1MONTH' ? OwnerRentalCSS.selected : ''}>1개월</div>
+                    <div onClick={() => handlePeriodChange('3MONTH')}
+                        className={period === '3MONTH' ? OwnerRentalCSS.selected : ''}>3개월</div>
+                </div>
+
+            {(rentalTab === '' || rentalTab === '예약') && (
+                <div>
+                    <div>예약취소</div>
+                    <div>예약완료</div>
+                </div>
+            )}
             </div>
             <div className={OwnerRentalCSS.rentalContainer}>
                 <table className={OwnerRentalCSS.rentalTable}>
