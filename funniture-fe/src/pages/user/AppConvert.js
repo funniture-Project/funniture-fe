@@ -3,10 +3,11 @@ import OrdersCss from './orders.module.css';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import decodeJwt from '../../utils/tokenUtils';
-import { callRegisterOwnerAPI, callConvertImageAPI, checkOwnerStatusAPI, callUpdateOwnerAPI } from '../../apis/MemberAPI';
+import { callRegisterOwnerAPI, callConvertImageAPI, checkOwnerStatusAPI, callUpdateOwnerAPI , getRejectedMessage} from '../../apis/MemberAPI';
 import { Navigate, useNavigate } from 'react-router-dom';
 import basicImage from '../../assets/images/Adobe Express - file.png'
 import BtnModal from '../../component/BtnModal';
+import SubmissionMessage from './SubmissionMessage';
 
 function AppConvert() {
 
@@ -21,6 +22,12 @@ function AppConvert() {
 
     const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false); // 기존 신청 여부
 
+    const [isSubmitted, setIsSubmitted] = useState(false); // 신청 여부
+
+    const [isRejected, setIsRejected] = useState(false); // 반려 여부
+    const [rejectionReason, setRejectionReason] = useState(''); // 반려 사유
+
+
     const [form, setForm] = useState({
         storeName: '',
         bank: '',
@@ -34,19 +41,48 @@ function AppConvert() {
 
     const [previewImage, setPreviewImage] = useState(basicImage);
 
+
+    // 25-03-03 여기 수정해야 함. getRejectedMessage 이거 보냈는데 처리가 안 됨
     // 페이지 로드 시 기존 신청 여부 확인
     useEffect(() => {
-        if (member.user && member.user.memberId) {
-            checkOwnerStatusAPI(member.user.memberId).then(response => {
-                setIsAlreadyRegistered(response.data.results.isRegistered); // 서버에서 반환된 상태값
-            });
-        }
+        const checkOwnerStatus = async () => {
+            if (member.user && member.user.memberId) {
+                try {
+                    const statusResponse = await checkOwnerStatusAPI(member.user.memberId);
+                    console.log('제공자 전환 신청 했는지 여부 :', statusResponse.data.results);
+    
+                    setIsAlreadyRegistered(statusResponse.data.results);
+                    setIsRejected(statusResponse.data.results);
+                    setRejectionReason(statusResponse.data.results.reasonRejection || '');
+    
+                    if (statusResponse.data.results) {
+                        setIsSubmitted(true);
+    
+                        // 반려된 경우에만 반려 메시지를 가져옵니다
+                        if (statusResponse.data.results.isRejected) {
+                            const rejectedResponse = await getRejectedMessage(member.user.memberId);
+                            console.log('반려 메시지:', rejectedResponse.data);
+                            // 여기서 반려 메시지를 상태에 저장하거나 표시할 수 있습니다
+                            setRejectionReason(rejectedResponse.data.message || '');
+                        }
+                    }
+                } catch (error) {
+                    console.error('소유자 상태 확인 중 오류 발생:', error);
+                    // 에러 처리 로직
+                }
+            }
+        };
+    
+        checkOwnerStatus();
     }, [member]);
+    
+    
 
     const owner = useSelector(state => state.member.owner);
     useEffect(() => {
         if (owner && owner.memberId) {
             console.log('owner 데이터:', owner);
+            setIsSubmitted(true);
         }
     }, [owner]);
 
@@ -107,8 +143,10 @@ function AppConvert() {
             storeAddress: form.storeAddress,
             storePhone: form.storePhone,
             attachmentFile: form.attachmentFile
-        }));
-        alert('제공자 신청이 완료되었습니다.'); // 일단 얼러트
+        })).then(() => {
+            setIsSubmitted(true);
+            alert('제공자 신청이 완료되었습니다.'); // 일단 얼러트
+        });
     }
 
     const updateOnClickHandler = () => {
@@ -131,7 +169,10 @@ function AppConvert() {
         <>
             <div className={OrdersCss.ordersContainer}>
                 <div className={OrdersCss.orderPageTitle}>제공자 전환</div>
-                <div className="editMypageInfo">
+                {isSubmitted ? (
+                <SubmissionMessage />
+                    ) : (
+               <div className="editMypageInfo">
 
                     <div>
                         <span>사업체명 *</span>
@@ -229,6 +270,9 @@ function AppConvert() {
                         {isAlreadyRegistered ? '재신청' : '제출'}
                     </button>
                 </div>
+                    )}
+                    
+ 
             </div>
         </>
     );
