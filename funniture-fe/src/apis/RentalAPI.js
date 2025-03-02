@@ -105,8 +105,6 @@ export const postRentalReservation = async (rentalData) => {
 export const getOwnerRentalList = async (ownerNo, period, rentalTab, pageNum) => {
     const url = `/rental/owner`
     const params = new URLSearchParams()
-
-    console.log("API에서도 pageNum 잘나오니?", pageNum)
    
     if(ownerNo) {
         params.append("ownerNo", ownerNo)
@@ -123,8 +121,15 @@ export const getOwnerRentalList = async (ownerNo, period, rentalTab, pageNum) =>
     }
 
     const response = await getData(url, params)
-    console.log("API 응답 데이터:", response);
+
     return response;
+}
+
+export async function putRentalConfirm(rentalNos) {
+    const url = `/rental/confirmBatch?rentalNos=${rentalNos.join('&rentalNos=')}`;
+    const response = await api.put(url);
+
+    console.log("response 입니다 : ", response);
 }
 
 // 공용
