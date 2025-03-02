@@ -1,7 +1,7 @@
 import OwnerRentalCSS from './ownerRental.module.css'
 import Pagination from '../../component/Pagination';
 import { useState, useEffect } from 'react';
-import {getOwnerRentalList} from '../../apis/RentalAPI';
+import {getOwnerRentalList, putRentalConfirm} from '../../apis/RentalAPI';
 import BtnModal from '../../component/BtnModal';
 import DetailOrder from '../user/DetailOrder';
 
@@ -19,6 +19,7 @@ function OwnerRental() {
     // 모달 상태 관리(주문상세모달, 운송장등록 모달)
     const [selectedOrder, setSelectedOrder] = useState(null); // 선택한 주문 정보 상태
 
+    
     async function getData(ownerNo, period, rentalTab, pageNum) {
         try {
             const data = await getOwnerRentalList(ownerNo, period, rentalTab, pageNum);
@@ -74,6 +75,45 @@ function OwnerRental() {
         return true; // 필터가 없으면 전체 렌탈 리스트 반환
     });
 
+// ----------------------------------------------------예약 확정----------------------------------------------------
+
+    const [selectedRentalNos, setSelectedRentalNos] = useState([]);
+
+    // 체크박스를 클릭했을 때 선택/해제하는 함수
+    const handleCheckboxChange = (rentalNo) => {
+        setSelectedRentalNos((prevSelectedRentalNos) => {
+            if (prevSelectedRentalNos.includes(rentalNo)) {
+                // 이미 선택된 항목이면 선택 해제
+                return prevSelectedRentalNos.filter((no) => no !== rentalNo);
+            } else {
+                // 선택되지 않은 항목이면 추가
+                return [...prevSelectedRentalNos, rentalNo];
+            }
+        });
+    };
+
+    const handleConfirmRental = async () => {
+        if (selectedRentalNos.length === 0) {
+            alert("예약을 선택해 주세요.");
+            return;
+        }
+    
+        try {
+            // putRentalConfirm 호출해서 선택된 예약들을 "예약완료"로 변경
+            await putRentalConfirm(selectedRentalNos);
+    
+            alert("선택된 예약들이 예약완료로 상태 변경되었습니다.");
+            // 예약 리스트 갱신
+            getData("MEM001", period, rentalTab, pageNum);
+            // 선택된 예약 리스트 초기화
+            setSelectedRentalNos([]);
+        } catch (error) {
+            console.error('Error confirming rentals:', error);
+            alert("오류가 발생했습니다.");
+        }
+    };
+
+// ----------------------------------------------------------------------------------------------------------------------
 
     // 예약진행상태마다 스타일 다르게 적용하기 위해서
     const getStatusClass = (status) => {
@@ -144,7 +184,9 @@ function OwnerRental() {
             {(rentalTab === '' || rentalTab === '예약') && (
                 <div>
                     <div>예약취소</div>
-                    <div>예약완료</div>
+                    <div onClick={handleConfirmRental}>
+                        예약확정
+                    </div>
                 </div>
             )}
             </div>
@@ -208,7 +250,14 @@ function OwnerRental() {
                     {filteredRentalList.length > 0 ? (
                             filteredRentalList.map((rental, index) => (
                             <tr key={rental.rentalNo || index}>
-                                <td><input type="checkbox" className={OwnerRentalCSS.rowCheckbox} /></td>
+                                <td>
+                                    <input
+                                        type="checkbox"
+                                        className={OwnerRentalCSS.rowCheckbox}
+                                        checked={selectedRentalNos.includes(rental.rentalNo)}  // 체크 상태 동기화
+                                        onChange={() => handleCheckboxChange(rental.rentalNo)}  // 체크박스 클릭 시 처리
+                                    />
+                                </td>
                                 <td>
                                     <span
                                         className={OwnerRentalCSS.clickable}
