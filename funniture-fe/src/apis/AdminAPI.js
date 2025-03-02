@@ -51,22 +51,47 @@ export const callConvertByAdminAPI = async (setConvertList) => {
     }
 }
 
-// 관리자 페이지에 모달에 들어갈 데이터 (수정해야 함)
-export const callConvertAppAPI = async () => {
-    const requestURL = `http://localhost:8080/api/v1/admin/convertApp/modal`;
-
+// 관리자 페이지에 사용자 → 제공자 데이터에서 클릭 시 모달에 들어갈 데이터 요청 로직
+export const callConvertDetailAPI = async (memberId) => {
+    const requestURL = `http://localhost:8080/api/v1/admin/convertApp/${memberId}`;
     try {
-        const response = await api.get(requestURL); // 서버에서 이메일 중복 여부 확인
-        
-        console.log('관리자 페이지 모달 표시될 전환 요청 데이터 요청 서버에 잘 다녀왔나? response : ', response);
-
+        const response = await api.get(requestURL);
+        console.log('전환 요청 상세 데이터:', response);
+        return response.data.results.result;
     } catch (error) {
-        console.error('Error checking email:', error);
-        return true; // 에러 발생 시 기본적으로 중복 처리 (보수적으로 처리)
+        console.error('API 호출 중 오류 발생:', error);
+        throw error;
     }
-};
+}
 
+// 관리자 페이지에 사용자 → 제공자 모달에서 승인 눌렀을 때 동작하는 로직
+export const callConvertApproveAPI = async (memberId) => {
+    const requestURL = `http://localhost:8080/api/v1/admin/approve/${memberId}`;
+    try {
+        const response = await api.put(requestURL);
+        console.log('제공자 전환 승인 했을 때 서버 잘 다녀 왔나 :', response);
+        return response.data.message;
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+        throw error;
+    }
+}
 
+// 관리자 페이지에 사용자 → 제공자 모달에서 반려 눌렀을 때 동작하는 로직
+export const callConvertRejectAPI = async (memberId , rejectReason) => {
+    const requestURL = `http://localhost:8080/api/v1/admin/reject/${memberId}`;
+    try {
+        const response = await api.put(requestURL, {rejectReason});
+        console.log('제공자 전환 반려 했을 때 서버 잘 다녀 왔나 :', response);
+        return response.data.message;
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+        throw error;
+    }
+
+}
+
+// 관리자 페이지에서 전체 탈퇴자 회원 조회 로직
 export const callLeaverUserByAdminAPI = async (setLeaverUserList) => {
     const requestURL = `http://localhost:8080/api/v1/admin/leaverList`
     try {
@@ -96,6 +121,7 @@ export const callChangeUserRoleAPI = async (userIds) => {
     }
 }
 
+// 관리자 페이지 사용자 목록에서 접근 권한 변경을 탈퇴자로 승인 했을 때 동작
 export const callChangeLimitRoleAPI = async (userIds) => {
     const requestURL = `http://localhost:8080/api/v1/admin/deactivate`
     try {
