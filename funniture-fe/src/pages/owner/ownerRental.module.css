@@ -35,38 +35,55 @@
 
 .periodContainer{
     display: flex;
-    align-items: flex-end;
+    align-items: self-end;
+    justify-content: space-between;
     width: 100%;
     height: 6%;
-        >div {
-            margin-right: 6px;
-            margin-bottom: 10px;
-        }
-        >div:nth-child(1){
-            color: #7F5539;
-        }
 
-        >div:nth-child(2),
-        >div:nth-child(3),
-        >div:nth-child(4),
-        >div:nth-child(5){
-            color: white;
-            background-color: #B08968;
-            padding: 0px 12px;
-            border-radius: 15px;
-            cursor: pointer;
+        >div:nth-child(1){
+            display: flex;
+            gap: 5px;
+            margin-bottom: 5px;
+            
+            >div:nth-child(1){
+                color: #7F5539;
+            }
+            >div:nth-child(2),
+            >div:nth-child(3),
+            >div:nth-child(4),
+            >div:nth-child(5){
+                color: white;
+                background-color: #B08968;
+                padding: 0px 12px;
+                border-radius: 15px;
+                cursor: pointer;
+            }   
         }
+        >div:nth-child(2) {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+            
+            >div:nth-child(1),
+            >div:nth-child(2){
+                color: white;
+                background-color: #B08968;
+                padding: 0px 12px;
+                border-radius: 5px;
+                cursor: pointer;
+            } 
+        }     
 }
 
 /* 선택 된 만료 기간 */
-.periodContainer>div.selected {
+.periodContainer> div:nth-child(1) >div.selected {
     background-color: #7F5539;
     /* 선택된 항목 강조 색상 */
     font-weight: bold;
 }
 
 /* 선택 된 탭 */
-.ownerRentalTab>div.selected {
+.ownerRentalTab> div:nth-child(1) >div.selected {
     color: #7F5539;
 }
 
