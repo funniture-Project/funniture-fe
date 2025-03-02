@@ -101,6 +101,24 @@ function DetailOrder({ selectedOrder }) {
                 </div>
             </div>
 
+            { selectedOrder && (
+            <>
+                <h3>주문자 정보</h3>
+                <div className={DetailOrderCss.userInfoContainer}>
+                    <div>
+                        <div><span>이메일 : </span>{order.email}</div>
+                    </div>
+                    <div>
+                        <div><span>이름 : </span>{order.userName}</div>
+                    </div>
+                    <div>
+                        <div><span>전화번호 : </span>{order.phoneNumber}</div>
+                    </div>
+                </div>
+            </>
+            )
+            }
+
             {/* 결제 정보 */}
             <h3>결제정보</h3>
             <div className={DetailOrderCss.paymentContainer}>
@@ -130,20 +148,26 @@ function DetailOrder({ selectedOrder }) {
             </div>
 
             {/* 포인트 혜택 */}
-            <h3>포인트혜택</h3>
-            <div className={DetailOrderCss.pointContainer}>
-                <div>
+            {!selectedOrder && (
+            <>
+                <h3>포인트혜택</h3>
+                <div className={DetailOrderCss.pointContainer}>
                     <div>
-                        <div>구매적립</div>
-                        <div>{(order.rentalPrice * 0.1)} <span>원</span></div>
+                        <div>
+                            <div>구매적립</div>
+                            <div>{(order.rentalPrice * 0.1)} <span>원</span></div>
+                        </div>
+                        <div>
+                            <div>리뷰적립</div>
+                            <div><span>최대</span> 150 <span>원</span></div>
+                        </div>
+                        <p> &#40;동일상품의 상품/한달리뷰 적립은 각 1회로 제한&#41; </p>
                     </div>
-                    <div>
-                        <div>리뷰적립</div>
-                        <div><span>최대</span> 150 <span>원</span></div>
-                    </div>
-                    <p> &#40;동일상품의 상품/한달리뷰 적립은 각 1회로 제한&#41; </p>
                 </div>
-            </div>
+            </>
+            )}
+
+
         </div>
     );
 
