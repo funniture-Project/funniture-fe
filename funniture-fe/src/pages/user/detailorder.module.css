@@ -94,6 +94,7 @@
 }
 
 .orderInfoContainer > div:nth-child(1) {
+    display: flex;
     font-size: 1.3em;
     font-weight: 600;
 } 
@@ -281,4 +282,18 @@
 .pointContainer > div > p {
     color: gray;
     margin: 2px 0px 15px 15px;
+}
+
+.userInfoContainer {
+    box-sizing: border-box;
+    border: 1px solid black;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    align-items: self-start;
+    padding: 1% 2.5%;
+}
+
+.userInfoContainer > div > div > span {
+    font-weight: 600;
 }
