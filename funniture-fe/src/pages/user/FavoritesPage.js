@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import FaCss from './favoritesPage.module.css'
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getFavoriteInfoList, updateFavoriteList } from '../../apis/FavoriteAPI';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,20 +10,28 @@ function FavoritesPage() {
 
     const { user } = useSelector(state => state.member)
     const [favoriteList, setFavoriteList] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         async function getDate() {
-            const response = await getFavoriteInfoList(user.memberId)
+            setIsLoading(true)
+            try {
+                const response = await getFavoriteInfoList(user.memberId)
 
-            if (response?.result) {
-                setFavoriteList(response.result.filter(item => (item.productStatus != "판매불가")))
+                if (response?.result) {
+                    setFavoriteList(response.result.filter(item => (item.productStatus != "판매불가")))
+                }
+            } catch (error) {
+                console.log("setFavoriteList error : ", error)
+            } finally {
+                setIsLoading(false)
             }
         }
 
         getDate();
     }, [user])
 
-    function removeFavorite(productNo) {
+    const removeFavorite = (productNo) => {
         console.log("지울꺼 : ", productNo)
         setFavoriteList(prev => prev.filter(item => item.productNo != productNo))
     }
@@ -39,14 +47,10 @@ function FavoritesPage() {
 
         console.log("updateSendData : ", updateSendData)
 
-        updateFavoriteList(user.memberId, updateSendData)
+        if (!isLoading) {
+            updateFavoriteList(user.memberId, updateSendData)
+        }
     }, [favoriteList])
-
-    const [test, setTest] = useState([])
-
-    useEffect(() => {
-        console.log("test : ", test)
-    }, [test])
 
     return (
         <div className={FaCss.wholeContainer}>
@@ -84,7 +88,7 @@ function FavoritesPage() {
                             </div>
                         </div>
                         <div className={FaCss.btnBox}>
-                            <button onClick={() => navigate(`/${item.productNo}`)}>주문하기</button>
+                            <button onClick={() => navigate(`/product/${item.productNo}`)}>주문하기</button>
                             <button onClick={() => removeFavorite(item.productNo)}>취소하기</button>
                         </div>
                     </div>

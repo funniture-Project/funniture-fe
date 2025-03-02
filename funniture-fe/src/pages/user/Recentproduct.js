@@ -57,7 +57,7 @@ function RecentProduct() {
                                 : "가격 정보 없음"}
                         </div>
                         <div>
-                            <a href={`/${item.productNo}`}>상세페이지 &gt;</a>
+                            <a href={`/product/${item.productNo}`}>상세페이지 &gt;</a>
                         </div>
                     </div>
                 )) :

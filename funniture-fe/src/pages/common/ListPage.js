@@ -30,7 +30,7 @@ function ListPage({ selectCategory, selectCompany }) {
     // 일반 사용자 정보 가져오기
     const { user } = useSelector(state => state.member)
 
-    // 괌심 상품 정보
+    // 관심 상품 정보
     const existFavoriteList = useSelector(state => state.favorite.favoriteList)
     const [favoriteList, setFavoriteList] = useState([])
 
@@ -38,7 +38,7 @@ function ListPage({ selectCategory, selectCompany }) {
         if (user.memberRole == "USER") {
             dispatch(getFavoriteList(user.memberId))
         }
-    }, [user])
+    }, [user, dispatch])
 
     useEffect(() => {
 
@@ -65,11 +65,17 @@ function ListPage({ selectCategory, selectCompany }) {
     }
 
     useEffect(() => {
-        console.log("favoriteList : ", favoriteList)
-        if (!areArraysEqualUnordered(favoriteList, existFavoriteList)) {
-            updateFavoriteList(user.memberId, favoriteList)
+        if (user.memberRole === "USER" && !areArraysEqualUnordered(favoriteList, existFavoriteList.map(item => item.productNo))) {
+            updateFavoriteList(user.memberId, favoriteList);
         }
-    }, [favoriteList])
+    }, [favoriteList, existFavoriteList, user]);
+
+    // useEffect(() => {
+    //     console.log("favoriteList : ", favoriteList)
+    //     if (!areArraysEqualUnordered(favoriteList, existFavoriteList)) {
+    //         updateFavoriteList(user.memberId, favoriteList)
+    //     }
+    // }, [favoriteList])
 
     // 검색 조건 설정
     useEffect(() => {
@@ -135,7 +141,7 @@ function ListPage({ selectCategory, selectCompany }) {
                         {productList.map(product => (
                             <div className="productItem" data-product-no={product.productNo} >
                                 <div>
-                                    <div className="imageBox" onClick={() => navigate(`/${product.productNo}`)}>
+                                    <div className="imageBox" onClick={() => navigate(`/product/${product.productNo}`)}>
                                         <img src={product.productImageLink == 'a.jpg'
                                             ? require(`../../assets/images/${product.productImageLink}`)
                                             : product.productImageLink}
