@@ -2,6 +2,8 @@ import OwnerRentalCSS from './ownerRental.module.css'
 import Pagination from '../../component/Pagination';
 import { useState, useEffect } from 'react';
 import {getOwnerRentalList} from '../../apis/RentalAPI';
+import BtnModal from '../../component/BtnModal';
+import DetailOrder from '../user/DetailOrder';
 
 function OwnerRental() {
 
@@ -14,10 +16,14 @@ function OwnerRental() {
     const [pageInfo, setPageInfo] = useState(null);  // pageInfo 상태 추가
     const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
 
+    // 모달 상태 관리(주문상세모달, 운송장등록 모달)
+    const [selectedOrder, setSelectedOrder] = useState(null); // 선택한 주문 정보 상태
+
     async function getData(ownerNo, period, rentalTab, pageNum) {
         try {
             const data = await getOwnerRentalList(ownerNo, period, rentalTab, pageNum);
             const rentals = data.results.ownerRentalList;
+            console.log('rentals', rentals)
             const pageInfo = data.results.pageInfo;
             setRentalList(rentals);
             setPageInfo(pageInfo);
@@ -27,6 +33,11 @@ function OwnerRental() {
             setRentalList([]);
         }
     }
+
+    // 주문번호 클릭 핸들러
+    const handleOrderClick = (order) => {
+        setSelectedOrder(order);
+    };
 
     // 페이지 변경 시 데이터 가져오기
     const handlePageChange = (newPageNum) => {
@@ -189,7 +200,14 @@ function OwnerRental() {
                             filteredRentalList.map((rental, index) => (
                             <tr key={rental.rentalNo || index}>
                                 <td><input type="checkbox" className={OwnerRentalCSS.rowCheckbox} /></td>
-                                <td>{rental.rentalNo}</td>
+                                <td>
+                                    <span
+                                        className={OwnerRentalCSS.clickable}
+                                        onClick={() => handleOrderClick(rental)}
+                                    >
+                                        {rental.rentalNo}
+                                    </span>
+                                </td>
                                 <td>{rental.deliverCom || '-'}</td>
                                 <td>{rental.deliveryNo || '-'}</td>
                                 <td>{rental.productName}</td>
@@ -216,6 +234,18 @@ function OwnerRental() {
                     </tbody>
                 </table>
             </div>
+            
+            {/* 주문 상세페이지 모달 */}
+            {selectedOrder && (
+                <BtnModal
+                showBtnModal={selectedOrder}
+                setShowBtnModal={setSelectedOrder}
+                modalContext="로그인 후 이용 가능합니다."
+                modalSize="lg"
+                onClose={() => setSelectedOrder(false)} 
+                childContent={<DetailOrder selectedOrder={selectedOrder} />}
+                />
+            )}
             
             {/* 페이징 컴포넌트 가져오기 */}
             <div className={OwnerRentalCSS.pagingContainer}>

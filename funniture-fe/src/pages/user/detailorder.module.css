@@ -7,6 +7,7 @@
     box-sizing: border-box;
 }
 .orderContainer > h3 {
+    display: flex;
     color: #7F5539;
     margin: 0;
     margin-bottom: 5px;
@@ -168,11 +169,13 @@
 }
 
 .deliveryContainer > div:nth-child(2) {
+    display: flex;
     margin: 2px 0px;
     font-size: 0.8em;
 }
 
 .deliveryContainer > div:nth-child(3) {
+    display: flex;
     font-size: 0.95em;
 }
 
