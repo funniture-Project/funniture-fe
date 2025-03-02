@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import DetailOrderCss from "./detailorder.module.css";
 import {getOrderDetail} from "../../apis/RentalAPI"
 
-function DetailOrder() {
+function DetailOrder({ selectedOrder }) {
 
     const { id } = useParams(); // URL에서 주문번호를 가져옴
-    const [order, setOrder] = useState([]);
+    const [order, setOrder] = useState(selectedOrder || null);
     const [deliveryMemo, setDeliveryMemo] = useState(""); // 배송 메모 상태
     const deliveryOptions = [
         "문 앞에 놓아주세요",
@@ -15,16 +15,30 @@ function DetailOrder() {
         "부재시 연락주세요"
     ];
 
-    // 주문
-    useEffect(() => {
-        async function fetchData() {
-            const data = await getOrderDetail(id);
-            setOrder(data.results.rentalDetail[0]);
-            console.log('data', data.results.rentalDetail)
-        }
+    // // 주문
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         const data = await getOrderDetail(id);
+    //         setOrder(data.results.rentalDetail[0]);
+    //         console.log('data', data.results.rentalDetail)
+    //     }
         
-        fetchData();
-    }, []);
+    //     fetchData();
+    // }, []);
+
+    // API 호출 (selectedOrder가 없을 때만 실행)
+    useEffect(() => {
+        if (!selectedOrder) {
+            async function fetchData() {
+                const data = await getOrderDetail(id);
+                console.log("📌 주문 상세 API 응답:", data); // 🔥 응답 데이터 확인
+                setOrder(data.results.rentalDetail[0]);
+            }
+            fetchData();
+        }
+    }, [selectedOrder, id]); // 🔥 id가 바뀔 때마다 API 호출
+
+    if (!order) return <div>Loading...</div>; // 🔥 데이터가 없으면 로딩 표시
 
     return (
         <div className={DetailOrderCss.orderContainer}>
