@@ -117,11 +117,16 @@ export async function putRentalConfirm(rentalNos) {
 }
 
 export async function cancelOrder(rentalNo) {
-    console.log('rentalNo', rentalNo)
     const url = `/rental/cancel?rentalNo=${rentalNo}`;
 
     await api.put(url);
 
+}
+
+export async function putDeliverySubmit(rentalNo, deliveryNo, deliverCom) {
+    const url = `/rental/${rentalNo}/delivery?deliveryNo=${deliveryNo}&deliverCom=${deliverCom}`;
+
+    await api.put(url)
 }
 
 // 공용

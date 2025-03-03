@@ -54,3 +54,16 @@
     border: 1px solid gray;
     color: #7F5539;
 }
+
+.deliverContainer > div > button {
+    width: fit-content;
+    border: none;
+    border-radius: 5px;
+    padding: 4px 20px;
+    background-color: #B08968;
+    color: white;
+}
+
+.deliverContainer > div > button:hover {
+    background-color: #7F5539;
+}
