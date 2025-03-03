@@ -64,13 +64,13 @@
             gap: 10px;
             margin-bottom: 5px;
             
-            >div:nth-child(1),
-            >div:nth-child(2){
+            >div:nth-child(1){
                 color: white;
                 background-color: #B08968;
-                padding: 0px 12px;
+                padding: 0px 15px;
                 border-radius: 5px;
                 cursor: pointer;
+                margin-right: 20px;
             } 
         }     
 }

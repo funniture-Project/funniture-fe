@@ -15,30 +15,17 @@ function DetailOrder({ selectedOrder }) {
         "부재시 연락주세요"
     ];
 
-    // // 주문
-    // useEffect(() => {
-    //     async function fetchData() {
-    //         const data = await getOrderDetail(id);
-    //         setOrder(data.results.rentalDetail[0]);
-    //         console.log('data', data.results.rentalDetail)
-    //     }
-        
-    //     fetchData();
-    // }, []);
-
-    // API 호출 (selectedOrder가 없을 때만 실행)
     useEffect(() => {
         if (!selectedOrder) {
             async function fetchData() {
                 const data = await getOrderDetail(id);
-                console.log("📌 주문 상세 API 응답:", data); // 🔥 응답 데이터 확인
                 setOrder(data.results.rentalDetail[0]);
             }
             fetchData();
         }
-    }, [selectedOrder, id]); // 🔥 id가 바뀔 때마다 API 호출
+    }, [selectedOrder, id]); 
 
-    if (!order) return <div>Loading...</div>; // 🔥 데이터가 없으면 로딩 표시
+    if (!order) return <div>Loading...</div>; 
 
     return (
         <div className={DetailOrderCss.orderContainer}>
@@ -54,16 +41,25 @@ function DetailOrder({ selectedOrder }) {
             {/* 주문 상품 정보 */}
             <h3>주문상품</h3>
             <div className={DetailOrderCss.productContainer}>
+            {!selectedOrder && (
+            <>
                 <div className={DetailOrderCss.productInfo}>
                     <div>
+                    
+                   
                         <div>{order.storeName}</div>
+                        
                         <div>문의하기</div>
+                   
+                   
                     </div>
                     <div>
                         <div>예약취소</div>
                     </div>
                 </div>
                 <hr className={DetailOrderCss.orderHr} />
+            </>
+            )}
                 <div className={DetailOrderCss.orderInfoContainer}>
                     <div>{order.rentalState}</div>
                     <div>
@@ -84,21 +80,34 @@ function DetailOrder({ selectedOrder }) {
             {/* 배송 정보 */}
             <h3>배송지</h3>
             <div className={DetailOrderCss.deliveryContainer}>
+            
                 <div>
                     <div><strong>{order.receiver} ({order.destinationName})</strong></div>
+                    {!selectedOrder && (
                     <div>배송지변경</div>
+                    )}
                 </div>
+          
                 <div>{order.destinationPhone}</div>
                 <div>{order.destinationAddress}</div>
                 <div>
-                    <select value={deliveryMemo} onChange={(e) => setDeliveryMemo(e.target.value)}>
-                        <option value="">예약 등록 시 배송메모</option>
-                        {deliveryOptions.map((option, index) => (
-                            <option key={index} value={option}>{option}</option>
-                        ))}
-                    </select>
-                    <div>수정</div>
+                    {!selectedOrder && (
+                    <>
+                        <select value={deliveryMemo} onChange={(e) => setDeliveryMemo(e.target.value)}>
+                            <option value="">예약 등록 시 배송메모</option>
+                            {deliveryOptions.map((option, index) => (
+                                <option key={index} value={option}>{option}</option>
+                            ))}
+                        </select>
+                        <div>수정</div>
+                    </>
+                    )}
                 </div>
+                {selectedOrder && (
+                    <div>
+                        <div>배송메모 : {order.deliveryMemo}</div>
+                    </div>
+                )}
             </div>
 
             { selectedOrder && (
@@ -165,6 +174,12 @@ function DetailOrder({ selectedOrder }) {
                     </div>
                 </div>
             </>
+            )}
+
+            {selectedOrder && (
+                <div className={DetailOrderCss.ownerCencle}>
+                    <div>예약취소</div>
+                </div>
             )}
 
 
