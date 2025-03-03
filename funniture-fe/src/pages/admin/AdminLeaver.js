@@ -5,6 +5,7 @@ import Pagination from '../../component/Pagination';
 import { callLeaverUserByAdminAPI , callChangeUserRoleAPI } from '../../apis/AdminAPI';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BtnModal from '../../component/BtnModal';
+import AdminModal from './adminModal.module.css';
 
 function AdminLeaver() {
 
@@ -87,13 +88,13 @@ function AdminLeaver() {
     };
     
     const renderLeaverModal = () => (
-        <div>
-            <p><strong>회원 ID:</strong> {selectedLeaver?.memberId}</p>
-            <p><strong>이름:</strong> {selectedLeaver?.userName}</p>
-            <p><strong>이메일:</strong> {selectedLeaver?.email}</p>
-            <p><strong>전화번호:</strong> {selectedLeaver?.phoneNumber}</p>
-            <p><strong>회원가입일:</strong> {selectedLeaver?.signupDate}</p>
-            <p><strong>포인트:</strong> {selectedLeaver?.pointDTO.currentPoint}</p>
+        <div className={AdminModal.leaverDiv}>
+            <p><strong> ▷ 회원 ID  :</strong> {selectedLeaver?.memberId}</p>
+            <p><strong>▷ 이름  :</strong> {selectedLeaver?.userName}</p>
+            <p><strong>▷ 이메일  :</strong> {selectedLeaver?.email}</p>
+            <p><strong>▷ 전화번호  :</strong> {selectedLeaver?.phoneNumber}</p>
+            <p><strong>▷ 회원가입일  :</strong> {selectedLeaver?.signupDate}</p>
+            <p><strong>▷ 포인트  :</strong> {selectedLeaver?.pointDTO.currentPoint}</p>
         </div>
     );   
 
@@ -165,7 +166,7 @@ function AdminLeaver() {
                 <BtnModal
                     showBtnModal={showUserModal}
                     setShowBtnModal={setShowUserModal}
-                    modalTitle="탈퇴 회원 정보"
+                    modalTitle="▶ 탈퇴 회원 정보"
                     modalContext={renderLeaverModal()}
                     btnText="확인"
                     onSuccess={() => setShowUserModal(false)}

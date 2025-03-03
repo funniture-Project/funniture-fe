@@ -5,6 +5,7 @@ import { callUserListByAdminAPI , callChangeLimitRoleAPI , callUserPointUpdateAP
 import Pagination from '../../component/Pagination';
 import { useNavigate , useLocation } from 'react-router-dom';
 import BtnModal from '../../component/BtnModal';
+import AdminModal from './adminModal.module.css';
 
 function AdminUser() {
 
@@ -112,13 +113,13 @@ function AdminUser() {
     };
 
     const renderUserModal = () => (
-        <div>
-            <p><strong>회원 ID:</strong> {selectedUser?.memberId}</p>
-            <p><strong>이름:</strong> {selectedUser?.userName}</p>
-            <p><strong>이메일:</strong> {selectedUser?.email}</p>
-            <p><strong>전화번호:</strong> {selectedUser?.phoneNumber}</p>
-            <p><strong>가입일:</strong> {selectedUser?.signupDate}</p>
-            <p><strong>포인트:</strong> 
+        <div className={AdminModal.userDiv}>
+            <p><strong>▷ 회원 ID  :</strong> {selectedUser?.memberId}</p>
+            <p><strong>▷ 이름  :</strong> {selectedUser?.userName}</p>
+            <p><strong>▷ 이메일  :</strong> {selectedUser?.email}</p>
+            <p><strong>▷ 전화번호  :</strong> {selectedUser?.phoneNumber}</p>
+            <p><strong>▷ 가입일  :</strong> {selectedUser?.signupDate}</p>
+            <p><strong>▷ 포인트  :</strong> 
                 <input 
                     type="number" 
                     value={newPoint} 
@@ -217,7 +218,7 @@ function AdminUser() {
                 <BtnModal
                     showBtnModal={showUserModal}
                     setShowBtnModal={setShowUserModal}
-                    modalTitle="회원 정보"
+                    modalTitle="▶ 회원 정보"
                     modalContext={renderUserModal()}
                     btnText="포인트 수정"
                     secondBtnText="닫기"
