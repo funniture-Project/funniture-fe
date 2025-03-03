@@ -13,11 +13,11 @@ function Login() {
     const [showBtnModal, setShowBtnModal] = useState(false); // 모달 표시 
     const [modalMessage, setModalMessage] = useState(''); // 모달에 표시할 메시지
     const [isLoginSuccess, setIsLoginSuccess] = useState(false); // 로그인 성공 여부
-    const [emailMessage , setEmailMessage] = useState(''); // 이메일 검증 메시지
+    const [emailMessage, setEmailMessage] = useState(''); // 이메일 검증 메시지
     const [emailValid, setEmailValid] = useState(false); // 이메일 유효성 검사
     const [passwordMessage, setPasswordMessage] = useState(''); // 비밀번호 검증 메시지
     const [passwordValid, setPasswordValid] = useState(false); // 비밀번호 유효성 검사
-    
+
     const [isLoginEnabled, setIsLoginEnabled] = useState(false); // 로그인 버튼 비활성화
 
     const [form, setForm] = useState({
@@ -32,7 +32,7 @@ function Login() {
         // 이메일 유효성과 비밀번호 유효성을 모두 만족해야 로그인 버튼 활성화
         setIsLoginEnabled(emailValid && passwordValid);
     }, [emailValid, passwordValid]);
-    
+
 
     // 이메일 및 비밀번호 유효성 검사 함수
     const validateEmail = (email) => {
@@ -150,13 +150,13 @@ function Login() {
                                     onChange={onChangeHandler}
                                     onKeyDown={onKeyDownHandler}
                                 />
-       
+
                             </div>
-                                {passwordMessage && (
-                                        <small style={{ color: 'red', fontSize: '10px' }}>
-                                            {passwordMessage}
-                                        </small>
-                                    )}
+                            {passwordMessage && (
+                                <small style={{ color: 'red', fontSize: '10px' }}>
+                                    {passwordMessage}
+                                </small>
+                            )}
 
                             {/* 작업을 위해 주석해둠. 로그인 활성화 비활성화 여부
                                          지우지 말 것!!!!!!!!!!!!! */}
@@ -168,8 +168,8 @@ function Login() {
                                 </button>
                             </div> */}
                             <div>
-                                <button
-                                onClick={onClickLoginHandler}>
+                                <button className={`loginBtn enabled`}
+                                    onClick={onClickLoginHandler}>
                                     로그인
                                 </button>
                             </div>

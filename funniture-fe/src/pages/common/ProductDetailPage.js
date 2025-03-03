@@ -20,13 +20,13 @@ function ProductDetailPage() {
 
     const [favoriteProductNo, setFavoriteProductNo] = useState([])
 
+    const { favoriteList } = useSelector(state => state.favorite)
+
     useEffect(() => {
         if (user.memberRole == "USER") {
             dispatch(getFavoriteList(user.memberId))
         }
     }, [user])
-
-    const { favoriteList } = useSelector(state => state.favorite)
 
     useEffect(() => {
         if (user.memberRole == "USER") {
@@ -39,14 +39,16 @@ function ProductDetailPage() {
             console.log("favoriteList : ", favoriteList)
             console.log("array : ", array)
 
-            setFavoriteProductNo(array)
+            if (!areArraysEqual(array, favoriteProductNo)) {
+                setFavoriteProductNo(array);
+            }
+            // setFavoriteProductNo(array)
         }
-    }, [favoriteList])
+    }, [favoriteList, user?.memberRole])
 
-    useEffect(() => {
-        console.log("favoriteProductNo : ", favoriteProductNo)
-        updateFavoriteList(user.memberId, favoriteProductNo)
-    }, [favoriteProductNo])
+    function areArraysEqual(arr1, arr2) {
+        return arr1.length === arr2.length && arr1.every((value, index) => value === arr2[index]);
+    }
 
     function likeHandler(productNo) {
         if (favoriteProductNo.includes(productNo)) {
@@ -55,6 +57,22 @@ function ProductDetailPage() {
             setFavoriteProductNo(prev => [...prev, productNo])
         }
     }
+
+    useEffect(() => {
+        if (user.memberRole === "USER" && favoriteProductNo.length > 0) {
+            const storedFavorites = JSON.parse(localStorage.getItem('favoriteProductNo') || '[]');
+            if (!areArraysEqual(storedFavorites, favoriteProductNo)) {
+                updateFavoriteList(user.memberId, favoriteProductNo);
+                localStorage.setItem('favoriteProductNo', JSON.stringify(favoriteProductNo));
+            }
+        }
+    }, [favoriteProductNo, user.memberRole]);
+
+
+    // useEffect(() => {
+    //     console.log("favoriteProductNo : ", favoriteProductNo)
+    //     updateFavoriteList(user.memberId, favoriteProductNo)
+    // }, [favoriteProductNo])
 
     // 렌탈 갯수
     const [rentalNum, setRentalNum] = useState(1);

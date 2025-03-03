@@ -25,4 +25,8 @@
             aspect-ratio: 1 /1;
         }
     }
+
+    .chatBtn {
+        position: relative;
+    }
 }

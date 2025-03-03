@@ -38,6 +38,9 @@ import AppConvert from './pages/user/AppConvert';
 import AdminOwner from './pages/admin/AdminOwner';
 import AdminLeaver from './pages/admin/AdminLeaver';
 import AdminConvert from './pages/admin/AdminConvert';
+import NotFoundPage from './pages/common/NotFoundPage';
+import LoginRouter from './layouts/LoginRouter';
+import UserRouter from './layouts/UserRouter';
 
 
 function App() {
@@ -90,41 +93,56 @@ function App() {
       <Route path='/' element={<UserLayout selectCategory={selectCategory} setSelectCategory={setSelectCategory}
         selectCompany={selectCompany} setSelectCompany={setSelectCompany} />} >
 
+        {/* 공통 페이지(권한 없어도 접근 가능) */}
         <Route index element={<Main />} />
-        <Route path='/mypage' element={<MyPage />}>
-          <Route index element={<Orders />} />
-          <Route path='orders/:id' element={<DetailOrder />} />
-          <Route path='returns' element={<OrdersReturn />} />
-          <Route path='edit' element={<UserConform />} />
-          <Route path='edits' element={<EditsInfo />} />
-          <Route path='favorites' element={<FavoritesPage />} />
-          <Route path='recent' element={<RecentProduct />} />
-          <Route path='convert' element={<Convert />} />
-          <Route path='appConvert' element={<AppConvert />} />
-        </Route>
-
-        <Route path='/rental' element={<RentalRegist />} />
 
         <Route path='list' element={<ListPage selectCategory={selectCategory} selectCompany={selectCompany} />} />
-        <Route path=':id' element={<ProductDetailPage />} />
+        <Route path='/product/:id' element={<ProductDetailPage />} />
 
-        <Route path='test' element={<Test />} />
-        <Route path='inquiry' element={<Inquiry />} />
+        {/* 로그인이 필요 */}
+        <Route element={<LoginRouter />}>
 
-        <Route path='/owner' element={<OwnerLayout />}>
-          <Route index element={<OwnerMyPage />} />
-          <Route path='product' element={<OwnerProducts />} />
-          <Route path='register' element={<OwnerRegister />} />
-          <Route path='edit' element={<OwnerRegister />} />
-          <Route path='rentals' element={<OwnerRental />} />
+          <Route path='/rental' element={<RentalRegist />} />
+
+          {/* 일반 사용자 로그인 필요 */}
+          <Route element={<UserRouter />}>
+
+            <Route path='/mypage' element={<MyPage />}>
+              <Route index element={<Orders />} />
+              <Route path='orders/:id' element={<DetailOrder />} />
+              <Route path='returns' element={<OrdersReturn />} />
+              <Route path='edit' element={<UserConform />} />
+              <Route path='edits' element={<EditsInfo />} />
+              <Route path='favorites' element={<FavoritesPage />} />
+              <Route path='recent' element={<RecentProduct />} />
+              <Route path='convert' element={<Convert />} />
+              <Route path='appConvert' element={<AppConvert />} />
+            </Route>
+
+          </Route>
+
+          <Route path='test' element={<Test />} />
+          <Route path='inquiry' element={<Inquiry />} />
+
+          {/* 제공자 로그인 필요 */}
+          <Route path='/owner' element={<OwnerLayout />}>
+            <Route index element={<OwnerMyPage />} />
+            <Route path='product' element={<OwnerProducts />} />
+            <Route path='register' element={<OwnerRegister />} />
+            <Route path='edit' element={<OwnerRegister />} />
+            <Route path='rentals' element={<OwnerRental />} />
+          </Route>
+
         </Route>
-
       </Route>
 
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<Signup />} />
       <Route path='/find' element={<FindPass />} />
 
+      <Route path='*' element={<NotFoundPage />} />
+
+      {/* 관리자 로그인 필요 */}
       <Route path='/admin' element={<AdminLayout />}>
 
         <Route index element={<AdminMain />} />
@@ -140,6 +158,7 @@ function App() {
         <Route path='product' element={<AdminProduct />} />
 
       </Route>
+
     </Routes>
   );
 }
