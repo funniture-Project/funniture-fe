@@ -4,6 +4,7 @@ import BtnModal from '../../component/BtnModal'; // 모달 컴포넌트 가져�
 import RentalCss from './rental.module.css';
 import { callConvertByAdminAPI, callConvertDetailAPI , callConvertApproveAPI , callConvertRejectAPI } from '../../apis/AdminAPI';
 import { useSelector } from 'react-redux';
+import AdminModal from './adminModal.module.css';
 
 function AdminConvert() {
     const navigate = useNavigate();
@@ -97,6 +98,69 @@ function AdminConvert() {
         }
     };
     
+
+
+    const renderConvertModal = () => ({
+        left: (
+            <div>
+                <h3>◎ 첨부 파일 (사업자 등록증)</h3><br/>
+                {selectedData?.ownerInfoDTO?.attechmentLink && (
+                <div>
+                    <embed 
+                        src={selectedData.ownerInfoDTO.attechmentLink} 
+                        type="application/pdf" 
+                        width="100%" 
+                        height="500px" 
+                    />
+                    <br />
+                    {/* PDF 파일 클릭 시 새 창에서 열기 */}
+                    <a 
+                        href={selectedData.ownerInfoDTO.attechmentLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        style={{ color: 'blue', textDecoration: 'underline', marginTop: '10px', display: 'inline-block' }}
+                    >
+                        (첨부 파일 새 창에서 보기)
+                    </a>
+                </div>
+            )}
+            </div>
+        ),
+        right: (
+            <div>
+                {selectedData?.ownerInfoDTO && (
+                    <>
+                        <h3>◎ 제공자 전환 정보</h3><br/>
+                        <div className={AdminModal.ownerDiv}>
+                        {selectedData.ownerInfoDTO.storeImage && (
+                            <div>
+                                <strong>▷ 대표 이미지   :</strong><br/>
+                                <img src={selectedData.ownerInfoDTO.storeImage} alt="업체 이미지" style={{maxWidth: '100%', height: 'auto'}} />
+                            </div>
+                        )}
+                        
+                        <p><strong>▷ 사업자등록번호   :</strong> {selectedData.ownerInfoDTO.storeNo}</p>
+                        <p><strong>▷ 업체 이름   :</strong> {selectedData.ownerInfoDTO.storeName}</p>
+                        <p><strong>▷ 업체 주소   :</strong> {selectedData.ownerInfoDTO.storeAddress}</p>
+                        <p><strong>▷ 계좌 번호   :</strong> {selectedData.ownerInfoDTO.account}</p>
+                        <p><strong>▷ 은행 정보   :</strong> {selectedData.ownerInfoDTO.bank}</p>
+                        <p><strong>▷ 업체 전화번호   :</strong> {selectedData.ownerInfoDTO.storePhone}</p>
+                        </div><br/>
+                    </>
+                )}
+                <h3>◎ 회원 정보</h3><br/>
+                <div className={AdminModal.ownerDiv}>
+                <p><strong>▷ 회원 번호   :</strong> {selectedData?.memberId}</p>
+                <p><strong>▷ 이름   :</strong> {selectedData?.userName}</p>
+                <p><strong>▷ 전화번호   :</strong> {selectedData?.phoneNumber}</p>
+                <p><strong>▷ 이메일   :</strong> {selectedData?.email}</p>
+                <p><strong>▷ 회원가입일   :</strong> {selectedData?.signupDate}</p>
+                </div>
+            </div>
+        )
+    });
+    
+
     return (
         <>
             <div className={RentalCss.adminRentalContent}>
@@ -166,43 +230,8 @@ function AdminConvert() {
                         <BtnModal
                             showBtnModal={showModal}
                             setShowBtnModal={setShowModal}
-                            modalTitle="제공자 전환 요청"
-                            modalContext={
-                                <>
-                                    <h3>◎ 회원 정보</h3>
-                                    <p><strong>- 회원 번호:</strong> {selectedData.memberId}</p>
-                                    <p><strong>- 이름:</strong> {selectedData.userName}</p>
-                                    <p><strong>- 전화번호:</strong> {selectedData.phoneNumber}</p>
-                                    <p><strong>- 이메일:</strong> {selectedData.email}</p>
-                                    <p><strong>- 회원가입일:</strong> {selectedData.signupDate}</p>
-                                    
-                                    {selectedData.ownerInfoDTO && (
-                                        <>
-                                            <h3>◎ 업체 정보</h3>
-                                            <p><strong>- 사업자등록번호:</strong> {selectedData.ownerInfoDTO.storeNo}</p>
-                                            <p><strong>- 업체 이름:</strong> {selectedData.ownerInfoDTO.storeName}</p>
-                                            <p><strong>- 업체 주소:</strong> {selectedData.ownerInfoDTO.storeAddress}</p>
-                                            <p><strong>- 계좌 번호:</strong> {selectedData.ownerInfoDTO.account}</p>
-                                            <p><strong>- 은행 정보:</strong> {selectedData.ownerInfoDTO.bank}</p>
-                                            <p><strong> -업체 전화번호:</strong> {selectedData.ownerInfoDTO.storePhone}</p>
-                                            
-                                            {selectedData.ownerInfoDTO.storeImage && (
-                                                <div>
-                                                    <strong>- 대표 이미지:</strong><br/>
-                                                    <img src={selectedData.ownerInfoDTO.storeImage} alt="업체 이미지" style={{maxWidth: '100%', height: 'auto'}} />
-                                                </div>
-                                            )}
-                                            
-                                            {selectedData.ownerInfoDTO.attechmentLink && (
-                                                <div>
-                                                    <strong>첨부 파일:</strong><br/>
-                                                    <embed src={selectedData.ownerInfoDTO.attechmentLink} type="application/pdf" width="100%" height="500px" />
-                                                </div>
-                                            )}
-                                        </>
-                                    )}
-                                </>
-                            }
+                            modalTitle="▶ 제공자 전환 요청"
+                            modalContext={renderConvertModal()}
                             btnText="승인"
                             secondBtnText="반려"
                             onSuccess={() => {
@@ -211,8 +240,10 @@ function AdminConvert() {
                             }}
                             onFail={handleReject}
                             onClose={handleCloseModal}
+                            modalSize="lg"
                         />
                     )}
+
 
                     {showSuccessModal && (
                         <BtnModal
@@ -238,14 +269,14 @@ function AdminConvert() {
                             onClose={handleCloseModal}
                             modalTitle="반려 사유 입력"
                             modalContext={
-                                <>
+                                <div>
                                     <p>반려 사유를 입력해주세요:</p>
                                     <textarea
                                         value={rejectReason}
                                         onChange={(e) => setRejectReason(e.target.value)}
-                                        style={{width: '100%', height: '100px'}}
+                                        style={{ width: '100%', height: '100px' }}
                                     />
-                                </>
+                                </div>
                             }
                             btnText="저장"
                             secondBtnText="취소"

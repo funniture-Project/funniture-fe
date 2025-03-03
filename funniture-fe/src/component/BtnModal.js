@@ -69,7 +69,7 @@ function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
                     {modalTitle ? modalTitle : null}
                 </Modal.Header>
     
-                <Modal.Body className={ModalCss.modalBody}>
+                {/* <Modal.Body className={ModalCss.modalBody}>
                     {childContent ? childContent : modalContext ? modalContext : null}
     
                     {attachmentFile && (
@@ -83,7 +83,20 @@ function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
                             />
                         </>
                     )}                
-                </Modal.Body>
+                </Modal.Body> */}
+
+                {/* 왼쪽 pdf , 오른쪽 데이터들로 나누기 */}
+                <Modal.Body className={ModalCss.modalBody}>
+                {typeof modalContext === 'object' && modalContext.left && modalContext.right ? (
+                    <div className="row">
+                        <div className="col-md-6">{modalContext.left}</div>
+                        <div className="col-md-6">{modalContext.right}</div>
+                    </div>
+                ) : (
+                    modalContext // 단순 텍스트나 JSX 구조를 그대로 렌더링
+                )}
+            </Modal.Body>
+
     
                 <Modal.Footer className={ModalCss.modalFooter}>
                     {btnText &&

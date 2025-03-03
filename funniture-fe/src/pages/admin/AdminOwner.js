@@ -5,6 +5,7 @@ import Pagination from '../../component/Pagination';
 import { callOwnerListByAdminAPI , callOwnerDetailAPI} from '../../apis/AdminAPI';
 import { useNavigate , useLocation } from 'react-router-dom';
 import BtnModal from '../../component/BtnModal';
+import AdminModal from './adminModal.module.css';
 
 function AdminOwner() {
 
@@ -40,7 +41,9 @@ function AdminOwner() {
                 ownerInfoDTO: {
                     ...owner.ownerInfoDTO,
                     storeImage: detailData.ownerInfoDTO?.storeImage,
-                    attechmentLink: detailData.ownerInfoDTO?.attechmentLink
+                    attechmentLink: detailData.ownerInfoDTO?.attechmentLink,
+                    account: detailData.ownerInfoDTO?.account,
+                    bank: detailData.ownerInfoDTO?.bank
                 }
             });
             setShowOwnerModal(true);
@@ -50,36 +53,88 @@ function AdminOwner() {
         }
     };
     
-    const renderOwnerModal = () => (
-        <div>
-            <h3>◎ 회원 정보</h3>
-            <p><strong>- 회원 ID:</strong> {selectedOwner?.memberId}</p>
-            <p><strong>- 이름:</strong> {selectedOwner?.userName}</p>
-            <p><strong>- 대표 전화번호:</strong> {selectedOwner?.storePhone}</p>
-            <p><strong>- 이메일:</strong> {selectedOwner?.email}</p>
-            <p><strong>- 회원가입일:</strong> {selectedOwner?.signupDate}</p>
+    // const renderOwnerModal = () => (
+    //     <div>
+    //         <h3>◎ 회원 정보</h3>
+    //         <p><strong>- 회원 ID:</strong> {selectedOwner?.memberId}</p>
+    //         <p><strong>- 이름:</strong> {selectedOwner?.userName}</p>
+    //         <p><strong>- 대표 전화번호:</strong> {selectedOwner?.storePhone}</p>
+    //         <p><strong>- 이메일:</strong> {selectedOwner?.email}</p>
+    //         <p><strong>- 회원가입일:</strong> {selectedOwner?.signupDate}</p>
             
-            <h3>◎ 업체 정보</h3>
-            <p><strong>- 상호명:</strong> {selectedOwner?.storeName}</p>
-            <p><strong>- 사업자등록번호:</strong> {selectedOwner?.storeNo}</p>
+    //         <h3>◎ 업체 정보</h3>
+    //         <p><strong>- 상호명:</strong> {selectedOwner?.storeName}</p>
+    //         <p><strong>- 사업자등록번호:</strong> {selectedOwner?.storeNo}</p>
             
-            {selectedOwner?.ownerInfoDTO?.storeImage && (
-                <div>
-                    <strong>- 대표 이미지:</strong><br/>
-                    <img src={selectedOwner.ownerInfoDTO.storeImage} alt="업체 이미지" style={{maxWidth: '100%', height: 'auto'}} />
-                </div>
-            )}
+    //         {selectedOwner?.ownerInfoDTO?.storeImage && (
+    //             <div>
+    //                 <strong>- 대표 이미지:</strong><br/>
+    //                 <img src={selectedOwner.ownerInfoDTO.storeImage} alt="업체 이미지" style={{maxWidth: '100%', height: 'auto'}} />
+    //             </div>
+    //         )}
             
-            {selectedOwner?.ownerInfoDTO?.attechmentLink && (
-                <div>
-                    <strong>- 첨부 파일:</strong><br/>
-                    <embed src={selectedOwner.ownerInfoDTO.attechmentLink} type="application/pdf" width="100%" height="500px" />
-                </div>
-            )}
-        </div>
-    );
+    //         {selectedOwner?.ownerInfoDTO?.attechmentLink && (
+    //             <div>
+    //                 <strong>- 첨부 파일:</strong><br/>
+    //                 <embed src={selectedOwner.ownerInfoDTO.attechmentLink} type="application/pdf" width="100%" height="500px" />
+    //             </div>
+    //         )}
+    //     </div>
+    // );
     
-    
+    const renderOwnerModal = () => ({
+        left: (
+            <div>
+                <h3>◎ 첨부 파일 (사업자 등록증)</h3><br/>
+                {selectedOwner?.ownerInfoDTO?.attechmentLink && (
+                    <div>
+                        <embed 
+                            src={selectedOwner.ownerInfoDTO.attechmentLink} 
+                            type="application/pdf" 
+                            width="100%" 
+                            height="500px" 
+                        />
+                        <br />
+                        {/* PDF 파일 클릭 시 새 창에서 열기 */}
+                        <a 
+                            href={selectedOwner.ownerInfoDTO.attechmentLink} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            style={{ color: 'blue', textDecoration: 'underline', marginTop: '10px', display: 'inline-block' }}
+                        >
+                            (첨부 파일 새 창에서 보기)
+                        </a>
+                    </div>
+                )}
+            </div>
+        ),
+        right: (
+            <div>
+                <h3>◎ 제공자 업체 정보</h3><br/>
+                {selectedOwner?.ownerInfoDTO?.storeImage && (
+                    <div className={AdminModal.ownerDiv}>
+                        <strong>▷ 대표 이미지   :</strong><br/>
+                        <img src={selectedOwner.ownerInfoDTO.storeImage} alt="업체 이미지" style={{maxWidth: '100%', height: 'auto'}} /><br/>
+                    </div>
+                )}
+                <div className={AdminModal.ownerDiv}>
+                    <p><strong>▷ 상호명   :</strong> {selectedOwner?.storeName}</p>
+                    <p><strong>▷ 사업자등록번호   :</strong> {selectedOwner?.storeNo}</p>
+                    <p><strong>▷ 대표 전화번호   :</strong> {selectedOwner?.storePhone}</p>
+                    <p><strong>▷ 계좌 번호   :</strong> {selectedOwner?.ownerInfoDTO.account}</p>
+                    <p><strong>▷ 은행   :</strong> {selectedOwner?.ownerInfoDTO.bank}</p>
+                </div><br/>
+                <h3>◎ 회원 정보</h3><br/>
+                <div className={AdminModal.ownerDiv}>
+                    <p><strong>▷ 회원 ID   :</strong> {selectedOwner?.memberId}</p>
+                    <p><strong>▷ 이름   :</strong> {selectedOwner?.userName}</p>
+                    <p><strong>▷ 이메일   :</strong> {selectedOwner?.email}</p>
+                    <p><strong>▷ 회원가입일   :</strong> {selectedOwner?.signupDate}</p>
+                </div>
+            </div>
+        )
+    });
+   
 
     return (
         <>
@@ -144,13 +199,24 @@ function AdminOwner() {
                         {/* 페이지네이션 컴포넌트 */}
                         <Pagination />
                     </div>
-                    <BtnModal
+                    {/* <BtnModal
                     showBtnModal={showOwnerModal}
                     setShowBtnModal={setShowOwnerModal}
                     modalTitle="제공자 정보"
                     modalContext={renderOwnerModal()}
                     btnText="확인"
                     onSuccess={() => setShowOwnerModal(false)}
+                    /> */}
+
+                    {/* 모달 왼쪽 / 오른쪽 나누기 */}
+                    <BtnModal
+                    showBtnModal={showOwnerModal}
+                    setShowBtnModal={setShowOwnerModal}
+                    modalTitle="▶ 제공자 정보"
+                    modalContext={renderOwnerModal()}
+                    btnText="확인"
+                    onSuccess={() => setShowOwnerModal(false)}
+                    modalSize="lg"
                     />
             </div>
         </>
