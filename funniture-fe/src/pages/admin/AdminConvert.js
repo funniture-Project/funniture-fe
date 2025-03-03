@@ -84,7 +84,7 @@ function AdminConvert() {
     // 반려 사유 적고 저장 눌렀을 때 동작 
     const handleRejectSubmit = async () => {
         try {
-            // API 호출 부분 (아직 구현되지 않음)
+            
             await callConvertRejectAPI(selectedData.memberId, rejectReason);
             setShowRejectModal(false);
             setShowRejectCompleteModal(true);

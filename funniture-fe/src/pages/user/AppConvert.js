@@ -26,6 +26,10 @@ function AppConvert() {
 
     const [isRejected, setIsRejected] = useState(false); // 반려 여부
     const [rejectionReason, setRejectionReason] = useState(''); // 반려 사유
+    const [isApproved, setIsApproved] = useState(false);
+
+    const [message, setMessage] = useState("");
+    const [showRetryButton, setShowRetryButton] = useState(false);
 
 
     const [form, setForm] = useState({
@@ -41,42 +45,70 @@ function AppConvert() {
 
     const [previewImage, setPreviewImage] = useState(basicImage);
 
-
-    // 25-03-03 여기 수정해야 함. getRejectedMessage 이거 보냈는데 처리가 안 됨
-    // 페이지 로드 시 기존 신청 여부 확인
-    useEffect(() => {
-        const checkOwnerStatus = async () => {
-            if (member.user && member.user.memberId) {
-                try {
-                    const statusResponse = await checkOwnerStatusAPI(member.user.memberId);
-                    console.log('제공자 전환 신청 했는지 여부 :', statusResponse.data.results);
+    const handleReapply = () => {
+        setIsSubmitted(false);
+        setIsRejected(false);
+        setRejectionReason('');
+        setIsAlreadyRegistered(true); // 다시 신청할 수 있도록 유지
+    };
     
-                    setIsAlreadyRegistered(statusResponse.data.results);
-                    setIsRejected(statusResponse.data.results);
-                    setRejectionReason(statusResponse.data.results.reasonRejection || '');
     
-                    if (statusResponse.data.results) {
-                        setIsSubmitted(true);
+    // 제공자 전환 상태 확인
+    const fetchOwnerStatus = async () => {
+        try {
+            const response = await checkOwnerStatusAPI(member.user.memberId);
     
-                        // 반려된 경우에만 반려 메시지를 가져옵니다
-                        if (statusResponse.data.results.isRejected) {
-                            const rejectedResponse = await getRejectedMessage(member.user.memberId);
-                            console.log('반려 메시지:', rejectedResponse.data);
-                            // 여기서 반려 메시지를 상태에 저장하거나 표시할 수 있습니다
-                            setRejectionReason(rejectedResponse.data.message || '');
-                        }
-                    }
-                } catch (error) {
-                    console.error('소유자 상태 확인 중 오류 발생:', error);
-                    // 에러 처리 로직
-                }
+            console.log('서버 갔다온 fetchOwnerStatus의 response : ' , response);
+            console.log('서버 갔다온 fetchOwnerStatus의 response.data.results.status : ' , response.data.results.status);
+    
+            if (response.data.results.status === "PENDING") {
+                setIsSubmitted(true);
+                setIsRejected(false);
+                setIsApproved(false);
+                setMessage("제공자 전환 심사는 1~3일 소요됩니다.");
+                setIsAlreadyRegistered(true); // 신청한 이력이 있으므로 true
+            } else if (response.data.results.status === "REJECTED") {
+                setIsSubmitted(true);
+                setIsRejected(true);
+                setIsApproved(false);
+                setMessage("제공자 전환이 반려되었습니다. 반려 사유를 확인하세요.");
+                setShowRetryButton(true);
+                setIsAlreadyRegistered(true); // 반려되었어도 신청한 이력이 있으므로 true
+    
+                // 반려 메시지 가져오기
+                const rejectedResponse = await getRejectedMessage(member.user.memberId);
+                console.log('rejectedResponse : ' , rejectedResponse);
+                console.log('rejectedResponse.data.results.result.rejectionReason : ' , rejectedResponse.data.results.result.reasonRejection);
+                const rejectedMessage = rejectedResponse.data.results.result.reasonRejection;
+                console.log('rejectedMessage : ' , rejectedMessage);
+                setRejectionReason(rejectedMessage);
+            } else if (response.data.results.status === "APPROVED") {
+                setIsSubmitted(true);
+                setIsRejected(false);
+                setIsApproved(true);
+                setMessage("제공자로 전환 완료되었습니다.");
+                setIsAlreadyRegistered(true); // 승인된 경우도 신청한 이력이 있으므로 true
+            } else {
+                // 신청 이력이 없는 경우
+                setIsSubmitted(false);
+                setIsRejected(false);
+                setIsApproved(false);
+                setMessage("");
+                setIsAlreadyRegistered(false); // 신청 이력이 없으므로 false
             }
-        };
+        } catch (error) {
+            setMessage("오류가 발생했습니다. 다시 시도해주세요.");
+        }
+    };
     
-        checkOwnerStatus();
-    }, [member]);
     
-    
+
+    // 컴포넌트가 마운트될 때 제공자 상태 확인
+    useEffect(() => {
+        if (member.user?.memberId) {
+            fetchOwnerStatus();
+        }
+    }, [member.user?.memberId]);
 
     const owner = useSelector(state => state.member.owner);
     useEffect(() => {
@@ -170,7 +202,7 @@ function AppConvert() {
             <div className={OrdersCss.ordersContainer}>
                 <div className={OrdersCss.orderPageTitle}>제공자 전환</div>
                 {isSubmitted ? (
-                <SubmissionMessage />
+                    <SubmissionMessage isRejected={isRejected} isApproved={isApproved} rejectionReason={rejectionReason} onReapply={handleReapply} />
                     ) : (
                <div className="editMypageInfo">
 
@@ -271,8 +303,6 @@ function AppConvert() {
                     </button>
                 </div>
                     )}
-                    
- 
             </div>
         </>
     );
