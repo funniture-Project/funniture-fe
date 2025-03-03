@@ -183,7 +183,6 @@ function OwnerRental() {
 
             {(rentalTab === '' || rentalTab === '예약') && (
                 <div>
-                    <div>예약취소</div>
                     <div onClick={handleConfirmRental}>
                         예약확정
                     </div>
