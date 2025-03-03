@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import {getOwnerRentalList, putRentalConfirm} from '../../apis/RentalAPI';
 import BtnModal from '../../component/BtnModal';
 import DetailOrder from '../user/DetailOrder';
+import DeliverComModal from './DeliverComModal';
 
 function OwnerRental() {
     // 데이터 & 검색 관리
@@ -12,15 +13,21 @@ function OwnerRental() {
     const [rentalTab, setRentalTab] = useState(''); // 예약, 배송, 반납 탭별 필터링
     const [rentalStateFilter, setRentalStateFilter] = useState(''); // 예약 상태 필터링
 
+    // 체크박스 다중선택 주문번호 관리
+    const [selectedRentalNos, setSelectedRentalNos] = useState([]);
+
+    // 선택한 주문 정보 상태 - 주문상세모달에 가져갈 데이터
+    const [selectedOrder, setSelectedOrder] = useState(null); 
+
     // 페이징 상태 관리
     const [pageInfo, setPageInfo] = useState(null);  // pageInfo 상태 추가
     const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
 
     // 모달 상태 관리
-    const [selectedOrder, setSelectedOrder] = useState(null); // 선택한 주문 정보 상태
     const [showBtnConfirmModal, setShowBtnConfirmModal] = useState(false)
     const [showBtnCancelModal, setShowBtnCancelModal] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showDeliverComModal, setShowDeliverComModal] = useState(false);
 
     // 데이터 가져오는 함수
     async function getData(ownerNo, period, rentalTab, pageNum) {
@@ -43,16 +50,10 @@ function OwnerRental() {
         setPageNum(newPageNum);  // pageNum 변경
     };
 
-     // 검색 조건 변경 시 데이터 다시 불러오기
-     useEffect(() => {
+    // 검색 조건 변경 시 데이터 다시 불러오기
+    useEffect(() => {
         getData("MEM001", period, rentalTab, pageNum);
     }, [pageNum, period, rentalTab]);  // pageInfo 제거하고, period, rentalTab, pageNum만 의존성으로 설정
-
-    // 주문번호 클릭하여 모달 열기 핸들러
-    const handleOrderClick = (order) => {
-        setSelectedOrder(order);   // 선택된 주문 정보 설정
-        setIsModalOpen(true);      // 모달 열기
-    };
 
     // 기간 선택 핸들러
     const handlePeriodChange = (period) => {
@@ -104,8 +105,6 @@ function OwnerRental() {
     };
 // ----------------------------------------------------예약 확정----------------------------------------------------
 
-    const [selectedRentalNos, setSelectedRentalNos] = useState([]);
-
     // 체크박스를 클릭했을 때 선택/해제하는 함수
     const handleCheckboxChange = (rentalNo) => {
         setSelectedRentalNos((prevSelectedRentalNos) => {
@@ -152,8 +151,14 @@ function OwnerRental() {
     };
     
 
-// ----------------------------------------------------------------------------------------------------------------
+
 // ----------------------------------------------------예약 취소----------------------------------------------------    
+    
+    // 주문번호 클릭하여 모달 열기 핸들러
+    const handleOrderClick = (order) => {
+        setSelectedOrder(order);   // 선택된 주문 정보 설정
+        setIsModalOpen(true);      // 모달 열기
+    };
 
     // 주문상세 모달 닫기 함수 -> 모달 내에서 예약취소 API 연결해서 상태 바꿈
     const handleCloseModal = (isCanceled = false) => {
@@ -163,6 +168,14 @@ function OwnerRental() {
             getData("MEM001", period, rentalTab, pageNum);  // 데이터 갱신
             setShowBtnCancelModal(true);  // 예약 취소 모달 표시
         }
+    };
+
+// ---------------------------------------------------운송장 등록---------------------------------------------------    
+    
+    // 운송장 등록 모달 열기 핸들러
+    const handleDoubleClick = (rental) => {
+        setSelectedOrder(rental);
+        setShowDeliverComModal(true);
     };
 
 
@@ -293,8 +306,12 @@ function OwnerRental() {
                                         {rental.rentalNo}
                                     </span>
                                 </td>
-                                <td>{rental.deliverCom || '-'}</td>
-                                <td>{rental.deliveryNo || '-'}</td>
+                                <td onDoubleClick={() => handleDoubleClick(rental)}>
+                                    {rental.deliverCom || '-'}
+                                </td>
+                                <td onDoubleClick={() => handleDoubleClick(rental)}>
+                                    {rental.deliveryNo || '-'}
+                                </td>
                                 <td>{rental.productName}</td>
                                 <td>{rental.rentalNumber}</td>
                                 <td>{rental.rentalTerm}일</td>
@@ -319,6 +336,7 @@ function OwnerRental() {
                     </tbody>
                 </table>
             </div>
+
             {/* 예약확정 확인 모달 */}
             <BtnModal
                 showBtnModal={showBtnConfirmModal}
@@ -336,6 +354,16 @@ function OwnerRental() {
                 modalContext="예약취소가 되었습니다."
                 modalSize="sm"
             />
+
+            {/* 운송장 등록 모달 */}
+            <BtnModal
+                showBtnModal={showDeliverComModal}
+                setShowBtnModal={setShowDeliverComModal}
+                modalSize="md"
+                childContent={<DeliverComModal selectedOrder={selectedOrder}/>}
+                btnText="등록"
+                secondBtnText="취소"
+            />
             
             {/* 주문 상세페이지 모달 */}
             {selectedOrder && isModalOpen && (
@@ -347,7 +375,6 @@ function OwnerRental() {
                     childContent={<DetailOrder selectedOrder={selectedOrder} closeModal={handleCloseModal} />}
                 />
             )}
-            
             
             {/* 페이징 컴포넌트 가져오기 */}
             <div className={OwnerRentalCSS.pagingContainer}>
