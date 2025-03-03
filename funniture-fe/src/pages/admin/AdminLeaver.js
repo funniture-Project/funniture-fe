@@ -13,9 +13,15 @@ function AdminLeaver() {
     const [activeTab, setActiveTab] = useState(location.pathname); // 기본 활성화 탭 설정
 
     // 회원 정보 리스트를 저장할 상태
-    const [leaverUserList, setLeaverUserList] = useState([]); // 여러 제공자 정보를 저장하는 배열
-    const [selectedUsers, setSelectedUsers] = useState([]); // 체크박스 관리
-    const [showModal, setShowModal] = useState(false); // 접근 권한 변경 누를 때 뜨는 모달 
+    const [leaverList, setLeaverList] = useState([]); // 여러 제공자 정보를 저장하는 배열
+    const [selectedLeavers, setSelectedLeavers] = useState([]); // 체크박스 관리
+    const [showAccessModal, setShowAccessModal] = useState(false);
+    const [showUserModal, setShowUserModal] = useState(false);
+    const [selectedLeaver, setSelectedLeaver] = useState(null);
+
+    // const [showModal, setShowModal] = useState(false); // 접근 권한 변경 누를 때 뜨는 모달 
+    const [selectAll, setSelectAll] = useState(false); // 체크박스 전체 선택
+
 
     useEffect(() => {
         setActiveTab(location.pathname); // URL 변경 시 activeTab 동기화
@@ -27,47 +33,69 @@ function AdminLeaver() {
 
     useEffect(() => {
         console.log('관리자 페이지, 탈퇴자 useEffect 실행');
-        callLeaverUserByAdminAPI(setLeaverUserList);
+        callLeaverUserByAdminAPI(setLeaverList);
     }, []);
 
     // 체크박스 변경 핸들러
     const handleCheckboxChange = (memberId) => {
-        setSelectedUsers((prevSelectedUsers) => {
-            if (prevSelectedUsers.includes(memberId)) {
-                // 이미 선택된 경우 제거
-                return prevSelectedUsers.filter((id) => id !== memberId);
-            } else {
-                // 선택되지 않은 경우 추가
-                return [...prevSelectedUsers, memberId];
-            }
+        setSelectedLeavers((prev) => {
+            const newSelected = prev.includes(memberId)
+                ? prev.filter((id) => id !== memberId)
+                : [...prev, memberId];
+            setSelectAll(newSelected.length === leaverList.length);
+            return newSelected;
         });
     };
+    
+
+    const handleSelectAllChange = () => {
+        setSelectAll(!selectAll);
+        if (!selectAll) {
+            setSelectedLeavers(leaverList.map(leaver => leaver.memberId));
+        } else {
+            setSelectedLeavers([]);
+        }
+    };
+    
 
     const handleAccessChangeClick = () => {
-        if (selectedUsers.length === 0) {
+        if (selectedLeavers.length === 0) {
             alert('변경할 사용자를 선택해주세요.');
             return;
         }
-        setShowModal(true); // 모달 열기
+        setShowAccessModal(true);
     };
 
     const handleConfirmAccessChange = async () => {
         try {
-            await callChangeUserRoleAPI(selectedUsers); // 권한 변경 API 호출
+            await callChangeUserRoleAPI(selectedLeavers);
             alert('권한이 변경되었습니다.');
-    
-            // 데이터 갱신
-            callLeaverUserByAdminAPI(setLeaverUserList);
-    
-            setSelectedUsers([]); // 선택 초기화
-            setShowModal(false);  // 모달 닫기
+
+            callLeaverUserByAdminAPI(setLeaverList);
+
+            setSelectedLeavers([]);
+            setShowAccessModal(false);
         } catch (error) {
             console.error(error);
             alert('권한 변경에 실패했습니다.');
         }
     };
+
+    const handleLeaverClick = (leaver) => {
+        setSelectedLeaver(leaver);
+        setShowUserModal(true);
+    };
     
-    
+    const renderLeaverModal = () => (
+        <div>
+            <p><strong>회원 ID:</strong> {selectedLeaver?.memberId}</p>
+            <p><strong>이름:</strong> {selectedLeaver?.userName}</p>
+            <p><strong>이메일:</strong> {selectedLeaver?.email}</p>
+            <p><strong>전화번호:</strong> {selectedLeaver?.phoneNumber}</p>
+            <p><strong>회원가입일:</strong> {selectedLeaver?.signupDate}</p>
+            <p><strong>포인트:</strong> {selectedLeaver?.pointDTO.currentPoint}</p>
+        </div>
+    );   
 
     return (
         <>
@@ -75,30 +103,22 @@ function AdminLeaver() {
                 <div className={RentalCss.rentalSearchBox}>
                     <div className={RentalCss.searchReset}></div>
                 </div>
-                    <div className={RentalCss.adminSelectButton}>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/user')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/user' ? RentalCss.active : ''}`}>사용자
-                        </button>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/owner')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/owner' ? RentalCss.active : ''}`}>제공자
-                        </button>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/convert')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/convert' ? RentalCss.active : ''}`}>전환요청
-                        </button>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/leaver')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/leaver' ? RentalCss.active : ''}`}>탈퇴자
-                        </button>
-                        <button onClick={handleAccessChangeClick}>접근권한변경</button>
-                    </div>  
-                    <div className={RentalCss.rentalBox}>
-                        <div className={RentalCss.rentalSubBox}>
-                            {/* 테이블 헤더 */}
-                            <div className={RentalCss.title}>
-                                <div style={{ width: "3%" }}><input type="checkbox" /></div>
+                <div className={RentalCss.adminSelectButton}>
+                    <button onClick={() => handleTabClick('/admin/authority/user')} className={`${RentalCss.button} ${activeTab === '/admin/authority/user' ? RentalCss.active : ''}`}>사용자</button>
+                    <button onClick={() => handleTabClick('/admin/authority/owner')} className={`${RentalCss.button} ${activeTab === '/admin/authority/owner' ? RentalCss.active : ''}`}>제공자</button>
+                    <button onClick={() => handleTabClick('/admin/authority/convert')} className={`${RentalCss.button} ${activeTab === '/admin/authority/convert' ? RentalCss.active : ''}`}>전환요청</button>
+                    <button onClick={() => handleTabClick('/admin/authority/leaver')} className={`${RentalCss.button} ${activeTab === '/admin/authority/leaver' ? RentalCss.active : ''}`}>탈퇴자</button>
+                    <button onClick={handleAccessChangeClick}>접근권한변경</button>
+                </div>  
+                <div className={RentalCss.rentalBox}>
+                    <div className={RentalCss.rentalSubBox}>
+                    <div className={RentalCss.title}>
+                                <div style={{ width: "3%" }}>
+                                <input 
+                                    type="checkbox" 
+                                    checked={selectAll}
+                                    onChange={handleSelectAllChange}/>
+                                </div>
                                 <div style={{ width: "15%" }}><p>회원번호</p></div>
                                 <div style={{ width: "10%" }}><p>이름</p></div>
                                 <div style={{ width: "20%" }}><p>전화번호</p></div>
@@ -106,50 +126,53 @@ function AdminLeaver() {
                                 <div style={{ width: "27%" }}><p>회원가입일</p></div>
                                 <div style={{ width: "13%" }}><p>포인트</p></div>
                             </div>
-
-                            {/* 테이블 데이터 */}
-                            {leaverUserList.length === 0 ? (
-                                // 데이터가 없을 경우 표시할 메시지
-                                <div className={RentalCss.noResultsMessage}>
-                                    <p>검색 조건에 맞는 회원 정보가 없습니다.</p>
-                                </div>
-                            ) : (
-                                // 데이터가 있을 경우 렌더링
-                                leaverUserList.map((leaver) => (
-                                    <div key={leaverUserList.memberId} className={RentalCss.rentalItems}>
-                                        <div style={{ width: "3%" }}>
-                                            <input type="checkbox"
-                                                   checked={selectedUsers.includes(leaver.memberId)}
-                                                   onChange={() => handleCheckboxChange(leaver.memberId)}/></div>
-                                        <div style={{ width: '15%' }}><p>{leaver.memberId}</p></div>
-                                        <div style={{ width: '10%' }}><p>{leaver.userName}</p></div>
-                                        <div style={{ width: '20%' }}><p>{leaver.phoneNumber}</p></div>
-                                        <div style={{ width: '15%' }}><p>{leaver.email}</p></div>
-                                        <div style={{ width: '27%' }}><p>{leaver.signupDate}</p></div>
-                                        <div style={{ width: '13%' }}><p>{leaver.pointDTO.currentPoint}</p></div>
+                        {leaverList.length === 0 ? (
+                            <div className={RentalCss.noResultsMessage}>
+                                <p>탈퇴한 회원이 없습니다.</p>
+                            </div>
+                        ) : (
+                            leaverList.map((leaver) => (
+                                <div key={leaver.memberId} className={RentalCss.rentalItems}>
+                                    <div style={{ width: "3%" }} onClick={(e) => e.stopPropagation()}>
+                                        <input 
+                                            type="checkbox"
+                                            checked={selectedLeavers.includes(leaver.memberId)}
+                                            onChange={() => handleCheckboxChange(leaver.memberId)}
+                                        />
                                     </div>
-                                ))
-                            )}
-                        </div>
-
-                        {/* 페이지네이션 컴포넌트 */}
-                        <Pagination />
+                                    <div style={{ width: '15%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.memberId}</p></div>
+                                    <div style={{ width: '10%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.userName}</p></div>
+                                    <div style={{ width: '20%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.phoneNumber}</p></div>
+                                    <div style={{ width: '15%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.email}</p></div>
+                                    <div style={{ width: '27%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.signupDate}</p></div>
+                                    <div style={{ width: '13%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.pointDTO.currentPoint}</p></div>
+                                </div>
+                            ))
+                        )}
                     </div>
-
-                    <BtnModal
-                    showBtnModal={showModal}
-                    setShowBtnModal={setShowModal}
+                    <Pagination />
+                </div>
+                <BtnModal
+                    showBtnModal={showAccessModal}
+                    setShowBtnModal={setShowAccessModal}
                     modalTitle="접근 권한 변경"
-                    modalContext="선택된 사용자의 권한을 일반 회원으로 변경하시겠습니까?"
+                    modalContext="선택된 사용자의 권한을 변경하시겠습니까?"
                     btnText="예"
                     secondBtnText="취소"
                     onSuccess={handleConfirmAccessChange}
-                    onFail={() => setShowModal(false)}
-                    />
-
+                    onFail={() => setShowAccessModal(false)}
+                />
+                <BtnModal
+                    showBtnModal={showUserModal}
+                    setShowBtnModal={setShowUserModal}
+                    modalTitle="탈퇴 회원 정보"
+                    modalContext={renderLeaverModal()}
+                    btnText="확인"
+                    onSuccess={() => setShowUserModal(false)}
+                />
             </div>
         </>
-    )
+    );
 }
 
 export default AdminLeaver;

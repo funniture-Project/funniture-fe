@@ -491,7 +491,6 @@ export const callUpdateOwnerAPI = ({
 
             if (response.data.httpStatusCode === 201) {
                 console.log('제공자 전환 재신청 성공');
-                alert('제공자 재신청이 완료되었습니다.');
 
                 // 성공적으로 데이터를 받아왔을 때 Redux 스토어에 저장
                 dispatch({
