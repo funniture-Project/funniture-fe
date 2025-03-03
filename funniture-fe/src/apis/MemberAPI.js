@@ -512,17 +512,6 @@ export const callUpdateOwnerAPI = ({
     };
 };
 
-// 제공자 전환 심사 반려 됐을 때 반려 메시지 가져오기
-export const getRejectedMessage = async (memberId) => {
-    const requestURL = `http://localhost:8080/api/v1/memeber/rejected/${memberId}`;
-    try {
-        const response = await api.get(requestURL);
-        console.log('반려 메시지 잘 불러와졌나 :', response);
-    } catch (error) {
-        console.error('API 호출 중 오류 발생:', error);
-        throw error;
-    }
-}
 
 // 사용자가 제공자 전환 신청을 했는지 여부 확인을 위함
 export const checkOwnerStatusAPI = async (memberId) => {
@@ -536,3 +525,16 @@ export const checkOwnerStatusAPI = async (memberId) => {
         throw error;
     }
 };
+
+// 제공자 전환 심사 반려 됐을 때 반려 메시지 가져오기
+export const getRejectedMessage = async (memberId) => {
+    const requestURL = `http://localhost:8080/api/v1/member/rejected/${memberId}`;
+    try {
+        const response = await api.get(requestURL);
+        console.log('반려 메시지 잘 불러와졌나 :', response);
+        return response;
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+        throw error;
+    }
+}
