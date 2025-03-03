@@ -64,6 +64,19 @@ export const callConvertDetailAPI = async (memberId) => {
     }
 }
 
+// 관리자 페이지에 제공자 데이터에서 클릭 시 모달에 들어갈 데이터 요청 로직 (사진 , 파일)
+export const callOwnerDetailAPI = async (memberId) => {
+    const requestURL = `http://localhost:8080/api/v1/admin/ownerDetail/${memberId}`;
+    try {
+        const response = await api.get(requestURL);
+        console.log('제공자 상세 데이터:', response);
+        return response.data.results.result;
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+        throw error;
+    }
+}
+
 // 관리자 페이지에 사용자 → 제공자 모달에서 승인 눌렀을 때 동작하는 로직
 export const callConvertApproveAPI = async (memberId) => {
     const requestURL = `http://localhost:8080/api/v1/admin/approve/${memberId}`;
@@ -131,5 +144,19 @@ export const callChangeLimitRoleAPI = async (userIds) => {
 
     } catch (error) {
         console.error('API 호출 중 오류 발생:', error);
+    }   
+}
+
+// 관리자 페이지에서 사용자 포인트 수정하는 구문
+export const callUserPointUpdateAPI = async (memberId, newPoint) => {
+    const requestURL = `http://localhost:8080/api/v1/admin/updatePoint`;
+    try {
+        const response = await api.post(requestURL, { memberId, newPoint });
+        console.log('관리자 페이지에서 사용자 포인트 수정 요청 서버에 잘 다녀왔나? response : ', response);
+        if (response && response.data.httpStatusCode === 201) {
+        return response};
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+        throw error;
     }   
 }
