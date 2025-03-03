@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import DetailOrderCss from "./detailorder.module.css";
-import {getOrderDetail} from "../../apis/RentalAPI"
+import {getOrderDetail, cancelOrder } from "../../apis/RentalAPI"
 
-function DetailOrder({ selectedOrder }) {
+function DetailOrder({ selectedOrder, closeModal }) {
 
     const { id } = useParams(); // URL에서 주문번호를 가져옴
     const [order, setOrder] = useState(selectedOrder || null);
@@ -14,6 +14,18 @@ function DetailOrder({ selectedOrder }) {
         "경비실에 맡겨주세요",
         "부재시 연락주세요"
     ];
+
+    // 예약 취소 핸들러
+    const handleCancelOrder = async () => {    
+        try {
+            await cancelOrder(order.rentalNo);
+            closeModal(true);  // 예약 취소 성공 시 true 전달
+        } catch (error) {
+            console.error('예약취소 오류 : ', error);
+            alert("오류가 발생했습니다.");
+        }
+    };
+    
 
     useEffect(() => {
         if (!selectedOrder) {
@@ -176,8 +188,8 @@ function DetailOrder({ selectedOrder }) {
             </>
             )}
 
-            {selectedOrder && (
-                <div className={DetailOrderCss.ownerCencle}>
+            {selectedOrder && order.rentalState === "예약대기" && (
+                <div className={DetailOrderCss.ownerCencle} onClick={handleCancelOrder}>
                     <div>예약취소</div>
                 </div>
             )}

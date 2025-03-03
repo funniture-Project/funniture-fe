@@ -35,21 +35,6 @@ export async function getAdminRentalList(searchRental, pageNum) {
     return response
 }
 
-// export async function getAdminRentalListWithCriteria(criteria, pageNum) {
-
-//     const url = '/rental';
-//     const params = new URLSearchParams();
-
-    
-//     if(pageNum) {
-//         params.append('offset', pageNum)
-//     }
-
-//     const response = await getData(url, params)
-
-//     return response
-// }
-
 export async function getStoreList() {
     return await fetch('http://localhost:8080/api/v1/product/ownerlist?categoryCode=1&categoryCode=2').then(res => res.json());
 }
@@ -127,9 +112,16 @@ export const getOwnerRentalList = async (ownerNo, period, rentalTab, pageNum) =>
 
 export async function putRentalConfirm(rentalNos) {
     const url = `/rental/confirmBatch?rentalNos=${rentalNos.join('&rentalNos=')}`;
-    const response = await api.put(url);
+    await api.put(url);
 
-    console.log("response 입니다 : ", response);
+}
+
+export async function cancelOrder(rentalNo) {
+    console.log('rentalNo', rentalNo)
+    const url = `/rental/cancel?rentalNo=${rentalNo}`;
+
+    await api.put(url);
+
 }
 
 // 공용

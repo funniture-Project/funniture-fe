@@ -6,7 +6,7 @@ import BtnModal from '../../component/BtnModal';
 import DetailOrder from '../user/DetailOrder';
 
 function OwnerRental() {
-
+    // 데이터 & 검색 관리
     const [rentalList, setRentalList] = useState([]);   // 제공자별 예약 리스트
     const [period , setPeriod ] = useState(''); // 1WEEK, 1MONTH, 3MONTH 만료기간별 필터링
     const [rentalTab, setRentalTab] = useState(''); // 예약, 배송, 반납 탭별 필터링
@@ -16,15 +16,17 @@ function OwnerRental() {
     const [pageInfo, setPageInfo] = useState(null);  // pageInfo 상태 추가
     const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
 
-    // 모달 상태 관리(주문상세모달, 운송장등록 모달)
+    // 모달 상태 관리
     const [selectedOrder, setSelectedOrder] = useState(null); // 선택한 주문 정보 상태
+    const [showBtnConfirmModal, setShowBtnConfirmModal] = useState(false)
+    const [showBtnCancelModal, setShowBtnCancelModal] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    
+    // 데이터 가져오는 함수
     async function getData(ownerNo, period, rentalTab, pageNum) {
         try {
             const data = await getOwnerRentalList(ownerNo, period, rentalTab, pageNum);
             const rentals = data.results.ownerRentalList;
-            console.log('rentals', rentals)
             const pageInfo = data.results.pageInfo;
             setRentalList(rentals);
             setPageInfo(pageInfo);
@@ -35,12 +37,7 @@ function OwnerRental() {
         }
     }
 
-    // 주문번호 클릭 핸들러
-    const handleOrderClick = (order) => {
-        setSelectedOrder(order);
-    };
-
-    // 페이지 변경 시 데이터 가져오기
+    // 페이지 변경 핸들러
     const handlePageChange = (newPageNum) => {
 
         setPageNum(newPageNum);  // pageNum 변경
@@ -50,6 +47,12 @@ function OwnerRental() {
      useEffect(() => {
         getData("MEM001", period, rentalTab, pageNum);
     }, [pageNum, period, rentalTab]);  // pageInfo 제거하고, period, rentalTab, pageNum만 의존성으로 설정
+
+    // 주문번호 클릭하여 모달 열기 핸들러
+    const handleOrderClick = (order) => {
+        setSelectedOrder(order);   // 선택된 주문 정보 설정
+        setIsModalOpen(true);      // 모달 열기
+    };
 
     // 기간 선택 핸들러
     const handlePeriodChange = (period) => {
@@ -75,6 +78,30 @@ function OwnerRental() {
         return true; // 필터가 없으면 전체 렌탈 리스트 반환
     });
 
+    // 예약진행상태마다 스타일 다르게 적용하기 위해서
+    const getStatusClass = (status) => {
+
+    switch (status) {
+        case "예약대기":
+        return "statusPending";
+        case "예약완료":
+        return "statusConfirmed";
+        case "예약취소":
+        return "statusCanceled";
+        case "배송중":
+        return "statusDelivering";
+        case "배송완료":
+        return "statusDelivered";
+        case "반납요청":
+        return "statusReturnRequested";
+        case "수거중":
+        return "statusCollecting";
+        case "반납완료":
+        return "statusReturned";
+        default:
+        return "statusDefault";
+    }
+    };
 // ----------------------------------------------------예약 확정----------------------------------------------------
 
     const [selectedRentalNos, setSelectedRentalNos] = useState([]);
@@ -98,47 +125,48 @@ function OwnerRental() {
             return;
         }
     
+        // 선택된 예약의 상태를 확인
+        const invalidSelections = rentalList.filter(rental => 
+            selectedRentalNos.includes(rental.rentalNo) && rental.rentalState !== "예약대기"
+        );
+    
+        // "예약대기" 상태가 아닌 항목이 있으면 예외처리
+        if (invalidSelections.length > 0) {
+            alert("선택한 예약 중 '예약대기' 상태가 아닌 항목이 포함되어 있습니다.");
+            return;
+        }
+    
         try {
             // putRentalConfirm 호출해서 선택된 예약들을 "예약완료"로 변경
             await putRentalConfirm(selectedRentalNos);
-    
-            alert("선택된 예약들이 예약완료로 상태 변경되었습니다.");
             // 예약 리스트 갱신
             getData("MEM001", period, rentalTab, pageNum);
             // 선택된 예약 리스트 초기화
             setSelectedRentalNos([]);
+            // 확정 확인 모달 띄우기
+            setShowBtnConfirmModal(true);
         } catch (error) {
             console.error('Error confirming rentals:', error);
             alert("오류가 발생했습니다.");
         }
     };
+    
 
-// ----------------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------예약 취소----------------------------------------------------    
 
-    // 예약진행상태마다 스타일 다르게 적용하기 위해서
-    const getStatusClass = (status) => {
-
-        switch (status) {
-          case "예약대기":
-            return "statusPending";
-          case "예약완료":
-            return "statusConfirmed";
-          case "예약취소":
-            return "statusCanceled";
-          case "배송중":
-            return "statusDelivering";
-          case "배송완료":
-            return "statusDelivered";
-          case "반납요청":
-            return "statusReturnRequested";
-          case "수거중":
-            return "statusCollecting";
-          case "반납완료":
-            return "statusReturned";
-          default:
-            return "statusDefault";
+    // 주문상세 모달 닫기 함수 -> 모달 내에서 예약취소 API 연결해서 상태 바꿈
+    const handleCloseModal = (isCanceled = false) => {
+        setIsModalOpen(false);  // 모달 닫기
+    
+        if (isCanceled) { 
+            getData("MEM001", period, rentalTab, pageNum);  // 데이터 갱신
+            setShowBtnCancelModal(true);  // 예약 취소 모달 표시
         }
-      };
+    };
+
+
+   
 
     return(
         <div className={OwnerRentalCSS.container}>
@@ -291,18 +319,35 @@ function OwnerRental() {
                     </tbody>
                 </table>
             </div>
+            {/* 예약확정 확인 모달 */}
+            <BtnModal
+                showBtnModal={showBtnConfirmModal}
+                setShowBtnModal={setShowBtnConfirmModal}
+                btnText="확인"
+                modalContext="예약확정이 되었습니다."
+                modalSize="sm"
+            />
+
+            {/* 예약취소 확인 모달 */}
+            <BtnModal
+                showBtnModal={showBtnCancelModal}
+                setShowBtnModal={setShowBtnCancelModal}
+                btnText="확인"
+                modalContext="예약취소가 되었습니다."
+                modalSize="sm"
+            />
             
             {/* 주문 상세페이지 모달 */}
-            {selectedOrder && (
+            {selectedOrder && isModalOpen && (
                 <BtnModal
-                showBtnModal={selectedOrder}
-                setShowBtnModal={setSelectedOrder}
-                modalContext="로그인 후 이용 가능합니다."
-                modalSize="lg"
-                onClose={() => setSelectedOrder(false)} 
-                childContent={<DetailOrder selectedOrder={selectedOrder} />}
+                    showBtnModal={isModalOpen}  // isModalOpen 상태로 모달을 열고 닫기
+                    setShowBtnModal={handleCloseModal}  // 모달 닫는 함수 전달
+                    modalContext="로그인 후 이용 가능합니다."
+                    modalSize="lg"
+                    childContent={<DetailOrder selectedOrder={selectedOrder} closeModal={handleCloseModal} />}
                 />
             )}
+            
             
             {/* 페이징 컴포넌트 가져오기 */}
             <div className={OwnerRentalCSS.pagingContainer}>
