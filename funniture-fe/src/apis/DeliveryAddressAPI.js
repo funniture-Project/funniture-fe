@@ -38,6 +38,13 @@ export const postAddressRegist = async (addressData) => {
     await api.post(url, addressData);  
 };
 
+// 배송지 수정 
+export const putAddress = async (destinationNo, addressData) => {
+
+    const url = `/deliveryaddress/${destinationNo}/update`;  
+    await api.put(url, addressData);  
+};
+
 // 공용
 const getData = async (url, query) => {
     let response
