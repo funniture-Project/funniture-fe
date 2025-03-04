@@ -2,9 +2,14 @@ import OrdersCss from './orders.module.css';
 import { useState, useEffect } from 'react';
 import { getUserOrderList } from '../../apis/RentalAPI';
 import { Link } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import Pagination from '../../component/Pagination';
 
 function Orders() {
+
+    // 사용자 꺼내오기
+    const { user } = useSelector(state => state.member)
+    const { memberId } = user
 
     const [orderList, setOrderList] = useState([]); // 사용자별 주문 리스트
     const [searchOrder, setSearchOrder] = useState({
@@ -38,8 +43,8 @@ function Orders() {
 
     // 검색 조건 변경 시 데이터 다시 불러오기
     useEffect(() => {
-        getData("MEM011", searchOrder.period, pageNum);
-    }, [searchOrder, pageNum]);
+        getData(memberId, searchOrder.period, pageNum);
+    }, [memberId, searchOrder, pageNum]);
 
  
     // 기간 선택 핸들러

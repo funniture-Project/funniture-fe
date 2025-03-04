@@ -308,7 +308,7 @@ export const callWithdrawAPI = ({ memberId }) => {
 }
 
 export const callConvertImageAPI = ({ memberId, storeImage }) => {
-    const requestURL = `http://localhost:8080/api/v1/member/modify/asdasd`;
+    const requestURL = `http://localhost:8080/api/v1/member/modify/imageLink`;
 
     console.log('callChangeImageAPI에 memberId 잘 넘어 오는지 : ', memberId);
     console.log('callChangeImageAPI에 storaImage 잘 넘어 오는지 : ', storeImage);
