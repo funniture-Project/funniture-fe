@@ -95,10 +95,7 @@ function RentalRegist () {
                 destinationNo: defaultAddress.destinationNo
             };
         
-            const response = await postRentalReservation(rentalData);
-        
-            // 성공 시 처리할 로직 -> 예약 성공 후 페이지 이동, 모달 열기!!
-            console.log('예약 등록 성공:', response);
+            await postRentalReservation(rentalData);
             setShowSuccessModal(true);  // 성공 모달 열기
             handleClick();
         

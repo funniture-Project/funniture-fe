@@ -1,7 +1,7 @@
 import DeliveryCss from "./deliveryAddress.module.css";
 import { useState, useEffect } from "react";
 import { useSelector } from 'react-redux';
-import { getDeliveryAddressListData, putDefaultAddress, putAddressDelete } from '../../apis/DeliveryAddressAPI';
+import { getDeliveryAddressListData, putDefaultAddress, putAddressDelete, postAddressRegist } from '../../apis/DeliveryAddressAPI';
 import BtnModal from '../../component/BtnModal';  
 
 function DeliveryAddress() {
@@ -17,9 +17,16 @@ function DeliveryAddress() {
     // 데이터
     const [deliveryAddressList, setDeliveryAddressList] = useState([]); // 전체 배송지리스트 조회
 
+    // 배송지 등록 데이터
+    const [destinationName, setDestinationName] = useState('');
+    const [receiver, setReceiver] = useState('');
+    const [destinationPhone, setDestinationPhone] = useState('');
+    const [destinationAddress, setDestinationAddress] = useState('');
+
     // 모달
     const [showAddressDeleteModal, setAddressDeleteModal] = useState(false);  // 배송지 삭제 모달
     const [showDefaultAddressChangeModal, setDefaultAddressChangeModal] = useState(false);  // 배송지 삭제 모달
+    const [showAddressRegistModal, setAddressRegistModal] = useState(false);  // 배송지 삭제 모달
 
     // 데이터 호출 함수
     async function getData(memberId) {
@@ -46,6 +53,49 @@ function DeliveryAddress() {
         setAddressDeleteModal(true);
     }
 
+    // 배송지 등록 핸들러
+    const handleAddressRegist= async () => {
+        try {
+
+            const addressData = {
+                memberId: memberId,
+                destinationName: destinationName,
+                destinationPhone: destinationPhone,
+                destinationAddress: destinationAddress,
+                receiver : receiver
+            };
+
+            await postAddressRegist(addressData);
+            getData(memberId);
+            setAddressRegistModal(true);
+            setIsDropdownVisible(false);
+            setDestinationName('');
+            setReceiver('');
+            setDestinationAddress('');
+            setDestinationPhone('');
+
+        } catch (error) {
+            console.error('등록 실패:', error);
+        }
+        };
+    
+    // Daum 주소 API 스크립트 추가
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+        script.async = true;
+        document.body.appendChild(script);
+    }, []);
+
+    // 주소 찾기 버튼 클릭 시 실행
+    const handleOpenPostcode = () => {
+        new window.daum.Postcode({
+        oncomplete: function (data) {
+            setDestinationAddress(data.address); // 상세주소 input에 주소 검색 결과 넣기
+        },
+        }).open();
+    };
+
     useEffect(() => {
         getData(memberId);
     }, [memberId]);
@@ -68,7 +118,7 @@ function DeliveryAddress() {
         <div className={DeliveryCss.deliveryContainer}>
             <div className={DeliveryCss.modalContainer}>
             <div className={DeliveryCss.modalHeader}>
-                <h3>배송지 변경</h3>
+                <h3>배송지 관리</h3>
             </div>
 
             {/* registerBtnContainer 영역을 눌렀을 때 드롭다운 되게 하기 */}
@@ -93,23 +143,52 @@ function DeliveryAddress() {
             {isDropdownVisible && (
                 <div className={DeliveryCss.dropdownContent}>
                     <div>
-                        <div>배송지 이름 : <input type="text"/></div>
-                        <div>등록</div>
+                        <div>배송지 이름 : 
+                            <input 
+                                type="text" 
+                                value={destinationName} 
+                                onChange={(e) => setDestinationName(e.target.value)} 
+                            />
+                        </div>
+                        <div onClick={handleAddressRegist}>등록</div>
                     </div>
+
                     <div>
-                        <div>받는 분 : <input type="text"/></div>
+                        <div>받는 분 : 
+                            <input 
+                                type="text" 
+                                value={receiver} 
+                                onChange={(e) => setReceiver(e.target.value)} 
+                            />
+                        </div>
                     </div>
+
                     <div>
-                        <div>전화번호 : <input type="text"/></div>
+                        <div>전화번호 : 
+                            <input 
+                                type="text" 
+                                value={destinationPhone} 
+                                onChange={(e) => setDestinationPhone(e.target.value)} 
+                            />
+                        </div>
                     </div>
+
                     <div>
                         <div>주소 : </div>
-                        <div>주소찾기</div>
+                        <div onClick={handleOpenPostcode}>주소찾기</div>
                     </div>
+                    
                     <div>
-                        <div>상세주소 : <input type="text"/></div>
+                        <div>상세주소 : 
+                            <input 
+                                type="text" 
+                                value={destinationAddress} 
+                                onChange={(e) => setDestinationAddress(e.target.value)} 
+                            />
+                        </div>
                     </div>
                 </div>
+                
             )}
 
             {deliveryAddressList.length > 0 ? (
@@ -161,7 +240,7 @@ function DeliveryAddress() {
                                     <div>등록</div>
                                 </div>
                                 <div>
-                                    <div>받는 분 : <input type="text" /></div>
+                                    <div>받는 분 : <input type="text"/></div>
                                 </div>
                                 <div>
                                     <div>전화번호 : <input type="text"/></div>
@@ -194,12 +273,22 @@ function DeliveryAddress() {
                 modalContext="배송지가 삭제되었습니다."
                 modalSize="sm"
         />
+
         {/* 기본배송지 등록 확인 모달 */}
         <BtnModal
                 showBtnModal={showDefaultAddressChangeModal}
                 setShowBtnModal={setDefaultAddressChangeModal}
                 btnText="확인"
                 modalContext="기본 배송지로 선택되었습니다."
+                modalSize="sm"
+        />
+
+        {/* 배송지 등록 확인 모달 */}
+        <BtnModal
+                showBtnModal={showAddressRegistModal}
+                setShowBtnModal={setAddressRegistModal}
+                btnText="확인"
+                modalContext="배송지 등록이 완료되었습니다."
                 modalSize="sm"
         />
     </div>
