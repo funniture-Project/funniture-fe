@@ -111,15 +111,15 @@ function MyPage() {
                             <div>회원정보수정</div>
                         </Link>
                         <Link
-                            to={`/mypage`}
+                            to={`/mypage/deliveryaddress`}
                             onClick={() => handleTabClick('address')}
                             className={`tab link ${activeTab === 'address' ? 'active' : ''}`}>
                             <div>배송지관리</div>
                         </Link>
                         <Link
                             to={`/mypage/convert`}
-                            onClick={() => handleTabClick('address')}
-                            className={`tab link ${activeTab === 'address' ? 'active' : ''}`}>
+                            onClick={() => handleTabClick('convert')}
+                            className={`tab link ${activeTab === 'convert' ? 'active' : ''}`}>
                             <div>제공자 전환</div>
                         </Link>
                     </div>

@@ -17,6 +17,16 @@ export async function getDeliveryAddressListData(memberId) {
     return response;
 }
 
+export async function putDefaultAddress(destinationNo) {
+    const url = `/deliveryaddress/${destinationNo}/setDefault`;
+    await api.put(url);
+}
+
+export async function putAddressDelete(destinationNo) {
+    const url = `/deliveryaddress/${destinationNo}/delete`;
+    await api.put(url);
+}
+
 // 공용
 const getData = async (url, query) => {
     let response
