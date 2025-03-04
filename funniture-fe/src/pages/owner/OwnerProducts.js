@@ -126,8 +126,9 @@ function OwnerProducts() {
                                                 />
                                             </div>
                                             <div className={OwProductCss.imgBox}>
-                                                <img src={product.productImageLink == 'a.jpg'
-                                                    ? require(`../../assets/images/${product.productImageLink}`)
+                                                <img src={product.productImageLink == 'a.jpg' || product.productImageLink == 'default.jpg'
+                                                    ? require(`../../assets/images/default.jpg`)
+                                                    // ? require(`../../assets/images/default.jpg`)
                                                     : product.productImageLink}
                                                     alt="상품 사진" />
                                             </div>
@@ -150,8 +151,8 @@ function OwnerProducts() {
                                                     {product.productStatus}
                                                 </div>
                                                 <div className={OwProductCss.optionBox}>
-                                                    <div>사용 중 : {product.totalStock}개</div>
-                                                    <div>사용 가능 :  {product.usedStock}개</div>
+                                                    <div>사용 중 : {product.usedStock}개</div>
+                                                    <div>사용 가능 :  {parseInt(product.totalStock) - parseInt(product.usedStock)}개</div>
                                                 </div>
                                             </div>
                                             <div className={OwProductCss.editBtns} >

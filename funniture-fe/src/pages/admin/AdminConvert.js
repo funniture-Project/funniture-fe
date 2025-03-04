@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate , useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import BtnModal from '../../component/BtnModal'; // 모달 컴포넌트 가져오기
 import RentalCss from './rental.module.css';
-import { callConvertByAdminAPI, callConvertDetailAPI , callConvertApproveAPI , callConvertRejectAPI } from '../../apis/AdminAPI';
+import { callConvertByAdminAPI, callConvertDetailAPI, callConvertApproveAPI, callConvertRejectAPI } from '../../apis/AdminAPI';
 import { useSelector } from 'react-redux';
 import AdminModal from './adminModal.module.css';
 
@@ -31,7 +31,7 @@ function AdminConvert() {
     const handleTabClick = (path) => {
         navigate(path); // 경로 이동
     };
-    
+
     useEffect(() => {
         console.log('관리자 페이지, 제공자 전환 요청 목록 가져오기');
         callConvertByAdminAPI(setConvertList);
@@ -55,13 +55,13 @@ function AdminConvert() {
             alert("상세 정보를 불러오는데 실패했습니다.");
         }
     };
-    
+
     // 모달 닫기 핸들러
     const handleCloseModal = () => {
         setShowModal(false);
         setShowRejectModal(false);
         setSelectedData(null);
-      };
+    };
 
     // 승인 눌렀을 때 제공자 전환 로직
     const handleSuccess = async () => {
@@ -76,16 +76,16 @@ function AdminConvert() {
             alert('승인 처리 중 오류가 발생했습니다.');
         }
     };
-    
-    const handleReject = async () => {
+
+    const handleReject = async (event) => {
         setShowRejectModal(true);
     };
-    
+
 
     // 반려 사유 적고 저장 눌렀을 때 동작 
     const handleRejectSubmit = async () => {
         try {
-            
+
             await callConvertRejectAPI(selectedData.memberId, rejectReason);
             setShowRejectModal(false);
             setShowRejectCompleteModal(true);
@@ -97,69 +97,69 @@ function AdminConvert() {
             alert('반려 처리 중 오류가 발생했습니다.');
         }
     };
-    
+
 
 
     const renderConvertModal = () => ({
         left: (
             <div>
-                <h3>◎ 첨부 파일 (사업자 등록증)</h3><br/>
+                <h3>◎ 첨부 파일 (사업자 등록증)</h3><br />
                 {selectedData?.ownerInfoDTO?.attechmentLink && (
-                <div>
-                    <embed 
-                        src={selectedData.ownerInfoDTO.attechmentLink} 
-                        type="application/pdf" 
-                        width="100%" 
-                        height="500px" 
-                    />
-                    <br />
-                    {/* PDF 파일 클릭 시 새 창에서 열기 */}
-                    <a 
-                        href={selectedData.ownerInfoDTO.attechmentLink} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        style={{ color: 'blue', textDecoration: 'underline', marginTop: '10px', display: 'inline-block' }}
-                    >
-                        (첨부 파일 새 창에서 보기)
-                    </a>
-                </div>
-            )}
+                    <div>
+                        <embed
+                            src={selectedData.ownerInfoDTO.attechmentLink}
+                            type="application/pdf"
+                            width="100%"
+                            height="500px"
+                        />
+                        <br />
+                        {/* PDF 파일 클릭 시 새 창에서 열기 */}
+                        <a
+                            href={selectedData.ownerInfoDTO.attechmentLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: 'blue', textDecoration: 'underline', marginTop: '10px', display: 'inline-block' }}
+                        >
+                            (첨부 파일 새 창에서 보기)
+                        </a>
+                    </div>
+                )}
             </div>
         ),
         right: (
             <div>
                 {selectedData?.ownerInfoDTO && (
                     <>
-                        <h3>◎ 제공자 전환 정보</h3><br/>
+                        <h3>◎ 제공자 전환 정보</h3><br />
                         <div className={AdminModal.ownerDiv}>
-                        {selectedData.ownerInfoDTO.storeImage && (
-                            <div>
-                                <strong>▷ 대표 이미지   :</strong><br/>
-                                <img src={selectedData.ownerInfoDTO.storeImage} alt="업체 이미지" style={{maxWidth: '100%', height: 'auto'}} />
-                            </div>
-                        )}
-                        
-                        <p><strong>▷ 사업자등록번호   :</strong> {selectedData.ownerInfoDTO.storeNo}</p>
-                        <p><strong>▷ 업체 이름   :</strong> {selectedData.ownerInfoDTO.storeName}</p>
-                        <p><strong>▷ 업체 주소   :</strong> {selectedData.ownerInfoDTO.storeAddress}</p>
-                        <p><strong>▷ 계좌 번호   :</strong> {selectedData.ownerInfoDTO.account}</p>
-                        <p><strong>▷ 은행 정보   :</strong> {selectedData.ownerInfoDTO.bank}</p>
-                        <p><strong>▷ 업체 전화번호   :</strong> {selectedData.ownerInfoDTO.storePhone}</p>
-                        </div><br/>
+                            {selectedData.ownerInfoDTO.storeImage && (
+                                <div>
+                                    <strong>▷ 대표 이미지   :</strong><br />
+                                    <img src={selectedData.ownerInfoDTO.storeImage} alt="업체 이미지" style={{ maxWidth: '100%', height: 'auto' }} />
+                                </div>
+                            )}
+
+                            <p><strong>▷ 사업자등록번호   :</strong> {selectedData.ownerInfoDTO.storeNo}</p>
+                            <p><strong>▷ 업체 이름   :</strong> {selectedData.ownerInfoDTO.storeName}</p>
+                            <p><strong>▷ 업체 주소   :</strong> {selectedData.ownerInfoDTO.storeAddress}</p>
+                            <p><strong>▷ 계좌 번호   :</strong> {selectedData.ownerInfoDTO.account}</p>
+                            <p><strong>▷ 은행 정보   :</strong> {selectedData.ownerInfoDTO.bank}</p>
+                            <p><strong>▷ 업체 전화번호   :</strong> {selectedData.ownerInfoDTO.storePhone}</p>
+                        </div><br />
                     </>
                 )}
-                <h3>◎ 회원 정보</h3><br/>
+                <h3>◎ 회원 정보</h3><br />
                 <div className={AdminModal.ownerDiv}>
-                <p><strong>▷ 회원 번호   :</strong> {selectedData?.memberId}</p>
-                <p><strong>▷ 이름   :</strong> {selectedData?.userName}</p>
-                <p><strong>▷ 전화번호   :</strong> {selectedData?.phoneNumber}</p>
-                <p><strong>▷ 이메일   :</strong> {selectedData?.email}</p>
-                <p><strong>▷ 회원가입일   :</strong> {selectedData?.signupDate}</p>
+                    <p><strong>▷ 회원 번호   :</strong> {selectedData?.memberId}</p>
+                    <p><strong>▷ 이름   :</strong> {selectedData?.userName}</p>
+                    <p><strong>▷ 전화번호   :</strong> {selectedData?.phoneNumber}</p>
+                    <p><strong>▷ 이메일   :</strong> {selectedData?.email}</p>
+                    <p><strong>▷ 회원가입일   :</strong> {selectedData?.signupDate}</p>
                 </div>
             </div>
         )
     });
-    
+
 
     return (
         <>
@@ -168,24 +168,24 @@ function AdminConvert() {
                     <div className={RentalCss.searchReset}></div>
                 </div>
                 <div className={RentalCss.adminSelectButton}>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/user')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/user' ? RentalCss.active : ''}`}>사용자
-                        </button>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/owner')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/owner' ? RentalCss.active : ''}`}>제공자
-                        </button>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/convert')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/convert' ? RentalCss.active : ''}`}>전환요청
-                        </button>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/leaver')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/leaver' ? RentalCss.active : ''}`}>탈퇴자
-                        </button>
-                        <button style={{display:'none'}}>접근권한변경</button>
-                    </div>  
+                    <button
+                        onClick={() => handleTabClick('/admin/authority/user')}
+                        className={`${RentalCss.button} ${activeTab === '/admin/authority/user' ? RentalCss.active : ''}`}>사용자
+                    </button>
+                    <button
+                        onClick={() => handleTabClick('/admin/authority/owner')}
+                        className={`${RentalCss.button} ${activeTab === '/admin/authority/owner' ? RentalCss.active : ''}`}>제공자
+                    </button>
+                    <button
+                        onClick={() => handleTabClick('/admin/authority/convert')}
+                        className={`${RentalCss.button} ${activeTab === '/admin/authority/convert' ? RentalCss.active : ''}`}>전환요청
+                    </button>
+                    <button
+                        onClick={() => handleTabClick('/admin/authority/leaver')}
+                        className={`${RentalCss.button} ${activeTab === '/admin/authority/leaver' ? RentalCss.active : ''}`}>탈퇴자
+                    </button>
+                    <button style={{ display: 'none' }}>접근권한변경</button>
+                </div>
                 <div className={RentalCss.rentalBox}>
                     <div className={RentalCss.rentalSubBox}>
                         {/* 테이블 헤더 */}
@@ -225,82 +225,82 @@ function AdminConvert() {
                     {/* Pagination 컴포넌트를 유지 */}
                 </div>
 
-                    {/* 모달 컴포넌트 */}
-                    {showModal && selectedData && (
-                        <BtnModal
-                            showBtnModal={showModal}
-                            setShowBtnModal={setShowModal}
-                            modalTitle="▶ 제공자 전환 요청"
-                            modalContext={renderConvertModal()}
-                            btnText="승인"
-                            secondBtnText="반려"
-                            onSuccess={() => {
-                                console.log('승인 처리:', selectedData);
-                                handleSuccess();
-                            }}
-                            onFail={handleReject}
-                            onClose={handleCloseModal}
-                            modalSize="lg"
-                        />
-                    )}
+                {/* 모달 컴포넌트 */}
+                {showModal && selectedData && (
+                    <BtnModal
+                        showBtnModal={showModal}
+                        setShowBtnModal={setShowModal}
+                        modalTitle="▶ 제공자 전환 요청"
+                        modalContext={renderConvertModal()}
+                        btnText="승인"
+                        secondBtnText="반려"
+                        onSuccess={() => {
+                            console.log('승인 처리:', selectedData);
+                            handleSuccess();
+                        }}
+                        onFail={handleReject}
+                        onClose={handleCloseModal}
+                        modalSize="lg"
+                    />
+                )}
 
 
-                    {showSuccessModal && (
-                        <BtnModal
-                            showBtnModal={showSuccessModal}
-                            setShowBtnModal={setShowSuccessModal}
-                            onClose={handleCloseModal}
-                            modalTitle="승인 완료"
-                            modalContext={
-                                <p>제공자 전환이 완료되었습니다.</p>
-                            }
-                            btnText="확인"
-                            onSuccess={() => {
-                                setShowSuccessModal(false);
-                                // 필요한 경우 여기에 추가 로직 (예: 목록 새로고침)
-                            }}
-                        />
-                    )}
+                {showSuccessModal && (
+                    <BtnModal
+                        showBtnModal={showSuccessModal}
+                        setShowBtnModal={setShowSuccessModal}
+                        onClose={handleCloseModal}
+                        modalTitle="승인 완료"
+                        modalContext={
+                            <p>제공자 전환이 완료되었습니다.</p>
+                        }
+                        btnText="확인"
+                        onSuccess={() => {
+                            setShowSuccessModal(false);
+                            // 필요한 경우 여기에 추가 로직 (예: 목록 새로고침)
+                        }}
+                    />
+                )}
 
-                    {showRejectModal && (
-                        <BtnModal
-                            showBtnModal={showRejectModal}
-                            setShowBtnModal={setShowRejectModal}
-                            onClose={handleCloseModal}
-                            modalTitle="반려 사유 입력"
-                            modalContext={
-                                <div>
-                                    <p>반려 사유를 입력해주세요:</p>
-                                    <textarea
-                                        value={rejectReason}
-                                        onChange={(e) => setRejectReason(e.target.value)}
-                                        style={{ width: '100%', height: '100px' }}
-                                    />
-                                </div>
-                            }
-                            btnText="저장"
-                            secondBtnText="취소"
-                            onSuccess={handleRejectSubmit}
-                            onFail={() => setShowRejectModal(false)}
-                        />
-                    )}
+                {showRejectModal && (
+                    <BtnModal
+                        showBtnModal={showRejectModal}
+                        setShowBtnModal={setShowRejectModal}
+                        onClose={handleCloseModal}
+                        modalTitle="반려 사유 입력"
+                        modalContext={
+                            <div>
+                                <p>반려 사유를 입력해주세요:</p>
+                                <textarea
+                                    value={rejectReason}
+                                    onChange={(e) => setRejectReason(e.target.value)}
+                                    style={{ width: '100%', height: '100px' }}
+                                />
+                            </div>
+                        }
+                        btnText="저장"
+                        secondBtnText="취소"
+                        onSuccess={handleRejectSubmit}
+                        onFail={() => setShowRejectModal(false)}
+                    />
+                )}
 
 
-                    {showRejectCompleteModal && (
-                        <BtnModal
-                            showBtnModal={showRejectCompleteModal}
-                            setShowBtnModal={setShowRejectCompleteModal}
-                            modalTitle="반려 완료"
-                            modalContext={
-                                <p>반려 처리가 완료되었습니다.</p>
-                            }
-                            btnText="확인"
-                            onSuccess={() => {
-                                setShowRejectCompleteModal(false);
-                                // 필요한 경우 여기에 추가 로직
-                            }}
-                        />
-                    )}
+                {showRejectCompleteModal && (
+                    <BtnModal
+                        showBtnModal={showRejectCompleteModal}
+                        setShowBtnModal={setShowRejectCompleteModal}
+                        modalTitle="반려 완료"
+                        modalContext={
+                            <p>반려 처리가 완료되었습니다.</p>
+                        }
+                        btnText="확인"
+                        onSuccess={() => {
+                            setShowRejectCompleteModal(false);
+                            // 필요한 경우 여기에 추가 로직
+                        }}
+                    />
+                )}
 
             </div>
         </>

@@ -10,23 +10,6 @@ function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
     const [showImageModal, setShowImageModal] = useState(false); // 이미지 확대 모달 상태
     const modalRef = useRef(null);
 
-    // 25-03-02 모달 띄웠을 때 외부 클릭하면 닫히게.
-    useEffect(() => {
-        const handleOutsideClick = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
-                handleOnClose();
-            }
-        };
-
-        if (showBtnModal) {
-            document.addEventListener('mousedown', handleOutsideClick);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleOutsideClick);
-        };
-    }, [showBtnModal]);
-
     // 두번째 버튼은 보통 취소 버튼으로 취소 또는 불허가 일때의 함수 정의
     const handleFailClose = () => {
         setShowBtnModal(false);
@@ -55,35 +38,19 @@ function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
 
     return (
         <>
-            <Modal 
+            <Modal
                 show={showBtnModal}
-                onHide={handleFailClose}
+                onHide={handleOnClose}
                 size={modalSize}
                 centered
                 dialogClassName={ModalCss.customModal}
                 contentClassName={ModalCss.modalContent}
                 backdropClassName={ModalCss.backDrop}
-                container={modalRef.current}
+            // container={modalRef.current}
             >
                 <Modal.Header closeButton className={ModalCss.modalHeader} onHide={handleOnClose}>
                     {modalTitle ? modalTitle : null}
                 </Modal.Header>
-    
-                {/* <Modal.Body className={ModalCss.modalBody}>
-                    {childContent ? childContent : modalContext ? modalContext : null}
-    
-                    {attachmentFile && (
-                        <>
-                            <p><strong>첨부파일:</strong></p>
-                            <img
-                                src={attachmentFile}
-                                alt="첨부파일"
-                                style={{ width: '100%', cursor: 'pointer' }}
-                                onClick={() => setShowImageModal(true)}
-                            />
-                        </>
-                    )}                
-                </Modal.Body> */}
 
                 {/* 왼쪽 pdf , 오른쪽 데이터들로 나누기 */}
                 {/* <Modal.Body className={ModalCss.modalBody}>
@@ -97,18 +64,18 @@ function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
                 )}
             </Modal.Body> */}
                 <Modal.Body className={ModalCss.modalBody}>
-                {modalContext && typeof modalContext === 'object' && modalContext.left && modalContext.right ? (
-                    // 새로운 레이아웃: 왼쪽과 오른쪽으로 나누어진 구조
-                    <div className="row">
-                        <div className="col-md-6">{modalContext.left}</div>
-                        <div className="col-md-6">{modalContext.right}</div>
-                    </div>
-                ) : (
-                    // 기존 방식: childContent 또는 단순 텍스트/JSX 구조
-                    childContent || modalContext
-                )}
+                    {modalContext && typeof modalContext === 'object' && modalContext.left && modalContext.right ? (
+                        // 새로운 레이아웃: 왼쪽과 오른쪽으로 나누어진 구조
+                        <div className="row">
+                            <div className="col-md-6">{modalContext.left}</div>
+                            <div className="col-md-6">{modalContext.right}</div>
+                        </div>
+                    ) : (
+                        // 기존 방식: childContent 또는 단순 텍스트/JSX 구조
+                        childContent || modalContext
+                    )}
                 </Modal.Body>
-    
+
                 <Modal.Footer className={ModalCss.modalFooter}>
                     {btnText &&
                         <Button onClick={handleSuccessClose}>
@@ -122,15 +89,15 @@ function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
                     }
                 </Modal.Footer>
             </Modal>
-    
-            <Modal show={showImageModal} onHide={() => setShowImageModal(false)} centered>
+
+            {/* <Modal show={showImageModal} onHide={() => setShowImageModal(false)} centered>
                 <Modal.Body>
                     <img src={attachmentFile} alt="확대된 첨부파일" style={{ width: '100%' }} />
                 </Modal.Body>
-            </Modal>
+            </Modal> */}
         </>
     );
-    
+
 
 }
 
