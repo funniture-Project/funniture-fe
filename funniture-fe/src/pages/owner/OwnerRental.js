@@ -1,12 +1,18 @@
 import OwnerRentalCSS from './ownerRental.module.css'
 import Pagination from '../../component/Pagination';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import {getOwnerRentalList, putRentalConfirm, putDeliverySubmit} from '../../apis/RentalAPI';
 import BtnModal from '../../component/BtnModal';
 import DetailOrder from '../user/DetailOrder';
 import DeliverComModal from './DeliverComModal';
 
 function OwnerRental() {
+
+    // 사용자 꺼내오기
+    const { user } = useSelector(state => state.member)
+    const { memberId } = user
+
     // 데이터 & 검색 관리
     const [rentalList, setRentalList] = useState([]);   // 제공자별 예약 리스트
     const [period , setPeriod ] = useState(''); // 1WEEK, 1MONTH, 3MONTH 만료기간별 필터링
@@ -53,8 +59,8 @@ function OwnerRental() {
 
     // 검색 조건 변경 시 데이터 다시 불러오기
     useEffect(() => {
-        getData("MEM001", period, rentalTab, pageNum);
-    }, [pageNum, period, rentalTab]);  // pageInfo 제거하고, period, rentalTab, pageNum만 의존성으로 설정
+        getData(memberId, period, rentalTab, pageNum);
+    }, [memberId,pageNum, period, rentalTab]);  // pageInfo 제거하고, period, rentalTab, pageNum만 의존성으로 설정
 
     // 기간 선택 핸들러
     const handlePeriodChange = (period) => {
@@ -140,7 +146,7 @@ function OwnerRental() {
             // putRentalConfirm 호출해서 선택된 예약들을 "예약완료"로 변경
             await putRentalConfirm(selectedRentalNos);
             // 예약 리스트 갱신
-            getData("MEM001", period, rentalTab, pageNum);
+            getData(memberId, period, rentalTab, pageNum);
             // 선택된 예약 리스트 초기화
             setSelectedRentalNos([]);
             // 확정 확인 모달 띄우기
@@ -166,7 +172,7 @@ function OwnerRental() {
         setIsModalOpen(false);  // 모달 닫기
     
         if (isCanceled) { 
-            getData("MEM001", period, rentalTab, pageNum);  // 데이터 갱신
+            getData(memberId, period, rentalTab, pageNum);  // 데이터 갱신
             setShowBtnCancelModal(true);  // 예약 취소 모달 표시
         }
     };
@@ -190,7 +196,7 @@ function OwnerRental() {
             // putRentalConfirm 호출해서 선택된 예약들을 "예약완료"로 변경
             await putDeliverySubmit(rentalNo, deliveryNo, deliverCom);
             // 예약 리스트 갱신
-            getData("MEM001", period, rentalTab, pageNum);
+            getData(memberId, period, rentalTab, pageNum);
             // 확정 확인 모달 띄우기
             setShowDeliverySubmitModal(true);
         } catch (error) {
