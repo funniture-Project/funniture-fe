@@ -42,6 +42,7 @@ import NotFoundPage from './pages/common/NotFoundPage';
 import LoginRouter from './layouts/LoginRouter';
 import UserRouter from './layouts/UserRouter';
 import AdminQnAPage from './pages/admin/AdminQnAPage';
+import DeliveryAddress from './pages/user/DeliveryAddress';
 
 
 function App() {
@@ -118,6 +119,7 @@ function App() {
               <Route path='recent' element={<RecentProduct />} />
               <Route path='convert' element={<Convert />} />
               <Route path='appConvert' element={<AppConvert />} />
+              <Route path='deliveryaddress' element={<DeliveryAddress/>} />
             </Route>
 
           </Route>
