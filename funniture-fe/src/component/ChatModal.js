@@ -9,7 +9,6 @@ import { useLocation } from "react-router-dom";
 
 function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFile 추가
 
-    const [showImageModal, setShowImageModal] = useState(false); // 이미지 확대 모달 상태
     const { chatQaList } = useSelector(state => state.chat)
     const [currentList, setCurrentList] = useState();
     const [selectNum, setSelectNum] = useState();

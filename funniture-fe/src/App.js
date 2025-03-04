@@ -41,6 +41,7 @@ import AdminConvert from './pages/admin/AdminConvert';
 import NotFoundPage from './pages/common/NotFoundPage';
 import LoginRouter from './layouts/LoginRouter';
 import UserRouter from './layouts/UserRouter';
+import AdminQnAPage from './pages/admin/AdminQnAPage';
 
 
 function App() {
@@ -154,6 +155,8 @@ function App() {
           <Route path='convert' element={<AdminConvert />} />
           <Route path='leaver' element={<AdminLeaver />} />
         </Route>
+
+        <Route path='qna' element={<AdminQnAPage />} />
 
         <Route path='product' element={<AdminProduct />} />
 
