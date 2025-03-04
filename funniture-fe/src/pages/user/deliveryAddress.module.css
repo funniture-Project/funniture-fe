@@ -185,10 +185,15 @@
       > div:nth-child(1) {
         display: flex;
         width: 100%;
-        justify-content: space-between;
       }
   
       > div:nth-child(1) > div:nth-child(2) {
+        display: flex;
+        width: 60%;
+        justify-content: flex-end;
+      }
+
+      > div:nth-child(1) > div:nth-child(2) > div {
         margin-right: 2px;
         display: flex;
         align-items: center;
@@ -198,6 +203,7 @@
         color: white;
         border-radius: 5px;
       }
+      
   
       > div:nth-child(4) { 
         display: flex;
