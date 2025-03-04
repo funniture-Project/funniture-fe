@@ -537,3 +537,20 @@ export const getRejectedMessage = async (memberId) => {
         throw error;
     }
 }
+
+
+// 제공자 전환 심사 중복된 사업자번호인지 확인하기
+export const getCheckStoreNoAPI = async (memberId, storeNo) => {
+    const requestURL = `http://localhost:8080/api/v1/member/check-store-no`;
+    try {
+        // 요청 파라미터를 params 객체로 전달
+        const response = await api.get(requestURL, {
+            params: { memberId, storeNo },
+        });
+        console.log('중복 여부 storeNo 잘 불러와졌나 :', response);
+        return response;
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+        throw error;
+    }
+};
