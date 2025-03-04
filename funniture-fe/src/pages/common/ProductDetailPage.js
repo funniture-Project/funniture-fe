@@ -137,8 +137,8 @@ function ProductDetailPage() {
                     {/* 상품 요약정보 */}
                     <div className={PDCSS.summaryInfoBox}>
                         <div className={PDCSS.imgBox}>
-                            <img src={productInfo.productImageLink == 'a.jpg'
-                                ? require(`../../assets/images/${productInfo.productImageLink}`)
+                            <img src={productInfo.productImageLink == 'a.jpg' || productInfo.productImageLink == 'default.jpg'
+                                ? require(`../../assets/images/default.jpg`)
                                 : productInfo.productImageLink}
                                 alt="상품 사진" />
                         </div>
@@ -218,6 +218,7 @@ function ProductDetailPage() {
 
                             <div>
                                 <button onClick={movePage}
+                                    disabled={(user?.memberRole == "USER" && productInfo.productStatus == "판매중") ? false : true}
                                     style={{ backgroundColor: `${productInfo.productStatus}` == "품절" ? "#aaa8a8" : "예약하기" }}
                                 >
                                     {productInfo.productStatus == "품절" ? "품절" : "예약하기"}</button>

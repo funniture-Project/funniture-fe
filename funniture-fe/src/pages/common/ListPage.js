@@ -142,8 +142,8 @@ function ListPage({ selectCategory, selectCompany }) {
                             <div className="productItem" data-product-no={product.productNo} >
                                 <div>
                                     <div className="imageBox" onClick={() => navigate(`/product/${product.productNo}`)}>
-                                        <img src={product.productImageLink == 'a.jpg'
-                                            ? require(`../../assets/images/${product.productImageLink}`)
+                                        <img src={product.productImageLink == 'a.jpg' || product.productImageLink == 'default.jpg'
+                                            ? require(`../../assets/images/default.jpg`)
                                             : product.productImageLink}
                                             alt="상품 사진" />
 

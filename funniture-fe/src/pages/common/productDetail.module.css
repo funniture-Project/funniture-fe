@@ -209,6 +209,10 @@
                     font-weight: 700;
                     font-size: 1.1em;
                 }
+
+                button:disabled {
+                    background-color: #8a8a8a;
+                }
             }
         }
 

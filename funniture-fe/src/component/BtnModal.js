@@ -52,22 +52,6 @@ function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
                     {modalTitle ? modalTitle : null}
                 </Modal.Header>
 
-                <Modal.Body className={ModalCss.modalBody}>
-                    {childContent ? childContent : modalContext ? modalContext : null}
-
-                    {attachmentFile && (
-                        <>
-                            <p><strong>첨부파일:</strong></p>
-                            <img
-                                src={attachmentFile}
-                                alt="첨부파일"
-                                style={{ width: '100%', cursor: 'pointer' }}
-                                onClick={() => setShowImageModal(true)}
-                            />
-                        </>
-                    )}
-                </Modal.Body>
-
                 {/* 왼쪽 pdf , 오른쪽 데이터들로 나누기 */}
                 {/* <Modal.Body className={ModalCss.modalBody}>
                 {typeof modalContext === 'object' && modalContext.left && modalContext.right ? (
@@ -106,11 +90,11 @@ function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
                 </Modal.Footer>
             </Modal>
 
-            <Modal show={showImageModal} onHide={() => setShowImageModal(false)} centered>
+            {/* <Modal show={showImageModal} onHide={() => setShowImageModal(false)} centered>
                 <Modal.Body>
                     <img src={attachmentFile} alt="확대된 첨부파일" style={{ width: '100%' }} />
                 </Modal.Body>
-            </Modal>
+            </Modal> */}
         </>
     );
 

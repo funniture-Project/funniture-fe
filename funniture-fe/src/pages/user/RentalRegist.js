@@ -1,5 +1,6 @@
 import RentalRegistCss from './rentalRegist.module.css'
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useState , useEffect } from 'react';
 import { getDefaultDeliveryAddressList, getDeliveryAddressListData } from '../../apis/DeliveryAddressAPI';
 import { getCurrentPoint } from '../../apis/PointAPI';
@@ -13,6 +14,10 @@ function RentalRegist () {
 
     const location = useLocation();
     
+    // 사용자 꺼내오기
+    const { user } = useSelector(state => state.member)
+    const { memberId } = user
+
     // 상품 상세페이지에서 넘어오는 데이터
     const {selectRentalOption} = location.state  // 렌탈 조건 정보
     const {productInfo} = location.state         // 상품 정보
@@ -23,7 +28,7 @@ function RentalRegist () {
     const [currentPoint, setCurrentPoint] = useState({});   // 보유 포인트 조회
 
     // 기본 배송지 불러오기
-    async function getDefaultAddressData(memberId) {
+    async function getDefaultAddressData() {
         try {
             const data = await getDefaultDeliveryAddressList(memberId);
             setDefaultAddress(data.results.defaultAddressList[0]);
@@ -34,7 +39,7 @@ function RentalRegist () {
     }
 
     // 보유 포인트 불러오기 
-    async function getCurrentPointData(memberId) {
+    async function getCurrentPointData() {
         try {
             const data = await getCurrentPoint(memberId);
             setCurrentPoint(data.results);
@@ -45,12 +50,14 @@ function RentalRegist () {
     }
 
     useEffect(() => {
-        getDefaultAddressData("MEM011");
-    }, []);
+        if(user.memberId != ''){
+            getDefaultAddressData();
+        }
+    }, [memberId]);
 
     useEffect(() => {
-        getCurrentPointData("MEM011");
-    }, [])
+        getCurrentPointData();
+    }, [memberId])
 
     
 // ------------------------------------------------ 배송지 변경 ------------------------------------------------
@@ -63,7 +70,7 @@ function RentalRegist () {
     // 배송지 선택 모달 열기 핸들러
     // 모달 열기 핸들러
     const onClickHandler = async () => {
-        const data = await getDeliveryAddressListData("MEM011");  // 모달이 열릴 때 API 호출
+        const data = await getDeliveryAddressListData(memberId);  // 모달이 열릴 때 API 호출
         setDeliveryAddressList(data.results.addressList);
         setShowBtnModal(true);
     };
@@ -81,7 +88,7 @@ function RentalRegist () {
     const handlePaymentClick = async () => {
         try {
             const rentalData = {
-                memberId: "MEM011", // 나중에 로그인 된 memberId로 대체
+                memberId: memberId, // 나중에 로그인 된 memberId로 대체
                 productNo: productInfo.productNo,
                 rentalNumber: rentalNum,
                 rentalInfoNo: selectRentalOption.rentalInfoNo,
@@ -200,7 +207,7 @@ function RentalRegist () {
                         <div className={RentalRegistCss.pointSection}>
                             <div>
                                 <div>보유포인트</div>
-                                <div>{formatNumber(currentPoint.availablePoints)} <span>원</span></div>
+                                <div>{formatNumber(currentPoint?.availablePoints)} <span>원</span></div>
                             </div>
                             <div className={RentalRegistCss.pointSubSection}>
                                 <div>
