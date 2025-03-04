@@ -70,16 +70,27 @@ function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
 
                 {/* 왼쪽 pdf , 오른쪽 데이터들로 나누기 */}
                 {/* <Modal.Body className={ModalCss.modalBody}>
-                    {typeof modalContext === 'object' && modalContext.left && modalContext.right ? (
+                {typeof modalContext === 'object' && modalContext.left && modalContext.right ? (
+                    <div className="row">
+                        <div className="col-md-6">{modalContext.left}</div>
+                        <div className="col-md-6">{modalContext.right}</div>
+                    </div>
+                ) : (
+                    modalContext // 단순 텍스트나 JSX 구조를 그대로 렌더링
+                )}
+            </Modal.Body> */}
+                <Modal.Body className={ModalCss.modalBody}>
+                    {modalContext && typeof modalContext === 'object' && modalContext.left && modalContext.right ? (
+                        // 새로운 레이아웃: 왼쪽과 오른쪽으로 나누어진 구조
                         <div className="row">
                             <div className="col-md-6">{modalContext.left}</div>
                             <div className="col-md-6">{modalContext.right}</div>
                         </div>
                     ) : (
-                        modalContext // 단순 텍스트나 JSX 구조를 그대로 렌더링
+                        // 기존 방식: childContent 또는 단순 텍스트/JSX 구조
+                        childContent || modalContext
                     )}
-                </Modal.Body> */}
-
+                </Modal.Body>
 
                 <Modal.Footer className={ModalCss.modalFooter}>
                     {btnText &&
