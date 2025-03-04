@@ -8,31 +8,32 @@ import { useState } from "react";
 // 회원 가입
 export const callSignupAPI = ({ form }) => {
     const requestURL = `http://localhost:8080/api/v1/auth/signup`;
-
+  
     return async (dispatch, getState) => {
-        console.log('MemberAPI의 dispatch : ', dispatch);
-        console.log('MemberAPI의 getState : ', getState);
-        const result = await fetch(requestURL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept: '*/*',
-            },
-            body: JSON.stringify({
-                email: form.email,
-                userName: form.userName,
-                password: form.password
-            }),
-        }).then(res => res.json());
-
-        console.log('회원 가입 데이터 서버에 보내고 리턴된 result : ', result);
-        alert(result.message);
-        if (result.status == 200) {
-            console.log('result.status : ', result.status);
-            dispatch({ type: POST_REGISTER, payload: result });
-        }
+      console.log('MemberAPI의 dispatch : ', dispatch);
+      console.log('MemberAPI의 getState : ', getState);
+      const result = await fetch(requestURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: '*/*',
+        },
+        body: JSON.stringify({
+          email: form.email,
+          userName: form.userName,
+          password: form.password
+        }),
+      }).then(res => res.json());
+  
+      console.log('회원 가입 데이터 서버에 보내고 리턴된 result : ', result);
+      if (result.status === 200) {
+        console.log('result.status : ', result.status);
+        dispatch({ type: POST_REGISTER, payload: result });
+      }
+      return result; // 결과를 반환합니다.
     };
-};
+  };
+  
 
 // 최초 회원 가입 할 때 이메일 입력 시, 중복된 이메일인지 체크하는 API
 export const callGetMemberEmailAPI = async (email) => {
@@ -114,10 +115,11 @@ export const callSendEmailAPI = ({ form }) => {
         const result = await api.post(`/email/${form.email}`, {
             email: form.email
         });
-        alert('인증 번호 발송이 완료되었습니다.');
+        
         console.log('인증번호가 서버에 잘 다녀 왔나 result : ', result);
 
         dispatch({ type: GET_EMAIL, payload: result.data });
+        return;
     };
 };
 
@@ -126,10 +128,7 @@ export const callCertificationAPI = ({ email, verification }) => {
         try {
             const response = await api.post('/email/verify', { email, verification });
             if (response.data.success) {
-                alert('인증 성공!');
                 dispatch({ type: 'CERTIFICATION_SUCCESS' });
-            } else {
-                alert('인증 실패. 다시 시도해주세요.');
             }
         } catch (error) {
             console.error('인증 요청 중 오류 발생:', error);
@@ -413,7 +412,6 @@ export const callRegisterOwnerAPI = ({
             if (response.data.httpStatusCode === 201) {
                 console.log('제공자 전환 신청 성공');
                 console.log('서버 응답 데이터:', response.data.results.result); // 추가
-                alert('제공자 신청이 완료되었습니다.');
 
                 // 성공적으로 데이터를 받아왔을 때 Redux 스토어에 저장
                 dispatch({

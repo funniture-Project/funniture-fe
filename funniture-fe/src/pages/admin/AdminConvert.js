@@ -100,7 +100,16 @@ function AdminConvert() {
         }
     };
 
-
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day} / ${hours}시 ${minutes}분`;
+      };
 
     const renderConvertModal = () => {
         const isCloudinaryUrl = (url) => url?.includes('cloudinary');
@@ -182,7 +191,7 @@ function AdminConvert() {
                         <p><strong>▷ 이름   :</strong> {selectedData?.userName}</p>
                         <p><strong>▷ 전화번호   :</strong> {selectedData?.phoneNumber}</p>
                         <p><strong>▷ 이메일   :</strong> {selectedData?.email}</p>
-                        <p><strong>▷ 회원가입일   :</strong> {selectedData?.signupDate}</p>
+                        <p><strong>▷ 회원가입일   :</strong> {formatDate(selectedData?.signupDate)}</p>
                     </div>
                 </div>
             )
@@ -244,7 +253,7 @@ function AdminConvert() {
                                     <div style={{ width: '10%' }}><p>{convert.userName}</p></div>
                                     <div style={{ width: '23%' }}><p>{convert.phoneNumber}</p></div>
                                     <div style={{ width: '18%' }}><p>{convert.email}</p></div>
-                                    <div style={{ width: '30%' }}><p>{convert.signupDate}</p></div>
+                                    <div style={{ width: '30%' }}><p>{formatDate(convert.signupDate)}</p></div>
                                 </div>
                             ))
                         )}

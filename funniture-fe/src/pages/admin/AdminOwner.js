@@ -55,6 +55,17 @@ function AdminOwner() {
         }
     };
     
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day} / ${hours}시 ${minutes}분`;
+      };
+
     const renderOwnerModal = () => {
         const isCloudinaryUrl = (url) => url?.includes('cloudinary');
     
@@ -182,7 +193,7 @@ function AdminOwner() {
                                         <div style={{ width: '10%' }}><p>{owner.userName}</p></div>
                                         <div style={{ width: '20%' }}><p>{owner.storePhone}</p></div>
                                         <div style={{ width: '15%' }}><p>{owner.email}</p></div>
-                                        <div style={{ width: '27%' }}><p>{owner.signupDate}</p></div>
+                                        <div style={{ width: '27%' }}><p>{formatDate(owner.signupDate)}</p></div>
                                         <div style={{ width: '13%' }}><p>{owner.storeName}</p></div>
                                         <div style={{ width: '13%' }}><p>{owner.storeNo}</p></div>
                                     </div>

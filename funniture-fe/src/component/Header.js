@@ -7,11 +7,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import headerCss from './headerfooter.module.css'
 import decodeJwt from '../utils/tokenUtils';
 import { ReactComponent as MyPageImage } from "../assets/images/circle-user.svg"
+import BtnModal from './BtnModal';
 
 function Header({ setSelectCategory }) {
     const { user } = useSelector(state => state.member);
     const [isLogin, setIsLogin] = useState(false);
     const [userRole, setUserRole] = useState('');
+
+    // 모달 
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -85,11 +90,12 @@ function Header({ setSelectCategory }) {
     }
 
     const onClickLogoutHandler = () => {
-        window.localStorage.removeItem('accessToken')
-        setIsLogin(false)
-        alert('로그아웃 되었습니다.')
-        navigate('/')
-    }
+        window.localStorage.removeItem('accessToken');
+        setIsLogin(false);
+        setModalMessage('로그아웃 되었습니다.');
+        setShowModal(true);
+      };
+      
 
     const moveMyPage = () => {
         console.log("현재 유저 역할:", userRole); // 디버깅용
@@ -126,6 +132,18 @@ function Header({ setSelectCategory }) {
                 {isLogin && (<MyPageImage style={{ fill: "#B08968", width: "2.5%" }} onClick={moveMyPage} />)}
                 {isLogin ? <AfterLogin /> : <BeforeLogin />}
             </div>
+
+            <BtnModal
+            showBtnModal={showModal}
+            setShowBtnModal={setShowModal}
+            modalTitle="로그아웃"
+            modalContext={modalMessage}
+            btnText="확인"
+            onSuccess={() => {
+                setShowModal(false);
+                navigate('/');
+            }}
+            />
         </header>
     )
 }

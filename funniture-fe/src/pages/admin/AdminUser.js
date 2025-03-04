@@ -178,7 +178,7 @@ function AdminUser() {
             <p><strong>▷ 이름  :</strong> {selectedUser?.userName}</p>
             <p><strong>▷ 이메일  :</strong> {selectedUser?.email}</p>
             <p><strong>▷ 전화번호  :</strong> {selectedUser?.phoneNumber}</p>
-            <p><strong>▷ 가입일  :</strong> {selectedUser?.signupDate}</p>
+            <p><strong>▷ 가입일  :</strong> {formatDate(selectedUser?.signupDate)}</p>
             <p><strong>▷ 포인트  :</strong> 
                 <input 
                     type="number" 
@@ -189,6 +189,18 @@ function AdminUser() {
             </p>
         </div>
     );
+
+    
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day} / ${hours}시 ${minutes}분`;
+      };
 
     return (
         <>
@@ -255,7 +267,7 @@ function AdminUser() {
                                         <div style={{ width: '10%' }} onClick={() => handleUserClick(user)}><p>{user.userName}</p></div>
                                         <div style={{ width: '20%' }} onClick={() => handleUserClick(user)}><p>{user.phoneNumber}</p></div>
                                         <div style={{ width: '15%' }} onClick={() => handleUserClick(user)}><p>{user.email}</p></div>
-                                        <div style={{ width: '27%' }} onClick={() => handleUserClick(user)}><p>{user.signupDate}</p></div>
+                                        <div style={{ width: '27%' }} onClick={() => handleUserClick(user)}><p>{formatDate(user.signupDate)}</p></div>
                                         <div style={{ width: '13%' }} onClick={() => handleUserClick(user)}><p>{user.pointDTO.currentPoint}</p></div>
                                     </div>
                                 ))
