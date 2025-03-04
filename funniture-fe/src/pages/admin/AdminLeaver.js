@@ -98,7 +98,7 @@ function AdminLeaver() {
             <p><strong>▷ 이름  :</strong> {selectedLeaver?.userName}</p>
             <p><strong>▷ 이메일  :</strong> {selectedLeaver?.email}</p>
             <p><strong>▷ 전화번호  :</strong> {selectedLeaver?.phoneNumber}</p>
-            <p><strong>▷ 회원가입일  :</strong> {selectedLeaver?.signupDate}</p>
+            <p><strong>▷ 회원가입일  :</strong> {formatDate(selectedLeaver?.signupDate)}</p>
             <p><strong>▷ 포인트  :</strong> {selectedLeaver?.pointDTO.currentPoint}</p>
         </div>
     );   
@@ -108,6 +108,18 @@ function AdminLeaver() {
         setShowAlertModal(false);
         setAlertMessage('');
     };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day} / ${hours}시 ${minutes}분`;
+      };
+        
 
     return (
         <>
@@ -156,7 +168,7 @@ function AdminLeaver() {
                                     <div style={{ width: '10%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.userName}</p></div>
                                     <div style={{ width: '20%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.phoneNumber}</p></div>
                                     <div style={{ width: '15%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.email}</p></div>
-                                    <div style={{ width: '27%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.signupDate}</p></div>
+                                    <div style={{ width: '27%' }} onClick={() => handleLeaverClick(leaver)}><p>{formatDate(leaver.signupDate)}</p></div>
                                     <div style={{ width: '13%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.pointDTO.currentPoint}</p></div>
                                 </div>
                             ))
