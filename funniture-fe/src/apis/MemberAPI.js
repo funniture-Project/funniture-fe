@@ -308,7 +308,7 @@ export const callWithdrawAPI = ({ memberId }) => {
 }
 
 export const callConvertImageAPI = ({ memberId, storeImage }) => {
-    const requestURL = `http://localhost:8080/api/v1/member/modify/asdasd`;
+    const requestURL = `http://localhost:8080/api/v1/member/modify/imageLink`;
 
     console.log('callChangeImageAPI에 memberId 잘 넘어 오는지 : ', memberId);
     console.log('callChangeImageAPI에 storaImage 잘 넘어 오는지 : ', storeImage);
@@ -531,6 +531,20 @@ export const getRejectedMessage = async (memberId) => {
     try {
         const response = await api.get(requestURL);
         console.log('반려 메시지 잘 불러와졌나 :', response);
+        return response;
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+        throw error;
+    }
+}
+
+
+// 제공자 전환 심사 중복된 사업자번호인지 확인하기
+export const getCheckStoreNoAPI  = async (memberId, storeNo) => {
+    const requestURL = `http://localhost:8080/api/v1/member/check-store-no`;
+    try {
+        const response = await api.get(requestURL, {memberId,storeNo});
+        console.log('중복 여부 storeNo 잘 불러와졌나 :', response);
         return response;
     } catch (error) {
         console.error('API 호출 중 오류 발생:', error);
