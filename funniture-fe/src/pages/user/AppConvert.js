@@ -32,6 +32,10 @@ function AppConvert() {
     const [showSuccessModal, setShowSuccessModal] = useState(false); // 신청 성공 시 모달
     const [successMessage, setSuccessMessage] = useState(''); // 신청하고 메시지 띄우기
 
+    const [storeNoError, setStoreNoError] = useState(''); // 사업자 번호 중복 여부 메시지
+    const [isStoreNoDuplicate, setIsStoreNoDuplicate] = useState(false); // 중복 여부 플래그
+    const [storeNoErrorMessage, setStoreNoErrorMessage] = useState(''); // 모달에 표시할 에러 메시지
+
 
     // 필드가 하나라도 비어있으면 신청 못하게 검증
     const validateForm = () => {
@@ -39,18 +43,50 @@ function AppConvert() {
                form.storeNo && form.storeAddress && form.storePhone && form.attachmentFile;
       };
       
-      const handleSubmit = () => {
-        if (!validateForm()) {
-          setShowErrorModal(true);
-          return;
-        }
+    //   const handleSubmit = () => {
+    //     if (!validateForm()) {
+    //       setShowErrorModal(true);
+    //       return;
+    //     }
       
-        if (isAlreadyRegistered) {
-          updateOnClickHandler();
-        } else {
-          registerOnClickHandler();
+    //     if (isAlreadyRegistered) {
+    //       updateOnClickHandler();
+    //     } else {
+    //       registerOnClickHandler();
+    //     }
+    //   };
+    const handleSubmit = async () => {
+        if (!validateForm()) {
+            setShowErrorModal(true); // 필수값 누락 모달
+            return;
         }
-      };
+    
+        try {
+            // 서버에 사업자 번호 중복 여부 확인 요청
+            const response = await getCheckStoreNoAPI(member.user.memberId, form.storeNo);
+    
+            console.log('getCheckStoreNoAPI 갔다 오고 response : ', response);
+            if (response.data.httpStatusCode === 400) { // 중복된 경우
+                setIsStoreNoDuplicate(true);
+                setStoreNoErrorMessage('중복된 사업자 번호입니다.');
+                return; // 중단
+            }
+    
+            // 중복이 아닌 경우 신청 진행
+            if (isAlreadyRegistered) {
+                updateOnClickHandler();
+            } else {
+                registerOnClickHandler();
+            }
+        } catch (error) {
+            console.error('사업자 번호 중복 확인 중 오류 발생:', error);
+            setIsStoreNoDuplicate(true);
+            setStoreNoErrorMessage('사업자 번호 확인 중 오류가 발생했습니다.');
+        }
+    };
+    
+    
+    
       
       const handleSuccessClose = () => {
         setShowSuccessModal(false);
@@ -170,23 +206,7 @@ function AppConvert() {
         e.target.value = ''; // 입력 필드 초기화 (같은 파일 다시 선택 가능)
     };
 
-    const handleStoreNoChange = async (e) => {
-        const value = e.target.value;
-        setForm({ ...form, storeNo: value });
-    
-        if (value.trim() !== '') {
-            try {
-                const response = await getCheckStoreNoAPI(member.user.memberId, value);
-                if (response.data.isDuplicate) {
-                    // 중복된 사업자 번호일 경우 처리
-                    console.log('중복된 사업자 번호입니다.');
-                    // 여기에 사용자에게 알림을 주는 로직 추가
-                }
-            } catch (error) {
-                console.error('사업자 번호 중복 확인 중 오류 발생:', error);
-            }
-        }
-    };
+ 
     
 
     // const imageOnClickHandler = () => {
@@ -306,7 +326,7 @@ function AppConvert() {
                             type="text"
                             name="storeNo"
                             value={form.storeNo || ''}
-                            onChange={handleStoreNoChange}
+                            onChange={onChangeHandler}
                             placeholder="사업자 번호를 - 포함하여 입력해 주세요."
                         />
                     </div>
@@ -370,6 +390,16 @@ function AppConvert() {
                         modalContext={successMessage}
                         onClose={handleSuccessClose}
                     />
+
+                    <BtnModal
+                        showBtnModal={isStoreNoDuplicate}
+                        setShowBtnModal={setIsStoreNoDuplicate}
+                        btnText="확인"
+                        modalTitle="입력 오류"
+                        modalContext={storeNoErrorMessage} // "중복된 사업자 번호입니다." 메시지 사용
+                        onClose={() => setIsStoreNoDuplicate(false)}
+                    />
+
             </div>
         </>
     );
