@@ -84,9 +84,6 @@ function AppConvert() {
             setStoreNoErrorMessage('사업자 번호 확인 중 오류가 발생했습니다.');
         }
     };
-    
-    
-    
       
       const handleSuccessClose = () => {
         setShowSuccessModal(false);

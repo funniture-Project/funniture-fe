@@ -139,11 +139,12 @@ export const callChangeLimitRoleAPI = async (userIds) => {
     const requestURL = `http://localhost:8080/api/v1/admin/deactivate`
     try {
         const response = await api.post(requestURL, userIds );
-
         console.log('관리자 페이지 유저를 탈퇴자로 변경 요청 서버에 잘 다녀왔나? response : ', response);
+        return response;
 
     } catch (error) {
         console.error('API 호출 중 오류 발생:', error);
+        return error;
     }   
 }
 

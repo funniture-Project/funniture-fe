@@ -5,6 +5,8 @@ import RentalCss from './rental.module.css';
 import { callConvertByAdminAPI, callConvertDetailAPI, callConvertApproveAPI, callConvertRejectAPI } from '../../apis/AdminAPI';
 import { useSelector } from 'react-redux';
 import AdminModal from './adminModal.module.css';
+import noFileImage from '../../assets/images/free-icon-no-file-11202705.png';
+import noImageDefault from '../../assets/images/free-icon-no-image-11542598.png';
 
 function AdminConvert() {
     const navigate = useNavigate();
@@ -100,65 +102,92 @@ function AdminConvert() {
 
 
 
-    const renderConvertModal = () => ({
-        left: (
-            <div>
-                <h3>◎ 첨부 파일 (사업자 등록증)</h3><br />
-                {selectedData?.ownerInfoDTO?.attechmentLink && (
-                    <div>
-                        <embed
-                            src={selectedData.ownerInfoDTO.attechmentLink}
-                            type="application/pdf"
-                            width="100%"
-                            height="500px"
-                        />
-                        <br />
-                        {/* PDF 파일 클릭 시 새 창에서 열기 */}
-                        <a
-                            href={selectedData.ownerInfoDTO.attechmentLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: 'blue', textDecoration: 'underline', marginTop: '10px', display: 'inline-block' }}
-                        >
-                            (첨부 파일 새 창에서 보기)
-                        </a>
-                    </div>
-                )}
-            </div>
-        ),
-        right: (
-            <div>
-                {selectedData?.ownerInfoDTO && (
-                    <>
-                        <h3>◎ 제공자 전환 정보</h3><br />
-                        <div className={AdminModal.ownerDiv}>
-                            {selectedData.ownerInfoDTO.storeImage && (
-                                <div>
-                                    <strong>▷ 대표 이미지   :</strong><br />
-                                    <img src={selectedData.ownerInfoDTO.storeImage} alt="업체 이미지" style={{ maxWidth: '100%', height: 'auto' }} />
-                                </div>
-                            )}
-
-                            <p><strong>▷ 사업자등록번호   :</strong> {selectedData.ownerInfoDTO.storeNo}</p>
-                            <p><strong>▷ 업체 이름   :</strong> {selectedData.ownerInfoDTO.storeName}</p>
-                            <p><strong>▷ 업체 주소   :</strong> {selectedData.ownerInfoDTO.storeAddress}</p>
-                            <p><strong>▷ 계좌 번호   :</strong> {selectedData.ownerInfoDTO.account}</p>
-                            <p><strong>▷ 은행 정보   :</strong> {selectedData.ownerInfoDTO.bank}</p>
-                            <p><strong>▷ 업체 전화번호   :</strong> {selectedData.ownerInfoDTO.storePhone}</p>
-                        </div><br />
-                    </>
-                )}
-                <h3>◎ 회원 정보</h3><br />
-                <div className={AdminModal.ownerDiv}>
-                    <p><strong>▷ 회원 번호   :</strong> {selectedData?.memberId}</p>
-                    <p><strong>▷ 이름   :</strong> {selectedData?.userName}</p>
-                    <p><strong>▷ 전화번호   :</strong> {selectedData?.phoneNumber}</p>
-                    <p><strong>▷ 이메일   :</strong> {selectedData?.email}</p>
-                    <p><strong>▷ 회원가입일   :</strong> {selectedData?.signupDate}</p>
+    const renderConvertModal = () => {
+        const isCloudinaryUrl = (url) => url?.includes('cloudinary');
+    
+        return {
+            left: (
+                <div>
+                    <h3>◎ 첨부 파일 (사업자 등록증)</h3><br />
+                    {selectedData?.ownerInfoDTO?.attechmentLink && isCloudinaryUrl(selectedData.ownerInfoDTO.attechmentLink) ? (
+                        <div>
+                            <embed
+                                src={selectedData.ownerInfoDTO.attechmentLink}
+                                type="application/pdf"
+                                width="100%"
+                                height="500px"
+                            />
+                            <br />
+                            {/* PDF 파일 클릭 시 새 창에서 열기 */}
+                            <a
+                                href={selectedData.ownerInfoDTO.attechmentLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ color: 'blue', textDecoration: 'underline', marginTop: '10px', display: 'inline-block' }}
+                            >
+                                (첨부 파일 새 창에서 보기)
+                            </a>
+                        </div>
+                    ) : (
+                        <div>
+                            <img
+                                src={noFileImage}
+                                alt="PDF 파일 없음"
+                                style={{ maxWidth: '100%', height: 'auto' }}
+                            />
+                            <p style={{ color: 'red', fontWeight: 'bold' }}>PDF 파일 없음</p>
+                        </div>
+                    )}
                 </div>
-            </div>
-        )
-    });
+            ),
+            right: (
+                <div>
+                    {selectedData?.ownerInfoDTO && (
+                        <>
+                            <h3>◎ 제공자 전환 정보</h3><br />
+                            <div className={AdminModal.ownerDiv}>
+                                {selectedData.ownerInfoDTO.storeImage && isCloudinaryUrl(selectedData.ownerInfoDTO.storeImage) ? (
+                                    <div>
+                                        <strong>▷ 대표 이미지   :</strong><br />
+                                        <img
+                                            src={selectedData.ownerInfoDTO.storeImage}
+                                            alt="업체 이미지"
+                                            style={{ maxWidth: '100%', height: 'auto' }}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <strong>▷ 대표 이미지   :</strong><br />
+                                        <img
+                                            src={noImageDefault}
+                                            alt="기본 이미지"
+                                            style={{ maxWidth: '100%', height: 'auto' }}
+                                        />
+                                        <p style={{ color: 'red', fontWeight: 'bold' }}>이미지 없음</p>
+                                    </div>
+                                )}
+    
+                                <p><strong>▷ 사업자등록번호   :</strong> {selectedData.ownerInfoDTO.storeNo}</p>
+                                <p><strong>▷ 업체 이름   :</strong> {selectedData.ownerInfoDTO.storeName}</p>
+                                <p><strong>▷ 업체 주소   :</strong> {selectedData.ownerInfoDTO.storeAddress}</p>
+                                <p><strong>▷ 계좌 번호   :</strong> {selectedData.ownerInfoDTO.account}</p>
+                                <p><strong>▷ 은행 정보   :</strong> {selectedData.ownerInfoDTO.bank}</p>
+                                <p><strong>▷ 업체 전화번호   :</strong> {selectedData.ownerInfoDTO.storePhone}</p>
+                            </div><br />
+                        </>
+                    )}
+                    <h3>◎ 회원 정보</h3><br />
+                    <div className={AdminModal.ownerDiv}>
+                        <p><strong>▷ 회원 번호   :</strong> {selectedData?.memberId}</p>
+                        <p><strong>▷ 이름   :</strong> {selectedData?.userName}</p>
+                        <p><strong>▷ 전화번호   :</strong> {selectedData?.phoneNumber}</p>
+                        <p><strong>▷ 이메일   :</strong> {selectedData?.email}</p>
+                        <p><strong>▷ 회원가입일   :</strong> {selectedData?.signupDate}</p>
+                    </div>
+                </div>
+            )
+        };
+    };
 
 
     return (

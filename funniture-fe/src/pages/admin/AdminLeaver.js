@@ -22,7 +22,11 @@ function AdminLeaver() {
 
     // const [showModal, setShowModal] = useState(false); // 접근 권한 변경 누를 때 뜨는 모달 
     const [selectAll, setSelectAll] = useState(false); // 체크박스 전체 선택
-
+ 
+        // 얼러트 모달 상태 관리
+    const [showAlertModal, setShowAlertModal] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    
 
     useEffect(() => {
         setActiveTab(location.pathname); // URL 변경 시 activeTab 동기화
@@ -61,7 +65,8 @@ function AdminLeaver() {
 
     const handleAccessChangeClick = () => {
         if (selectedLeavers.length === 0) {
-            alert('변경할 사용자를 선택해주세요.');
+            setAlertMessage('변경할 사용자를 선택해주세요.');
+            setShowAlertModal(true);
             return;
         }
         setShowAccessModal(true);
@@ -70,15 +75,15 @@ function AdminLeaver() {
     const handleConfirmAccessChange = async () => {
         try {
             await callChangeUserRoleAPI(selectedLeavers);
-            alert('권한이 변경되었습니다.');
-
-            callLeaverUserByAdminAPI(setLeaverList);
-
-            setSelectedLeavers([]);
+            setAlertMessage('권한이 변경되었습니다.');
+            await callLeaverUserByAdminAPI(setLeaverList); // 데이터 갱신
+            setSelectedLeavers([]); // 선택 초기화
             setShowAccessModal(false);
         } catch (error) {
             console.error(error);
-            alert('권한 변경에 실패했습니다.');
+            setAlertMessage('권한 변경에 실패했습니다.');
+        } finally {
+            setShowAlertModal(true); // 얼러트 모달 표시
         }
     };
 
@@ -97,6 +102,12 @@ function AdminLeaver() {
             <p><strong>▷ 포인트  :</strong> {selectedLeaver?.pointDTO.currentPoint}</p>
         </div>
     );   
+
+    // 얼러트 모달 닫기 핸들러
+    const closeAlertModal = () => {
+        setShowAlertModal(false);
+        setAlertMessage('');
+    };
 
     return (
         <>
@@ -156,7 +167,7 @@ function AdminLeaver() {
                 <BtnModal
                     showBtnModal={showAccessModal}
                     setShowBtnModal={setShowAccessModal}
-                    modalTitle="접근 권한 변경"
+                    modalTitle="▶ 접근 권한 변경"
                     modalContext="선택된 사용자의 권한을 변경하시겠습니까?"
                     btnText="예"
                     secondBtnText="취소"
@@ -170,6 +181,15 @@ function AdminLeaver() {
                     modalContext={renderLeaverModal()}
                     btnText="확인"
                     onSuccess={() => setShowUserModal(false)}
+                />
+                {/* 얼러트 모달 */}
+                <BtnModal
+                    showBtnModal={showAlertModal}
+                    setShowBtnModal={setShowAlertModal}
+                    modalTitle="알림"
+                    modalContext={alertMessage}
+                    btnText="확인"
+                    onSuccess={closeAlertModal}
                 />
             </div>
         </>
