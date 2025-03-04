@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import AdminTop from "../../component/adminpage/AdminTop";
 import AdminQnACss from './AdminQnAPage.module.css'
+import { getChatQaList } from "../../apis/ChatAPI";
+import { useDispatch, useSelector } from "react-redux";
 
 function AdminQnAPage() {
     const [showCheck, setShowCheck] = useState("qnaList")
@@ -11,6 +13,21 @@ function AdminQnAPage() {
 
     // 질문 관리 부분
     const [selectLevel, setSelectLevel] = useState(1)
+    const { chatQaList } = useSelector(state => state.chat)
+
+    const dispatch = useDispatch();
+
+    function getListData() {
+        dispatch(getChatQaList({ levelNum: selectLevel }))
+    }
+
+    useEffect(() => {
+        getListData()
+    }, [selectLevel])
+
+    useEffect(() => {
+        console.log("chatQaList : ", chatQaList)
+    }, [chatQaList])
 
     return (
         <>
@@ -63,131 +80,40 @@ function AdminQnAPage() {
                             </div>
 
                             <div className={AdminQnACss.listBox}>
-                                <div className={AdminQnACss.contentItem}>
-                                    <div>
-                                        <div>
-                                            렌탈 예약은 어떻게 해요?
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div style={{ whiteSpace: "pre-line" }}>
-                                            {`1. 원하시는 상품을 선택 후 상세페이지에 접속합니다!
-                                    2. 상품 정보를 확인하시고 원하시는 렌탈 대여 기간을 선택하여 금액을 확인해주세요!
-                                    3. 상단에 렌탈예약하기르 통해 남은 과정을 진행해주시면 됩니다.`}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <input type="checkbox" id="subAble" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <input type="checkbox" id="adminAble" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <button>
-                                                <img src={require("../../assets/icon/minus-solid.svg").default} alt="삭제 버튼" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div className={AdminQnACss.contentItem}>
-                                    <div>
+                                {chatQaList?.length > 0 ? chatQaList.map(item => (
+                                    <div className={AdminQnACss.contentItem}>
                                         <div>
-                                            렌탈 예약은 어떻게 해요?
+                                            <div>
+                                                {item.chatQaQuContent}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <div style={{ whiteSpace: "pre-line" }}>
-                                            {`1. 원하시는 상품을 선택 후 상세페이지에 접속합니다!`}
-                                        </div>
-                                    </div>
-                                    <div>
                                         <div>
-                                            <input type="checkbox" id="subAble" />
+                                            <div style={{ whiteSpace: "pre-line" }}>
+                                                {`${item.chatQaAnContent}`}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div>
                                         <div>
-                                            <input type="checkbox" id="adminAble" />
+                                            <div>
+                                                <input type="checkbox" id="subAble" checked={item.nextQuAbsence} />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div>
                                         <div>
-                                            <button>
-                                                <img src={require("../../assets/icon/minus-solid.svg").default} alt="삭제 버튼" />
-                                            </button>
+                                            <div>
+                                                <input type="checkbox" id="adminAble" checked={item.adminConnectAbsence} />
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-
-                                <div className={AdminQnACss.contentItem}>
-                                    <div>
                                         <div>
-                                            렌탈 예약은 어떻게 해요?
+                                            <div>
+                                                <button>
+                                                    <img src={require("../../assets/icon/minus-solid.svg").default} alt="삭제 버튼" />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div>
-                                        <div style={{ whiteSpace: "pre-line" }}>
-                                            {`1. 원하시는 상품을 선택 후 상세페이지에 접속합니다!
-                                    2. 상품 정보를 확인하시고 원하시는 렌탈 대여 기간을 선택하여 금액을 확인해주세요!
-                                    3. 상단에 렌탈예약하기르 통해 남은 과정을 진행해주시면 됩니다.`}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <input type="checkbox" id="subAble" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <input type="checkbox" id="adminAble" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <button>
-                                                <img src={require("../../assets/icon/minus-solid.svg").default} alt="삭제 버튼" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className={AdminQnACss.contentItem}>
-                                    <div>
-                                        <div>
-                                            렌탈 예약은 어떻게 해요?
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div style={{ whiteSpace: "pre-line" }}>
-                                            {`1. 원하시는 상품을 선택 후 상세페이지에 접속합니다!
-                                    2. 상품 정보를 확인하시고 원하시는 렌탈 대여 기간을 선택하여 금액을 확인해주세요!
-                                    3. 상단에 렌탈예약하기르 통해 남은 과정을 진행해주시면 됩니다.`}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <input type="checkbox" id="subAble" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <input type="checkbox" id="adminAble" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <button>
-                                                <img src={require("../../assets/icon/minus-solid.svg").default} alt="삭제 버튼" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                )) :
+                                    <div>등록 된 질문이 없습니다.</div>
+                                }
                             </div>
 
                         </div>

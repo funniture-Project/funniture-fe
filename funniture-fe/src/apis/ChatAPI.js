@@ -1,7 +1,8 @@
 import { GET_CHAT_QA_LIST } from "../redux/modules/ChatModule"
 import api from "./Apis"
 
-export function getChatQaList(refNum) {
+export function getChatQaList({ refNum, levelNum } = {}) {
+    console.log("refNum : ", refNum, " levelNum : ", levelNum)
     return async (dispatch) => {
         console.log("챗봇 질문 리스트 호출")
         try {
@@ -9,11 +10,16 @@ export function getChatQaList(refNum) {
 
             let url = ''
 
-            if (!refNum) {
+            if (!refNum && !levelNum) {
                 url = `/chat/list`
             } else {
-                console.log("전달 받은 상위 번호 : ", refNum)
-                url = `/chat/list?refNum=${refNum}`
+                if (refNum) {
+                    console.log("전달 받은 상위 번호 : ", refNum)
+                    url = `/chat/list?refNum=${refNum}`
+                } else if (levelNum) {
+                    console.log("전달 받은 단계 : ", levelNum)
+                    url = `/chat/list?levelNum=${levelNum}`
+                }
             }
 
             const chatQaList = await getData(url)

@@ -137,7 +137,7 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
     }
 
     useEffect(() => {
-        dispatch(getChatQaList(selectNum))
+        dispatch(getChatQaList({ refNum: selectNum }))
     }, [selectNum])
 
     function setPrevList() {
