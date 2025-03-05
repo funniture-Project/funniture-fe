@@ -537,6 +537,30 @@ export const getRejectedMessage = async (memberId) => {
 }
 
 
+// 회원의 대한 정보를 불러오는 구문(은미)
+export async function getMemberData(memberId) {
+
+    const url = `/member/${memberId}`
+
+    const response = await getData(url);
+
+    return response;
+};
+
+// 은미
+const getData = async (url, query) => {
+    let response
+
+    if (!query) {
+        response = await api.get(url)
+    } else {
+        response = await api.get(url, { params: query })
+    }
+
+    return response?.data
+}
+
+
 // 제공자 전환 심사 중복된 사업자번호인지 확인하기
 export const getCheckStoreNoAPI = async (memberId, storeNo) => {
     const requestURL = `http://localhost:8080/api/v1/member/check-store-no`;

@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react';
 import { getAdminRentalList } from '../../apis/RentalAPI';
 import { getStoreList } from '../../apis/RentalAPI';
 import Pagination from '../../component/Pagination';
+import { getMemberData } from '../../apis/MemberAPI';
 
 function Rental() {
 
+    // 렌탈 검색 관리
     const [searchRental, setSearchRental] = useState({
         rentalState: '',
         storeName: '',
@@ -15,35 +17,81 @@ function Rental() {
         rentalNo: ''
     });
 
-    const [rentalList, setRentalList] = useState([]); // 예약
-    const [storeList, setStoreList] = useState([]); // selected-> option 에 추가할 회사
-    const [expandedRow, setExpandedRow] = useState(null); // 사용자, 제공자정보 보여 줄 행 관리
+    // 렌탈 데이터
+    const [rentalList, setRentalList] = useState([]);
+
+    // selected-> option 에 추가할 회사
+    const [storeList, setStoreList] = useState([]); 
+
+    // 사용자, 업체 정보 드롭다운
+    const [memberInfoDropdownVisible, setMemberInfoDropdownVisible] = useState({});  // 배송지 수정 드롭다운
+
+    // 사용자 정보, 업체 정보
+    const [userInfo, setUserInfo] = useState({});
+    const [ownerInfo, setOwnerInfo] = useState({});
 
     // 페이징 상태 관리
     const [pageInfo, setPageInfo] = useState(null);  // pageInfo 상태 추가
     const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
 
     async function getData(searchRental,pageNum) {
-
-            console.log('searchRental', searchRental)
-            try {
-                const data = await getAdminRentalList(searchRental,pageNum);
-                const rentals = data.results.adminRentalList;
-                const pageInfo = data.results.pageInfo;
-                
-                // API 호출 후 결과 처리
-                if (data && data.results && data.results.adminRentalList) {
-                    setRentalList(rentals); // 검색 결과 상태에 저장
-                } else {
-                    setRentalList([]); // 결과가 없을 경우 빈 리스트
-                }
-
-                setPageInfo(pageInfo);
-            } catch (error) {
-                console.error('Error fetching order list:', error);
-                setRentalList([]); // 오류 발생 시 빈 리스트로 설정
+        try {
+            const data = await getAdminRentalList(searchRental,pageNum);
+            const rentals = data.results.adminRentalList;
+            const pageInfo = data.results.pageInfo;
+            
+            // API 호출 후 결과 처리
+            if (data && data.results && data.results.adminRentalList) {
+                setRentalList(rentals); // 검색 결과 상태에 저장
+            } else {
+                setRentalList([]); // 결과가 없을 경우 빈 리스트
             }
+
+            setPageInfo(pageInfo);
+        } catch (error) {
+            console.error('Error fetching order list:', error);
+            setRentalList([]); // 오류 발생 시 빈 리스트로 설정
         }
+    }
+
+    // 데이터 호출 함수
+    async function getUserData(memberId) {
+        
+        try {
+            const data = await getMemberData(memberId);
+            console.log('userdata', data.results.result)
+            setUserInfo(data.results.result);
+
+        } catch (error) {
+            console.error('배송지를 찾을 수 없음', error);
+        }
+    }
+
+    async function getOwnerData(ownerNo) {
+        
+        try {
+            const data = await getMemberData(ownerNo);
+            setOwnerInfo(data.results.result);
+
+        } catch (error) {
+            console.error('배송지를 찾을 수 없음', error);
+        }
+    }
+
+
+
+    // 배송지 등록 드롭다운 토글 변경
+    const toggleDropdown = (item) => {
+
+        setMemberInfoDropdownVisible(prevState => ({
+            ...prevState,
+            [item.rentalNo]: !prevState[item.rentalNo]  // 해당 배송지만 토글
+        }));
+
+        getUserData(item.memberId);
+        getOwnerData(item.ownerNo);
+        
+    };
 
     // 페이지 변경 시 데이터 가져오기
     const handlePageChange = (newPageNum) => {
@@ -108,6 +156,7 @@ function Rental() {
             setRentalList([]); // 오류 발생 시 리스트 초기화
         }
     };
+    
 
 
     return (
@@ -182,34 +231,60 @@ function Rental() {
                             <div style={{ width: "20%" }}><p>사용시작/만료날짜</p></div>
                             <div style={{ width: "5%" }}><p>수량</p></div>
                         </div>
-
-                        {/* 테이블 데이터 */}
-                        {rentalList.length === 0 ? (
+                    
+                        <div className={RentalCss.rentalContainer}>
+                            {/* 테이블 데이터 */}
+                            {rentalList.length === 0 ? (
                                 <div className={RentalCss.noResultsMessage}>
                                     <p>검색 조건에 맞는 예약 내역이 없습니다.</p>
                                 </div>
                             ) : (
                                 rentalList.map((item) => (
-                                    <>
-                                        {/* 기본 행 */}
-                                        <div
-                                            key={item.rentalNo}
-                                            className={RentalCss.rentalItems}
-                                        >
-                                            <div style={{ width: '15%' }}><p>{item.rentalNo}</p></div>
-                                            <div style={{ width: '10%' }}><p>{item.storeName}</p></div>
-                                            <div style={{ width: '10%' }}><p>{item.rentalState}</p></div>
-                                            <div style={{ width: '5%' }}><p>{item.categoryName}</p></div>
-                                            <div style={{ width: '35%' }}><p>{item.productName}</p></div>
-                                            <div style={{ width: '20%' }}>
-                                                <p>{`${item.rentalStartDate} ~ ${item.rentalEndDate}`}</p>
-                                            </div>
-                                            <div style={{ width: '5%' }}><p>{item.rentalNumber}</p></div>
+                                <>
+                                    {/* 기본 행 */}
+                                    <div
+                                        key={item.rentalNo}
+                                        className={RentalCss.rentalItems}
+                                        onClick={() => toggleDropdown(item)}
+                                    >
+                                        <div style={{ width: '15%' }}><p>{item.rentalNo}</p></div>
+                                        <div style={{ width: '10%' }}><p>{item.storeName}</p></div>
+                                        <div style={{ width: '10%' }}><p>{item.rentalState}</p></div>
+                                        <div style={{ width: '5%' }}><p>{item.categoryName}</p></div>
+                                        <div style={{ width: '35%' }}><p>{item.productName}</p></div>
+                                        <div style={{ width: '20%' }}>
+                                            <p>
+                                            {item.rentalStartDate && item.rentalEndDate
+                                                ? `${item.rentalStartDate} ~ ${item.rentalEndDate}`
+                                                : "배송전"}
+                                            </p>
                                         </div>
-                                    </>
+                                        <div style={{ width: '5%' }}><p>{item.rentalNumber}</p></div>
+                                    </div>
+
+                                    {memberInfoDropdownVisible[item.rentalNo] && (
+                                        <div className={RentalCss.dropdownContent}>
+                                            <div>
+                                                <div>사용자 정보</div>                                                         
+                                                <div>회원번호 : {userInfo.memberId}</div>                                                         
+                                                <div>ID : {userInfo.email}</div>                                                         
+                                                <div>이름 : {userInfo.username}</div>                                        
+                                                <div>전화번호 : {userInfo.phoneNumber}</div>                                        
+                                            </div>
+
+                                            <div>
+                                                <div>업체 정보</div>                                                         
+                                                <div>회원번호 : {ownerInfo.memberId}</div>                                                         
+                                                <div>ID : {ownerInfo.email}</div>                                                         
+                                                <div>이름 : {ownerInfo.username}</div>                                        
+                                                <div>전화번호 : {ownerInfo.phoneNumber}</div>                                    
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
                                 ))
-                            )
-                        }
+                            )}
+                        </div>
                     </div>
 
                     {/* 페이징 컴포넌트 가져오기 */}
