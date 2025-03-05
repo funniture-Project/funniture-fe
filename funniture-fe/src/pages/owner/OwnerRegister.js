@@ -103,9 +103,6 @@ function OwnerRegister() {
 
     // 옵션 삭제
     function removeOption(indexToRemove) {
-        // setRentalOptions((prevOptions) =>
-        //     prevOptions.filter((_, index) => index !== indexToRemove)
-        // );
 
         setRentalOptions(prevOptions => {
             const newOptions = [...prevOptions];  // 깊은 복사

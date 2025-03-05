@@ -10,6 +10,7 @@ import { useLocation } from "react-router-dom";
 function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFile 추가
 
     const { chatQaList } = useSelector(state => state.chat)
+    const { refList } = useSelector(state => state.chat)
     const [currentList, setCurrentList] = useState();
     const [selectNum, setSelectNum] = useState();
 
@@ -106,9 +107,7 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
             <img src="${adminLogo}" alt=로고 이미지" />
         </div>
         <div class="${ChatCss.senderMsgBox}">
-            <div class="${ChatCss.senderMsg}">
-                ${response}
-            </div>
+            <div class="${ChatCss.senderMsg}">${response}</div>
         </div>
         `
 
@@ -135,6 +134,11 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
             console.log("chatBox 요소 찾을 수 없음");
         }
     }
+
+    useEffect(() => {
+        console.log("모달의 질문 창 : ", currentList)
+        console.log("모달의 상위 질문 : ", refList)
+    }, [currentList])
 
     useEffect(() => {
         dispatch(getChatQaList({ refNum: selectNum }))
@@ -209,7 +213,11 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                                             {item.chatQaQuContent}
                                         </button>
                                     )))
-                                    : <button className={ChatCss.receiverButton} onClick={setFirstList}>처음 질문 보기</button>
+                                    :
+                                    <>
+                                        {/* <button className={ChatCss.receiverButton} onClick={setPrevList}>이전 질문 보기</button>/ */}
+                                        <button className={ChatCss.receiverButton} onClick={setFirstList}>처음 질문 보기</button>
+                                    </>
                                 }
 
 

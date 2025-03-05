@@ -7,9 +7,9 @@ const initialState = {
         memberId: '',
         memberRole: '',
         email: '',
-        userName:'',
-        phoneNumber:'',
-        signupDate:'',
+        userName: '',
+        phoneNumber: '',
+        signupDate: '',
         isConsulting: '',
         hasImage: '',
         imageId: '',
@@ -21,9 +21,9 @@ const initialState = {
         account: '',
         attechmentLink: '',
         bank: '',
-        isRejected:'',
-        memberId:'',
-        storeAddress:'',
+        isRejected: '',
+        memberId: '',
+        storeAddress: '',
         storeImage: '',
         storeName: '',
         storeNo: '',
@@ -40,7 +40,7 @@ export const RESET_MEMBER = 'member/RESET_MEMBER';
 export const POST_OWNERDATA = 'member/POST_OWNERDATA'; // 재공자 신청 , 재신청 했을 때 데이터 저장하는 액션!
 
 export const resetMember = () => ({
-    type:RESET_MEMBER
+    type: RESET_MEMBER
 });
 
 const actions = createActions({
@@ -48,7 +48,7 @@ const actions = createActions({
     [POST_LOGIN]: () => { },
     [GET_MEMBER]: () => { },
     [GET_EMAIL]: () => { },
-    [POST_OWNERDATA]: () => { },
+    [POST_OWNERDATA]: () => { }
 });
 
 const memberReducer = handleActions({

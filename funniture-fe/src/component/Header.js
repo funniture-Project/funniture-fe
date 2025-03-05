@@ -8,6 +8,7 @@ import headerCss from './headerfooter.module.css'
 import decodeJwt from '../utils/tokenUtils';
 import { ReactComponent as MyPageImage } from "../assets/images/circle-user.svg"
 import BtnModal from './BtnModal';
+import { resetMember } from '../redux/modules/MemberModule';
 
 function Header({ setSelectCategory }) {
     const { user } = useSelector(state => state.member);
@@ -44,7 +45,7 @@ function Header({ setSelectCategory }) {
             } else {
                 setIsLogin(false);
             }
-        } else{
+        } else {
             setIsLogin(false); // 토큰 없으면 로그아웃 상태
         }
     }, [user]);
@@ -91,11 +92,12 @@ function Header({ setSelectCategory }) {
 
     const onClickLogoutHandler = () => {
         window.localStorage.removeItem('accessToken');
+        dispatch(resetMember()); // Redux 상태 초기화
         setIsLogin(false);
         setModalMessage('로그아웃 되었습니다.');
         setShowModal(true);
-      };
-      
+    };
+
 
     const moveMyPage = () => {
         console.log("현재 유저 역할:", userRole); // 디버깅용
@@ -134,15 +136,15 @@ function Header({ setSelectCategory }) {
             </div>
 
             <BtnModal
-            showBtnModal={showModal}
-            setShowBtnModal={setShowModal}
-            modalTitle="로그아웃"
-            modalContext={modalMessage}
-            btnText="확인"
-            onSuccess={() => {
-                setShowModal(false);
-                navigate('/');
-            }}
+                showBtnModal={showModal}
+                setShowBtnModal={setShowModal}
+                modalTitle="로그아웃"
+                modalContext={modalMessage}
+                btnText="확인"
+                onSuccess={() => {
+                    setShowModal(false);
+                    navigate('/');
+                }}
             />
         </header>
     )

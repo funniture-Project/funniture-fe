@@ -18,7 +18,8 @@ export function getChatQaList({ refNum, levelNum } = {}) {
                     url = `/chat/list?refNum=${refNum}`
                 } else if (levelNum) {
                     console.log("전달 받은 단계 : ", levelNum)
-                    url = `/chat/list?levelNum=${levelNum}`
+                    url = `/chat/list?qaLevel=${levelNum}`
+                    console.log(url)
                 }
             }
 
@@ -27,10 +28,12 @@ export function getChatQaList({ refNum, levelNum } = {}) {
             console.log("chatQaList : ", chatQaList)
 
             if (chatQaList) {
+                console.log("조회결과 :  ", chatQaList)
                 dispatch({
                     type: GET_CHAT_QA_LIST,
                     payload: {
-                        chatQaList: chatQaList.results?.result
+                        chatQaList: chatQaList.results?.result,
+                        refList: chatQaList.results?.refResult
                     }
                 })
             }
@@ -38,6 +41,18 @@ export function getChatQaList({ refNum, levelNum } = {}) {
             console.log("챗봇 질문 catch 내부 : ", error)
         }
     }
+}
+
+export async function updateChatQaList({ updateList }) {
+    console.log("업데이트 하러 가기 전 updateList : ", updateList)
+
+    const url = `/chat/modify`
+
+    const result = await api.put(url, updateList)
+
+    console.log("result : ", result)
+
+    return result?.data.message
 }
 
 // 공용
