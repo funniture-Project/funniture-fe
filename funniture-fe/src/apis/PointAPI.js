@@ -8,6 +8,14 @@ export async function getCurrentPoint(memberId) {
     return response;
 }
 
+export async function getPointList(memberId) {
+    const url = `/point/logs/${memberId}`
+
+    const response = await getData(url);
+
+    return response;
+}
+
 
 // 공용
 const getData = async (url, query) => {
