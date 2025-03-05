@@ -6,6 +6,7 @@ import decodeJwt from '../../utils/tokenUtils';
 import { callLoginAPI } from '../../apis/MemberAPI';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { callConfirmPassword } from '../../apis/MemberAPI';
+import BtnModal from '../../component/BtnModal';
 
 function UserConform () {
 
@@ -18,6 +19,11 @@ function UserConform () {
         password: ''
     });
 
+    // 모달 상태 관리를 위한 state
+    const [showModal, setShowModal] = useState(false);
+    const [modalContent, setModalContent] = useState('');
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
     // 25-02-21 // 주말동안 여기 해야 함. 일단 store에 id 저장했으니 서버에 이거로 요청
     // 근데 스토어에 다 저장해 놨으니까 그냥 꺼내서 쓰면 될 듯....?
     const onChangeHandler = (e) => {
@@ -28,20 +34,19 @@ function UserConform () {
     const onClickHandler = async () => {
         const memberId = member.user.memberId;
         const enteredPassword = password.password;
-    
+
         console.log('enteredPassword : ', enteredPassword);
-    
+
         // 비밀번호 검증 API 호출
-        const isAuthenticated = await dispatch(callConfirmPassword(memberId, enteredPassword));
-    
-        if (isAuthenticated) {
-            // 인증 성공 시 페이지 이동
-            alert('인증 성공!');
-            navigate("/mypage/edits");
+        const authResult = await dispatch(callConfirmPassword(memberId, enteredPassword));
+
+        setIsAuthenticated(authResult);
+        if (authResult) {
+            setModalContent('인증 성공!');
         } else {
-            // 인증 실패 시 경고 메시지 표시
-            alert('비밀번호를 확인해 주세요.');
+            setModalContent('비밀번호를 확인해 주세요.');
         }
+        setShowModal(true);
     };
     
     const onKeyDownHandler = (e) => {
@@ -50,6 +55,13 @@ function UserConform () {
         }
     };
     
+    // 모달 닫기 후 동작 처리
+    const handleModalClose = () => {
+        setShowModal(false);
+        if (modalContent === '인증 성공!') {
+            navigate("/mypage/edits");
+        }
+    };
 
     return (
         <>
@@ -75,6 +87,16 @@ function UserConform () {
                         <button onClick={onClickHandler}>회원 확인</button>
                     </div>
                 </div>
+            {/* 모달 컴포넌트 추가 */}
+            <BtnModal
+                showBtnModal={showModal}
+                setShowBtnModal={setShowModal}
+                btnText="확인"
+                modalContext={modalContent}
+                modalTitle="알림"
+                onSuccess={handleModalClose}
+                onClose={handleModalClose}
+            />
             </div>
         </>
     );

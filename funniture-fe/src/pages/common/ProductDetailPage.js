@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getFavoriteList, updateFavoriteList } from "../../apis/FavoriteAPI";
 import BtnModal from '../../component/BtnModal'
-import Inquiry from "../user/Inquiry";
+import Inquiry from "./Inquiry";
 
 function ProductDetailPage() {
     const { id } = useParams();
@@ -313,7 +313,7 @@ function ProductDetailPage() {
                                 <div>리뷰 부르는 공간</div>
                             </>
                             : selectedTab == "productInquiry" ?
-                                <Inquiry />
+                                <Inquiry productInfo={productInfo} />
                                 :
                                 <>
                                     {/* 제공자 정보 */}
