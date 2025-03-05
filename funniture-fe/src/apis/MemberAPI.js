@@ -357,6 +357,82 @@ export const callConvertImageAPI = ({ memberId, storeImage }) => {
 };
 
 // 사용자가 제공자로 전환 신청할 때 서버에 넘길 사업자 데이터들
+// export const callRegisterOwnerAPI = ({
+//     memberId,
+//     storeName,
+//     bank,
+//     account,
+//     storeImage,
+//     storeNo,
+//     storeAddress,
+//     storePhone,
+//     attachmentFile // 변수명 수정
+// }) => {
+//     const requestURL = `http://localhost:8080/api/v1/member/owner/register`;
+
+//     return async (dispatch, getState) => {
+//         const formData = new FormData();
+
+//         // JSON 데이터 생성
+//         const ownerData = {
+//             memberId: memberId,
+//             storeName: storeName,
+//             bank: bank,
+//             account: account,
+//             storeNo: storeNo,
+//             storeAddress: storeAddress,
+//             storePhone: storePhone
+//         };
+
+//         // FormData에 JSON 데이터 추가
+//         formData.append(
+//             "ownerData",
+//             new Blob([JSON.stringify(ownerData)], { type: "application/json" })
+//         );
+
+//         // FormData에 이미지 파일 추가
+//         if (storeImage instanceof File) {
+//             formData.append("storeImage", storeImage);
+//         }
+
+//         // FormData에 첨부파일 추가 (필드 이름 수정)
+//         if (attachmentFile instanceof File) {
+//             formData.append("attachmentFile", attachmentFile); // 필드 이름 수정
+//         }
+
+//         try {
+//             const response = await api.post(requestURL, formData, {
+//                 headers: {
+//                     'Content-Type': 'multipart/form-data'
+//                 }
+//             });
+
+//             console.log('제공자 전환 신청 서버 응답:', response);
+
+//             if (response.data.httpStatusCode === 201) {
+//                 console.log('제공자 전환 신청 성공');
+//                 console.log('서버 응답 데이터:', response.data.results.result); // 추가
+
+//                 // 성공적으로 데이터를 받아왔을 때 Redux 스토어에 저장
+//                 dispatch({
+//                     type: POST_OWNERDATA,
+//                     payload: response.data.results.result // 서버에서 반환된 데이터 저장
+//                 });
+
+//                 return response;
+//             } else if (response.data.httpStatusCode === 400) {
+//                 console.log('제공자 전환 신청 실패');
+//                 alert('제공자 신청에 실패했습니다.');
+//             } else {
+//                 console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
+//                 alert('알 수 없는 오류가 발생했습니다.');
+//             }
+//         } catch (error) {
+//             console.error('제공자 전환 신청 중 오류 발생:', error);
+//             alert('서버와 통신 중 오류가 발생했습니다.');
+//         }
+//     };
+// };
 export const callRegisterOwnerAPI = ({
     memberId,
     storeName,
@@ -366,7 +442,7 @@ export const callRegisterOwnerAPI = ({
     storeNo,
     storeAddress,
     storePhone,
-    attachmentFile // 변수명 수정
+    attachmentFile
 }) => {
     const requestURL = `http://localhost:8080/api/v1/member/owner/register`;
 
@@ -375,59 +451,43 @@ export const callRegisterOwnerAPI = ({
 
         // JSON 데이터 생성
         const ownerData = {
-            memberId: memberId,
-            storeName: storeName,
-            bank: bank,
-            account: account,
-            storeNo: storeNo,
-            storeAddress: storeAddress,
-            storePhone: storePhone
+            memberId, storeName, bank, account, storeNo, storeAddress, storePhone
         };
 
-        // FormData에 JSON 데이터 추가
-        formData.append(
-            "ownerData",
-            new Blob([JSON.stringify(ownerData)], { type: "application/json" })
-        );
+        formData.append("ownerData", new Blob([JSON.stringify(ownerData)], { type: "application/json" }));
 
-        // FormData에 이미지 파일 추가
         if (storeImage instanceof File) {
             formData.append("storeImage", storeImage);
         }
 
-        // FormData에 첨부파일 추가 (필드 이름 수정)
         if (attachmentFile instanceof File) {
-            formData.append("attachmentFile", attachmentFile); // 필드 이름 수정
+            formData.append("attachmentFile", attachmentFile);
         }
 
         try {
             const response = await api.post(requestURL, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
 
             console.log('제공자 전환 신청 서버 응답:', response);
 
             if (response.data.httpStatusCode === 201) {
                 console.log('제공자 전환 신청 성공');
-                console.log('서버 응답 데이터:', response.data.results.result); // 추가
+                console.log('서버 응답 데이터:', response.data.results.result);
 
-                // 성공적으로 데이터를 받아왔을 때 Redux 스토어에 저장
                 dispatch({
                     type: POST_OWNERDATA,
-                    payload: response.data.results.result // 서버에서 반환된 데이터 저장
+                    payload: response.data.results.result
                 });
-            } else if (response.data.httpStatusCode === 400) {
-                console.log('제공자 전환 신청 실패');
-                alert('제공자 신청에 실패했습니다.');
+
+                return response; // 이 부분을 추가
             } else {
                 console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
-                alert('알 수 없는 오류가 발생했습니다.');
+                return { success: false, error: '제공자 신청에 실패했습니다.' };
             }
         } catch (error) {
             console.error('제공자 전환 신청 중 오류 발생:', error);
-            alert('서버와 통신 중 오류가 발생했습니다.');
+            return { success: false, error: '서버와 통신 중 오류가 발생했습니다.' };
         }
     };
 };
@@ -453,22 +513,11 @@ export const callUpdateOwnerAPI = ({
     return async (dispatch, getState) => {
         const formData = new FormData();
 
-        // JSON 데이터 생성
         const ownerData = {
-            memberId,
-            storeName,
-            bank,
-            account,
-            storeNo,
-            storeAddress,
-            storePhone
+            memberId, storeName, bank, account, storeNo, storeAddress, storePhone
         };
 
-        // FormData에 JSON 데이터 추가
-        formData.append(
-            "ownerData",
-            new Blob([JSON.stringify(ownerData)], { type: "application/json" })
-        );
+        formData.append("ownerData", new Blob([JSON.stringify(ownerData)], { type: "application/json" }));
 
         if (storeImage instanceof File) {
             formData.append("storeImage", storeImage);
@@ -480,34 +529,32 @@ export const callUpdateOwnerAPI = ({
 
         try {
             const response = await api.post(requestURL, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
 
-            console.log('제공자 전환 재신청신청 서버 응답:', response);
+            console.log('제공자 전환 재신청 서버 응답:', response);
 
             if (response.data.httpStatusCode === 201) {
                 console.log('제공자 전환 재신청 성공');
+                console.log('서버 응답 데이터:', response.data.results.result);
 
-                // 성공적으로 데이터를 받아왔을 때 Redux 스토어에 저장
                 dispatch({
                     type: POST_OWNERDATA,
-                    payload: response.data.results.result // 서버에서 반환된 데이터 저장
+                    payload: response.data.results.result
                 });
-            } else if (response.data.httpStatusCode === 400) {
-                console.log('제공자 전환 재신청 실패');
-                alert('제공자 재신청에 실패했습니다.');
+
+                return response; // 이 부분을 추가
             } else {
                 console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
-                alert('알 수 없는 오류가 발생했습니다.');
+                return { success: false, error: '제공자 재신청에 실패했습니다.' };
             }
         } catch (error) {
             console.error('제공자 전환 재신청 중 오류 발생:', error);
-            alert('서버와 통신 중 오류가 발생했습니다.');
+            return { success: false, error: '서버와 통신 중 오류가 발생했습니다.' };
         }
     };
 };
+
 
 
 // 사용자가 제공자 전환 신청을 했는지 여부 확인을 위함

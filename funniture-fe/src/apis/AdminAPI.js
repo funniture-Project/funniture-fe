@@ -18,14 +18,14 @@ export const callLeaverUserByAdminAPI = async (page = 1, size = 10) => {
     const requestURL = `http://localhost:8080/api/v1/admin/leaverList?page=${page}&size=${size}`;
     try {
         const response = await api.get(requestURL);
-
         console.log('관리자 페이지 전체 탈퇴자 정보 요청 서버에 잘 다녀왔나? response : ', response);
-        
         return response.data;
     } catch (error) {
         console.error('API 호출 중 오류 발생:', error);
+        throw error; // 에러를 던져서 호출한 쪽에서 처리할 수 있게 함
     }
 }
+
 
 // 관리자 페이지의 제공자 정보 들고오는 애
 export const callOwnerListByAdminAPI = async (page = 1, size = 10) => {
