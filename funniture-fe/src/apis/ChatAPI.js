@@ -55,6 +55,18 @@ export async function updateChatQaList({ updateList }) {
     return result?.data.message
 }
 
+export async function deleteChatItemAPI({ chatNo }) {
+    console.log("삭제 대상 번호 : ", chatNo)
+
+    const url = `/chat/delete?chatNo=${chatNo}`
+
+    const result = await api.delete(url)
+
+    console.log("삭제 결과 result : ", result)
+
+    return result?.data.message
+}
+
 // 공용
 const getData = async (url, query) => {
     let response

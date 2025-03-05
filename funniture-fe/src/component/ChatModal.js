@@ -10,17 +10,24 @@ import { useLocation } from "react-router-dom";
 function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFile 추가
 
     const { chatQaList } = useSelector(state => state.chat)
-    const { refList } = useSelector(state => state.chat)
+    const { user } = useSelector(state => state.member)
     const [currentList, setCurrentList] = useState();
     const [selectNum, setSelectNum] = useState();
+
+    // 관리자 연결여부
+    const [adminAble, setAdminAble] = useState(false)
 
     const location = useLocation();
 
     // 이전 질문
-    const prevList = useRef();
+    // const prevList = useRef();
+    const [prevList, setPrevList] = useState(null);
 
     // 처음 질문
     const firstList = useRef();
+
+    // 이전 선택한 질문의 번호호
+    const prevSelectNo = useRef();
 
     const dispatch = useDispatch();
 
@@ -29,12 +36,7 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
     }, [])
 
     useEffect(() => {
-        if (firstList?.current?.length > 0) {
-            setCurrentList(firstList.current)
-        }
-    }, [location.pathname])
-
-    useEffect(() => {
+        console.log("새로받아온 chatQaList : ", chatQaList)
         setCurrentList(chatQaList)
 
         if (!firstList?.current?.length > 0) {
@@ -42,36 +44,27 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
         }
     }, [chatQaList])
 
-    // useEffect(() => {
-    //     console.log("현재의 prevList : ", prevList.current)
-    // }, [prevList.current])
-
-    // useEffect(() => {
-    //     console.log("현재의 firstList : ", firstList.current)
-    // }, [firstList.current])
-
-    // useEffect(() => {
-    //     console.log("현재의 currentList : ", currentList)
-    // }, [currentList])
-
-    // 두번째 버튼은 보통 취소 버튼으로 취소 또는 불허가 일때의 함수 정의
-    const handleFailClose = () => {
-        setShowBtnModal(false);
-    }
-
-    // 성공(또는 확인) 시 진행될 함수
-    const handleSuccessClose = () => {
-        setShowBtnModal(false); // 모달 닫기
-    };
+    useEffect(() => {
+        if (firstList?.current?.length > 0) {
+            setCurrentList(firstList.current)
+        }
+    }, [location.pathname])
 
     // header의 x버튼이 눌렸을때 동작할 함수
     const handleOnClose = () => {
+        console.log("모달 닫힘 : ", firstList.current)
+        if (firstList?.current?.length > 0) {
+            setCurrentList(firstList.current)
+        }
         setShowBtnModal(false); // 모달 닫기
     };
 
     function selectChatList(num) {
-        setSelectNum(num)
-        prevList.current = currentList
+        // prevList.current = { list: currentList, adminAble: adminAble }
+
+        setPrevList({ list: currentList, adminAble: adminAble })
+        prevSelectNo.current = selectNum
+
         // 선택 질문
         const selectQu = currentList.filter((item) => item.chatQaNo == num)
 
@@ -80,6 +73,12 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
 
         // 응답
         const response = selectQu[0].chatQaAnContent
+
+        // 관리자 연결 여부
+        setAdminAble(selectQu[0].adminConnectAbsence)
+
+        // 관리자 여부에 따라 currentList 에 연결 여부 넣을꺼라서 setAdminAble 뒤에 selectNum 변경
+        setSelectNum(num)
 
         // 사용자쪽
         const userBox = document.createElement("div")
@@ -127,7 +126,6 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
         const userBoxHeight = userBox.getBoundingClientRect().height;  // userBox 높이
 
         if (chatBox) {
-            console.log(chatBox.scrollHeight * 0.8)
             chatBox.style.scrollBehavior = 'smooth';
             chatBox.scrollTop = chatBox.scrollHeight - adminBoxHeight - userBoxHeight;  // 스크롤 설정
         } else {
@@ -136,26 +134,35 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
     }
 
     useEffect(() => {
-        console.log("모달의 질문 창 : ", currentList)
-        console.log("모달의 상위 질문 : ", refList)
+        console.log("==============================================================")
     }, [currentList])
 
     useEffect(() => {
         dispatch(getChatQaList({ refNum: selectNum }))
     }, [selectNum])
 
-    function setPrevList() {
-        setCurrentList(prevList.current)
+    function changeToPrevList() {
+
+        setAdminAble(prevList.adminAble)
+        setSelectNum(prevSelectNo.current)
+        setCurrentList(prevList.list)
     }
 
     function setFirstList() {
+        setSelectNum()
+        setPrevList({ list: firstList.current })
         setCurrentList(firstList.current)
+    }
+
+    // 관리자에게 연결
+    function connectAdmin() {
+        console.log("관리자에게 연결하기 클릭")
     }
 
     return (
         <>
             <Modal show={showBtnModal}
-                onHide={handleFailClose}
+                onHide={handleOnClose}
                 className={ChatCss.modalCss}
                 size='md'
                 dialogClassName={ChatCss.customModal}
@@ -202,7 +209,10 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                                                     {item.chatQaQuContent}
                                                 </button>
                                             ))}
-                                            <button className={ChatCss.receiverButton} onClick={setPrevList}>이전 질문 보기</button>
+                                            <button className={ChatCss.receiverButton} onClick={changeToPrevList}>이전 질문 보기</button>
+                                            {currentList[0].chatQaLevel == 2 ? null :
+                                                <button className={ChatCss.receiverButton} onClick={setFirstList}>처음 질문 보기</button>
+                                            }
                                         </>
                                     )
                                     : (currentList.map((item) => (
@@ -215,12 +225,14 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                                     )))
                                     :
                                     <>
-                                        {/* <button className={ChatCss.receiverButton} onClick={setPrevList}>이전 질문 보기</button>/ */}
                                         <button className={ChatCss.receiverButton} onClick={setFirstList}>처음 질문 보기</button>
                                     </>
                                 }
 
-
+                                {/* 관리자 연결 버튼 */}
+                                {(adminAble || prevList?.list[0].chatQaLevel == 3) ?
+                                    <button className={ChatCss.receiverButton} onClick={connectAdmin}>관리자에게 문의 하기</button>
+                                    : null}
                             </div>
                             {/* <div className={ChatCss.receiverMsgBox}>
                                 <div className={ChatCss.receiverMsg}>받는 놈 메세지</div>
