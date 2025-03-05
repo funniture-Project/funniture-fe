@@ -63,6 +63,23 @@ export async function getUserOrderList(memberId, period, pageNum) {
     return response;
 }
 
+export async function getActiveRentalList(memberId, pageNum) {
+    const url = '/rental/active'
+    const params = new URLSearchParams()
+
+    if(memberId) {
+        params.append("memberId", memberId)
+    }
+
+    if(pageNum) {
+        params.append("offset", pageNum)
+    }
+
+    const response = await getData(url, params)
+
+    return response;
+}
+
 export async function getOrderDetail(id) {
     const url = `/rental/${id}`
 
