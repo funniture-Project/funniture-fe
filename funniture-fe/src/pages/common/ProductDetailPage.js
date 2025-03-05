@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getFavoriteList, updateFavoriteList } from "../../apis/FavoriteAPI";
 import BtnModal from '../../component/BtnModal'
+import Inquiry from "../user/Inquiry";
 
 function ProductDetailPage() {
     const { id } = useParams();
@@ -259,51 +260,109 @@ function ProductDetailPage() {
                         <label htmlFor="productInquiry">상품문의</label>
                     </div>
 
-                    {/* 제공자 정보 */}
-                    <div className={PDCSS.ownerInfo}>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th colSpan={2}>상품정보</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colSpan={2}>
-                                        <div className={PDCSS.descriptionTitle}>브랜드명 : </div>
-                                        <div>{productInfo.ownerInfo.storeName}</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div className={PDCSS.descriptionTitle}>상품 번호 : </div>
-                                        <div>{productInfo.productNo}</div>
-                                    </td>
-                                    <td>
-                                        <div className={PDCSS.descriptionTitle}>모델 명 : </div>
-                                        <div>{productInfo.productName}</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th colSpan={2}>담당자 정보</th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div className={PDCSS.descriptionTitle}>사업자 번호 : </div>
-                                        <div>{productInfo.ownerInfo.storeNo}</div>
-                                    </td>
-                                    <td>
-                                        <div className={PDCSS.descriptionTitle}>주소(문의 번호로 변경 예정) : </div>
-                                        <div>{productInfo.ownerInfo.storeAdress}</div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    {selectedTab == "detailInfo" ?
+                        <>
+                            {/* 제공자 정보 */}
+                            <div className={PDCSS.ownerInfo}>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th colSpan={2}>상품정보</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colSpan={2}>
+                                                <div className={PDCSS.descriptionTitle}>브랜드명 : </div>
+                                                <div>{productInfo.ownerInfo.storeName}</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div className={PDCSS.descriptionTitle}>상품 번호 : </div>
+                                                <div>{productInfo.productNo}</div>
+                                            </td>
+                                            <td>
+                                                <div className={PDCSS.descriptionTitle}>모델 명 : </div>
+                                                <div>{productInfo.productName}</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th colSpan={2}>담당자 정보</th>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div className={PDCSS.descriptionTitle}>사업자 번호 : </div>
+                                                <div>{productInfo.ownerInfo.storeNo}</div>
+                                            </td>
+                                            <td>
+                                                <div className={PDCSS.descriptionTitle}>주소(문의 번호로 변경 예정) : </div>
+                                                <div>{productInfo.ownerInfo.storeAdress}</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-                    {/* 상품 상세 정보 */}
-                    <div className={PDCSS.productDetailInfo} dangerouslySetInnerHTML={{ __html: productInfo.productContent }}>
-                    </div>
+                            {/* 상품 상세 정보 */}
+                            <div className={PDCSS.productDetailInfo} dangerouslySetInnerHTML={{ __html: productInfo.productContent }}>
+                            </div>
+                        </>
+                        : selectedTab == "productReview" ?
+                            <>
+                                <div>리뷰 부르는 공간</div>
+                            </>
+                            : selectedTab == "productInquiry" ?
+                                <Inquiry />
+                                :
+                                <>
+                                    {/* 제공자 정보 */}
+                                    <div className={PDCSS.ownerInfo}>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th colSpan={2}>상품정보</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td colSpan={2}>
+                                                        <div className={PDCSS.descriptionTitle}>브랜드명 : </div>
+                                                        <div>{productInfo.ownerInfo.storeName}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div className={PDCSS.descriptionTitle}>상품 번호 : </div>
+                                                        <div>{productInfo.productNo}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div className={PDCSS.descriptionTitle}>모델 명 : </div>
+                                                        <div>{productInfo.productName}</div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th colSpan={2}>담당자 정보</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div className={PDCSS.descriptionTitle}>사업자 번호 : </div>
+                                                        <div>{productInfo.ownerInfo.storeNo}</div>
+                                                    </td>
+                                                    <td>
+                                                        <div className={PDCSS.descriptionTitle}>주소(문의 번호로 변경 예정) : </div>
+                                                        <div>{productInfo.ownerInfo.storeAdress}</div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    {/* 상품 상세 정보 */}
+                                    <div className={PDCSS.productDetailInfo} dangerouslySetInnerHTML={{ __html: productInfo.productContent }}>
+                                    </div>
+                                </>
+                    }
 
                     <BtnModal
                         showBtnModal={showModal}
