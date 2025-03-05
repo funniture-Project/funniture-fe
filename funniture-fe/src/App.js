@@ -16,7 +16,7 @@ import Login from './pages/login/Login';
 import Signup from './pages/login/Singup';
 import OwnerProducts from './pages/owner/OwnerProducts';
 import AdminProduct from './pages/admin/AdminProduct';
-import Inquiry from './pages/user/Inquiry';
+import Inquiry from './pages/common/Inquiry';
 import Orders from './pages/user/Orders';
 import { useDispatch, useSelector } from 'react-redux';
 import { callGetMemberAPI } from './apis/MemberAPI';
