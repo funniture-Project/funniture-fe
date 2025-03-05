@@ -29,6 +29,8 @@ function AdminUser() {
     const [showAlertModal, setShowAlertModal] = useState(false); // 얼러트 모달 상태
     const [alertMessage, setAlertMessage] = useState(''); // 얼러트 메시지
 
+    const [pageInfo, setPageInfo] = useState(null);
+
     useEffect(() => {
         setActiveTab(location.pathname); // URL 변경 시 activeTab 동기화
     }, [location.pathname]);
@@ -36,9 +38,26 @@ function AdminUser() {
     const handleTabClick = (path) => {
         navigate(path); // 경로 이동
     };
+
+    // 사용자 목록을 가져오는 함수
+    useEffect(() => {
+        fetchUserList();
+    }, []);
+    
+    const fetchUserList = async (pageNum = 1) => {
+        try {
+            const data = await callUserListByAdminAPI(pageNum);
+            console.log('data' , data);
+            setUserList(data.results.result.data);
+            setPageInfo(data.results.result.pageInfo);
+        } catch (error) {
+            console.error('회원 목록 불러오기 실패:', error);
+        }
+    };
+    
     useEffect(() => {
         console.log('관리자 페이지, 탈퇴자 useEffect 실행');
-        callUserListByAdminAPI(setUserList);
+        callUserListByAdminAPI(1);
     }, []);
 
     // 체크박스 변경 핸들러
@@ -74,54 +93,36 @@ function AdminUser() {
         setShowAccessModal(true);
     };
 
-    // 접근 권한 변경 확인 버튼 클릭 시
-    // const handleConfirmAccessChange = async () => {
-    //     try {
-    //         await callChangeLimitRoleAPI(selectedUsers); // 권한 변경 API 호출
-    //         setAlertMessage('권한이 변경되었습니다.');
-    //         setShowAlertModal(true);
-
-    //         // 데이터 갱신 및 초기화
-    //         callUserListByAdminAPI(setUserList);
-    //         setSelectedUsers([]);
-    //         setShowAccessModal(false);
-    //     } catch (error) {
-    //         console.error(error);
-    //         setAlertMessage('권한 변경에 실패했습니다.');
-    //         setShowAlertModal(true);
-    //     }
-    // };
-
+    
     // const handleConfirmAccessChange = async () => {
     //     try {
     //         const response = await callChangeLimitRoleAPI(selectedUsers);
-
-    //         console.log('권한 변경 서버 갔다오고 response : ', response);
-    //         if (response.data.httpStatusCode == 201) { // API 응답 구조에 따라 수정 필요
+    //         console.log('권한 변경 응답:', response);
+            
+    //         if (response && response.data && response.data.httpStatusCode === 201) {
     //             setAlertMessage('권한이 변경되었습니다.');
-    //             const updatedUserList = await callUserListByAdminAPI();
-    //             setUserList(updatedUserList);
+    //             await callUserListByAdminAPI(setUserList); // 사용자 목록 갱신
     //             setSelectedUsers([]);
     //             setShowAccessModal(false);
     //         } else {
-    //             throw new Error('API 응답이 성공적이지 않습니다.');
+    //             throw new Error('권한 변경 실패');
     //         }
     //     } catch (error) {
-    //         console.error(error);
+    //         console.error('권한 변경 중 오류 발생:', error);
     //         setAlertMessage('권한 변경에 실패했습니다. 다시 시도해주세요.');
     //     } finally {
     //         setShowAlertModal(true);
     //     }
     // };
-    
+    // 접근 권한 변경 확인 버튼 클릭 시
     const handleConfirmAccessChange = async () => {
         try {
             const response = await callChangeLimitRoleAPI(selectedUsers);
             console.log('권한 변경 응답:', response);
-            
+
             if (response && response.data && response.data.httpStatusCode === 201) {
                 setAlertMessage('권한이 변경되었습니다.');
-                await callUserListByAdminAPI(setUserList); // 사용자 목록 갱신
+                await fetchUserList(); // 사용자 목록 갱신
                 setSelectedUsers([]);
                 setShowAccessModal(false);
             } else {
@@ -147,13 +148,32 @@ function AdminUser() {
         setNewPoint(e.target.value);
     };
 
+    // // 포인트 수정 핸들러
+    // const handlePointUpdate = async () => {
+    //     try {
+    //         const response = await callUserPointUpdateAPI(selectedUser.memberId, newPoint);
+    //         if (response && response.data.httpStatusCode) {
+    //             setAlertMessage('포인트가 성공적으로 업데이트되었습니다.');
+    //             callUserListByAdminAPI(setUserList); // 데이터 갱신
+    //             setShowAlertModal(true);
+    //             setShowUserModal(false);
+    //         } else {
+    //             throw new Error('포인트 업데이트 실패');
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //         setAlertMessage('포인트 업데이트에 실패했습니다.');
+    //         setShowAlertModal(true);
+    //     }
+    // };
+
     // 포인트 수정 핸들러
     const handlePointUpdate = async () => {
         try {
             const response = await callUserPointUpdateAPI(selectedUser.memberId, newPoint);
             if (response && response.data.httpStatusCode) {
                 setAlertMessage('포인트가 성공적으로 업데이트되었습니다.');
-                callUserListByAdminAPI(setUserList); // 데이터 갱신
+                await fetchUserList(); // 데이터 갱신
                 setShowAlertModal(true);
                 setShowUserModal(false);
             } else {
@@ -275,7 +295,9 @@ function AdminUser() {
                         </div>
 
                         {/* 페이지네이션 컴포넌트 */}
-                        <Pagination />
+                        {pageInfo && (
+                          <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchUserList(pageNum)} />
+                      )}
                     </div>
                     <BtnModal
                         showBtnModal={showAccessModal}

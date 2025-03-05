@@ -18,6 +18,8 @@ function AdminOwner() {
     const [showOwnerModal, setShowOwnerModal] = useState(false);
     const [selectedOwner, setSelectedOwner] = useState(null);
 
+    const [pageInfo, setPageInfo] = useState(null);
+
     useEffect(() => {
         setActiveTab(location.pathname); // URL 변경 시 activeTab 동기화
     }, [location.pathname]);
@@ -30,9 +32,26 @@ function AdminOwner() {
     // 회원 정보 리스트를 저장할 상태
     const [ownerList, setOwnerList] = useState([]); // 여러 제공자 정보를 저장하는 배열
 
+        // 제공자 목록을 가져오는 함수
+        useEffect(() => {
+            fetchOwnerList();
+        }, []);
+    
+        const fetchOwnerList = async (pageNum = 1) => {
+            try {
+                const data = await callOwnerListByAdminAPI(pageNum);
+                console.log('data' , data);
+                setOwnerList(data.results.result.data);
+                setPageInfo(data.results.result.pageInfo);
+            } catch (error) {
+                console.error('제공자 회원 목록 불러오기 실패:', error);
+            }
+        };
+
+
     useEffect(() => {
         console.log('관리자 페이지, 제공자 useEffect 실행');
-        callOwnerListByAdminAPI(setOwnerList);
+        callOwnerListByAdminAPI(1);
     }, []);
 
     const handleOwnerClick = async (owner) => {
@@ -202,7 +221,9 @@ function AdminOwner() {
                         </div>
 
                         {/* 페이지네이션 컴포넌트 */}
-                        <Pagination />
+                        {pageInfo && (
+                          <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchOwnerList(pageNum)} />
+                      )}
                     </div>
                     {/* <BtnModal
                     showBtnModal={showOwnerModal}
