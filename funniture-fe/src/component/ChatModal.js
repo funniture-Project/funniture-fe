@@ -159,6 +159,12 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
         console.log("관리자에게 연결하기 클릭")
     }
 
+    useEffect(() => {
+        if (user) {
+            console.log("user정보 : ", user)
+        }
+    }, [user])
+
     return (
         <>
             <Modal show={showBtnModal}
@@ -171,70 +177,91 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
             >
                 <Modal.Header closeButton className={ChatCss.modalHeader} onHide={handleOnClose}>
                     <div>
-                        <div className={ChatCss.imgBox}>
-                            <img src={require("../assets/images/a.jpg")} alt="로고 이미지" />
+                        <div>
+                            <div className={ChatCss.imgBox}>
+                                <img src={require("../assets/images/a.jpg")} alt="로고 이미지" />
+                            </div>
+                            <div className={ChatCss.siteInfo}>
+                                <div>Funniture</div>
+                                <div>운영시간 : 9:00 ~ 18:00</div>
+                            </div>
                         </div>
-                        <div className={ChatCss.siteInfo}>
-                            <div>Funniture</div>
-                            <div>운영시간 보기</div>
+                        <div>
+                            <button>상담 종료</button>
                         </div>
                     </div>
                 </Modal.Header>
 
-                <Modal.Body className={ChatCss.modalBody}>
-                    <div className={`chatBox ${ChatCss.chatBox}`}>
-                        <div className={`sender ${ChatCss.sender}`}>
-                            <div className={ChatCss.senderImg}>
-                                <img src={require("../assets/images/white_chiar_logo.png")} alt="" />
-                            </div>
-                            <div className={ChatCss.senderMsgBox}>
-                                <div className={ChatCss.senderMsg}>
-                                    안녕하세요 고객님😊
-                                    <br />어떤게 궁금하신가요?
+                {user?.isConsulting ?
+                    <>
+                        <Modal.Body className={ChatCss.modalBody}>
+                            상담 진행 중인 user입니다.
+                        </Modal.Body>
+                        <Modal.Footer className={ChatCss.modalFooter}>
+                            <div>footer의 위치</div>
+                            {/* <Button onClick={handleSuccessClose}>
+                                확인
+                            </Button>
+                            <Button onClick={handleFailClose}>
+                                취소
+                            </Button> */}
+                        </Modal.Footer>
+                    </>
+                    :
+                    <Modal.Body className={ChatCss.modalBody}>
+                        <div className={`chatBox ${ChatCss.chatBox}`}>
+                            <div className={`sender ${ChatCss.sender}`}>
+                                <div className={ChatCss.senderImg}>
+                                    <img src={require("../assets/images/white_chiar_logo.png")} alt="" />
+                                </div>
+                                <div className={ChatCss.senderMsgBox}>
+                                    <div className={ChatCss.senderMsg}>
+                                        안녕하세요 고객님😊
+                                        <br />어떤게 궁금하신가요?
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
 
-                        <div className={ChatCss.receiver}>
-                            <div className={ChatCss.receiverButtonBox}>
-                                {currentList?.length > 0 ? currentList[0].chatQaLevel >= 2
-                                    ? (
+                            <div className={ChatCss.receiver}>
+                                <div className={ChatCss.receiverButtonBox}>
+                                    {currentList?.length > 0 ? currentList[0].chatQaLevel >= 2
+                                        ? (
+                                            <>
+                                                {currentList.map((item) => (
+                                                    <button data-chat-no={item.chatQaNo}
+                                                        className={ChatCss.receiverButton}
+                                                        onClick={() => selectChatList(item.chatQaNo)}
+                                                    >
+                                                        {item.chatQaQuContent}
+                                                    </button>
+                                                ))}
+                                                <button className={ChatCss.receiverButton} onClick={changeToPrevList}>이전 질문 보기</button>
+                                                {currentList[0].chatQaLevel == 2 ? null :
+                                                    <button className={ChatCss.receiverButton} onClick={setFirstList}>처음 질문 보기</button>
+                                                }
+                                            </>
+                                        )
+                                        : (currentList.map((item) => (
+                                            <button data-chat-no={item.chatQaNo}
+                                                className={ChatCss.receiverButton}
+                                                onClick={() => selectChatList(item.chatQaNo)}
+                                            >
+                                                {item.chatQaQuContent}
+                                            </button>
+                                        )))
+                                        :
                                         <>
-                                            {currentList.map((item) => (
-                                                <button data-chat-no={item.chatQaNo}
-                                                    className={ChatCss.receiverButton}
-                                                    onClick={() => selectChatList(item.chatQaNo)}
-                                                >
-                                                    {item.chatQaQuContent}
-                                                </button>
-                                            ))}
-                                            <button className={ChatCss.receiverButton} onClick={changeToPrevList}>이전 질문 보기</button>
-                                            {currentList[0].chatQaLevel == 2 ? null :
-                                                <button className={ChatCss.receiverButton} onClick={setFirstList}>처음 질문 보기</button>
-                                            }
+                                            <button className={ChatCss.receiverButton} onClick={setFirstList}>처음 질문 보기</button>
                                         </>
-                                    )
-                                    : (currentList.map((item) => (
-                                        <button data-chat-no={item.chatQaNo}
-                                            className={ChatCss.receiverButton}
-                                            onClick={() => selectChatList(item.chatQaNo)}
-                                        >
-                                            {item.chatQaQuContent}
-                                        </button>
-                                    )))
-                                    :
-                                    <>
-                                        <button className={ChatCss.receiverButton} onClick={setFirstList}>처음 질문 보기</button>
-                                    </>
-                                }
+                                    }
 
-                                {/* 관리자 연결 버튼 */}
-                                {(adminAble || prevList?.list[0].chatQaLevel == 3) ?
-                                    <button className={ChatCss.receiverButton} onClick={connectAdmin}>관리자에게 문의 하기</button>
-                                    : null}
-                            </div>
-                            {/* <div className={ChatCss.receiverMsgBox}>
+                                    {/* 관리자 연결 버튼 */}
+                                    {(adminAble || prevList?.list[0].chatQaLevel == 3) ?
+                                        <button className={ChatCss.receiverButton} onClick={connectAdmin}>관리자에게 문의 하기</button>
+                                        : null}
+                                </div>
+                                {/* <div className={ChatCss.receiverMsgBox}>
                                 <div className={ChatCss.receiverMsg}>받는 놈 메세지</div>
                                 <div className={ChatCss.receiverMsg}>받는 놈 메세지asda asdslnc</div>
                                 <div className={ChatCss.receiverMsg}>받는 놈</div>
@@ -242,17 +269,11 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                                 <div className={ChatCss.receiverMsg}>받는 놈 메세지</div>
                                 <div className={ChatCss.receiverMsg}>받는 놈 메세지</div>
                             </div> */}
+                            </div>
                         </div>
-                    </div>
-                </Modal.Body>
-                {/* <Modal.Footer className={ChatCss.modalFooter}>
-                    <Button onClick={handleSuccessClose}>
-                        확인
-                    </Button>
-                    <Button onClick={handleFailClose}>
-                        취소
-                    </Button>
-                </Modal.Footer> */}
+                    </Modal.Body>
+                }
+
             </Modal>
         </>
     );
