@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getChatQaList, updateChatQaList } from "../../apis/ChatAPI";
+import { deleteChatItemAPI, getChatQaList, updateChatQaList } from "../../apis/ChatAPI";
 import AdManaChatCss from './AdminmanageChat.module.css'
 import BtnModal from '../../component/BtnModal.js'
 
@@ -112,6 +112,10 @@ function AdminManageChat() {
         setShowBtnModal(true)
     }
 
+    function onDeleteSuccess() {
+        getListData()
+    }
+
     useEffect(() => {
         if (listBoxScroll) {
             const listBox = document.querySelector(".listBox");
@@ -120,8 +124,8 @@ function AdminManageChat() {
         }
     }, [listBoxScroll])
 
+    // 추가
     function addChatItem() {
-        console.log("클릭")
         setListBoxScroll(true)
 
         // 기존 리스트에서 'new'로 시작하는 항목 개수 확인
@@ -137,7 +141,17 @@ function AdminManageChat() {
             refQuNo: refList?.length > 0 ? refList[0]?.chatQaNo : null
         }
 
+        setDeValue(prev => ({ ...prev, [`new${newItemsCount + 1}`]: '' }))
+
         setCurrentList(prev => [...prev, newItem])
+    }
+
+    // 삭제
+    async function deleteChatItem(number) {
+        const msg = await deleteChatItemAPI({ chatNo: number })
+
+        setModalMsg(msg)
+        setShowBtnModal(true)
     }
 
     return (
@@ -226,7 +240,8 @@ function AdminManageChat() {
                             <div className={AdManaChatCss.deleteBtn}>
                                 <div>
                                     <button>
-                                        <img src={require("../../assets/icon/minus-solid.svg").default} alt="삭제 버튼" />
+                                        <img src={require("../../assets/icon/minus-solid.svg").default} alt="삭제 버튼"
+                                            onClick={() => deleteChatItem(item.chatQaNo)} />
                                     </button>
                                 </div>
                             </div>
@@ -241,6 +256,7 @@ function AdminManageChat() {
                 setShowBtnModal={setShowBtnModal}
                 btnText="확인"
                 modalContext={modalMsg}
+                onSuccess={onDeleteSuccess}
             />
         </div>
     )
