@@ -344,7 +344,7 @@ function OwnerRental() {
                                     </td>
                                     <td>{rental.productName}</td>
                                     <td>{rental.rentalNumber}</td>
-                                    <td>{rental.rentalTerm}일</td>
+                                    <td>{rental.rentalTerm}개월</td>
                                     <td>{rental.asNumber}회</td>
                                     <td>
                                         {rental.rentalStartDate && rental.rentalEndDate

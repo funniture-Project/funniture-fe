@@ -89,20 +89,36 @@ function AdminLeaver() {
         setShowAccessModal(true);
     };
 
+    // const handleConfirmAccessChange = async () => {
+    //     try {
+    //         await callChangeUserRoleAPI(selectedLeavers);
+    //         setAlertMessage('권한이 변경되었습니다.');
+    //         await callLeaverUserByAdminAPI(setLeaverList); // 데이터 갱신
+    //         setSelectedLeavers([]); // 선택 초기화
+    //         setShowAccessModal(false);
+    //     } catch (error) {
+    //         console.error(error);
+    //         setAlertMessage('권한 변경에 실패했습니다.');
+    //     } finally {
+    //         setShowAlertModal(true); // 얼러트 모달 표시
+    //     }
+    // };
+
     const handleConfirmAccessChange = async () => {
         try {
             await callChangeUserRoleAPI(selectedLeavers);
             setAlertMessage('권한이 변경되었습니다.');
-            await callLeaverUserByAdminAPI(setLeaverList); // 데이터 갱신
+            await fetchLeaverList(); // 데이터 갱신
             setSelectedLeavers([]); // 선택 초기화
             setShowAccessModal(false);
         } catch (error) {
-            console.error(error);
-            setAlertMessage('권한 변경에 실패했습니다.');
+            console.error('권한 변경 중 오류 발생:', error);
+            setAlertMessage('권한 변경에 실패했습니다. 다시 시도해주세요.');
         } finally {
             setShowAlertModal(true); // 얼러트 모달 표시
         }
     };
+    
 
     const handleLeaverClick = (leaver) => {
         setSelectedLeaver(leaver);
