@@ -537,3 +537,26 @@ export const getRejectedMessage = async (memberId) => {
         throw error;
     }
 }
+
+// 회원의 대한 정보를 불러오는 구문(은미)
+export async function getMemberData(memberId) {
+
+    const url = `/member/${memberId}`
+
+    const response = await getData(url);
+
+    return response;
+};
+
+// 은미
+const getData = async (url, query) => {
+    let response
+
+    if (!query) {
+        response = await api.get(url)
+    } else {
+        response = await api.get(url, { params: query })
+    }
+
+    return response?.data
+}
