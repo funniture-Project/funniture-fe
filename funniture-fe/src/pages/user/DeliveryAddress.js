@@ -164,29 +164,30 @@ function DeliveryAddress() {
 
     return(
         <div className={DeliveryCss.deliveryContainer}>
-            <div className={DeliveryCss.modalContainer}>
+           
             <div className={DeliveryCss.modalHeader}>
-                <h3>배송지 관리</h3>
+                <div>배송지 관리</div>
             </div>
 
-            {/* registerBtnContainer 영역을 눌렀을 때 드롭다운 되게 하기 */}
-            <div className={DeliveryCss.registerBtnContainer}
-                id="openModal"
-                onClick={toggleDropdown}>
+            <div className={DeliveryCss.modalContainer}>
+                
+                {/* registerBtnContainer 영역을 눌렀을 때 드롭다운 되게 하기 */}
+                <div className={DeliveryCss.registerBtnContainer}
+                    id="openModal"
+                    onClick={toggleDropdown}>
 
-                {/* 배송지 신규입력을 누른 유무로 +, - 변환하기 */}
-                <div
-                    className={
-                        isDropdownVisible
-                            ? DeliveryCss.minusIcon
-                            : DeliveryCss.plusIcon
-                    }
-                >
-                    {isDropdownVisible ? '-' : '+'}
+                    {/* 배송지 신규입력을 누른 유무로 +, - 변환하기 */}
+                    <div
+                        className={
+                            isDropdownVisible
+                                ? DeliveryCss.minusIcon
+                                : DeliveryCss.plusIcon
+                        }
+                    >
+                        {isDropdownVisible ? '-' : '+'}
+                    </div>
+                    <div className={DeliveryCss.registerBtn}>배송지 신규입력</div>
                 </div>
-                <div className={DeliveryCss.registerBtn}>배송지 신규입력</div>
-
-            </div>
             {/* Dropdown 내용 */}
             {isDropdownVisible && (
                 <div className={DeliveryCss.dropdownContent}>
