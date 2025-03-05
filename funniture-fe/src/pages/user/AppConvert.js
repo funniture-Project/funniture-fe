@@ -36,6 +36,9 @@ function AppConvert() {
     const [isStoreNoDuplicate, setIsStoreNoDuplicate] = useState(false); // 중복 여부 플래그
     const [storeNoErrorMessage, setStoreNoErrorMessage] = useState(''); // 모달에 표시할 에러 메시지
 
+    const [showFileErrorModal, setShowFileErrorModal] = useState(false); // 파일 잘못 넣었을 때 에러 모달
+    const [fileErrorMessage, setFileErrorMessage] = useState(''); // 이미지 잘못 넣었을 때 에러 모달
+
 
     // 필드가 하나라도 비어있으면 신청 못하게 검증
     const validateForm = () => {
@@ -43,47 +46,86 @@ function AppConvert() {
                form.storeNo && form.storeAddress && form.storePhone && form.attachmentFile;
       };
       
-    //   const handleSubmit = () => {
-    //     if (!validateForm()) {
-    //       setShowErrorModal(true);
-    //       return;
-    //     }
+      const validateFile = (file, allowedTypes, maxSize) => {
+        if (!file) return "파일을 선택해주세요.";
+        if (!allowedTypes.includes(file.type)) return "지원하지 않는 파일 형식입니다.";
+        if (file.size > maxSize) return `파일 크기는 ${maxSize / 1024 / 1024}MB 이하여야 합니다.`;
+        return null;
+      };
       
-    //     if (isAlreadyRegistered) {
-    //       updateOnClickHandler();
-    //     } else {
-    //       registerOnClickHandler();
-    //     }
-    //   };
-    const handleSubmit = async () => {
+    
+      const handleSubmit = async (e) => {
+        e.preventDefault();
         if (!validateForm()) {
-            setShowErrorModal(true); // 필수값 누락 모달
-            return;
+          setShowErrorModal(true);
+          return;
         }
-    
+      
+        const storeImageError = validateFile(form.storeImage, ['image/jpeg', 'image/png'], 5 * 1024 * 1024);
+        const attachmentFileError = validateFile(form.attachmentFile, ['application/pdf'], 10 * 1024 * 1024);
+      
+        if (storeImageError || attachmentFileError) {
+          setShowFileErrorModal(true);
+          setFileErrorMessage(storeImageError || attachmentFileError);
+          return;
+        }
+      
         try {
-            // 서버에 사업자 번호 중복 여부 확인 요청
-            const response = await getCheckStoreNoAPI(member.user.memberId, form.storeNo);
-    
-            console.log('getCheckStoreNoAPI 갔다 오고 response : ', response);
-            if (response.data.httpStatusCode === 400) { // 중복된 경우
-                setIsStoreNoDuplicate(true);
-                setStoreNoErrorMessage('중복된 사업자 번호입니다.');
-                return; // 중단
-            }
-    
-            // 중복이 아닌 경우 신청 진행
-            if (isAlreadyRegistered) {
-                updateOnClickHandler();
-            } else {
-                registerOnClickHandler();
-            }
-        } catch (error) {
-            console.error('사업자 번호 중복 확인 중 오류 발생:', error);
+          const response = await getCheckStoreNoAPI(member.user.memberId, form.storeNo);
+          if (response.data.httpStatusCode === 400) {
             setIsStoreNoDuplicate(true);
-            setStoreNoErrorMessage('사업자 번호 확인 중 오류가 발생했습니다.');
+            setStoreNoErrorMessage('중복된 사업자 번호입니다.');
+            return;
+          }
+      
+          const result = isAlreadyRegistered ? await updateOnClickHandler() : await registerOnClickHandler();
+
+            console.log('handleSubmit의 result : ' , result);
+      
+          if (result.data.httpStatusCode === 201) {
+            setIsSubmitted(true);
+            setSuccessMessage(isAlreadyRegistered ? '제공자 재신청이 완료되었습니다.' : '제공자 신청이 완료되었습니다.');
+            setShowSuccessModal(true);
+          } else {
+            throw new Error('예상치 못한 응답 상태');
+          }
+        } catch (error) {
+          console.error('제공자 신청 중 오류 발생:', error);
+          setShowErrorModal(true);
+          setStoreNoErrorMessage(error.message || '제공자 신청 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
-    };
+      };
+        
+
+    // const handleSubmit = async () => {
+    //     if (!validateForm()) {
+    //         setShowErrorModal(true); // 필수값 누락 모달
+    //         return;
+    //     }
+    
+    //     try {
+    //         // 서버에 사업자 번호 중복 여부 확인 요청
+    //         const response = await getCheckStoreNoAPI(member.user.memberId, form.storeNo);
+    
+    //         console.log('getCheckStoreNoAPI 갔다 오고 response : ', response);
+    //         if (response.data.httpStatusCode === 400) { // 중복된 경우
+    //             setIsStoreNoDuplicate(true);
+    //             setStoreNoErrorMessage('중복된 사업자 번호입니다.');
+    //             return; // 중단
+    //         }
+    
+    //         // 중복이 아닌 경우 신청 진행
+    //         if (isAlreadyRegistered) {
+    //             updateOnClickHandler();
+    //         } else {
+    //             registerOnClickHandler();
+    //         }
+    //     } catch (error) {
+    //         console.error('사업자 번호 중복 확인 중 오류 발생:', error);
+    //         setIsStoreNoDuplicate(true);
+    //         setStoreNoErrorMessage('사업자 번호 확인 중 오류가 발생했습니다.');
+    //     }
+    // };
       
       const handleSuccessClose = () => {
         setShowSuccessModal(false);
@@ -203,29 +245,29 @@ function AppConvert() {
         e.target.value = ''; // 입력 필드 초기화 (같은 파일 다시 선택 가능)
     };
 
- 
-    
-
-    // const imageOnClickHandler = () => {
-    //     console.log('imageOnClickHandler 호출됨');
-    //     console.log('현재 form.storeImage 값:', form.storeImage);
-
-    //     if (!form.storeImage || !(form.storeImage instanceof File)) {
-    //         console.log('조건 만족: !form.storeImage 또는 form.storeImage File 객체가 아님');
-    //         setShowImageErrorModal(true); // 오류 모달 표시
-    //         return;
-    //     }
-
-    //     console.log('파일이 선택되었습니다:', form.storeImage);
-    //     dispatch(callConvertImageAPI({
-    //         memberId: member.user.memberId,
-    //         storeImage: form.storeImage,
-    //     }));
-    //     setShowImageSuccessModal(true);
-    // };
-
     const registerOnClickHandler = () => {
-        dispatch(callRegisterOwnerAPI({
+        return dispatch(callRegisterOwnerAPI({
+          memberId: member.user.memberId,
+          storeName: form.storeName,
+          bank: form.bank,
+          account: form.account,
+          storeImage: form.storeImage,
+          storeNo: form.storeNo,
+          storeAddress: form.storeAddress,
+          storePhone: form.storePhone,
+          attachmentFile: form.attachmentFile
+        })).then(response => {
+            if (response && response.data && response.data.httpStatusCode === 201) {
+                return response;
+          } else {
+            throw new Error('제공자 신청 중 오류가 발생했습니다.');
+          }
+        });
+      };
+      
+      
+      const updateOnClickHandler = () => {
+        return dispatch(callUpdateOwnerAPI({
             memberId: member.user.memberId,
             storeName: form.storeName,
             bank: form.bank,
@@ -235,30 +277,18 @@ function AppConvert() {
             storeAddress: form.storeAddress,
             storePhone: form.storePhone,
             attachmentFile: form.attachmentFile
-        })).then(() => {
-            setIsSubmitted(true);
-            setSuccessMessage('제공자 신청이 완료되었습니다.');
-            setShowSuccessModal(true); // 모달 띄우기
+        })).then((response) => {
+            if (response && response.data && response.data.httpStatusCode === 201) {
+                return response;
+            } else {
+                throw new Error('제공자 재신청 중 오류가 발생했습니다.');
+            }
         });
     };
     
-    const updateOnClickHandler = () => {
-        dispatch(callUpdateOwnerAPI({
-            memberId: member.user.memberId,
-            storeName: form.storeName,
-            bank: form.bank,
-            account: form.account,
-            storeImage: form.storeImage,
-            storeNo: form.storeNo,
-            storeAddress: form.storeAddress,
-            storePhone: form.storePhone,
-            attachmentFile: form.attachmentFile
-        })).then(() => {
-            setIsSubmitted(true);
-            setSuccessMessage('제공자 재신청이 완료되었습니다.');
-            setShowSuccessModal(true); // 모달 띄우기
-        });
-    };
+      
+      
+    
     
 
 
@@ -397,6 +427,14 @@ function AppConvert() {
                         onClose={() => setIsStoreNoDuplicate(false)}
                     />
 
+                    <BtnModal
+                    showBtnModal={showFileErrorModal}
+                    setShowBtnModal={setShowFileErrorModal}
+                    btnText="확인"
+                    modalTitle="파일 오류"
+                    modalContext={fileErrorMessage}
+                    onClose={() => setShowFileErrorModal(false)}
+                    />
             </div>
         </>
     );

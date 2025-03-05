@@ -90,13 +90,14 @@ function AdminConvert() {
             await callConvertApproveAPI(selectedData.memberId);
             setShowSuccessModal(true);
             handleCloseModal();
-            // 승인 후 즉시 목록 갱신
-            await callConvertByAdminAPI(setConvertList);
+            // 승인 후 현재 페이지의 데이터를 다시 불러옵니다.
+            await fetchConvertList(pageInfo.currentPage);
         } catch (error) {
             console.error('승인 처리 중 오류 발생:', error);
             alert('승인 처리 중 오류가 발생했습니다.');
         }
     };
+    
 
     const handleReject = async (event) => {
         setShowRejectModal(true);
@@ -106,18 +107,18 @@ function AdminConvert() {
     // 반려 사유 적고 저장 눌렀을 때 동작 
     const handleRejectSubmit = async () => {
         try {
-
             await callConvertRejectAPI(selectedData.memberId, rejectReason);
             setShowRejectModal(false);
             setShowRejectCompleteModal(true);
             handleCloseModal();
-            // 반려 후 즉시 목록 갱신
-            await callConvertByAdminAPI(setConvertList);
+            // 수정된 부분: 현재 페이지 번호를 전달
+            await fetchConvertList(pageInfo.currentPage);
         } catch (error) {
             console.error('반려 처리 중 오류 발생:', error);
             alert('반려 처리 중 오류가 발생했습니다.');
         }
     };
+    
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
