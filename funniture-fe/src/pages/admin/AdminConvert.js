@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import AdminModal from './adminModal.module.css';
 import noFileImage from '../../assets/images/free-icon-no-file-11202705.png';
 import noImageDefault from '../../assets/images/free-icon-no-image-11542598.png';
+import Pagination from '../../component/Pagination';
 
 function AdminConvert() {
     const navigate = useNavigate();
@@ -23,6 +24,8 @@ function AdminConvert() {
     const [rejectReason, setRejectReason] = useState('');       // 반려 사유 모달
     const [showRejectCompleteModal, setShowRejectCompleteModal] = useState(false); // 반려사유 적고 저장하는 모달
 
+    const [pageInfo, setPageInfo] = useState(null);
+
     const ownerData = useSelector(state => state.member.owner); // Redux에서 owner 데이터 가져오기
     // console.log('ownerData', ownerData);
 
@@ -34,9 +37,25 @@ function AdminConvert() {
         navigate(path); // 경로 이동
     };
 
+    // 탈퇴자 목록을 가져오는 함수
+    useEffect(() => {
+        fetchConvertList();
+    }, []);
+
+    const fetchConvertList = async (pageNum = 1) => {
+        try {
+            const data = await callConvertByAdminAPI(pageNum);
+            console.log('data' , data);
+            setConvertList(data.results.result.data);
+            setPageInfo(data.results.result.pageInfo);
+        } catch (error) {
+            console.error('제공자 전환 회원 목록 불러오기 실패:', error);
+        }
+    };
+
     useEffect(() => {
         console.log('관리자 페이지, 제공자 전환 요청 목록 가져오기');
-        callConvertByAdminAPI(setConvertList);
+        callConvertByAdminAPI(1);
     }, []);
 
 
@@ -259,8 +278,9 @@ function AdminConvert() {
                         )}
                     </div>
 
-                    {/* 페이지네이션 컴포넌트 */}
-                    {/* Pagination 컴포넌트를 유지 */}
+                    {pageInfo && (
+                          <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchConvertList(pageNum)} />
+                      )}
                 </div>
 
                 {/* 모달 컴포넌트 */}

@@ -27,6 +27,7 @@ function AdminLeaver() {
     const [showAlertModal, setShowAlertModal] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     
+    const [pageInfo, setPageInfo] = useState(null);
 
     useEffect(() => {
         setActiveTab(location.pathname); // URL 변경 시 activeTab 동기화
@@ -36,9 +37,25 @@ function AdminLeaver() {
         navigate(path); // 경로 이동
     };
 
+    // 탈퇴자 목록을 가져오는 함수
+    useEffect(() => {
+        fetchLeaverList();
+    }, []);
+
+    const fetchLeaverList = async (pageNum = 1) => {
+        try {
+            const data = await callLeaverUserByAdminAPI(pageNum);
+            console.log('data' , data);
+            setLeaverList(data.results.result.data);
+            setPageInfo(data.results.result.pageInfo);
+        } catch (error) {
+            console.error('탈퇴자 회원 목록 불러오기 실패:', error);
+        }
+    };
+
     useEffect(() => {
         console.log('관리자 페이지, 탈퇴자 useEffect 실행');
-        callLeaverUserByAdminAPI(setLeaverList);
+        callLeaverUserByAdminAPI(1);
     }, []);
 
     // 체크박스 변경 핸들러
@@ -174,7 +191,9 @@ function AdminLeaver() {
                             ))
                         )}
                     </div>
-                    <Pagination />
+                    {pageInfo && (
+                          <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchLeaverList(pageNum)} />
+                      )}
                 </div>
                 <BtnModal
                     showBtnModal={showAccessModal}
