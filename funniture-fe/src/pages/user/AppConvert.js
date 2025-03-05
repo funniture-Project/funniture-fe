@@ -3,7 +3,7 @@ import OrdersCss from './orders.module.css';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import decodeJwt from '../../utils/tokenUtils';
-import { callRegisterOwnerAPI, callConvertImageAPI, checkOwnerStatusAPI, callUpdateOwnerAPI , getRejectedMessage} from '../../apis/MemberAPI';
+import { callRegisterOwnerAPI, callConvertImageAPI, checkOwnerStatusAPI, callUpdateOwnerAPI , getRejectedMessage, getCheckStoreNoAPI} from '../../apis/MemberAPI';
 import { Navigate, useNavigate } from 'react-router-dom';
 import basicImage from '../../assets/images/Adobe Express - file.png'
 import BtnModal from '../../component/BtnModal';
@@ -17,9 +17,6 @@ function AppConvert() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [showImageErrorModal, setShowImageErrorModal] = useState(false); // 변경할 이미지 선택 안 하고 누를때
-    const [showImageSuccessModal, setShowImageSuccessModal] = useState(false);
-
     const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false); // 기존 신청 여부
 
     const [isSubmitted, setIsSubmitted] = useState(false); // 신청 여부
@@ -31,6 +28,67 @@ function AppConvert() {
     const [message, setMessage] = useState("");
     const [showRetryButton, setShowRetryButton] = useState(false);
 
+    const [showErrorModal, setShowErrorModal] = useState(false); // 필드가 하나라도 비어있으면 모달 뜨게
+    const [showSuccessModal, setShowSuccessModal] = useState(false); // 신청 성공 시 모달
+    const [successMessage, setSuccessMessage] = useState(''); // 신청하고 메시지 띄우기
+
+    const [storeNoError, setStoreNoError] = useState(''); // 사업자 번호 중복 여부 메시지
+    const [isStoreNoDuplicate, setIsStoreNoDuplicate] = useState(false); // 중복 여부 플래그
+    const [storeNoErrorMessage, setStoreNoErrorMessage] = useState(''); // 모달에 표시할 에러 메시지
+
+
+    // 필드가 하나라도 비어있으면 신청 못하게 검증
+    const validateForm = () => {
+        return form.storeName && form.bank && form.account && form.storeImage &&
+               form.storeNo && form.storeAddress && form.storePhone && form.attachmentFile;
+      };
+      
+    //   const handleSubmit = () => {
+    //     if (!validateForm()) {
+    //       setShowErrorModal(true);
+    //       return;
+    //     }
+      
+    //     if (isAlreadyRegistered) {
+    //       updateOnClickHandler();
+    //     } else {
+    //       registerOnClickHandler();
+    //     }
+    //   };
+    const handleSubmit = async () => {
+        if (!validateForm()) {
+            setShowErrorModal(true); // 필수값 누락 모달
+            return;
+        }
+    
+        try {
+            // 서버에 사업자 번호 중복 여부 확인 요청
+            const response = await getCheckStoreNoAPI(member.user.memberId, form.storeNo);
+    
+            console.log('getCheckStoreNoAPI 갔다 오고 response : ', response);
+            if (response.data.httpStatusCode === 400) { // 중복된 경우
+                setIsStoreNoDuplicate(true);
+                setStoreNoErrorMessage('중복된 사업자 번호입니다.');
+                return; // 중단
+            }
+    
+            // 중복이 아닌 경우 신청 진행
+            if (isAlreadyRegistered) {
+                updateOnClickHandler();
+            } else {
+                registerOnClickHandler();
+            }
+        } catch (error) {
+            console.error('사업자 번호 중복 확인 중 오류 발생:', error);
+            setIsStoreNoDuplicate(true);
+            setStoreNoErrorMessage('사업자 번호 확인 중 오류가 발생했습니다.');
+        }
+    };
+      
+      const handleSuccessClose = () => {
+        setShowSuccessModal(false);
+        };
+    
 
     const [form, setForm] = useState({
         storeName: '',
@@ -145,24 +203,26 @@ function AppConvert() {
         e.target.value = ''; // 입력 필드 초기화 (같은 파일 다시 선택 가능)
     };
 
+ 
+    
 
-    const imageOnClickHandler = () => {
-        console.log('imageOnClickHandler 호출됨');
-        console.log('현재 form.storeImage 값:', form.storeImage);
+    // const imageOnClickHandler = () => {
+    //     console.log('imageOnClickHandler 호출됨');
+    //     console.log('현재 form.storeImage 값:', form.storeImage);
 
-        if (!form.storeImage || !(form.storeImage instanceof File)) {
-            console.log('조건 만족: !form.storeImage 또는 form.storeImage File 객체가 아님');
-            setShowImageErrorModal(true); // 오류 모달 표시
-            return;
-        }
+    //     if (!form.storeImage || !(form.storeImage instanceof File)) {
+    //         console.log('조건 만족: !form.storeImage 또는 form.storeImage File 객체가 아님');
+    //         setShowImageErrorModal(true); // 오류 모달 표시
+    //         return;
+    //     }
 
-        console.log('파일이 선택되었습니다:', form.storeImage);
-        dispatch(callConvertImageAPI({
-            memberId: member.user.memberId,
-            storeImage: form.storeImage,
-        }));
-        setShowImageSuccessModal(true);
-    };
+    //     console.log('파일이 선택되었습니다:', form.storeImage);
+    //     dispatch(callConvertImageAPI({
+    //         memberId: member.user.memberId,
+    //         storeImage: form.storeImage,
+    //     }));
+    //     setShowImageSuccessModal(true);
+    // };
 
     const registerOnClickHandler = () => {
         dispatch(callRegisterOwnerAPI({
@@ -177,10 +237,11 @@ function AppConvert() {
             attachmentFile: form.attachmentFile
         })).then(() => {
             setIsSubmitted(true);
-            alert('제공자 신청이 완료되었습니다.'); // 일단 얼러트
+            setSuccessMessage('제공자 신청이 완료되었습니다.');
+            setShowSuccessModal(true); // 모달 띄우기
         });
-    }
-
+    };
+    
     const updateOnClickHandler = () => {
         dispatch(callUpdateOwnerAPI({
             memberId: member.user.memberId,
@@ -192,9 +253,13 @@ function AppConvert() {
             storeAddress: form.storeAddress,
             storePhone: form.storePhone,
             attachmentFile: form.attachmentFile
-        }));
-        alert('제공자 재신청이 완료되었습니다.');
+        })).then(() => {
+            setIsSubmitted(true);
+            setSuccessMessage('제공자 재신청이 완료되었습니다.');
+            setShowSuccessModal(true); // 모달 띄우기
+        });
     };
+    
 
 
     return (
@@ -241,7 +306,7 @@ function AppConvert() {
                     <div className='basicImage'>
                         <span>대표 사진 * </span>
                         {/* previewImage 상태를 src로 설정 */}
-                        <img src={previewImage} alt="프로필 미리보기" />
+                        <img src={previewImage} alt="프로필 미리보기" style={{ marginRight: '34%' }}/>
                         <input
                             type="file"
                             id='uploadImg'
@@ -249,8 +314,8 @@ function AppConvert() {
                             onChange={handleImageChange}
                             style={{ display: 'none' }} />
                         <label className='uploadLabel'
-                            htmlFor="uploadImg">파일선택</label>
-                        <button onClick={imageOnClickHandler}>프로필 사진 변경</button>
+                            htmlFor="uploadImg" style={{ position: 'relative', left: '-35%' }}>사진선택</label>
+                        {/* <button onClick={imageOnClickHandler}>프로필 사진 변경</button> */}
                     </div>
                     <div>
                         <span>사업자 번호 *</span>
@@ -298,11 +363,40 @@ function AppConvert() {
                     </div>
                     <button
                         className='submitButton'
-                        onClick={isAlreadyRegistered ? updateOnClickHandler : registerOnClickHandler}>
+                        onClick={handleSubmit}
+                        >
                         {isAlreadyRegistered ? '재신청' : '제출'}
-                    </button>
+                        </button>
                 </div>
                     )}
+
+                    <BtnModal
+                    showBtnModal={showErrorModal}
+                    setShowBtnModal={setShowErrorModal}
+                    btnText="확인"
+                    modalTitle="입력 오류"
+                    modalContext="모든 필수값을 입력해 주세요."
+                    onClose={() => setShowErrorModal(false)}
+                    />
+
+                    <BtnModal
+                        showBtnModal={showSuccessModal}
+                        setShowBtnModal={setShowSuccessModal}
+                        btnText="확인"
+                        modalTitle="신청 완료"
+                        modalContext={successMessage}
+                        onClose={handleSuccessClose}
+                    />
+
+                    <BtnModal
+                        showBtnModal={isStoreNoDuplicate}
+                        setShowBtnModal={setIsStoreNoDuplicate}
+                        btnText="확인"
+                        modalTitle="입력 오류"
+                        modalContext={storeNoErrorMessage} // "중복된 사업자 번호입니다." 메시지 사용
+                        onClose={() => setIsStoreNoDuplicate(false)}
+                    />
+
             </div>
         </>
     );

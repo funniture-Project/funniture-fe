@@ -5,6 +5,9 @@ import RentalCss from './rental.module.css';
 import { callConvertByAdminAPI, callConvertDetailAPI, callConvertApproveAPI, callConvertRejectAPI } from '../../apis/AdminAPI';
 import { useSelector } from 'react-redux';
 import AdminModal from './adminModal.module.css';
+import noFileImage from '../../assets/images/free-icon-no-file-11202705.png';
+import noImageDefault from '../../assets/images/free-icon-no-image-11542598.png';
+import Pagination from '../../component/Pagination';
 
 function AdminConvert() {
     const navigate = useNavigate();
@@ -21,6 +24,8 @@ function AdminConvert() {
     const [rejectReason, setRejectReason] = useState('');       // 반려 사유 모달
     const [showRejectCompleteModal, setShowRejectCompleteModal] = useState(false); // 반려사유 적고 저장하는 모달
 
+    const [pageInfo, setPageInfo] = useState(null);
+
     const ownerData = useSelector(state => state.member.owner); // Redux에서 owner 데이터 가져오기
     // console.log('ownerData', ownerData);
 
@@ -32,9 +37,25 @@ function AdminConvert() {
         navigate(path); // 경로 이동
     };
 
+    // 탈퇴자 목록을 가져오는 함수
+    useEffect(() => {
+        fetchConvertList();
+    }, []);
+
+    const fetchConvertList = async (pageNum = 1) => {
+        try {
+            const data = await callConvertByAdminAPI(pageNum);
+            console.log('data' , data);
+            setConvertList(data.results.result.data);
+            setPageInfo(data.results.result.pageInfo);
+        } catch (error) {
+            console.error('제공자 전환 회원 목록 불러오기 실패:', error);
+        }
+    };
+
     useEffect(() => {
         console.log('관리자 페이지, 제공자 전환 요청 목록 가져오기');
-        callConvertByAdminAPI(setConvertList);
+        callConvertByAdminAPI(1);
     }, []);
 
 
@@ -98,67 +119,103 @@ function AdminConvert() {
         }
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day} / ${hours}시 ${minutes}분`;
+      };
 
-
-    const renderConvertModal = () => ({
-        left: (
-            <div>
-                <h3>◎ 첨부 파일 (사업자 등록증)</h3><br />
-                {selectedData?.ownerInfoDTO?.attechmentLink && (
-                    <div>
-                        <embed
-                            src={selectedData.ownerInfoDTO.attechmentLink}
-                            type="application/pdf"
-                            width="100%"
-                            height="500px"
-                        />
-                        <br />
-                        {/* PDF 파일 클릭 시 새 창에서 열기 */}
-                        <a
-                            href={selectedData.ownerInfoDTO.attechmentLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: 'blue', textDecoration: 'underline', marginTop: '10px', display: 'inline-block' }}
-                        >
-                            (첨부 파일 새 창에서 보기)
-                        </a>
-                    </div>
-                )}
-            </div>
-        ),
-        right: (
-            <div>
-                {selectedData?.ownerInfoDTO && (
-                    <>
-                        <h3>◎ 제공자 전환 정보</h3><br />
-                        <div className={AdminModal.ownerDiv}>
-                            {selectedData.ownerInfoDTO.storeImage && (
-                                <div>
-                                    <strong>▷ 대표 이미지   :</strong><br />
-                                    <img src={selectedData.ownerInfoDTO.storeImage} alt="업체 이미지" style={{ maxWidth: '100%', height: 'auto' }} />
-                                </div>
-                            )}
-
-                            <p><strong>▷ 사업자등록번호   :</strong> {selectedData.ownerInfoDTO.storeNo}</p>
-                            <p><strong>▷ 업체 이름   :</strong> {selectedData.ownerInfoDTO.storeName}</p>
-                            <p><strong>▷ 업체 주소   :</strong> {selectedData.ownerInfoDTO.storeAddress}</p>
-                            <p><strong>▷ 계좌 번호   :</strong> {selectedData.ownerInfoDTO.account}</p>
-                            <p><strong>▷ 은행 정보   :</strong> {selectedData.ownerInfoDTO.bank}</p>
-                            <p><strong>▷ 업체 전화번호   :</strong> {selectedData.ownerInfoDTO.storePhone}</p>
-                        </div><br />
-                    </>
-                )}
-                <h3>◎ 회원 정보</h3><br />
-                <div className={AdminModal.ownerDiv}>
-                    <p><strong>▷ 회원 번호   :</strong> {selectedData?.memberId}</p>
-                    <p><strong>▷ 이름   :</strong> {selectedData?.userName}</p>
-                    <p><strong>▷ 전화번호   :</strong> {selectedData?.phoneNumber}</p>
-                    <p><strong>▷ 이메일   :</strong> {selectedData?.email}</p>
-                    <p><strong>▷ 회원가입일   :</strong> {selectedData?.signupDate}</p>
+    const renderConvertModal = () => {
+        const isCloudinaryUrl = (url) => url?.includes('cloudinary');
+    
+        return {
+            left: (
+                <div>
+                    <h3>◎ 첨부 파일 (사업자 등록증)</h3><br />
+                    {selectedData?.ownerInfoDTO?.attechmentLink && isCloudinaryUrl(selectedData.ownerInfoDTO.attechmentLink) ? (
+                        <div>
+                            <embed
+                                src={selectedData.ownerInfoDTO.attechmentLink}
+                                type="application/pdf"
+                                width="100%"
+                                height="500px"
+                            />
+                            <br />
+                            {/* PDF 파일 클릭 시 새 창에서 열기 */}
+                            <a
+                                href={selectedData.ownerInfoDTO.attechmentLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ color: 'blue', textDecoration: 'underline', marginTop: '10px', display: 'inline-block' }}
+                            >
+                                (첨부 파일 새 창에서 보기)
+                            </a>
+                        </div>
+                    ) : (
+                        <div>
+                            <img
+                                src={noFileImage}
+                                alt="PDF 파일 없음"
+                                style={{ maxWidth: '100%', height: 'auto' }}
+                            />
+                            <p style={{ color: 'red', fontWeight: 'bold' }}>PDF 파일 없음</p>
+                        </div>
+                    )}
                 </div>
-            </div>
-        )
-    });
+            ),
+            right: (
+                <div>
+                    {selectedData?.ownerInfoDTO && (
+                        <>
+                            <h3>◎ 제공자 전환 정보</h3><br />
+                            <div className={AdminModal.ownerDiv}>
+                                {selectedData.ownerInfoDTO.storeImage && isCloudinaryUrl(selectedData.ownerInfoDTO.storeImage) ? (
+                                    <div>
+                                        <strong>▷ 대표 이미지   :</strong><br />
+                                        <img
+                                            src={selectedData.ownerInfoDTO.storeImage}
+                                            alt="업체 이미지"
+                                            style={{ maxWidth: '100%', height: 'auto' }}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <strong>▷ 대표 이미지   :</strong><br />
+                                        <img
+                                            src={noImageDefault}
+                                            alt="기본 이미지"
+                                            style={{ maxWidth: '100%', height: 'auto' }}
+                                        />
+                                        <p style={{ color: 'red', fontWeight: 'bold' }}>이미지 없음</p>
+                                    </div>
+                                )}
+    
+                                <p><strong>▷ 사업자등록번호   :</strong> {selectedData.ownerInfoDTO.storeNo}</p>
+                                <p><strong>▷ 업체 이름   :</strong> {selectedData.ownerInfoDTO.storeName}</p>
+                                <p><strong>▷ 업체 주소   :</strong> {selectedData.ownerInfoDTO.storeAddress}</p>
+                                <p><strong>▷ 계좌 번호   :</strong> {selectedData.ownerInfoDTO.account}</p>
+                                <p><strong>▷ 은행 정보   :</strong> {selectedData.ownerInfoDTO.bank}</p>
+                                <p><strong>▷ 업체 전화번호   :</strong> {selectedData.ownerInfoDTO.storePhone}</p>
+                            </div><br />
+                        </>
+                    )}
+                    <h3>◎ 회원 정보</h3><br />
+                    <div className={AdminModal.ownerDiv}>
+                        <p><strong>▷ 회원 번호   :</strong> {selectedData?.memberId}</p>
+                        <p><strong>▷ 이름   :</strong> {selectedData?.userName}</p>
+                        <p><strong>▷ 전화번호   :</strong> {selectedData?.phoneNumber}</p>
+                        <p><strong>▷ 이메일   :</strong> {selectedData?.email}</p>
+                        <p><strong>▷ 회원가입일   :</strong> {formatDate(selectedData?.signupDate)}</p>
+                    </div>
+                </div>
+            )
+        };
+    };
 
 
     return (
@@ -215,14 +272,15 @@ function AdminConvert() {
                                     <div style={{ width: '10%' }}><p>{convert.userName}</p></div>
                                     <div style={{ width: '23%' }}><p>{convert.phoneNumber}</p></div>
                                     <div style={{ width: '18%' }}><p>{convert.email}</p></div>
-                                    <div style={{ width: '30%' }}><p>{convert.signupDate}</p></div>
+                                    <div style={{ width: '30%' }}><p>{formatDate(convert.signupDate)}</p></div>
                                 </div>
                             ))
                         )}
                     </div>
 
-                    {/* 페이지네이션 컴포넌트 */}
-                    {/* Pagination 컴포넌트를 유지 */}
+                    {pageInfo && (
+                          <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchConvertList(pageNum)} />
+                      )}
                 </div>
 
                 {/* 모달 컴포넌트 */}

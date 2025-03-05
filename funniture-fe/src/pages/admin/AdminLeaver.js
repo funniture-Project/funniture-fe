@@ -22,7 +22,12 @@ function AdminLeaver() {
 
     // const [showModal, setShowModal] = useState(false); // 접근 권한 변경 누를 때 뜨는 모달 
     const [selectAll, setSelectAll] = useState(false); // 체크박스 전체 선택
-
+ 
+        // 얼러트 모달 상태 관리
+    const [showAlertModal, setShowAlertModal] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    
+    const [pageInfo, setPageInfo] = useState(null);
 
     useEffect(() => {
         setActiveTab(location.pathname); // URL 변경 시 activeTab 동기화
@@ -32,9 +37,25 @@ function AdminLeaver() {
         navigate(path); // 경로 이동
     };
 
+    // 탈퇴자 목록을 가져오는 함수
+    useEffect(() => {
+        fetchLeaverList();
+    }, []);
+
+    const fetchLeaverList = async (pageNum = 1) => {
+        try {
+            const data = await callLeaverUserByAdminAPI(pageNum);
+            console.log('data' , data);
+            setLeaverList(data.results.result.data);
+            setPageInfo(data.results.result.pageInfo);
+        } catch (error) {
+            console.error('탈퇴자 회원 목록 불러오기 실패:', error);
+        }
+    };
+
     useEffect(() => {
         console.log('관리자 페이지, 탈퇴자 useEffect 실행');
-        callLeaverUserByAdminAPI(setLeaverList);
+        callLeaverUserByAdminAPI(1);
     }, []);
 
     // 체크박스 변경 핸들러
@@ -61,7 +82,8 @@ function AdminLeaver() {
 
     const handleAccessChangeClick = () => {
         if (selectedLeavers.length === 0) {
-            alert('변경할 사용자를 선택해주세요.');
+            setAlertMessage('변경할 사용자를 선택해주세요.');
+            setShowAlertModal(true);
             return;
         }
         setShowAccessModal(true);
@@ -70,15 +92,15 @@ function AdminLeaver() {
     const handleConfirmAccessChange = async () => {
         try {
             await callChangeUserRoleAPI(selectedLeavers);
-            alert('권한이 변경되었습니다.');
-
-            callLeaverUserByAdminAPI(setLeaverList);
-
-            setSelectedLeavers([]);
+            setAlertMessage('권한이 변경되었습니다.');
+            await callLeaverUserByAdminAPI(setLeaverList); // 데이터 갱신
+            setSelectedLeavers([]); // 선택 초기화
             setShowAccessModal(false);
         } catch (error) {
             console.error(error);
-            alert('권한 변경에 실패했습니다.');
+            setAlertMessage('권한 변경에 실패했습니다.');
+        } finally {
+            setShowAlertModal(true); // 얼러트 모달 표시
         }
     };
 
@@ -93,10 +115,28 @@ function AdminLeaver() {
             <p><strong>▷ 이름  :</strong> {selectedLeaver?.userName}</p>
             <p><strong>▷ 이메일  :</strong> {selectedLeaver?.email}</p>
             <p><strong>▷ 전화번호  :</strong> {selectedLeaver?.phoneNumber}</p>
-            <p><strong>▷ 회원가입일  :</strong> {selectedLeaver?.signupDate}</p>
+            <p><strong>▷ 회원가입일  :</strong> {formatDate(selectedLeaver?.signupDate)}</p>
             <p><strong>▷ 포인트  :</strong> {selectedLeaver?.pointDTO.currentPoint}</p>
         </div>
     );   
+
+    // 얼러트 모달 닫기 핸들러
+    const closeAlertModal = () => {
+        setShowAlertModal(false);
+        setAlertMessage('');
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        return `${year}-${month}-${day} / ${hours}시 ${minutes}분`;
+      };
+        
 
     return (
         <>
@@ -145,18 +185,20 @@ function AdminLeaver() {
                                     <div style={{ width: '10%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.userName}</p></div>
                                     <div style={{ width: '20%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.phoneNumber}</p></div>
                                     <div style={{ width: '15%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.email}</p></div>
-                                    <div style={{ width: '27%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.signupDate}</p></div>
+                                    <div style={{ width: '27%' }} onClick={() => handleLeaverClick(leaver)}><p>{formatDate(leaver.signupDate)}</p></div>
                                     <div style={{ width: '13%' }} onClick={() => handleLeaverClick(leaver)}><p>{leaver.pointDTO.currentPoint}</p></div>
                                 </div>
                             ))
                         )}
                     </div>
-                    <Pagination />
+                    {pageInfo && (
+                          <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchLeaverList(pageNum)} />
+                      )}
                 </div>
                 <BtnModal
                     showBtnModal={showAccessModal}
                     setShowBtnModal={setShowAccessModal}
-                    modalTitle="접근 권한 변경"
+                    modalTitle="▶ 접근 권한 변경"
                     modalContext="선택된 사용자의 권한을 변경하시겠습니까?"
                     btnText="예"
                     secondBtnText="취소"
@@ -170,6 +212,15 @@ function AdminLeaver() {
                     modalContext={renderLeaverModal()}
                     btnText="확인"
                     onSuccess={() => setShowUserModal(false)}
+                />
+                {/* 얼러트 모달 */}
+                <BtnModal
+                    showBtnModal={showAlertModal}
+                    setShowBtnModal={setShowAlertModal}
+                    modalTitle="알림"
+                    modalContext={alertMessage}
+                    btnText="확인"
+                    onSuccess={closeAlertModal}
                 />
             </div>
         </>

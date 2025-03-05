@@ -10,6 +10,7 @@ import MemberAPI, {
   callGetMemberEmailAPI
 } from '../../apis/MemberAPI';
 import Timer from './Timer';
+import BtnModal from '../../component/BtnModal';
 
 function Signup() {
   const navigate = useNavigate();
@@ -24,6 +25,10 @@ function Signup() {
     password: '',
     confirmPassword: '',
   });
+
+  // 모달
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const [emailValid, setEmailValid] = useState(false); // 이메일 유효성 검사
   const [emailSent, setEmailSent] = useState(false); // 이메일 발송 여부
@@ -126,36 +131,34 @@ function Signup() {
     checkSignupEnabled();
   }, [form]);
 
-  // 인증번호 발송 핸들러
+    // 인증번호 발송 핸들러
   const sendEmailHandler = () => {
     dispatch(callSendEmailAPI({ form }));
-    setEmailSent(true); // 이메일 발송 후 상태 업데이트
-    setShowVerificationButton(true); // 인증하기 버튼 다시 표시
-
-    // 타이머 리셋 및 표시
+    setModalMessage('인증 번호 발송이 완료되었습니다.');
+    setShowModal(true);
+    setEmailSent(true);
+    setShowVerificationButton(true);
     setResetTimerTrigger((prev) => !prev);
     setShowTimer(true);
-    // 재발송 시 비밀번호 입력창 숨김
     setShowPasswordFields(false);
     setCodeVerified(false);
   };
 
 
-  // 인증번호 확인 핸들러
+    // 인증번호 확인 핸들러
   const certificationHandler = () => {
     const enteredCode = form.verificationCode;
 
     if (enteredCode === storedCode) {
-      alert('인증 성공!');
+      setModalMessage('인증 성공!');
+      setShowModal(true);
       setCodeVerified(true);
-      setShowVerificationButton(false); // 인증 성공 시 버튼 숨김
-
-      // 인증 완료 시 타이머 숨김
+      setShowVerificationButton(false);
       setShowTimer(false);
-      // 인증 완료 시 비밀번호 입력창 표시
       setShowPasswordFields(true);
     } else {
-      alert('인증 실패. 올바른 인증번호를 입력해주세요.');
+      setModalMessage('인증 실패. 올바른 인증번호를 입력해주세요.');
+      setShowModal(true);
       setCodeVerified(false);
     }
   };
@@ -163,8 +166,12 @@ function Signup() {
 
   // 회원가입 핸들러
   const signUpHandler = () => {
-    dispatch(callSignupAPI({ form })).then(() => navigate('/login'));
+    dispatch(callSignupAPI({ form })).then((result) => {
+      setModalMessage(result.message);
+      setShowModal(true);
+    });
   };
+  
 
   // 조건부 렌더링: 인증하기 버튼
   let renderVerificationButton;
@@ -275,6 +282,21 @@ function Signup() {
           {/* <div style={{marginLeft:'450px', marginTop:'270px'}} onClick={() => {navigate('/login')}}>돌아 가기</div> */}
         </div>
       </div>
+
+      <BtnModal
+        showBtnModal={showModal}
+        setShowBtnModal={setShowModal}
+        modalTitle="회원가입 결과"
+        modalContext={modalMessage}
+        btnText="확인"
+        onSuccess={() => {
+        setShowModal(false);
+        if (modalMessage === '회원가입 성공') {
+          navigate('/login');
+        }
+      }}
+    />
+
     </div>
   );
 }
