@@ -5,6 +5,7 @@ import PDCSS from './productDetail.module.css'
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getFavoriteList, updateFavoriteList } from "../../apis/FavoriteAPI";
+import BtnModal from '../../component/BtnModal'
 
 function ProductDetailPage() {
     const { id } = useParams();
@@ -22,7 +23,11 @@ function ProductDetailPage() {
 
     const { favoriteList } = useSelector(state => state.favorite)
 
+    // 로그인 요청 모달
+    const [showModal, setShowModal] = useState(false)
+
     useEffect(() => {
+        console.log("현재 user의 정보 : ", user)
         if (user.memberRole == "USER") {
             dispatch(getFavoriteList(user.memberId))
         }
@@ -81,6 +86,13 @@ function ProductDetailPage() {
     const navigate = useNavigate();
 
     const movePage = () => {
+        console.log("예약 막기 : ", user)
+
+        if (user.memberId == '') {
+            setShowModal(true)
+            return
+        }
+
         navigate('/rental', {
             state: {
                 selectRentalOption,
@@ -218,7 +230,7 @@ function ProductDetailPage() {
 
                             <div>
                                 <button onClick={movePage}
-                                    disabled={(user?.memberRole == "USER" && productInfo.productStatus == "판매중") ? false : true}
+                                    disabled={((user?.memberRole == "USER" || user?.memberId == "") && productInfo.productStatus == "판매중") ? false : true}
                                     style={{ backgroundColor: `${productInfo.productStatus}` == "품절" ? "#aaa8a8" : "예약하기" }}
                                 >
                                     {productInfo.productStatus == "품절" ? "품절" : "예약하기"}</button>
@@ -292,6 +304,14 @@ function ProductDetailPage() {
                     {/* 상품 상세 정보 */}
                     <div className={PDCSS.productDetailInfo} dangerouslySetInnerHTML={{ __html: productInfo.productContent }}>
                     </div>
+
+                    <BtnModal
+                        showBtnModal={showModal}
+                        setShowBtnModal={setShowModal}
+                        btnText={"로그인하러 가기"}
+                        modalContext={"로그인이 필요한 작업입니다."}
+                        onSuccess={() => navigate("/login")}
+                    />
                 </div>
             ) : <div>상품을 찾을 수 없습니다.</div>}
         </>
