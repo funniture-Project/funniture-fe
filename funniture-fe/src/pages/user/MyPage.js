@@ -6,14 +6,78 @@ import clockRotateIcon from "../../assets/icon/clock-rotate-left-solid.svg";
 import truckIcon from "../../assets/icon/truck-solid.svg";
 import checkIcon from "../../assets/icon/check-solid.svg";
 import { Link } from "react-router-dom";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getPointList,getCurrentPoint } from '../../apis/PointAPI';
 
 function MyPage() {
 
     const [activeTab, setActiveTab] = useState('orders');
 
+    // 데이터 관리
+    const [pointLogs, setPointLogs] = useState([]);   
+    const [point, setPoint] = useState([]);  
+    
+    // point +, - 필터
+    const [filterType, setFilterType] = useState(null);
+
+    // 포인트 드롭다운
+    const [pointOpen, setPointOpen] = useState(false);
+ 
+    // 포인트 내역 데이터 가져오는 함수
+    async function getPointData(memberId) {
+        try {
+            const data = await getPointList(memberId);
+            const points = data.results.pointLogs;
+
+            setPointLogs(points);
+
+        } catch (error) {
+            console.error('Error fetching rentals list:', error);
+            setPointLogs([]);
+        }
+    }
+
+    // 현재포인트 데이터 가져오는 함수
+    async function getCurrentPointData(memberId) {
+        try {
+            const data = await getCurrentPoint(memberId);
+            const points = data.results.availablePoints;
+
+            setPoint(points);
+
+        } catch (error) {
+            console.error('Error fetching rentals list:', error);
+            setPoint([]);
+        }
+    }
+    
+    // 검색 조건 변경 시 데이터 다시 불러오기
+    useEffect(() => {
+        getCurrentPointData("MEM011");
+    }, []);  // pageInfo 제거하고, period, rentalTab, pageNum만 의존성으로 설정
+
     const handleTabClick = (tab) => {
         setActiveTab(tab);
+    };
+
+    const handlePoint = () => {
+        setPointOpen(!pointOpen)
+        getPointData("MEM011")
+    }
+
+    // 필터링된 로그 데이터
+    const filteredLogs = pointLogs.filter((log) => {
+        if (filterType === "plus") return log.addPoint !== 0;
+        if (filterType === "minus") return log.usedPoint !== 0;
+        return true;
+    });
+
+    // 숫자를 1,000 형식으로 변환
+    const formatNumber = (num) => {
+        if (typeof num !== "number" || isNaN(num)) {
+            return "0";  // 값이 없거나 숫자가 아니면 기본값 0 반환
+        }
+        return num.toLocaleString();
     };
 
     return (
@@ -28,11 +92,38 @@ function MyPage() {
                 </div>
 
                 <div className='pointCupon'>
-                    <div>
-                        <div>포인트</div>
-                        <div>5,000 Point</div>
+                    <div className='pointContainer'>
+                        <div className='pointSubContainer' onClick={handlePoint}>
+                            <div>포인트</div>
+                            <div> {formatNumber(point)} Point</div>
+                        </div>
+
+                        {/* 드롭다운 컨텐츠 */}
+                        {pointOpen && (
+                            <div className="dropdownPointContent">
+                                <div className='plusMinusButton'>
+                                    <div onClick={() => setFilterType("plus")} className={filterType === "plus" ? "active" : ""}> + </div>
+                                    <div onClick={() => setFilterType("minus")} className={filterType === "minus" ? "active" : ""}> - </div>
+                                </div>
+                                <div className='dropdownItemContent'>
+                            {filteredLogs.map((log) => {
+                                const pointValue =
+                                    log.addPoint !== 0 ? `+${formatNumber(log.addPoint)}` : `-${formatNumber(log.usedPoint)}`;
+                                return (
+                                <div key={log.pointId} className="dropdownItem">
+                                    <div className="pointDate">{log.pointDateTime}</div>
+                                    <div className={`pointValue ${log.addPoint !== 0 ? "plus" : "minus"}`}>
+                                        {pointValue} Point
+                                    </div>
+                                </div>
+                                );
+                            })}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                    <div>
+
+                    <div className='cuponSubContainer'>
                         <div>쿠폰</div>
                         <div>3개</div>
                     </div>
