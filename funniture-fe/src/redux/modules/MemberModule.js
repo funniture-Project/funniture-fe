@@ -39,6 +39,9 @@ export const GET_EMAIL = 'member/GET_EMAIL';
 export const RESET_MEMBER = 'member/RESET_MEMBER';
 export const POST_OWNERDATA = 'member/POST_OWNERDATA'; // 재공자 신청 , 재신청 했을 때 데이터 저장하는 액션!
 
+// 상담 여부 업데이트
+export const CHANGE_ISCONSULTING = 'member/CHANGE_ISCONSULTING'
+
 export const resetMember = () => ({
     type: RESET_MEMBER
 });
@@ -48,7 +51,8 @@ const actions = createActions({
     [POST_LOGIN]: () => { },
     [GET_MEMBER]: () => { },
     [GET_EMAIL]: () => { },
-    [POST_OWNERDATA]: () => { }
+    [POST_OWNERDATA]: () => { },
+    [CHANGE_ISCONSULTING]: () => { },
 });
 
 const memberReducer = handleActions({
@@ -95,7 +99,14 @@ const memberReducer = handleActions({
             storePhone: payload.storePhone
         }
     }),
-    [RESET_MEMBER]: () => initialState // 상태를 초기값으로 리셋
+    [RESET_MEMBER]: () => initialState, // 상태를 초기값으로 리셋
+    [CHANGE_ISCONSULTING]: (state, { payload }) => ({
+        ...state,
+        user: {
+            ...state.user,
+            isConsulting: payload.isConsulting
+        }
+    })
 }, initialState);
 
 

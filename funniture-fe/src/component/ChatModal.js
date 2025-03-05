@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getChatQaList } from "../apis/ChatAPI";
 import adminLogo from '../assets/images/white_chiar_logo.png'
 import { useLocation } from "react-router-dom";
+import BtnModal from './BtnModal'
+import { changeConsultingAPI } from "../apis/MemberAPI";
 
 function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFile 추가
 
@@ -16,6 +18,9 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
 
     // 관리자 연결여부
     const [adminAble, setAdminAble] = useState(false)
+    // 로그인 여부 모달
+    const [needLoginModal, setNeedLoginModal] = useState(false)
+    const [loginModalMsg, setLoginModalMsg] = useState('')
 
     const location = useLocation();
 
@@ -52,7 +57,6 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
 
     // header의 x버튼이 눌렸을때 동작할 함수
     const handleOnClose = () => {
-        console.log("모달 닫힘 : ", firstList.current)
         if (firstList?.current?.length > 0) {
             setCurrentList(firstList.current)
         }
@@ -155,15 +159,25 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
     }
 
     // 관리자에게 연결
-    function connectAdmin() {
-        console.log("관리자에게 연결하기 클릭")
-    }
-
     useEffect(() => {
         if (user) {
             console.log("user정보 : ", user)
         }
     }, [user])
+
+    async function changeConsulting() {
+        if (!user || user.memberId == '') {
+            setNeedLoginModal(true)
+            setLoginModalMsg('관리자와의 상담을 위해서는 로그인이 필요합니다.')
+            return;
+        }
+        if (user) {
+            if (firstList?.current?.length > 0) {
+                setCurrentList(firstList.current)
+            }
+            dispatch(changeConsultingAPI({ memberId: user.memberId }))
+        }
+    }
 
     return (
         <>
@@ -186,9 +200,11 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                                 <div>운영시간 : 9:00 ~ 18:00</div>
                             </div>
                         </div>
-                        <div>
-                            <button>상담 종료</button>
-                        </div>
+                        {user?.isConsulting ?
+                            <div>
+                                <button onClick={changeConsulting}>상담 종료</button>
+                            </div>
+                            : null}
                     </div>
                 </Modal.Header>
 
@@ -258,7 +274,7 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
 
                                     {/* 관리자 연결 버튼 */}
                                     {(adminAble || prevList?.list[0].chatQaLevel == 3) ?
-                                        <button className={ChatCss.receiverButton} onClick={connectAdmin}>관리자에게 문의 하기</button>
+                                        <button className={ChatCss.receiverButton} onClick={changeConsulting}>관리자에게 문의 하기</button>
                                         : null}
                                 </div>
                                 {/* <div className={ChatCss.receiverMsgBox}>
@@ -275,6 +291,13 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                 }
 
             </Modal>
+
+            <BtnModal
+                showBtnModal={needLoginModal}
+                setShowBtnModal={setNeedLoginModal}
+                modalContext={loginModalMsg}
+                btnText="확인"
+            />
         </>
     );
 
