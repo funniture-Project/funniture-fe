@@ -1,9 +1,29 @@
 import DeliveryAddressCss from "./deliveryAddressModal.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSelector } from 'react-redux';
+import { postAddressRegist, getDeliveryAddressListData } from '../../apis/DeliveryAddressAPI';
+import BtnModal from '../../component/BtnModal';
 
-function DeliveryAddressModal({deliveryAddressList, onAddressSelect, defaultAddress}) {
+function DeliveryAddressModal({ onAddressSelect = () => {}, defaultAddress = null }) {
 
-    const [isDropdownVisible, setIsDropdownVisible] = useState(false);  // 신규 배송지 드롭다운 상태
+    // 사용자 꺼내오기
+    const { user } = useSelector(state => state.member)
+    const { memberId } = user
+
+    // 배송지 등록 데이터
+    const [destinationName, setDestinationName] = useState('');
+    const [receiver, setReceiver] = useState('');
+    const [destinationPhone, setDestinationPhone] = useState('');
+    const [destinationAddress, setDestinationAddress] = useState('');
+
+    // 배송지 전체 데이터 
+    const [deliveryAddressList, setDeliveryAddressList] = useState([]);
+
+    // 신규 배송지 드롭다운 상태
+    const [isDropdownVisible, setIsDropdownVisible] = useState(false);  
+
+    // 배송지 등록 완료 모달
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     // 토글 상태 변경해주기 
     const toggleDropdown = () => {
@@ -18,6 +38,64 @@ function DeliveryAddressModal({deliveryAddressList, onAddressSelect, defaultAddr
     // 현재 선택된 주소가 기본 배송지인지 확인 => ✔선택됨
     const isSelected = (address) => {
         return address.destinationNo === defaultAddress?.destinationNo;
+    };
+
+    // 데이터 호출 함수
+        async function getData(memberId) {
+            try {
+                const data = await getDeliveryAddressListData(memberId);
+                setDeliveryAddressList(data.results.addressList);
+    
+            } catch (error) {
+                console.error('배송지를 찾을 수 없음', error);
+            }
+        }
+    
+    // 랜더링 시 데이터 가져오기
+    useEffect(() => {
+        getData(memberId);
+    }, [memberId, deliveryAddressList]);
+
+    // Daum 주소 API 스크립트 추가
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+        script.async = true;
+        document.body.appendChild(script);
+    }, []);
+    
+    // 주소 찾기 버튼 클릭 시 실행
+    const handleOpenPostcode = () => {
+        new window.daum.Postcode({
+        oncomplete: function (data) {
+            setDestinationAddress(data.address); // 상세주소 input에 주소 검색 결과 넣기
+        },
+        }).open();
+    };
+
+    // 배송지 등록 핸들러
+    const handleAddressRegist= async () => {
+        try {
+
+            const addressData = {
+                memberId: memberId,
+                destinationName: destinationName,
+                destinationPhone: destinationPhone,
+                destinationAddress: destinationAddress,
+                receiver : receiver
+            };
+
+            await postAddressRegist(addressData);
+            setIsDropdownVisible(false);
+            setShowSuccessModal(true);
+            setDestinationName('');
+            setReceiver('');
+            setDestinationAddress('');
+            setDestinationPhone('');
+
+        } catch (error) {
+            console.error('등록 실패:', error);
+        }
     };
 
     return(
@@ -48,18 +126,49 @@ function DeliveryAddressModal({deliveryAddressList, onAddressSelect, defaultAddr
             {isDropdownVisible && (
                 <div className={DeliveryAddressCss.dropdownContent}>
                     <div>
-                        <div>배송지 이름 : <input type="text"/></div>
-                        <div>등록</div>
+                        <div>배송지 이름 : 
+                            <input 
+                                type="text" 
+                                value={destinationName} 
+                                onChange={(e) => setDestinationName(e.target.value)} 
+                            />
+                        </div>
+                        <div onClick={handleAddressRegist}>등록</div>
                     </div>
+
                     <div>
-                        <div>받는 분 : <input type="text"/></div>
+                        <div>받는 분 : 
+                            <input 
+                                type="text" 
+                                value={receiver} 
+                                onChange={(e) => setReceiver(e.target.value)} 
+                            />
+                        </div>
                     </div>
+
+                    <div>
+                        <div>전화번호 : 
+                            <input 
+                                type="text" 
+                                value={destinationPhone} 
+                                onChange={(e) => setDestinationPhone(e.target.value)} 
+                            />
+                        </div>
+                    </div>
+
                     <div>
                         <div>주소 : </div>
-                        <div>주소찾기</div>
+                        <div onClick={handleOpenPostcode}>주소찾기</div>
                     </div>
+                    
                     <div>
-                        <div>상세주소 : <input type="text"/></div>
+                        <div>상세주소 : 
+                            <input 
+                                type="text" 
+                                value={destinationAddress} 
+                                onChange={(e) => setDestinationAddress(e.target.value)} 
+                            />
+                        </div>
                     </div>
                 </div>
             )}
@@ -88,10 +197,6 @@ function DeliveryAddressModal({deliveryAddressList, onAddressSelect, defaultAddr
                         <div className={DeliveryAddressCss.addressInfo}>
                             <div>{address.destinationPhone}</div>
                             <div>{address.destinationAddress}</div>
-                            <div>
-                                <div>수정</div>
-                                <div>삭제</div>
-                            </div>
                         </div>
 
                         <hr className={DeliveryAddressCss.addressHr} />
@@ -99,6 +204,18 @@ function DeliveryAddressModal({deliveryAddressList, onAddressSelect, defaultAddr
                 ))
             ) : (
                 <div>배송지가 없습니다.</div>
+            )}
+
+            {/* 배송지 등록 성공 모달 */}
+            {showSuccessModal && (
+                <BtnModal
+                showBtnModal={showSuccessModal}
+                setShowBtnModal={setShowSuccessModal}
+                modalContext="신규 배송지가 등록 되었습니다."
+                modalSize="sm"
+                btnText="확인"
+                onClose={() => setShowSuccessModal(false)} // 확인 후 모달 닫기
+                />
             )}
             
         </div>
