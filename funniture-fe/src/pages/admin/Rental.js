@@ -39,7 +39,7 @@ function Rental() {
             const data = await getAdminRentalList(searchRental,pageNum);
             const rentals = data.results.adminRentalList;
             const pageInfo = data.results.pageInfo;
-            
+     
             // API 호출 후 결과 처리
             if (data && data.results && data.results.adminRentalList) {
                 setRentalList(rentals); // 검색 결과 상태에 저장
@@ -59,7 +59,6 @@ function Rental() {
         
         try {
             const data = await getMemberData(memberId);
-            console.log('userdata', data.results.result)
             setUserInfo(data.results.result);
 
         } catch (error) {
@@ -109,7 +108,7 @@ function Rental() {
             try {
                 const data = await getStoreList();
                 setStoreList(data.results?.result || []);
-                console.log('storeList:', data.results?.result);
+       
             } catch (error) {
                 console.error("API 호출 실패:", error);
                 setStoreList([]);

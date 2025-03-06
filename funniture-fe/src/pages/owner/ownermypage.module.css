@@ -90,5 +90,40 @@
                 }
             }
         }
+
+        /* 제공자 마이이지에 문의 추가 */
+        .divItemInquiry {
+            padding: 10px;
+            box-sizing: border-box;
+            border: solid 2px #7F5539;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            max-height: 400px; /* 원하는 최대 높이로 조정 가능 */
+            overflow: hidden; /* 내부 스크롤을 위해 필요 */
+
+            > div:last-child {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                justify-content: flex-start; /* 내용이 위에서부터 시작하도록 변경 */
+                overflow-y: auto; /* 세로 스크롤 추가 */
+        
+                > div {
+                    padding: 0 20px;
+                    display: flex;
+                    justify-content: space-between;
+                    font-weight: 400;
+                    margin-bottom: 10px; /* 각 항목 사이 간격 추가 */
+        
+                    span {
+                        font-size: 1.1em;
+                        margin-right: 10px;
+                        font-weight: 700;
+                    }
+                }
+            }
+        }
+        
     }
 }

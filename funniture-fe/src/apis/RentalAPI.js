@@ -41,7 +41,8 @@ export async function getStoreList() {
 
 // ---------------------------------------------------- 사용자 -------------------------------------------------------------
 
-export async function getUserOrderList(memberId, period, pageNum) {
+// 사용자별 예약 전체 조회(페이징 처리)
+export async function getUserOrderList(memberId, period, searchDate, pageNum) {
     // const url = new URL(baseRentalUrl + `/user?memberId=${memberId}`);
     const url = '/rental/user'
     const params = new URLSearchParams()
@@ -54,6 +55,9 @@ export async function getUserOrderList(memberId, period, pageNum) {
     if (period) {
         params.append("period", period);
     }
+    if (searchDate) {
+        params.append("searchDate", searchDate)
+    }
     if (pageNum) {
         params.append("offset", pageNum)
     }
@@ -63,6 +67,21 @@ export async function getUserOrderList(memberId, period, pageNum) {
     return response;
 }
 
+// 사용자의 예약진행상태별 카운트
+export async function getRentalStateList(memberId) {
+    const url = '/rental/count'
+    const params = new URLSearchParams()
+
+    if (memberId) {
+        params.append("memberId", memberId)
+    }
+
+    const response = await getData(url, params)
+
+    return response;
+}
+
+// 사용자별 사용중인 예약 조회(페이징 처리)
 export async function getActiveRentalList(memberId, pageNum) {
     const url = '/rental/active'
     const params = new URLSearchParams()
@@ -80,6 +99,7 @@ export async function getActiveRentalList(memberId, pageNum) {
     return response;
 }
 
+// 주문 상세 조회
 export async function getOrderDetail(id) {
     const url = `/rental/${id}`
 
@@ -90,7 +110,7 @@ export async function getOrderDetail(id) {
     return response
 }
 
-// 예약 등록 API 호출 함수
+// 사용자 예약 등록
 export const postRentalReservation = async (rentalData) => {
     try {
         const url = `/rental/regist`;  
@@ -101,6 +121,13 @@ export const postRentalReservation = async (rentalData) => {
         throw error; 
     }
 };
+
+// 사용자 예약 배송지 수정
+export const putRentalDeliveryAddress = async (rentalNo, destinationNo) => {
+    const url = `rental/${rentalNo}/deliveryaddress`;
+    
+    await api.put(url, destinationNo);
+}
 
 // ---------------------------------------------------- 제공자 -------------------------------------------------------------
 

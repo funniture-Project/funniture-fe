@@ -16,7 +16,7 @@ import Login from './pages/login/Login';
 import Signup from './pages/login/Singup';
 import OwnerProducts from './pages/owner/OwnerProducts';
 import AdminProduct from './pages/admin/AdminProduct';
-import Inquiry from './pages/user/Inquiry';
+import Inquiry from './pages/common/Inquiry';
 import Orders from './pages/user/Orders';
 import { useDispatch, useSelector } from 'react-redux';
 import { callGetMemberAPI } from './apis/MemberAPI';
@@ -43,6 +43,7 @@ import LoginRouter from './layouts/LoginRouter';
 import UserRouter from './layouts/UserRouter';
 import AdminQnAPage from './pages/admin/AdminQnAPage';
 import DeliveryAddress from './pages/user/DeliveryAddress';
+import OwnerInquiry from './pages/owner/OwnerInquiry';
 
 
 function App() {
@@ -134,6 +135,7 @@ function App() {
             <Route path='register' element={<OwnerRegister />} />
             <Route path='edit' element={<OwnerRegister />} />
             <Route path='rentals' element={<OwnerRental />} />
+            <Route path='inquiry' element={<OwnerInquiry />} />
           </Route>
 
         </Route>

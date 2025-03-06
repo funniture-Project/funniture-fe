@@ -2,6 +2,9 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import DetailOrderCss from "./detailorder.module.css";
 import {getOrderDetail, cancelOrder } from "../../apis/RentalAPI"
+import BtnModal from '../../component/BtnModal';
+import DeliveryAddressModal from './DeliveryAddressModal';
+import { putRentalDeliveryAddress } from '../../apis/RentalAPI'
 
 function DetailOrder({ selectedOrder, closeModal }) {
 
@@ -25,7 +28,22 @@ function DetailOrder({ selectedOrder, closeModal }) {
             alert("오류가 발생했습니다.");
         }
     };
-    
+
+    const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 수정 모달창 상태
+    const [showSuccessModal, setShowSuccessModal] = useState(false); // 수정 완료 모달 상태
+
+    // 배송지 선택 모달 열기 핸들러
+    // 모달 열기 핸들러
+    const onClickHandler =  () => {
+        setShowBtnModal(true);
+    };
+
+    // 배송지 선택 후, 상태 갱신
+    const handleAddressSelect = async (address) => {
+        await putRentalDeliveryAddress(id, address.destinationNo);
+        setShowBtnModal(false);
+        setShowSuccessModal(true);
+    };
 
     useEffect(() => {
         if (!selectedOrder) {
@@ -35,7 +53,7 @@ function DetailOrder({ selectedOrder, closeModal }) {
             }
             fetchData();
         }
-    }, [selectedOrder, id]); 
+    }, [selectedOrder, id, order]); 
 
     if (!order) return <div>Loading...</div>; 
 
@@ -95,8 +113,8 @@ function DetailOrder({ selectedOrder, closeModal }) {
             
                 <div>
                     <div><strong>{order.receiver} ({order.destinationName})</strong></div>
-                    {!selectedOrder && (
-                    <div>배송지변경</div>
+                    {['예약대기', '예약완료'].includes(order.rentalState) && !selectedOrder && (
+                        <div onClick={onClickHandler}>배송지변경</div>
                     )}
                 </div>
           
@@ -194,6 +212,29 @@ function DetailOrder({ selectedOrder, closeModal }) {
                 </div>
             )}
 
+            {/* 배송지 변경 모달 */}
+            {showBtnModal && (
+                <BtnModal
+                showBtnModal={showBtnModal}
+                setShowBtnModal={setShowBtnModal}
+                modalSize="lg"
+                childContent={<DeliveryAddressModal
+                    onAddressSelect={handleAddressSelect}
+                    />
+                }
+                />
+            )}
+
+            {/* 배송지 수정 확인 모달 */}
+            {showSuccessModal && (
+                <BtnModal
+                        showBtnModal={showSuccessModal}
+                        setShowBtnModal={setShowSuccessModal}
+                        btnText="확인"
+                        modalContext="배송지 변경이 완료되었습니다."
+                        modalSize="sm"
+                />
+            )}
 
         </div>
     );
