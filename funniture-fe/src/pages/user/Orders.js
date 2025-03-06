@@ -11,7 +11,10 @@ function Orders() {
     const { user } = useSelector(state => state.member)
     const { memberId } = user
 
+    // 데이터 관리
     const [orderList, setOrderList] = useState([]); // 사용자별 주문 리스트
+
+    // 검색 데이터 관리
     const [searchOrder, setSearchOrder] = useState({
         period: 'ALL',     // period=1MONTH, 3MONTH
         searchDate: ''  // searchDate=2025-02-06
@@ -22,16 +25,25 @@ function Orders() {
     const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
 
 
-    async function getData(memberId, period, pageNum) {
+    async function getData(memberId, period, searchDate, pageNum) {
         try {
-            const data = await getUserOrderList(memberId, period, pageNum);
+            const data = await getUserOrderList(memberId, period, searchDate, pageNum);
+    
+            // data.results가 없으면 빈 배열로 설정
+            if (!data || !data.results || !data.results.userOrderList) {
+                setOrderList([]); // 빈 배열로 설정
+                setPageInfo(null); // 페이지 정보도 없으므로 null로 설정
+                return;
+            }
+    
             const orders = data.results.userOrderList;
             const pageInfo = data.results.pageInfo;
-            setOrderList(orders);
-            setPageInfo(pageInfo);
 
+            setOrderList(orders); // 주문 목록 설정
+            setPageInfo(pageInfo); // 페이지 정보 설정
+    
         } catch (error) {
-            console.error('Error fetching order list:', error);
+            console.error('주문 내역 불어오기 실패 :', error);
         }
     }
 
@@ -43,18 +55,34 @@ function Orders() {
 
     // 검색 조건 변경 시 데이터 다시 불러오기
     useEffect(() => {
-        getData(memberId, searchOrder.period, pageNum);
+        getData(memberId, searchOrder.period, searchOrder.searchDate, pageNum);
     }, [memberId, searchOrder, pageNum]);
 
  
     // 기간 선택 핸들러
     const handleChange = (period) => {
-        setSearchOrder((prev) => ({
-            ...prev,
-            period: period
-        }));
+        if (period === 'ALL') {
+            setSearchOrder({
+                period: 'ALL',
+                searchDate: ''
+            });
+        } else {
+            setSearchOrder((prev) => ({
+                ...prev,
+                period: period,
+                searchDate: '' 
+            }));
+        }
     };
 
+    // 날짜 변경 핸들러
+    const handleDateChange = (event) => {
+        setSearchOrder((prev) => ({
+            ...prev,
+            period: '', 
+            searchDate: event.target.value
+        }));
+    };
 
     return (
         <div className={OrdersCss.ordersContainer}>
@@ -78,14 +106,20 @@ function Orders() {
                 >
                     3개월
                 </div>
-                <div>직접선택</div>
+                <div className={searchOrder.searchDate.length > 0 ? OrdersCss.selectedDateContainer : OrdersCss.dateContainer}>
+                    <input 
+                        type="date" 
+                        value={searchOrder.searchDate} 
+                        onChange={handleDateChange} 
+                    />
+                </div>
             </div>
             <div className={OrdersCss.orderListContainer}>
 
                 {/* 테이블 데이터 */}
                 {orderList.length === 0 ? (
                     <div>
-                        <p>검색 조건에 맞는 예약 내역이 없습니다.</p>
+                        <p>예약 내역이 없습니다.</p>
                     </div>
                 ) : (
                     orderList.map((item) => (
@@ -121,6 +155,7 @@ function Orders() {
             </div>
 
             {/* 페이징 컴포넌트 가져오기 */}
+            {pageInfo && (
             <div className={OrdersCss.pagingContainer}>
                 <div>
                     <Pagination 
@@ -129,6 +164,7 @@ function Orders() {
                     />
                 </div>
             </div>
+            )}
         </div>
 
     );

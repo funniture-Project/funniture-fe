@@ -42,7 +42,7 @@ export async function getStoreList() {
 // ---------------------------------------------------- 사용자 -------------------------------------------------------------
 
 // 사용자별 예약 전체 조회(페이징 처리)
-export async function getUserOrderList(memberId, period, pageNum) {
+export async function getUserOrderList(memberId, period, searchDate, pageNum) {
     // const url = new URL(baseRentalUrl + `/user?memberId=${memberId}`);
     const url = '/rental/user'
     const params = new URLSearchParams()
@@ -54,6 +54,9 @@ export async function getUserOrderList(memberId, period, pageNum) {
     }
     if (period) {
         params.append("period", period);
+    }
+    if (searchDate) {
+        params.append("searchDate", searchDate)
     }
     if (pageNum) {
         params.append("offset", pageNum)
