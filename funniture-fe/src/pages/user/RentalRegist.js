@@ -2,7 +2,7 @@ import RentalRegistCss from './rentalRegist.module.css'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useState , useEffect } from 'react';
-import { getDefaultDeliveryAddressList, getDeliveryAddressListData } from '../../apis/DeliveryAddressAPI';
+import { getDefaultDeliveryAddressList } from '../../apis/DeliveryAddressAPI';
 import { getCurrentPoint } from '../../apis/PointAPI';
 import BtnModal from '../../component/BtnModal';
 import DeliveryAddressModal from './DeliveryAddressModal';
@@ -62,16 +62,13 @@ function RentalRegist () {
     
 // ------------------------------------------------ 배송지 변경 ------------------------------------------------
 
-    const [deliveryAddressList, setDeliveryAddressList] = useState([]); // 전체 배송지리스트 조회(모달창)
     const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모달창 상태
     const [showConfirmationModal, setShowConfirmationModal] = useState(false); // 변경 완료 모달 상태
-    const [showSuccessModal, setShowSuccessModal] = useState(false); // 등록 완료 모달 상태
+   
 
     // 배송지 선택 모달 열기 핸들러
     // 모달 열기 핸들러
-    const onClickHandler = async () => {
-        const data = await getDeliveryAddressListData(memberId);  // 모달이 열릴 때 API 호출
-        setDeliveryAddressList(data.results.addressList);
+    const onClickHandler =  () => {
         setShowBtnModal(true);
     };
 
@@ -83,6 +80,8 @@ function RentalRegist () {
     };
 
     // ------------------------------------------------ 렌탈 등록 ------------------------------------------------
+
+     const [showSuccessModal, setShowSuccessModal] = useState(false); // 등록 완료 모달 상태
 
     // 렌탈 등록 핸들러
     const handlePaymentClick = async () => {
@@ -209,11 +208,7 @@ function RentalRegist () {
                             <div className={RentalRegistCss.pointSubSection}>
                                 <div>
                                     <div>사용</div>
-                                    <div>{formatNumber(finalPriceThisMonth)}</div>
-                                    <div>X</div>
-                                </div>
-                                <div>
-                                    <div>전액사용</div>
+                                    <div>{formatNumber(finalPriceThisMonth)} 원</div>
                                 </div>
                             </div>
                         </div>
@@ -275,7 +270,7 @@ function RentalRegist () {
                 modalContext="로그인 후 이용 가능합니다."
                 modalSize="lg"
                 childContent={<DeliveryAddressModal 
-                    deliveryAddressList={deliveryAddressList} // 전체 배송지 리스트
+                    // deliveryAddressList={deliveryAddressList} // 전체 배송지 리스트
                     onAddressSelect={handleAddressSelect} // ✔ 선택됨이 업데이트되기위한 핸들러
                     defaultAddress={defaultAddress} // 기본 배송지 전달
                     />

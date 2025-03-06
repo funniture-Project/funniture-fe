@@ -122,6 +122,13 @@ export const postRentalReservation = async (rentalData) => {
     }
 };
 
+// 사용자 예약 배송지 수정
+export const putRentalDeliveryAddress = async (rentalNo, destinationNo) => {
+    const url = `rental/${rentalNo}/deliveryaddress`;
+    
+    await api.put(url, destinationNo);
+}
+
 // ---------------------------------------------------- 제공자 -------------------------------------------------------------
 
 export const getOwnerRentalList = async (ownerNo, period, rentalTab, pageNum) => {
