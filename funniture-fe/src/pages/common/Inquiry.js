@@ -4,14 +4,18 @@ import { callInquiryByProductNoAPI, callInquiryRegistByProductNoAPI } from "../.
 import InquiryCss from './inquiryProduct.module.css';
 import InquiryDiv from '../../pages/admin/rental.module.css';
 import BtnModal from "../../component/BtnModal";
+import decodeJwt from '../../utils/tokenUtils';
 
+// 상세페이지 문의 조회 및 등록
 function Inquiry({ productInfo }) {
     const member = useSelector((state) => state.member);
     const dispatch = useDispatch();
     const [inquiries, setInquiries] = useState([]);
     const [showBtnModal, setShowBtnModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false); // 문의 등록 완료 모달 상태
-    
+    const [showErrorModal, setShowErrorModal] = useState(false); // 필수값 다 넣지 않고 등록 누르면
+    const [isLogin, setIsLogin] = useState(false);
+
     console.log('문의 컴포넌트 productInfo : ' , productInfo);
 
     const [formData, setFormData] = useState({
@@ -64,25 +68,28 @@ function Inquiry({ productInfo }) {
 
     // 문의 등록 API 호출 핸들러
     const handleInquirySubmit = async () => {
+        // 필수 입력값 체크
+        if (!formData.qnaType || !formData.inquiryContent || !formData.userName || !formData.phoneNumber) {
+            setShowErrorModal(true); // 오류 모달 표시
+            return; // 여기서 return하여 작성 모달이 닫히지 않도록 함
+        }
+
         try {
             console.log("등록할 데이터:", formData);
 
-            // 서버로 전달할 데이터 생성
             const dataToSend = { 
                 ...formData, 
                 productNo: productInfo.productNo,
-                showStatus: formData.showStatus ? 0 : 1 // 비공개 여부 처리
+                showStatus: formData.showStatus ? 0 : 1
             };
 
             await dispatch(callInquiryRegistByProductNoAPI(dataToSend, member.user.memberId));
-            
-            // 성공 모달창 띄우기
-            setShowSuccessModal(true);
 
-            // 문의 리스트 다시 가져오기
-            fetchInquiries();
+            setShowSuccessModal(true); // 성공 모달 표시
+            fetchInquiries(); // 문의 목록 갱신
+            setShowBtnModal(false); // 성공 시에만 작성 모달 닫기
 
-            // 폼 초기화 및 모달 닫기
+            // 폼 초기화 및 작성 모달 닫기
             setFormData({
                 qnaType: "",
                 inquiryContent: "",
@@ -90,12 +97,12 @@ function Inquiry({ productInfo }) {
                 phoneNumber: "",
                 showStatus: false,
             });
-            setShowBtnModal(false);
         } catch (error) {
             console.error("문의 등록 실패:", error);
         }
     };
 
+    
     // 이미지 URL 결정 함수
     const getImageLink = (imageLink) => {
         if (!imageLink || imageLink === "default.jpg" || imageLink === "a.jpg") {
@@ -104,11 +111,31 @@ function Inquiry({ productInfo }) {
         return imageLink;
     };
 
+    // 초기화: 로그인 상태 및 사용자 역할 확인
+    useEffect(() => {
+
+        const token = window.localStorage.getItem('accessToken');
+        if (token) {
+            const decodedToken = decodeJwt(token);
+            // exp : 토큰의 만료 시간 나타내고 초단위 저장
+            // 현재 시간(Date.now() / 1000)이 토큰의 만료 시간(decodedToken.exp)보다 작은지 확인
+            if (decodedToken && decodedToken.exp > Date.now() / 1000) {
+                setIsLogin(true);
+            } else {
+                setIsLogin(false);
+            }
+        } else {
+            setIsLogin(false); // 토큰 없으면 로그아웃 상태
+        }
+    }, [member]);
+
     return (
         <div className={InquiryDiv.adminRentalContent}>
             <div className={InquiryCss.inquiryBox}>
-                <button className={InquiryCss.inquiryWriteButton}
-                    onClick={() => setShowBtnModal(true)}>문의 작성</button>
+            {isLogin ? (
+                <button 
+                    className={InquiryCss.inquiryWriteButton}
+                    onClick={() => setShowBtnModal(true)}>문의 작성</button>) : null}
 
                 <h3>상품 문의 <span style={{ color: 'blue' }}>({inquiries.length})</span></h3>
 
@@ -228,8 +255,7 @@ function Inquiry({ productInfo }) {
                         </div>
                     </>
                 }
-                onSuccess={() => handleInquirySubmit()}
-                onFail={() => setShowBtnModal(false)}
+                onSuccess={handleInquirySubmit}
             />
 
             {/* 문의 등록 완료 모달 */}
@@ -244,6 +270,15 @@ function Inquiry({ productInfo }) {
                     onSuccess={() => setShowSuccessModal(false)}
                 />
             )}
+                {/* 오류 모달 */} 
+                <BtnModal
+                showBtnModal={showErrorModal}
+                setShowBtnModal={setShowErrorModal}
+                btnText="확인"
+                modalTitle="입력 오류"
+                modalContext="모든 필수값을 입력해 주세요."
+                onSuccess={() => setShowErrorModal(false)}
+                />
         </div>
     );
 }

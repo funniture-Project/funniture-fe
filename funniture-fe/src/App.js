@@ -43,6 +43,7 @@ import LoginRouter from './layouts/LoginRouter';
 import UserRouter from './layouts/UserRouter';
 import AdminQnAPage from './pages/admin/AdminQnAPage';
 import DeliveryAddress from './pages/user/DeliveryAddress';
+import OwnerInquiry from './pages/owner/OwnerInquiry';
 
 
 function App() {
@@ -134,6 +135,7 @@ function App() {
             <Route path='register' element={<OwnerRegister />} />
             <Route path='edit' element={<OwnerRegister />} />
             <Route path='rentals' element={<OwnerRental />} />
+            <Route path='inquiry' element={<OwnerInquiry />} />
           </Route>
 
         </Route>
