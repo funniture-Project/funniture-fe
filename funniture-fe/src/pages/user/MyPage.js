@@ -8,14 +8,22 @@ import checkIcon from "../../assets/icon/check-solid.svg";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from 'react';
 import { getPointList,getCurrentPoint } from '../../apis/PointAPI';
+import { getRentalStateList } from '../../apis/RentalAPI';
+import { useSelector } from 'react-redux';
 
 function MyPage() {
+
+    // 사용자 꺼내오기
+    const { user } = useSelector(state => state.member)
+    const { memberId } = user
+    console.log('user', user)
 
     const [activeTab, setActiveTab] = useState('orders');
 
     // 데이터 관리
     const [pointLogs, setPointLogs] = useState([]);   
     const [point, setPoint] = useState([]);  
+    const [rentalState, setRentalState] = useState([]); 
     
     // point +, - 필터
     const [filterType, setFilterType] = useState(null);
@@ -32,7 +40,7 @@ function MyPage() {
             setPointLogs(points);
 
         } catch (error) {
-            console.error('Error fetching rentals list:', error);
+            console.error('포인트 내역 가져오기 실패 : ', error);
             setPointLogs([]);
         }
     }
@@ -46,26 +54,43 @@ function MyPage() {
             setPoint(points);
 
         } catch (error) {
-            console.error('Error fetching rentals list:', error);
+            console.error('현재 포인트 가져오기 실패 : ', error);
             setPoint([]);
         }
     }
+
+    // 예약진행상태별 카운트 데이터 가져오는 함수
+    async function getRentalStateData() {
+        try {
+            const data = await getRentalStateList(memberId);
+            const states = data.results.rentalStateCount;
     
-    // 검색 조건 변경 시 데이터 다시 불러오기
+            setRentalState(states);
+
+        } catch (error) {
+            console.error('예약 진행상태별 카운트 실패 : ', error);
+            setRentalState([]);  // 오류 발생 시 빈 배열 설정
+        }
+    }
+    
+    // 랜더링 시 데이터 불러오기
     useEffect(() => {
-        getCurrentPointData("MEM011");
-    }, []);  // pageInfo 제거하고, period, rentalTab, pageNum만 의존성으로 설정
+        getCurrentPointData(memberId);
+        getRentalStateData(memberId);
+
+    }, [memberId]); 
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
 
+    // 포인트 내역 드롭다운 열기 & 포인트 내역 데이터 불러오기
     const handlePoint = () => {
         setPointOpen(!pointOpen)
-        getPointData("MEM011")
+        getPointData(memberId)
     }
 
-    // 필터링된 로그 데이터
+    // 필터링 된 로그 데이터
     const filteredLogs = pointLogs.filter((log) => {
         if (filterType === "plus") return log.addPoint !== 0;
         if (filterType === "minus") return log.usedPoint !== 0;
@@ -86,8 +111,8 @@ function MyPage() {
                 <div className='userInfo'>
                     <img src={profileImg} alt="프로필 이미지" />
                     <div>
-                        <div className='name'>이은미 님</div>
-                        <div className='email'>testEmail@gmail.com</div>
+                        <div className='name'>{user.userName}</div>
+                        <div className='email'>{user.email}</div>
                     </div>
                 </div>
 
@@ -139,16 +164,16 @@ function MyPage() {
                     <div><img src={checkIcon} alt="배송완료 아이콘" /></div>
                 </div>
                 <div className='rentalStatusBox'>
-                    <div>예약완료</div>
+                    <div>예약대기</div>
                     <div>배송준비중</div>
                     <div>배송중</div>
                     <div>배송완료</div>
                 </div>
                 <div className='rentalStatusNumberBox'>
-                    <div>1</div>
-                    <div>3</div>
-                    <div>5</div>
-                    <div>10</div>
+                    <div>{rentalState.length > 0 ? rentalState[0].count : 0}</div>
+                    <div>{rentalState.length > 2 ? rentalState[2].count : 0}</div>
+                    <div>{rentalState.length > 1 ? rentalState[1].count : 0}</div>
+                    <div>{rentalState.length > 3 ? rentalState[3].count : 0}</div>
                 </div>
 
 
