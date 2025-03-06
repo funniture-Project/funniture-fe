@@ -119,7 +119,7 @@ function App() {
               <Route path='recent' element={<RecentProduct />} />
               <Route path='convert' element={<Convert />} />
               <Route path='appConvert' element={<AppConvert />} />
-              <Route path='deliveryaddress' element={<DeliveryAddress/>} />
+              <Route path='deliveryaddress' element={<DeliveryAddress />} />
             </Route>
 
           </Route>
