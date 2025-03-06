@@ -1,0 +1,186 @@
+.directWholeContainer {
+    border: solid 2px #7F5539;
+    box-sizing: border-box;
+    border-radius: 10px;
+    height: 100%;
+    background-color: #FAF6F3;
+
+    display: flex;
+
+    .directListContainer {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        width: 30%;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+
+        overflow: hidden;
+
+        >.statusBox {
+            width: 100%;
+            /* min-height: 20%; */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 10%;
+            box-sizing: border-box;
+
+            .statusItem {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+                width: 20%;
+
+                input {
+                    display: none;
+                }
+
+                label {
+                    color: #a8a8a8;
+                }
+
+                >div {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .MsgIcon {
+                        width: 50%;
+
+                        path {
+                            fill: #a8a8a8;
+                        }
+                    }
+                }
+
+
+                input:checked~label,
+                input:checked~div {
+                    color: #7F5539;
+
+                    .MsgIcon {
+                        path {
+                            fill: #7F5539;
+                        }
+                    }
+                }
+            }
+        }
+
+        .orderByBox {
+            width: 100%;
+            display: flex;
+            justify-content: end;
+            border-top: solid 1px #7F5539;
+            border-bottom: solid 1px #7F5539;
+            padding: 8px 5px;
+            background-color: #F6EEE8;
+
+            select {
+                border: none;
+                background-color: #F6EEE8;
+                font-size: 0.8em;
+            }
+        }
+
+        .userListBox {
+            width: 100%;
+            flex: 1;
+            overflow: scroll;
+
+            .userItem {
+                display: flex;
+                flex-direction: column;
+                border-bottom: solid 1px #7F5539;
+                padding: 10px;
+
+                >div {
+                    width: 100%;
+                    display: flex;
+                }
+
+                .isConsulting {
+                    display: flex;
+                    align-items: center;
+                    justify-content: end;
+
+                    >div {
+                        padding: 5px 10px;
+                        border-radius: 30px;
+                        background-color: #7F5539;
+                        color: white;
+                        font-weight: 400;
+                        font-size: 0.9em;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                }
+
+                .userInfoBox {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .userImgBox {
+                        border: solid 2px #7F5539;
+                        padding: 3px;
+                        box-sizing: border-box;
+                        border-radius: 50%;
+                        width: 20%;
+                        aspect-ratio: 1/1;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-right: 10px;
+
+                        img {
+                            max-width: 100%;
+                            border-radius: 50%;
+                            aspect-ratio: 1/1;
+                        }
+                    }
+
+                    .userInfo {
+                        flex: 1;
+
+                        span {
+                            font-weight: 700;
+                            margin-right: 3px;
+                        }
+
+                        .userEmail {
+                            color: #a8a8a8;
+                            font-size: 0.9em;
+                        }
+                    }
+                }
+
+                .checkAbleBox {
+                    width: 20%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    .checkAble {
+                        width: 70%;
+                        aspect-ratio: 1/1;
+                    }
+                }
+            }
+        }
+    }
+
+    .directChatContainer {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border: solid 1px blue;
+        width: 70%;
+    }
+
+}
