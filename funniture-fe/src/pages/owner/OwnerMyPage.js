@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getProductListByOwnerNo } from '../../apis/ProductAPI';
 import { useNavigate } from 'react-router-dom';
 import { callInquiryByOwnerNoAPI } from '../../apis/InquiryAPI';
-import OwnerInquiry from './ownerInquiry.module.css';
+import OwnerInquiry from './ownerMainInquiry.module.css';
 
 function OwnerMyPage() {
     const { user } = useSelector(state => state.member)
