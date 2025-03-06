@@ -10,6 +10,18 @@ export async function getConsultingList() {
     }
 }
 
+export async function getUSerInquiryList({ memberId }) {
+    const url = `/adinquiry/${memberId}`
+
+    const response = await getData(url)
+
+    console.log("회원의 문의 기록 조회 결과 : ", response)
+
+    if (response) {
+        return response
+    }
+}
+
 // 공용
 const getData = async (url, query) => {
     let response
