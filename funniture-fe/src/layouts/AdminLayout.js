@@ -13,13 +13,13 @@ function AdminLayout() {
     const { user } = useSelector(state => state.member)
 
     // 로그인하지 않은 경우 로그인 페이지로 리디렉트
-    useEffect(() => {
-        if (user.memberId != '') {
-            if (user.memberRole != "ADMIN") {
-                navigate("/notfound")
-            }
-        }
-    }, [user])
+    // useEffect(() => {
+    //     if (user.memberId != '') {
+    //         if (user.memberRole != "ADMIN") {
+    //             navigate("/notfound")
+    //         }
+    //     }
+    // }, [user])
 
     return (
         <div className="adminPage">

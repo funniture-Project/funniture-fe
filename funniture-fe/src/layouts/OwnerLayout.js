@@ -10,14 +10,14 @@ function OwnerLayout() {
 
     const { user } = useSelector(state => state.member)
 
-    // 제공자가 아닐경우 홈홈 페이지로 리디렉트
-    useEffect(() => {
-        if (user.memberId != '') {
-            if (user.memberRole != "OWNER") {
-                navigate("/notfound")
-            }
-        }
-    }, [user])
+    // 제공자가 아닐경우 홈 페이지로 리디렉트
+    // useEffect(() => {
+    //     if (user.memberId != '') {
+    //         if (user.memberRole != "OWNER") {
+    //             navigate("/notfound")
+    //         }
+    //     }
+    // }, [user])
 
     return (
         <div className="owner">
