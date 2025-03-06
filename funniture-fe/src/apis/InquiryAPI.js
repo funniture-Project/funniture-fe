@@ -1,7 +1,6 @@
 import api from "./Apis";
 
 // 상세 페이지 문의 불러오기
-// 상세 페이지 문의 불러오기
 export const callInquiryByProductNoAPI = (productNo) => {
     const requestURL = `http://localhost:8080/api/v1/inquiry/product/${productNo}`;
 
@@ -13,6 +12,27 @@ export const callInquiryByProductNoAPI = (productNo) => {
         return response.data;
     };
 };
+
+// 상세 페이지 문의 불러오기
+export const callInquiryByOwnerNoAPI = async (ownerNo) => {
+    if (!ownerNo) {
+        console.error('Invalid ownerNo');
+        return;
+    }
+    console.log('ownerNo 잘 넘어 오는지 ', ownerNo);
+    const requestURL = `http://localhost:8080/api/v1/inquiry/owner/${ownerNo}`;
+
+    try {
+        const response = await api.get(requestURL);
+        console.log('ownerNo로 제공자 페이지 문의 조회 서버에 잘 다녀 왔나 response : ', response);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching inquiries:', error);
+        throw error;
+    }
+};
+
+
 
 
 // 문의 등록
