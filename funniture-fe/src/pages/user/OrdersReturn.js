@@ -76,9 +76,10 @@ function OrdersReturn() {
                     <tbody>
                     {activeRentalList.length > 0 ? (
                         activeRentalList.map((activeRental, index) => {
-                            const rentalEndDate = new Date(activeRental.rentalEndDate);  // rentalEndDate를 Date 객체로 변환
+                            const rentalEndDate = new Date(`${activeRental.rentalEndDate}T00:00:00`); // 시간 명시
                             const currentDate = new Date();
-                            const daysRemaining = Math.floor((rentalEndDate - currentDate) / (1000 * 60 * 60 * 24));  // 남은 날짜 계산
+                            currentDate.setHours(0, 0, 0, 0); // 현재 날짜의 시간을 00:00:00으로 맞춤
+                            const daysRemaining = Math.floor((rentalEndDate - currentDate) / (1000 * 60 * 60 * 24));
                             
                             return (
                                 <tr key={activeRental.rentalNo || index}>

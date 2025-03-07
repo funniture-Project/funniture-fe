@@ -149,7 +149,7 @@ function OrderReturnRegist () {
                         showBtnModal={showReturnSuccessModal}
                         setShowBtnModal={setShowReturnSuccessModal}
                         btnText="확인"
-                        modalContext="반납요청이 완료되었습니다."
+                        modalContext="반납 신청이 완료되었습니다."
                         modalSize="sm"
                         onSuccess= {handleReturnSuccess}
                 />
