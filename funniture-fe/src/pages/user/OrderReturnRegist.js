@@ -4,14 +4,20 @@ import { useEffect, useState } from 'react';
 import { getOrderDetail } from '../../apis/RentalAPI'
 import BtnModal from '../../component/BtnModal';
 import DeliveryAddressModal from './DeliveryAddressModal';
-import { putRentalDeliveryAddress } from '../../apis/RentalAPI'
+import { putRentalDeliveryAddress, putUpdateRentalState } from '../../apis/RentalAPI'
+import { useNavigate } from 'react-router-dom';
 
 function OrderReturnRegist () {
+
+    const navigate = useNavigate();
 
     const { id } = useParams(); // URL에서 주문번호를 가져옴
 
     const [orderInfo, setOrderInfo] = useState(null); // 초기값을 null로 설정
-    const [delivery, setDelivery] = useState(0);
+   
+    const [showDeliveryUpdateBtnModal, setShowDeliveryUpdateBtnModal] = useState(false); // 배송지 수정 모달창 상태
+    const [showReturnSuccessModal, setShowReturnSuccessModal] = useState(false); // 배송지 수정 모달창 상태
+    const [showSuccessModal, setShowSuccessModal] = useState(false); // 수정 완료 모달 상태
 
     // 데이터 호출 함수
     async function getData() {
@@ -28,32 +34,31 @@ function OrderReturnRegist () {
         getData()
     }, []); // 처음만 실행
 
-    const [showDeliveryUpdateBtnModal, setShowDeliveryUpdateBtnModal] = useState(false); // 배송지 수정 모달창 상태
-    const [showSuccessModal, setShowSuccessModal] = useState(false); // 수정 완료 모달 상태
-
-    // 배송지 선택 모달 열기 핸들러
     // 모달 열기 핸들러
     const onClickHandler =  () => {
         setShowDeliveryUpdateBtnModal(true);
     };
 
+
     // 배송지 선택 후, 상태 갱신
     const handleAddressUpdatSelect = async (address) => {
-    await putRentalDeliveryAddress(id, address.destinationNo);
+        await putRentalDeliveryAddress(id, address.destinationNo);
 
-    setDelivery(prev => {
-        console.log('이전 배송번호:', prev);
-        console.log('새로운 배송번호:', address.destinationNo);
-        return address.destinationNo;
-    });
-
-    setShowDeliveryUpdateBtnModal(false);
-    setShowSuccessModal(true);
-    
-    // 수정 후 데이터 다시 가져오기
-    await getData();
+        setShowDeliveryUpdateBtnModal(false);
+        setShowSuccessModal(true);
+        
+        // 수정 후 데이터 다시 가져오기
+        await getData();
     };
 
+    const handleReturnRegist = async() => {
+        await putUpdateRentalState(id);
+        setShowReturnSuccessModal(true);
+    }
+
+    const handleReturnSuccess = () => {
+        navigate('/mypage/returns'); 
+    }
 
 
     if (!orderInfo) return <div>Loading...</div>; 
@@ -111,7 +116,7 @@ function OrderReturnRegist () {
             </div>
         
             <div className={ReturnRegistCSS.returnButtonContainer}>
-                <div>반납신청하기</div>
+                <div onClick={handleReturnRegist}>반납신청하기</div>
             </div>
         
             {/* 배송지 변경 모달 */}
@@ -135,6 +140,18 @@ function OrderReturnRegist () {
                         btnText="확인"
                         modalContext="수거지 변경이 완료되었습니다."
                         modalSize="sm"
+                />
+            )}
+
+             {/* 반납요청 확인 모달 */}
+             {showReturnSuccessModal && (
+                <BtnModal
+                        showBtnModal={showReturnSuccessModal}
+                        setShowBtnModal={setShowReturnSuccessModal}
+                        btnText="확인"
+                        modalContext="반납요청이 완료되었습니다."
+                        modalSize="sm"
+                        onSuccess= {handleReturnSuccess}
                 />
             )}
         </div>
