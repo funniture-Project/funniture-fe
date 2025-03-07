@@ -2,7 +2,7 @@ import OwnerRentalCSS from './ownerRental.module.css'
 import Pagination from '../../component/Pagination';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { getOwnerRentalList, putRentalConfirm, putDeliverySubmit } from '../../apis/RentalAPI';
+import { getOwnerRentalList, putRentalConfirm, putDeliverySubmit, putUpdateRentalState } from '../../apis/RentalAPI';
 import BtnModal from '../../component/BtnModal';
 import DetailOrder from '../user/DetailOrder';
 import DeliverComModal from './DeliverComModal';
@@ -40,6 +40,9 @@ function OwnerRental() {
     const [showDeliveryInProgressModal, setShowDeliveryInProgressModal] = useState(false);  // 배송중 -> 배송완료
     const [showReturnRequestModal, setShowReturnRequestModal] = useState(false);    // 반납요청 -> 수거중
     const [showCollectionInProgressModal, setShowCollectionInProgressModal] = useState(false);  // 수거중 -> 반납완료 
+    const [showDeliveredModal, setShowDeliveredModal] = useState(false);
+    const [showPickedUpModal, setShowPickedUpModal] = useState(false);
+    const [showReturnedModal, setShowReturnedModal] = useState(false);
 
     // 데이터 가져오는 함수
     async function getData(ownerNo, period, rentalTab, pageNum) {
@@ -208,26 +211,40 @@ function OwnerRental() {
         }
     };
 
+    // 더블클릭하여 모달 열수있는것만 cursor: pointer 효과주기위한 함수
+    const canDoubleClick = (rentalState) => {
+        const doubleClickableStates = ["예약완료", "배송중", "반납요청", "수거중"];
+        return doubleClickableStates.includes(rentalState);
+    };
+
+    // 운송장 등록 확인 모달 예약완료 -> 배송중
     const handleDeliverySubmit = async (rentalNo, deliveryNo, deliverCom) => {
 
         try {
-            // putRentalConfirm 호출해서 선택된 예약들을 "예약완료"로 변경
             await putDeliverySubmit(rentalNo, deliveryNo, deliverCom);
             // 예약 리스트 갱신
             getData(memberId, period, rentalTab, pageNum);
-            // 확정 확인 모달 띄우기
             setShowDeliverySubmitModal(true);
         } catch (error) {
-            console.error('Error confirming rentals:', error);
+            console.error('예약완료 배송중으로 상태 변환 중 에러 : ', error);
             alert("오류가 발생했습니다.");
         }
 
         setShowReservationCompleteModal(false);  // 모달 닫기
     };
     
-    const handleDeliveryComplete = (order) => {
-        console.log("배송 완료:", order);
-        // API 호출 또는 상태 업데이트 로직 추가
+    // 배송중 -> 배송완료
+    const handleDeliveryComplete = async(rentalNo) => {
+        try {
+            await putUpdateRentalState(rentalNo);
+            getData(memberId, period, rentalTab, pageNum);
+            setShowDeliveredModal(true);
+        } catch (error) {
+            console.error('배송중 배송완료로 상태 변환 중 에러 : ', error);
+            alert("오류가 발생했습니다.");
+        }
+
+        setShowDeliveryInProgressModal(false);  // 모달 닫기
     };
     
     const handleCollectionStart = (order) => {
@@ -369,10 +386,10 @@ function OwnerRental() {
                                             {rental.rentalNo}
                                         </span>
                                     </td>
-                                    <td onDoubleClick={() => handleDoubleClick(rental)}>
+                                    <td className={canDoubleClick(rental.rentalState) ? OwnerRentalCSS.doubleClickable : ''} onDoubleClick={() => handleDoubleClick(rental)}>
                                         {rental.deliverCom || '-'}
                                     </td>
-                                    <td onDoubleClick={() => handleDoubleClick(rental)}>
+                                    <td className={canDoubleClick(rental.rentalState) ? OwnerRentalCSS.doubleClickable : ''} onDoubleClick={() => handleDoubleClick(rental)}>
                                         {rental.deliveryNo || '-'}
                                     </td>
                                     <td>{rental.productName}</td>
@@ -382,7 +399,7 @@ function OwnerRental() {
                                     <td>
                                         {rental.rentalStartDate && rental.rentalEndDate
                                             ? `${rental.rentalStartDate} ~ ${rental.rentalEndDate}`
-                                            : '배송대기중'}
+                                            : '-'}
                                     </td>
                                     <td>
                                         <div className={`${OwnerRentalCSS[getStatusClass(rental.rentalState)]}`}>
@@ -481,6 +498,34 @@ function OwnerRental() {
                 modalSize="sm"
             />
 
+            {/* 배송완료 상태수정 확인 모달 */}
+            <BtnModal
+                showBtnModal={showDeliveredModal}
+                setShowBtnModal={setShowDeliveredModal}
+                btnText="확인"
+                modalContext="배송완료로 예약진행상태가 수정되었습니다."
+                modalSize="sm"
+            />
+
+            {/* 수거중 상태수정 확인 모달 */}
+            <BtnModal
+                showBtnModal={showPickedUpModal}
+                setShowBtnModal={setShowPickedUpModal}
+                btnText="확인"
+                modalContext="수거중으로 예약진행상태가 수정되었습니다."
+                modalSize="sm"
+            />
+
+            {/* 반납완료 상태수정 확인 모달 */}
+            <BtnModal
+                showBtnModal={showReturnedModal}
+                setShowBtnModal={setShowReturnedModal}
+                btnText="확인"
+                modalContext="반납완료로 예약진행상태가 수정되었습니다."
+                modalSize="sm"
+            />
+
+            
             
 
 

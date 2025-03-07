@@ -1,21 +1,32 @@
 import DeliverInfoCSS from './deliveryInProgressModal.module.css'
 import { useState } from 'react';
+import { putDeliverySubmit } from '../../apis/RentalAPI';
+import BtnModal from '../../component/BtnModal';
+
 
 function DeliveryInProgressModal({selectedOrder, onBtnClick}) {
 
     const [isEditing, setIsEditing] = useState(false); // 수정 모드 여부
     const [trackingNumber, setTrackingNumber] = useState(selectedOrder.deliveryNo || "");
     const [carrier, setCarrier] = useState(selectedOrder.deliverCom || "");
+    const [showDeliveryUpdateModal, setShowDeliveryUpdateModal] = useState(false);
 
     const handleEditToggle = () => {
         setIsEditing(!isEditing); // 수정 모드 토글
     };
 
-    const handleSave = () => {
-        console.log("저장된 운송장 번호:", trackingNumber);
-        console.log("저장된 운송업체명:", carrier);
+    const handleSave = async () => {
+        await putDeliverySubmit(selectedOrder.rentalNo, trackingNumber, carrier);
+        setShowDeliveryUpdateModal(true);
         setIsEditing(false); // 읽기 전용 상태로 복귀
     };
+
+    const handleDeliveryFinish = () => {
+        if (onBtnClick) {
+            onBtnClick(selectedOrder.rentalNo);
+        }
+    }
+
 
     return (
         <div className={DeliverInfoCSS.deliverContainer}>
@@ -55,7 +66,10 @@ function DeliveryInProgressModal({selectedOrder, onBtnClick}) {
                         >
                             <option value="CJ 대한통운">CJ 대한통운</option>
                             <option value="한진택배">한진택배</option>
+                            <option value="롯데택배">롯데택배</option>
                             <option value="로젠택배">로젠택배</option>
+                            <option value="우체국택배">우체국택배</option>
+                            <option value="경동택배">경동택배</option>
                         </select>
                     ) : (
                         <span>{carrier}</span>
@@ -69,10 +83,20 @@ function DeliveryInProgressModal({selectedOrder, onBtnClick}) {
             {/* 배송완료 버튼 */}
             
             <div>
-                <button onClick={() => console.log("배송완료 처리")}>
+                <button onClick={handleDeliveryFinish}>
                     배송완료
                 </button>
             </div>
+
+            {/* 운송장 수정 확인 모달 */}
+            <BtnModal
+                showBtnModal={showDeliveryUpdateModal}
+                setShowBtnModal={setShowDeliveryUpdateModal}
+                btnText="확인"
+                modalContext="운송장 수정이 완료되었습니다."
+                modalSize="sm"
+            />
+
             
         </div>
     );
