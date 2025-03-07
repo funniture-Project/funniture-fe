@@ -1,0 +1,79 @@
+.title {
+    font-size: 1.4em;
+    font-weight: 700;
+    margin-bottom: -40%;
+}
+
+
+/* 전체 테이블 스타일 */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: center;
+    position: relative; /* 또는 absolute */
+    top: -35% !important; /* 우선순위 높이기 */
+}
+
+/* 테이블 헤더 스타일 */
+.table thead th {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-top: -10px;
+
+}
+
+/* 테이블 내용 스타일 */
+.table tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.table tbody td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+/* 체크박스 스타일 */
+.checkbox {
+    width: 16px;
+    height: 16px;
+}
+
+/* 필터 버튼 컨테이너 */
+.filterButtons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20%;
+}
+
+/* 필터 버튼 기본 스타일 */
+.filterButton {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    background-color: #e0e0e0;
+    color: #333;
+    cursor: pointer;
+}
+
+/* 활성화된 필터 버튼 스타일 */
+.filterButton.active {
+    background-color: #b09060; /* 갈색 톤 */
+    color: white;
+}
+
+/* 답변 여부 버튼 스타일 */
+.answerButton {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background-color: #b09060; /* 갈색 톤 */
+    color: white;
+    cursor: pointer;
+}
+
+.answerButton.complete {
+    background-color: #6aa84f; /* 초록색 톤 */
+}

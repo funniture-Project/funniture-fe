@@ -2,14 +2,22 @@ import './ownerlayout.css'
 import { Outlet, useNavigate } from "react-router-dom"
 import { NavLink } from 'react-router-dom';
 import profileImg from '../assets/images/profiletest.jpg'
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 function OwnerLayout() {
     const navigate = useNavigate();
 
-    const actstyle = {
-        backgroundColor: "#7F5539",
-        color: "#ffffff"
-    }
+    const { user } = useSelector(state => state.member)
+
+    // 제공자가 아닐경우 홈 페이지로 리디렉트
+    // useEffect(() => {
+    //     if (user.memberId != '') {
+    //         if (user.memberRole != "OWNER") {
+    //             navigate("/notfound")
+    //         }
+    //     }
+    // }, [user])
 
     return (
         <div className="owner">
