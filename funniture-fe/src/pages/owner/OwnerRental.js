@@ -217,7 +217,7 @@ function OwnerRental() {
         return doubleClickableStates.includes(rentalState);
     };
 
-    // 운송장 등록 확인 모달 예약완료 -> 배송중
+    // 운송장 등록 & 예약완료 -> 배송중
     const handleDeliverySubmit = async (rentalNo, deliveryNo, deliverCom) => {
 
         try {
@@ -246,16 +246,40 @@ function OwnerRental() {
 
         setShowDeliveryInProgressModal(false);  // 모달 닫기
     };
-    
-    const handleCollectionStart = (order) => {
-        console.log("수거 시작:", order);
-        // API 호출 또는 상태 업데이트 로직 추가
+
+    // 운송장 등록 & 반납요청 -> 수거중
+    const handleCollectionStart = async (rentalNo, deliveryNo, deliverCom) => {
+
+        try {
+            await putDeliverySubmit(rentalNo, deliveryNo, deliverCom);
+            // 예약 리스트 갱신
+            getData(memberId, period, rentalTab, pageNum);
+            setShowPickedUpModal(true);
+        } catch (error) {
+            console.error('예약완료 배송중으로 상태 변환 중 에러 : ', error);
+            alert("오류가 발생했습니다.");
+        }
+
+        setShowReturnRequestModal(false);  // 모달 닫기
     };
-    
-    const handleCollectionComplete = (order) => {
-        console.log("수거 완료:", order);
-        // API 호출 또는 상태 업데이트 로직 추가
+
+    // 수거중 -> 반납완료
+    const handleCollectionComplete = async(rentalNo) => {
+        try {
+            await putUpdateRentalState(rentalNo);
+            getData(memberId, period, rentalTab, pageNum);
+            setShowReturnedModal(true);
+        } catch (error) {
+            console.error('배송중 배송완료로 상태 변환 중 에러 : ', error);
+            alert("오류가 발생했습니다.");
+        }
+
+        setShowCollectionInProgressModal(false);  // 모달 닫기
+        
     };
+
+
+
     
 
 
@@ -463,30 +487,30 @@ function OwnerRental() {
             />
 
             {/* 반납요청 -> 수거중 (운송장, 운송업체 수정) */}
-            {/* <BtnModal
+            <BtnModal
                 showBtnModal={showReturnRequestModal}
                 setShowBtnModal={setShowReturnRequestModal}
                 modalSize="md"
                 childContent={
-                    <ReturnRequestModal 
+                    <DeliverComModal 
                         selectedOrder={selectedOrder} 
                         onBtnClick={handleCollectionStart} 
                     />
                 }
-            /> */}
+            />
 
             {/* 수거중 -> 반납완료 (수정버튼 운송장, 운송업체 수정) */}
-            {/* <BtnModal
+            <BtnModal
                 showBtnModal={showCollectionInProgressModal}
                 setShowBtnModal={setShowCollectionInProgressModal}
                 modalSize="md"
                 childContent={
-                    <CollectionInProgressModal 
+                    <DeliveryInProgressModal 
                         selectedOrder={selectedOrder} 
                         onBtnClick={handleCollectionComplete} 
                     />
                 }
-            /> */}
+            />
                         
 
             {/* 운송장 등록 확인 모달 */}
@@ -503,7 +527,7 @@ function OwnerRental() {
                 showBtnModal={showDeliveredModal}
                 setShowBtnModal={setShowDeliveredModal}
                 btnText="확인"
-                modalContext="배송완료로 예약진행상태가 수정되었습니다."
+                modalContext="배송완료로 상태 수정되었습니다."
                 modalSize="sm"
             />
 
@@ -512,7 +536,7 @@ function OwnerRental() {
                 showBtnModal={showPickedUpModal}
                 setShowBtnModal={setShowPickedUpModal}
                 btnText="확인"
-                modalContext="수거중으로 예약진행상태가 수정되었습니다."
+                modalContext="수거중으로 상태 수정되었습니다."
                 modalSize="sm"
             />
 
@@ -521,15 +545,9 @@ function OwnerRental() {
                 showBtnModal={showReturnedModal}
                 setShowBtnModal={setShowReturnedModal}
                 btnText="확인"
-                modalContext="반납완료로 예약진행상태가 수정되었습니다."
+                modalContext="반납완료로 상태 수정되었습니다."
                 modalSize="sm"
             />
-
-            
-            
-
-
-
 
             {/* 주문 상세페이지 모달 */}
             {selectedOrder && isModalOpen && (

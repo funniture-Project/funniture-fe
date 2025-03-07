@@ -77,16 +77,23 @@ function DeliveryInProgressModal({selectedOrder, onBtnClick}) {
                 </div>
 
                 {/* 배송메모 */}
-                <div>배송메모 : {selectedOrder.deliveryMemo}</div>
-            </div>
+                {selectedOrder.rentalState === "배송중" && (
+                    <div>배송메모 : {selectedOrder.deliveryMemo}</div>
+                )}
+                </div>
 
-            {/* 배송완료 버튼 */}
-            
-            <div>
-                <button onClick={handleDeliveryFinish}>
+                {/* 배송 완료/반납 완료 버튼 */}
+                <div>
+                {selectedOrder.rentalState === "배송중" ? (
+                    <button onClick={handleDeliveryFinish}>
                     배송완료
-                </button>
-            </div>
+                    </button>
+                ) : selectedOrder.rentalState === "수거중" ? (
+                    <button onClick={handleDeliveryFinish}>
+                    반납완료
+                    </button>
+                ) : null}
+                </div>
 
             {/* 운송장 수정 확인 모달 */}
             <BtnModal
@@ -95,9 +102,7 @@ function DeliveryInProgressModal({selectedOrder, onBtnClick}) {
                 btnText="확인"
                 modalContext="운송장 수정이 완료되었습니다."
                 modalSize="sm"
-            />
-
-            
+            /> 
         </div>
     );
 }
