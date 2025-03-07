@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { callInquiryByOwnerNoAPI , callInquiryAnswerByOwnerPageAPI } from '../../apis/InquiryAPI';
 import BtnModal from '../../component/BtnModal';
-import api from '../../apis/Apis'; // API 호출을 위한 모듈
 import Pagination from '../../component/Pagination';
 
 function OwnerInquiry() {

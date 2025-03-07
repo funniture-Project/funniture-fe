@@ -193,7 +193,7 @@ function MyPage() {
                             <div>사용상품/반납</div>
                         </Link>
                         <Link
-                            to={`/mypage`}
+                            to={`/mypage/inquiry`}
                             onClick={() => handleTabClick('inquiries')}
                             className={`tab link ${activeTab === 'inquiries' ? 'active' : ''}`}>
                             <div>문의내역</div>
