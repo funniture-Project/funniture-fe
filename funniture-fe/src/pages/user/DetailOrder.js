@@ -10,6 +10,7 @@ function DetailOrder({ selectedOrder, closeModal }) {
 
     const { id } = useParams(); // URL에서 주문번호를 가져옴
     const [order, setOrder] = useState(selectedOrder || null);
+
     const [deliveryMemo, setDeliveryMemo] = useState(""); // 배송 메모 상태
     const deliveryOptions = [
         "문 앞에 놓아주세요",
@@ -25,7 +26,7 @@ function DetailOrder({ selectedOrder, closeModal }) {
             closeModal(true);  // 예약 취소 성공 시 true 전달
         } catch (error) {
             console.error('예약취소 오류 : ', error);
-            alert("오류가 발생했습니다.");
+            closeModal(true);
         }
     };
 
@@ -43,6 +44,12 @@ function DetailOrder({ selectedOrder, closeModal }) {
         await putRentalDeliveryAddress(id, address.destinationNo);
         setShowBtnModal(false);
         setShowSuccessModal(true);
+
+        // 수정 후 데이터 다시 가져오기
+        if (!selectedOrder) {
+            const data = await getOrderDetail(id);
+            setOrder(data.results.rentalDetail[0]);
+        }
     };
 
     useEffect(() => {
@@ -53,7 +60,7 @@ function DetailOrder({ selectedOrder, closeModal }) {
             }
             fetchData();
         }
-    }, [selectedOrder, id, order]); 
+    }, [selectedOrder, id]); 
 
     if (!order) return <div>Loading...</div>; 
 
@@ -75,16 +82,11 @@ function DetailOrder({ selectedOrder, closeModal }) {
             <>
                 <div className={DetailOrderCss.productInfo}>
                     <div>
-                    
-                   
-                        <div>{order.storeName}</div>
-                        
+                        <div>{order.storeName}🏡</div>
                         <div>문의하기</div>
-                   
-                   
                     </div>
                     <div>
-                        <div>예약취소</div>
+                        <div onClick={handleCancelOrder}>예약취소</div>
                     </div>
                 </div>
                 <hr className={DetailOrderCss.orderHr} />

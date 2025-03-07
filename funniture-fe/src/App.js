@@ -43,7 +43,9 @@ import LoginRouter from './layouts/LoginRouter';
 import UserRouter from './layouts/UserRouter';
 import AdminQnAPage from './pages/admin/AdminQnAPage';
 import DeliveryAddress from './pages/user/DeliveryAddress';
+import OrderReturnRegist from './pages/user/OrderReturnRegist';
 import OwnerInquiry from './pages/owner/OwnerInquiry';
+
 
 
 function App() {
@@ -114,6 +116,7 @@ function App() {
               <Route index element={<Orders />} />
               <Route path='orders/:id' element={<DetailOrder />} />
               <Route path='returns' element={<OrdersReturn />} />
+              <Route path='return/:id' element={<OrderReturnRegist/>} />
               <Route path='edit' element={<UserConform />} />
               <Route path='edits' element={<EditsInfo />} />
               <Route path='favorites' element={<FavoritesPage />} />
