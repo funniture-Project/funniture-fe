@@ -173,6 +173,12 @@ export async function putDeliverySubmit(rentalNo, deliveryNo, deliverCom) {
     await api.put(url)
 }
 
+export async function putUpdateRentalState(rentalNo) {
+    const url = `/rental/${rentalNo}/state`;
+
+    await api.put(url)
+}
+
 // 공용
 const getData = async (url, query) => {
     let response
