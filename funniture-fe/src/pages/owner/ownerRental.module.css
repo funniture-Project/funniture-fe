@@ -176,3 +176,9 @@
         }
 }
 
+.doubleClickable,
+.clickable {
+    cursor: pointer;
+}
+
+
