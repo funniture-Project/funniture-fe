@@ -1,17 +1,17 @@
-/* mypageContent 내부에 전체적인 margin 을 주기위한 컨테이너 */
-.orderContainer {
+.returnContainer {
     display: flex;
     flex-direction: column;
     flex: 1;
     margin: 3% 5%;
     box-sizing: border-box;
 }
-.orderContainer > h3 {
+
+.returnContainer > h3 {
     display: flex;
     color: #7F5539;
     margin: 0;
     margin-bottom: 5px;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .orderHr {
@@ -42,6 +42,7 @@
     font-size: 0.8em;
 }
 
+
 /* 주문상품 */
 .productContainer {
     display: flex;
@@ -64,7 +65,6 @@
     width: 50%;
     gap: 10px;
 }
-
 .productInfo> div:nth-child(1) > div:nth-child(1)  {
     font-weight: 600;
     font-size: 1.2em;
@@ -175,12 +175,11 @@
 .deliveryContainer > div:nth-child(2) {
     display: flex;
     margin: 2px 0px;
-    font-size: 0.8em;
 }
 
 .deliveryContainer > div:nth-child(3) {
     display: flex;
-    font-size: 0.95em;
+    font-size: 1.1em;
 }
 
 .deliveryContainer > div:nth-child(4) {
@@ -211,113 +210,27 @@
     font-size: 0.95em;
 }
 
-/* 결제정보 */
-.paymentContainer {
-    
-    box-sizing: border-box;
-    border: 1px solid black;
-    border-radius: 7px;
+.returnButtonContainer{
     display: flex;
     flex-direction: column;
-}
-
-
-/* 내부 div를 가로 정렬 & 양쪽 끝으로 배치 */
-.paymentContainer > div:nth-child(1) {
-    margin: 10px 20px 0px 20px;
-    display: flex;
-    justify-content: space-between; /* 왼쪽 텍스트 - 오른쪽 금액을 양끝으로 정렬 */
-    align-items: center; /* 수직 정렬 */
-    font-size: 1.5em;
-}
-
-.paymentContainer > div:nth-child(1) {
-    color: #2C7E3E;
-    font-weight: 600;
-}
-
-.paymentContainer > div:nth-child(2) {
-    margin: 7px 20px;
-    display: flex;
-    flex-direction: column;
-    border-left: 2px solid #2C7E3E;
-}
-
-.paymentContainer > div:nth-child(2) > div{
-    display: flex;
-    justify-content: space-between; /* 왼쪽 텍스트 - 오른쪽 금액을 양끝으로 정렬 */
-    align-items: center; /* 수직 정렬 */
-    margin: 2px 0px 2px 10px;
-    color: rgb(90, 89, 89);
-}
-
-.paymentContainer > div:nth-child(4) {
-    margin: 5px 20px 10px 20px;
-    display: flex;
-    justify-content: space-between; /* 왼쪽 텍스트 - 오른쪽 금액을 양끝으로 정렬 */
-    align-items: center; /* 수직 정렬 */
-    font-size: 1.4em;
-    
-}
-
-/* 포인트혜택 */
-.pointContainer {
-    box-sizing: border-box;
-    border: 1px solid black;
-    border-radius: 7px;
-    display: flex;
-    flex-direction: column;
-}
-
-.pointContainer > div> div {
-    margin: 15px 20px 0px 15px;
-    display: flex;
-    justify-content: space-between; /* 왼쪽 텍스트 - 오른쪽 금액을 양끝으로 정렬 */
-    align-items: center; /* 수직 정렬 */
-    font-size: 1.2em;
-    font-weight: 600;
-
-    >div{
-        span{
-            font-size: 0.6em;
-        }
-    }
-}
-
-.pointContainer > div> div:ntn-child(2) > span {
-    font-size: 0.3em;
-}
-
-.pointContainer > div > p {
-    color: gray;
-    margin: 2px 0px 15px 15px;
-}
-
-.userInfoContainer {
-    box-sizing: border-box;
-    border: 1px solid black;
-    border-radius: 7px;
-    display: flex;
-    flex-direction: column;
-    align-items: self-start;
-    padding: 1% 2.5%;
-}
-
-.userInfoContainer > div > div > span {
-    font-weight: 600;
-}
-
-.ownerCencle {
-    display: flex;
+    margin-top: 80px;
+    align-items: center;
     justify-content: center;
-    padding-top: 3%;
+    width: 100%;
+
 }
 
-.ownerCencle >div {
-    padding: 8px 30px;
+.returnButtonContainer > div {
+    display: flex;
+    font-size: 1.5em;
+    background-color: #B08968;
+    padding: 8px 25px;
     border-radius: 10px;
     color: white;
-    background-color: #EC2828;
-    box-shadow: 0px 2.5px 5px rgb(156, 155, 155); /* x, y, blur, 색상 */
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.returnButtonContainer > div:hover {
+    background-color: #7F5539;
 }
