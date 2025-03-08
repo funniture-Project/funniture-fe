@@ -171,14 +171,14 @@ function OwnerInquiry() {
                         ) : (
                             <tr>
                                 <td colSpan="9" style={{ textAlign: 'center' }}>
-                                    데이터가 없습니다.
+                                    등록된 문의내역이 없습니다.
                                 </td>
                             </tr>
                         )
                     ) : (
                         <tr>
                             <td colSpan="9" style={{ textAlign: 'center' }}>
-                                데이터가 없습니다.
+                            등록된 문의내역이 없습니다.
                             </td>
                         </tr>
                     )}
