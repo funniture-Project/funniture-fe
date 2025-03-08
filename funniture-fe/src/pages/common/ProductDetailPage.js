@@ -7,6 +7,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { getFavoriteList, updateFavoriteList } from "../../apis/FavoriteAPI";
 import BtnModal from '../../component/BtnModal'
 import Inquiry from "./Inquiry";
+import { callInquiryByProductNoAPI } from "../../apis/InquiryAPI";
+import Review from "./Review";
+import { callReviewByProductNoAPI } from "../../apis/ReviewAPI";
 
 function ProductDetailPage() {
     const { id } = useParams();
@@ -24,8 +27,42 @@ function ProductDetailPage() {
 
     const { favoriteList } = useSelector(state => state.favorite)
 
+    const [inquiriesCount, setInquiriesCount] = useState(0);
+    const [reviewsCount, setReviewsCount] = useState(0);
+
     // 로그인 요청 모달
     const [showModal, setShowModal] = useState(false)
+
+    // 최초에 렌더링 시, 상품 문의 개수 적용시키기
+    useEffect(() => {
+        if (productInfo?.productNo) {
+          dispatch(callInquiryByProductNoAPI(productInfo.productNo))
+            .then(response => {
+              if (response.results?.map) {
+                setInquiriesCount(response.results.map.length);
+              }
+            })
+            .catch(error => console.error("초기 데이터 가져오기 실패:", error));
+        }
+      }, [dispatch, productInfo]);
+
+    // 상품 리뷰 개수 가져오기 (얘도 dipatch로 보내면 에러남)
+    const fetchReviewsCount = async () => {
+        try {
+            const response = await callReviewByProductNoAPI(productInfo.productNo);
+            if (response.results?.map) {
+                setReviewsCount(response.results.map.length);
+            }
+        } catch (error) {
+            console.error("리뷰 데이터 가져오기 실패:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (productInfo?.productNo) {
+            fetchReviewsCount();
+        }
+    }, [productInfo]);
 
     useEffect(() => {
         console.log("현재 user의 정보 : ", user)
@@ -251,13 +288,13 @@ function ProductDetailPage() {
                             checked={selectedTab == "productReview" ? true : false}
                             onChange={() => { setSelectedTab('productReview') }}
                         />
-                        <label htmlFor="productReview">상품평(2)</label>
+                        <label htmlFor="productReview">상품평({reviewsCount})</label>
 
                         <input type="radio" name="detailTab" id="productInquiry"
                             checked={selectedTab == "productInquiry" ? true : false}
                             onChange={() => { setSelectedTab('productInquiry') }}
                         />
-                        <label htmlFor="productInquiry">상품문의</label>
+                        <label htmlFor="productInquiry">상품문의({inquiriesCount})</label>
                     </div>
 
                     {selectedTab == "detailInfo" ?
@@ -310,10 +347,10 @@ function ProductDetailPage() {
                         </>
                         : selectedTab == "productReview" ?
                             <>
-                                <div>리뷰 부르는 공간</div>
+                                <Review productInfo={productInfo} setReviewsCount={setReviewsCount} />
                             </>
                             : selectedTab == "productInquiry" ?
-                                <Inquiry productInfo={productInfo} />
+                                <Inquiry productInfo={productInfo} setInquiriesCount={setInquiriesCount} />
                                 :
                                 <>
                                     {/* 제공자 정보 */}

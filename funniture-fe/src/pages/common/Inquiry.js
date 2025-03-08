@@ -7,7 +7,7 @@ import BtnModal from "../../component/BtnModal";
 import decodeJwt from '../../utils/tokenUtils';
 
 // 상세페이지 문의 조회 및 등록
-function Inquiry({ productInfo }) {
+function Inquiry({ productInfo , setInquiriesCount }) {
     const member = useSelector((state) => state.member);
     const dispatch = useDispatch();
     const [inquiries, setInquiries] = useState([]);
@@ -36,6 +36,7 @@ function Inquiry({ productInfo }) {
             if (response.results?.map) {
                 // 문의 리스트 설정
                 setInquiries(response.results.map);
+                setInquiriesCount(response.results.map.length); // 문의 개수 상태 업데이트
             }
         } catch (error) {
             console.error("문의 데이터 가져오기 실패:", error);
