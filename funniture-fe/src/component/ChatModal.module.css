@@ -77,7 +77,9 @@
     background-color: #F7F7F8;
     padding-top: 0;
     border-radius: 10px;
+    overflow: hidden;
 
+    /* 챗봇 */
     .chatBox {
         border: solid 1px #B08968;
         width: 100%;
@@ -203,6 +205,78 @@
             }
         }
     }
+
+    /* 1:1 상담 */
+    .directChatBox {
+        height: 100%;
+        background-color: white;
+        border-radius: 10px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+
+        overflow: scroll;
+
+        .directChatItem {
+            max-width: 80%;
+            /* min-height: 40px; */
+            display: flex;
+            align-items: end;
+            margin: 5px 0;
+            font-size: 0.8em;
+            justify-content: end;
+
+            /* >div {
+                height: 100%;
+            } */
+
+            .sendTime {
+                text-align: end;
+                max-width: 20%;
+                font-size: 0.5em;
+            }
+
+            .chatContent {
+                height: 100%;
+                text-align: start;
+                border: solid 2px #7F5539;
+                padding: 5px 8px;
+                width: fit-content;
+                border-radius: 5px;
+                margin: 0 8px;
+            }
+
+            .chatLeft,
+            .chatRight {
+                width: 8px;
+                aspect-ratio: 1/1;
+                position: relative;
+            }
+
+            .chatLeft::after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                border-top: 8px solid transparent;
+                border-left: 8px solid transparent;
+                border-right: 8px solid #7F5539;
+                border-bottom: 8px solid #7F5539;
+            }
+
+            .chatRight::before {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                border-top: 8px solid transparent;
+                border-left: 8px solid #7F5539;
+                border-right: 8px solid transparent;
+                border-bottom: 8px solid #7F5539;
+            }
+        }
+    }
 }
 
 .modalFooter {
@@ -210,29 +284,60 @@
     border: none;
     display: flex;
     justify-content: center;
+    background-color: #F7F7F8;
+    padding-top: 0;
 
-    button {
-        width: fit-content;
-        border: none;
-        padding: 5px 20px;
-    }
+    min-height: 12%;
+    max-height: 18%;
 
-    button:first-child {
-        background-color: #B08968;
-    }
+    .inputBox {
+        width: 100%;
+        height: 100%;
+        /* background-color: white; */
+        border-radius: 10px;
+        padding: 0 10px;
 
-    button:nth-child(2) {
-        background-color: #A5A3A3;
-    }
+        display: flex;
+        align-items: center;
+        gap: 10px;
 
-    button:hover {
-        background-color: #7F5539;
-    }
+        textarea {
+            flex: 1;
+            height: 80%;
+            border-radius: 30px;
+            padding: 5px 15px;
+            border: solid 1px #B08968;
+            background-color: white;
+            white-space: pre-line;
+        }
 
-    button:focus-visible {
-        background-color: #7F5539;
-        border-color: #7F5539;
-        box-shadow: 0 0 0 0.25rem rgba(127, 85, 57, 0.25);
+        button {
+            width: fit-content;
+            border: none;
+            width: 13%;
+            aspect-ratio: 1/1;
+            padding: 5px;
+            border-radius: 10px;
+            background-color: #B08968;
+
+            .sendIcon {
+                width: 70%;
+
+                path {
+                    fill: white;
+                }
+            }
+        }
+
+        button:hover {
+            background-color: #7F5539;
+        }
+
+        button:focus-visible {
+            background-color: #7F5539;
+            border-color: #7F5539;
+            box-shadow: 0 0 0 0.25rem rgba(127, 85, 57, 0.25);
+        }
     }
 }
 

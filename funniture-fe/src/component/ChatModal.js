@@ -8,6 +8,8 @@ import adminLogo from '../assets/images/white_chiar_logo.png'
 import { useLocation } from "react-router-dom";
 import BtnModal from './BtnModal'
 import { changeConsultingAPI } from "../apis/MemberAPI";
+import { ReactComponent as SendIcon } from '../assets/icon/send-icon.svg'
+import { getUSerInquiryList, sendChat } from "../apis/AdminInquiryAPI";
 
 function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFile 추가
 
@@ -22,23 +24,27 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
     const [needLoginModal, setNeedLoginModal] = useState(false)
     const [loginModalMsg, setLoginModalMsg] = useState('')
 
-    const location = useLocation();
-
     // 이전 질문
-    // const prevList = useRef();
     const [prevList, setPrevList] = useState(null);
 
     // 처음 질문
     const firstList = useRef();
 
-    // 이전 선택한 질문의 번호호
+    // 이전 선택한 질문의 번호
     const prevSelectNo = useRef();
 
+    // 입력창 값 관리
+    const [deValue, setDeValue] = useState('')
+
+    const location = useLocation();
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(getChatQaList());
     }, [])
+
+    // 1:1 문의 연결
+    const [inquiryList, setInquiryList] = useState([])
 
     useEffect(() => {
         console.log("새로받아온 chatQaList : ", chatQaList)
@@ -158,14 +164,39 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
         setCurrentList(firstList.current)
     }
 
-    // 관리자에게 연결
+    // 관리자에게 연결 1:1 문의
+    async function getUserChatData(memberId) {
+        const response = await getUSerInquiryList({ memberId })
+
+        if (response.httpStatusCode == 200) {
+            setInquiryList(response.results.result)
+        }
+    }
+
     useEffect(() => {
+        console.log("user정보 : ", user)
         if (user) {
             console.log("user정보 : ", user)
+
+            if (user.isConsulting) {
+                getUserChatData(user.memberId)
+            }
         }
     }, [user])
 
+    useEffect(() => {
+        console.log("사용자의 상담 내역 : ", inquiryList)
+        const textareaBox = document.querySelector(`#modalFooter`);
+        const chatBox = document.querySelector("#directChatBox")
+
+        if (chatBox) {
+            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: "smooth" });
+            textareaBox.style.height = 'auto'
+        }
+    }, [inquiryList])
+
     async function changeConsulting() {
+        console.log("관리자 연결 클릭 : ", user)
         if (!user || user.memberId == '') {
             setNeedLoginModal(true)
             setLoginModalMsg('관리자와의 상담을 위해서는 로그인이 필요합니다.')
@@ -178,6 +209,34 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
             dispatch(changeConsultingAPI({ memberId: user.memberId }))
         }
     }
+
+    async function sendNewChat() {
+        console.log("메세지 보내기 : ", user?.memberId)
+        if (user.memberId != '') {
+            const newChat = {
+                senderNo: user.memberId,
+                receiveNo: "ADMIN",
+                contents: deValue
+            }
+
+            console.log(newChat)
+            await sendChat({ newChat })
+            getUserChatData(user.memberId)
+            setDeValue('')
+        }
+    }
+
+    function updateInputBox(value) {
+        setDeValue(value)
+
+        const textareaBox = document.querySelector(`#modalFooter`);
+        const textarea = document.querySelector(`#sendContent`);
+
+        // 변경전 초기화 먼저
+        textareaBox.style.height = 'auto'
+        textareaBox.style.height = `${textarea.scrollHeight + 20}px`
+    }
+
 
     return (
         <>
@@ -210,17 +269,52 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
 
                 {user?.isConsulting ?
                     <>
-                        <Modal.Body className={ChatCss.modalBody}>
-                            상담 진행 중인 user입니다.
+                        <Modal.Body className={ChatCss.modalBody} style={{ paddingBottom: 0 }}>
+                            <div className={ChatCss.directChatBox} id="directChatBox">
+                                {inquiryList.length == 0 ?
+                                    <div>상담을 시작해보세요!!</div>
+                                    :
+                                    <>
+                                        {inquiryList.map(item => item.receiveNo == "ADMIN" ?
+                                            <div className={ChatCss.directChatItem} style={{ alignSelf: "end" }} key={item.inquiryAdminNo}>
+                                                <div className={ChatCss.sendTime}>{item.createDateTime}</div>
+                                                <div className={ChatCss.chatContent}
+                                                    style={{ borderBottomRightRadius: 0 }}
+                                                >
+                                                    {item.contents}
+                                                </div>
+                                                <div className={ChatCss.chatRight}></div>
+                                            </div>
+                                            : <div className={ChatCss.directChatItem} style={{ justifyContent: "start" }} key={item.inquiryAdminNo}>
+                                                <div className={ChatCss.chatLeft}></div>
+                                                <div className={ChatCss.chatContent}
+                                                    style={{ borderBottomLeftRadius: 0 }}
+                                                >
+                                                    {item.contents}
+                                                </div>
+                                                <div className={ChatCss.sendTime}
+                                                    style={{ textAlign: "start" }}
+                                                >
+                                                    {item.createDateTime}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
+
+                                }
+                            </div>
                         </Modal.Body>
-                        <Modal.Footer className={ChatCss.modalFooter}>
-                            <div>footer의 위치</div>
-                            {/* <Button onClick={handleSuccessClose}>
-                                확인
-                            </Button>
-                            <Button onClick={handleFailClose}>
-                                취소
-                            </Button> */}
+                        <Modal.Footer className={ChatCss.modalFooter} id="modalFooter">
+                            <div className={ChatCss.inputBox} id="inputBox">
+                                <textarea
+                                    id="sendContent"
+                                    value={deValue}
+                                    onChange={(e) => updateInputBox(e.target.value)}
+                                />
+                                <button onClick={sendNewChat}>
+                                    <SendIcon className={ChatCss.sendIcon} />
+                                </button>
+                            </div>
                         </Modal.Footer>
                     </>
                     :

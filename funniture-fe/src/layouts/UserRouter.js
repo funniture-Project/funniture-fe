@@ -12,7 +12,7 @@ function UserRouter() {
     // useEffect(() => {
     //     if (user.memberId != '') {
     //         if (user.memberRole != "USER") {
-    //             navigate("/notfound")
+    //             navigate("/restrict")
     //         }
     //     }
     // }, [user])
