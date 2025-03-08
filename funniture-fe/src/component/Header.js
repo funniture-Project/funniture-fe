@@ -75,7 +75,7 @@ function Header({ setSelectCategory }) {
 
     function BeforeLogin() { // | 는 시각적으로 버튼 구분
         return (
-            <div class={headerCss.loginBtn} onClick={() => navigate('/login')}>
+            <div className={headerCss.loginBtn} onClick={() => navigate('/login')}>
                 <div>로그인</div>
             </div>
         );
@@ -84,7 +84,7 @@ function Header({ setSelectCategory }) {
     function AfterLogin() {
 
         return (
-            <div class={headerCss.loginBtn} onClick={onClickLogoutHandler}>
+            <div className={headerCss.loginBtn} onClick={onClickLogoutHandler}>
                 <div>로그아웃</div>
             </div>
         );
