@@ -2,7 +2,7 @@ import AdminTop from '../../component/adminpage/AdminTop';
 import RentalCss from './rental.module.css';
 import { useState, useEffect } from 'react';
 import Pagination from '../../component/Pagination';
-import { callLeaverUserByAdminAPI , callChangeUserRoleAPI } from '../../apis/AdminAPI';
+import { callLeaverUserByAdminAPI, callChangeUserRoleAPI } from '../../apis/AdminAPI';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BtnModal from '../../component/BtnModal';
 import AdminModal from './adminModal.module.css';
@@ -22,11 +22,11 @@ function AdminLeaver() {
 
     // const [showModal, setShowModal] = useState(false); // 접근 권한 변경 누를 때 뜨는 모달 
     const [selectAll, setSelectAll] = useState(false); // 체크박스 전체 선택
- 
-        // 얼러트 모달 상태 관리
+
+    // 얼러트 모달 상태 관리
     const [showAlertModal, setShowAlertModal] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
-    
+
     const [pageInfo, setPageInfo] = useState(null);
 
     useEffect(() => {
@@ -45,7 +45,7 @@ function AdminLeaver() {
     const fetchLeaverList = async (pageNum = 1) => {
         try {
             const data = await callLeaverUserByAdminAPI(pageNum);
-            console.log('data' , data);
+            console.log('data', data);
             setLeaverList(data.results.result.data);
             setPageInfo(data.results.result.pageInfo);
         } catch (error) {
@@ -68,7 +68,7 @@ function AdminLeaver() {
             return newSelected;
         });
     };
-    
+
 
     const handleSelectAllChange = () => {
         setSelectAll(!selectAll);
@@ -78,7 +78,7 @@ function AdminLeaver() {
             setSelectedLeavers([]);
         }
     };
-    
+
 
     const handleAccessChangeClick = () => {
         if (selectedLeavers.length === 0) {
@@ -118,13 +118,13 @@ function AdminLeaver() {
             setShowAlertModal(true); // 얼러트 모달 표시
         }
     };
-    
+
 
     const handleLeaverClick = (leaver) => {
         setSelectedLeaver(leaver);
         setShowUserModal(true);
     };
-    
+
     const renderLeaverModal = () => (
         <div className={AdminModal.leaverDiv}>
             <p><strong> ▷ 회원 ID  :</strong> {selectedLeaver?.memberId}</p>
@@ -134,7 +134,7 @@ function AdminLeaver() {
             <p><strong>▷ 회원가입일  :</strong> {formatDate(selectedLeaver?.signupDate)}</p>
             <p><strong>▷ 포인트  :</strong> {selectedLeaver?.pointDTO.currentPoint}</p>
         </div>
-    );   
+    );
 
     // 얼러트 모달 닫기 핸들러
     const closeAlertModal = () => {
@@ -149,40 +149,37 @@ function AdminLeaver() {
         const day = String(date.getDate()).padStart(2, '0');
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
-        
+
         return `${year}-${month}-${day} / ${hours}시 ${minutes}분`;
-      };
-        
+    };
+
 
     return (
         <>
             <div className={RentalCss.adminRentalContent}>
-                <div className={RentalCss.rentalSearchBox}>
-                    <div className={RentalCss.searchReset}></div>
-                </div>
                 <div className={RentalCss.adminSelectButton}>
                     <button onClick={() => handleTabClick('/admin/authority/user')} className={`${RentalCss.button} ${activeTab === '/admin/authority/user' ? RentalCss.active : ''}`}>사용자</button>
                     <button onClick={() => handleTabClick('/admin/authority/owner')} className={`${RentalCss.button} ${activeTab === '/admin/authority/owner' ? RentalCss.active : ''}`}>제공자</button>
                     <button onClick={() => handleTabClick('/admin/authority/convert')} className={`${RentalCss.button} ${activeTab === '/admin/authority/convert' ? RentalCss.active : ''}`}>전환요청</button>
                     <button onClick={() => handleTabClick('/admin/authority/leaver')} className={`${RentalCss.button} ${activeTab === '/admin/authority/leaver' ? RentalCss.active : ''}`}>탈퇴자</button>
                     <button onClick={handleAccessChangeClick}>접근권한변경</button>
-                </div>  
+                </div>
                 <div className={RentalCss.rentalBox}>
                     <div className={RentalCss.rentalSubBox}>
-                    <div className={RentalCss.title}>
-                                <div style={{ width: "3%" }}>
-                                <input 
-                                    type="checkbox" 
+                        <div className={RentalCss.title}>
+                            <div style={{ width: "3%" }}>
+                                <input
+                                    type="checkbox"
                                     checked={selectAll}
-                                    onChange={handleSelectAllChange}/>
-                                </div>
-                                <div style={{ width: "15%" }}><p>회원번호</p></div>
-                                <div style={{ width: "10%" }}><p>이름</p></div>
-                                <div style={{ width: "20%" }}><p>전화번호</p></div>
-                                <div style={{ width: "15%" }}><p>이메일</p></div>
-                                <div style={{ width: "27%" }}><p>회원가입일</p></div>
-                                <div style={{ width: "13%" }}><p>포인트</p></div>
+                                    onChange={handleSelectAllChange} />
                             </div>
+                            <div style={{ width: "15%" }}><p>회원번호</p></div>
+                            <div style={{ width: "10%" }}><p>이름</p></div>
+                            <div style={{ width: "20%" }}><p>전화번호</p></div>
+                            <div style={{ width: "15%" }}><p>이메일</p></div>
+                            <div style={{ width: "27%" }}><p>회원가입일</p></div>
+                            <div style={{ width: "13%" }}><p>포인트</p></div>
+                        </div>
                         {leaverList.length === 0 ? (
                             <div className={RentalCss.noResultsMessage}>
                                 <p>탈퇴한 회원이 없습니다.</p>
@@ -191,7 +188,7 @@ function AdminLeaver() {
                             leaverList.map((leaver) => (
                                 <div key={leaver.memberId} className={RentalCss.rentalItems}>
                                     <div style={{ width: "3%" }} onClick={(e) => e.stopPropagation()}>
-                                        <input 
+                                        <input
                                             type="checkbox"
                                             checked={selectedLeavers.includes(leaver.memberId)}
                                             onChange={() => handleCheckboxChange(leaver.memberId)}
@@ -208,8 +205,8 @@ function AdminLeaver() {
                         )}
                     </div>
                     {pageInfo && (
-                          <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchLeaverList(pageNum)} />
-                      )}
+                        <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchLeaverList(pageNum)} />
+                    )}
                 </div>
                 <BtnModal
                     showBtnModal={showAccessModal}

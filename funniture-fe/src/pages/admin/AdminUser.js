@@ -1,9 +1,9 @@
 import AdminTop from '../../component/adminpage/AdminTop';
 import RentalCss from './rental.module.css';
 import { useState, useEffect } from 'react';
-import { callUserListByAdminAPI , callChangeLimitRoleAPI , callUserPointUpdateAPI} from '../../apis/AdminAPI'
+import { callUserListByAdminAPI, callChangeLimitRoleAPI, callUserPointUpdateAPI } from '../../apis/AdminAPI'
 import Pagination from '../../component/Pagination';
-import { useNavigate , useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import BtnModal from '../../component/BtnModal';
 import AdminModal from './adminModal.module.css';
 
@@ -43,18 +43,18 @@ function AdminUser() {
     useEffect(() => {
         fetchUserList();
     }, []);
-    
+
     const fetchUserList = async (pageNum = 1) => {
         try {
             const data = await callUserListByAdminAPI(pageNum);
-            console.log('data' , data);
+            console.log('data', data);
             setUserList(data.results.result.data);
             setPageInfo(data.results.result.pageInfo);
         } catch (error) {
             console.error('회원 목록 불러오기 실패:', error);
         }
     };
-    
+
     useEffect(() => {
         console.log('관리자 페이지, 탈퇴자 useEffect 실행');
         callUserListByAdminAPI(1);
@@ -70,7 +70,7 @@ function AdminUser() {
             return newSelected;
         });
     };
-    
+
 
     const handleSelectAllChange = () => {
         setSelectAll(!selectAll);
@@ -80,7 +80,7 @@ function AdminUser() {
             setSelectedUsers([]);
         }
     };
-    
+
 
     // 접근 권한 변경 버튼 클릭 시
     const handleAccessChangeClick = () => {
@@ -93,12 +93,12 @@ function AdminUser() {
         setShowAccessModal(true);
     };
 
-    
+
     // const handleConfirmAccessChange = async () => {
     //     try {
     //         const response = await callChangeLimitRoleAPI(selectedUsers);
     //         console.log('권한 변경 응답:', response);
-            
+
     //         if (response && response.data && response.data.httpStatusCode === 201) {
     //             setAlertMessage('권한이 변경되었습니다.');
     //             await callUserListByAdminAPI(setUserList); // 사용자 목록 갱신
@@ -135,14 +135,14 @@ function AdminUser() {
             setShowAlertModal(true);
         }
     };
-    
+
 
     const handleUserClick = (user) => {
         setSelectedUser(user);
         setNewPoint(user.pointDTO.currentPoint.toString());
         setShowUserModal(true);
     };
-    
+
 
     const handlePointChange = (e) => {
         setNewPoint(e.target.value);
@@ -186,11 +186,11 @@ function AdminUser() {
         }
     };
 
-        // 얼러트 모달 닫기 핸들러
-        const closeAlertModal = () => {
-            setShowAlertModal(false);
-            setAlertMessage('');
-        };
+    // 얼러트 모달 닫기 핸들러
+    const closeAlertModal = () => {
+        setShowAlertModal(false);
+        setAlertMessage('');
+    };
 
     const renderUserModal = () => (
         <div className={AdminModal.userDiv}>
@@ -199,18 +199,18 @@ function AdminUser() {
             <p><strong>▷ 이메일  :</strong> {selectedUser?.email}</p>
             <p><strong>▷ 전화번호  :</strong> {selectedUser?.phoneNumber}</p>
             <p><strong>▷ 가입일  :</strong> {formatDate(selectedUser?.signupDate)}</p>
-            <p><strong>▷ 포인트  :</strong> 
-                <input 
-                    type="number" 
-                    value={newPoint} 
+            <p><strong>▷ 포인트  :</strong>
+                <input
+                    type="number"
+                    value={newPoint}
                     onChange={handlePointChange}
-                    style={{marginLeft: '10px', width: '100px'}}
+                    style={{ marginLeft: '10px', width: '100px' }}
                 />
             </p>
         </div>
     );
 
-    
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -218,117 +218,114 @@ function AdminUser() {
         const day = String(date.getDate()).padStart(2, '0');
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
-        
+
         return `${year}-${month}-${day} / ${hours}시 ${minutes}분`;
-      };
+    };
 
     return (
         <>
             <div className={RentalCss.adminRentalContent}>
-                <div className={RentalCss.rentalSearchBox}>
-                    <div className={RentalCss.searchReset}></div>
+                {/* <div className="adminSelectButton"> */}
+                <div className={RentalCss.adminSelectButton}>
+                    <button
+                        onClick={() => handleTabClick('/admin/authority/user')}
+                        className={`${RentalCss.button} ${activeTab === '/admin/authority/user' ? RentalCss.active : ''}`}>사용자
+                    </button>
+                    <button
+                        onClick={() => handleTabClick('/admin/authority/owner')}
+                        className={`${RentalCss.button} ${activeTab === '/admin/authority/owner' ? RentalCss.active : ''}`}>제공자
+                    </button>
+                    <button
+                        onClick={() => handleTabClick('/admin/authority/convert')}
+                        className={`${RentalCss.button} ${activeTab === '/admin/authority/convert' ? RentalCss.active : ''}`}>전환요청
+                    </button>
+                    <button
+                        onClick={() => handleTabClick('/admin/authority/leaver')}
+                        className={`${RentalCss.button} ${activeTab === '/admin/authority/leaver' ? RentalCss.active : ''}`}>탈퇴자
+                    </button>
+                    <button onClick={handleAccessChangeClick}>접근권한변경</button>
                 </div>
-                    {/* <div className="adminSelectButton"> */}
-                    <div className={RentalCss.adminSelectButton}>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/user')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/user' ? RentalCss.active : ''}`}>사용자
-                        </button>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/owner')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/owner' ? RentalCss.active : ''}`}>제공자
-                        </button>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/convert')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/convert' ? RentalCss.active : ''}`}>전환요청
-                        </button>
-                        <button
-                            onClick={() => handleTabClick('/admin/authority/leaver')}
-                            className={`${RentalCss.button} ${activeTab === '/admin/authority/leaver' ? RentalCss.active : ''}`}>탈퇴자
-                        </button>
-                        <button onClick={handleAccessChangeClick}>접근권한변경</button>
-                    </div>  
-                    <div className={RentalCss.rentalBox}>
-                        <div className={RentalCss.rentalSubBox}>
-                            {/* 테이블 헤더 */}
-                            <div className={RentalCss.title}>
-                                <div style={{ width: "3%" }}>
-                                 <input 
-                                    type="checkbox" 
+                <div className={RentalCss.rentalBox}>
+                    <div className={RentalCss.rentalSubBox}>
+                        {/* 테이블 헤더 */}
+                        <div className={RentalCss.title}>
+                            <div style={{ width: "3%" }}>
+                                <input
+                                    type="checkbox"
                                     checked={selectAll}
-                                    onChange={handleSelectAllChange}/>
-                                </div>
-                                <div style={{ width: "15%" }}><p>회원번호</p></div>
-                                <div style={{ width: "10%" }}><p>이름</p></div>
-                                <div style={{ width: "20%" }}><p>전화번호</p></div>
-                                <div style={{ width: "15%" }}><p>이메일</p></div>
-                                <div style={{ width: "27%" }}><p>회원가입일</p></div>
-                                <div style={{ width: "13%" }}><p>포인트</p></div>
+                                    onChange={handleSelectAllChange} />
                             </div>
-
-                            {/* 테이블 데이터 */}
-                            {userList.length === 0 ? (
-                                // 데이터가 없을 경우 표시할 메시지
-                                <div className={RentalCss.noResultsMessage}>
-                                    <p>검색 조건에 맞는 회원 정보가 없습니다.</p>
-                                </div>
-                            ) : (
-                                // 데이터가 있을 경우 렌더링
-                                userList.map((user) => (
-                                    <div key={user.memberId} className={RentalCss.rentalItems}>
-                                        <div style={{ width: "3%" }} onClick={(e) => e.stopPropagation()}>
-                                            <input 
-                                                type="checkbox"
-                                                checked={selectedUsers.includes(user.memberId)}
-                                                onChange={() => handleCheckboxChange(user.memberId)}
-                                            />
-                                        </div>
-                                        <div style={{ width: '15%' }} onClick={() => handleUserClick(user)}><p>{user.memberId}</p></div>
-                                        <div style={{ width: '10%' }} onClick={() => handleUserClick(user)}><p>{user.userName}</p></div>
-                                        <div style={{ width: '20%' }} onClick={() => handleUserClick(user)}><p>{user.phoneNumber}</p></div>
-                                        <div style={{ width: '15%' }} onClick={() => handleUserClick(user)}><p>{user.email}</p></div>
-                                        <div style={{ width: '27%' }} onClick={() => handleUserClick(user)}><p>{formatDate(user.signupDate)}</p></div>
-                                        <div style={{ width: '13%' }} onClick={() => handleUserClick(user)}><p>{user.pointDTO.currentPoint}</p></div>
-                                    </div>
-                                ))
-                            )}
+                            <div style={{ width: "15%" }}><p>회원번호</p></div>
+                            <div style={{ width: "10%" }}><p>이름</p></div>
+                            <div style={{ width: "20%" }}><p>전화번호</p></div>
+                            <div style={{ width: "15%" }}><p>이메일</p></div>
+                            <div style={{ width: "27%" }}><p>회원가입일</p></div>
+                            <div style={{ width: "13%" }}><p>포인트</p></div>
                         </div>
 
-                        {/* 페이지네이션 컴포넌트 */}
-                        {pageInfo && (
-                          <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchUserList(pageNum)} />
-                      )}
+                        {/* 테이블 데이터 */}
+                        {userList.length === 0 ? (
+                            // 데이터가 없을 경우 표시할 메시지
+                            <div className={RentalCss.noResultsMessage}>
+                                <p>검색 조건에 맞는 회원 정보가 없습니다.</p>
+                            </div>
+                        ) : (
+                            // 데이터가 있을 경우 렌더링
+                            userList.map((user) => (
+                                <div key={user.memberId} className={RentalCss.rentalItems}>
+                                    <div style={{ width: "3%" }} onClick={(e) => e.stopPropagation()}>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedUsers.includes(user.memberId)}
+                                            onChange={() => handleCheckboxChange(user.memberId)}
+                                        />
+                                    </div>
+                                    <div style={{ width: '15%' }} onClick={() => handleUserClick(user)}><p>{user.memberId}</p></div>
+                                    <div style={{ width: '10%' }} onClick={() => handleUserClick(user)}><p>{user.userName}</p></div>
+                                    <div style={{ width: '20%' }} onClick={() => handleUserClick(user)}><p>{user.phoneNumber}</p></div>
+                                    <div style={{ width: '15%' }} onClick={() => handleUserClick(user)}><p>{user.email}</p></div>
+                                    <div style={{ width: '27%' }} onClick={() => handleUserClick(user)}><p>{formatDate(user.signupDate)}</p></div>
+                                    <div style={{ width: '13%' }} onClick={() => handleUserClick(user)}><p>{user.pointDTO.currentPoint}</p></div>
+                                </div>
+                            ))
+                        )}
                     </div>
-                    <BtnModal
-                        showBtnModal={showAccessModal}
-                        setShowBtnModal={setShowAccessModal}
-                        modalTitle="▶ 접근 권한 변경"
-                        modalContext="선택된 사용자의 권한을 탈퇴 회원으로 변경하시겠습니까?"
-                        btnText="예"
-                        secondBtnText="취소"
-                        onSuccess={handleConfirmAccessChange}
-                        onFail={() => setShowAccessModal(false)}
-                    />
 
-                    {/* 얼러트 모달 */}
-                    <BtnModal
-                        showBtnModal={showAlertModal}
-                        setShowBtnModal={setShowAlertModal}
-                        modalTitle="알림"
-                        modalContext={alertMessage}
-                        btnText="확인"
-                        onSuccess={closeAlertModal}
-                    />
-                    <BtnModal
-                        showBtnModal={showUserModal}
-                        setShowBtnModal={setShowUserModal}
-                        modalTitle="▶ 회원 정보"
-                        modalContext={renderUserModal()}
-                        btnText="포인트 수정"
-                        secondBtnText="닫기"
-                        onSuccess={handlePointUpdate}
-                        onFail={() => setShowUserModal(false)}
-                        />
+                    {/* 페이지네이션 컴포넌트 */}
+                    {pageInfo && (
+                        <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchUserList(pageNum)} />
+                    )}
+                </div>
+                <BtnModal
+                    showBtnModal={showAccessModal}
+                    setShowBtnModal={setShowAccessModal}
+                    modalTitle="▶ 접근 권한 변경"
+                    modalContext="선택된 사용자의 권한을 탈퇴 회원으로 변경하시겠습니까?"
+                    btnText="예"
+                    secondBtnText="취소"
+                    onSuccess={handleConfirmAccessChange}
+                    onFail={() => setShowAccessModal(false)}
+                />
+
+                {/* 얼러트 모달 */}
+                <BtnModal
+                    showBtnModal={showAlertModal}
+                    setShowBtnModal={setShowAlertModal}
+                    modalTitle="알림"
+                    modalContext={alertMessage}
+                    btnText="확인"
+                    onSuccess={closeAlertModal}
+                />
+                <BtnModal
+                    showBtnModal={showUserModal}
+                    setShowBtnModal={setShowUserModal}
+                    modalTitle="▶ 회원 정보"
+                    modalContext={renderUserModal()}
+                    btnText="포인트 수정"
+                    secondBtnText="닫기"
+                    onSuccess={handlePointUpdate}
+                    onFail={() => setShowUserModal(false)}
+                />
             </div>
         </>
     )
