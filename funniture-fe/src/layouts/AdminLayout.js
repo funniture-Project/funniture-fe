@@ -16,7 +16,7 @@ function AdminLayout() {
     // useEffect(() => {
     //     if (user.memberId != '') {
     //         if (user.memberRole != "ADMIN") {
-    //             navigate("/notfound")
+    //             navigate("/restrict")
     //         }
     //     }
     // }, [user])

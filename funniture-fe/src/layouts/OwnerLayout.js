@@ -14,7 +14,7 @@ function OwnerLayout() {
     // useEffect(() => {
     //     if (user.memberId != '') {
     //         if (user.memberRole != "OWNER") {
-    //             navigate("/notfound")
+    //             navigate("/restrict")
     //         }
     //     }
     // }, [user])

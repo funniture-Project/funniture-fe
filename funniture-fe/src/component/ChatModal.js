@@ -8,6 +8,7 @@ import adminLogo from '../assets/images/white_chiar_logo.png'
 import { useLocation } from "react-router-dom";
 import BtnModal from './BtnModal'
 import { changeConsultingAPI } from "../apis/MemberAPI";
+import { ReactComponent as SendIcon } from '../assets/icon/send-icon.svg'
 
 function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFile 추가
 
@@ -210,17 +211,36 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
 
                 {user?.isConsulting ?
                     <>
-                        <Modal.Body className={ChatCss.modalBody}>
-                            상담 진행 중인 user입니다.
+                        <Modal.Body className={ChatCss.modalBody} style={{ paddingBottom: 0 }}>
+                            <div className={ChatCss.directChatBox}>
+                                <div className={ChatCss.directChatItem}>
+                                    <div className={ChatCss.chatLeft}></div>
+                                    <div className={ChatCss.chatContent}
+                                        style={{ borderBottomLeftRadius: 0 }}
+                                    >
+                                        채팅 내용
+                                    </div>
+                                    {/* <div className={ChatCss.chatRight}></div> */}
+                                </div>
+                                <div className={ChatCss.directChatItem} style={{ alignSelf: "end" }}>
+                                    {/* <div className={ChatCss.chatLeft}></div> */}
+                                    <div className={ChatCss.chatContent}
+                                        style={{ borderBottomRightRadius: 0 }}
+
+                                    >
+                                        채팅 내용
+                                    </div>
+                                    <div className={ChatCss.chatRight}></div>
+                                </div>
+                            </div>
                         </Modal.Body>
                         <Modal.Footer className={ChatCss.modalFooter}>
-                            <div>footer의 위치</div>
-                            {/* <Button onClick={handleSuccessClose}>
-                                확인
-                            </Button>
-                            <Button onClick={handleFailClose}>
-                                취소
-                            </Button> */}
+                            <div className={ChatCss.inputBox}>
+                                <textarea id="sendContent" />
+                                <button>
+                                    <SendIcon className={ChatCss.sendIcon} />
+                                </button>
+                            </div>
                         </Modal.Footer>
                     </>
                     :

@@ -44,7 +44,7 @@ import UserRouter from './layouts/UserRouter';
 import AdminQnAPage from './pages/admin/AdminQnAPage';
 import DeliveryAddress from './pages/user/DeliveryAddress';
 import OwnerInquiry from './pages/owner/OwnerInquiry';
-
+import NotAllow from './pages/common/NotAllow';
 
 function App() {
   const [token, setToken] = useState('');
@@ -146,6 +146,7 @@ function App() {
       <Route path='/find' element={<FindPass />} />
 
       <Route path='*' element={<NotFoundPage />} />
+      <Route path='/                ' element={<NotAllow />} />
 
       {/* 관리자 로그인 필요 */}
       <Route path='/admin' element={<AdminLayout />}>
