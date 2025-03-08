@@ -1,14 +1,13 @@
 /* searchBox 와 rentalBox 감싸는 div*/
 .adminRentalContent {
-    margin-top: 2%;
     width: 100%;
-    height: 100%;
+    height: calc(98% - 1.8em - 15px);
     margin-bottom: 0%;
 }
 
 /* searchReset 와 rentalSearch 를 감싸는 div */
-.rentalSearchBox{
-    display: flex;   
+.rentalSearchBox {
+    display: flex;
     height: 5%;
     gap: 1%;
 }
@@ -27,7 +26,7 @@
 }
 
 /* 검색 div */
-.rentalSearch{
+.rentalSearch {
     display: flex;
     width: 100%;
     justify-content: flex-end;
@@ -36,7 +35,7 @@
 
 /* 검색 select, input, img */
 .rentalSearch>select,
-.rentalSearch>input, 
+.rentalSearch>input,
 .rentalSearch>img {
     border: none;
     height: 20px;
@@ -81,15 +80,6 @@
     border: 1px solid #7F5539;
 }
 
-.rentalContainer {
-    display: flex;
-    flex-direction: column;
-    height: 600px;
-    max-height: 600px;
-    overflow-y: auto;
-    gap: 10px;
-}
-
 /* rentalItem */
 .rentalSubBox {
     display: flex;
@@ -98,6 +88,7 @@
     width: 97%;
     height: 90%;
     margin: 1%;
+    overflow: hidden;
 }
 
 .title {
@@ -106,11 +97,36 @@
     height: 45px;
     max-height: 45px;
     border-bottom: 1px solid #7F5539;
+    padding-right: 8px;
 }
 
 .title>div>p,
 .rentalItems>div>p {
     margin: 0;
+}
+
+.rentalContainer {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    gap: 10px;
+
+    flex: 1;
+    overflow: scroll;
+}
+
+.rentalContainer::-webkit-scrollbar {
+    display: block;
+    /* 스크롤바를 보이게 설정 */
+    width: 8px;
+    /* 스크롤바의 너비를 설정 */
+}
+
+.rentalContainer::-webkit-scrollbar-thumb {
+    background-color: #888;
+    /* 스크롤바 thumb의 색을 설정 */
+    border-radius: 4px;
+    /* 스크롤바 thumb의 테두리를 둥글게 설정 */
 }
 
 .rentalItems {
@@ -122,6 +138,8 @@
     max-height: 45px;
     border: 1px solid #7F5539;
     border-radius: 10px;
+
+    /* display: none; */
 }
 
 .title>div,
@@ -172,24 +190,24 @@
     font-weight: bold !important;
 }
 
-.pagingContainer{
+.pagingContainer {
     width: 100%;
     height: 10%;
-        
-        >div {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
 
-            >div{
-                margin: 0px 0px 25px 0px;
-                height: fit-content;
-            }
+    >div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+
+        >div {
+            margin: 0px 0px 25px 0px;
+            height: fit-content;
         }
+    }
 }
 
-.dropdownContent{
+.dropdownContent {
     display: flex;
     border: 1px solid #7F5539;
     border-radius: 10px;
@@ -198,7 +216,7 @@
     margin-top: -8px;
 }
 
-.dropdownContent > div {
+.dropdownContent>div {
     display: flex;
     flex-direction: column;
     border: 1px solid #7F5539;
@@ -208,7 +226,7 @@
     color: #7F5539;
 }
 
-.dropdownContent > div > div:nth-child(1) {
+.dropdownContent>div>div:nth-child(1) {
     color: #7F5539;
     font-weight: 600;
     font-size: 1.2em;

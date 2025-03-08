@@ -48,6 +48,7 @@ import OwnerInquiry from './pages/owner/OwnerInquiry';
 import NotAllow from './pages/common/NotAllow';
 import UserInquiry from './pages/user/UserInquiry';
 import UserReview from './pages/user/UserReview';
+import AdminNotice from './pages/admin/AdminNotice';
 
 function App() {
   const [token, setToken] = useState('');
@@ -168,6 +169,7 @@ function App() {
         </Route>
 
         <Route path='qna' element={<AdminQnAPage />} />
+        <Route path='notice' element={<AdminNotice />} />
 
         <Route path='product' element={<AdminProduct />} />
 

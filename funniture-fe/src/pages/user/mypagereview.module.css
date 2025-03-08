@@ -18,8 +18,9 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 620px;
+    /* height: 620px; */
 }
+
 .activeContainer {
     padding: 20px;
 }
@@ -42,7 +43,7 @@
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 15px;
-    width: 100%;    
+    width: 100%;
     max-width: 1000px;
 }
 
@@ -64,7 +65,8 @@
 }
 
 .reviewScore {
-    color: #f5c518; /* 별점 색상 */
+    color: #f5c518;
+    /* 별점 색상 */
 }
 
 .reviewText {
@@ -87,5 +89,6 @@
 
 .repurchaseButton:hover,
 .deleteButton:hover {
-    background-color: #ddd; /* 버튼 호버 효과 */
+    background-color: #ddd;
+    /* 버튼 호버 효과 */
 }

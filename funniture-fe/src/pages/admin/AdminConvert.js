@@ -45,7 +45,7 @@ function AdminConvert() {
     const fetchConvertList = async (pageNum = 1) => {
         try {
             const data = await callConvertByAdminAPI(pageNum);
-            console.log('data' , data);
+            console.log('data', data);
             setConvertList(data.results.result.data);
             setPageInfo(data.results.result.pageInfo);
         } catch (error) {
@@ -97,7 +97,7 @@ function AdminConvert() {
             alert('승인 처리 중 오류가 발생했습니다.');
         }
     };
-    
+
 
     const handleReject = async (event) => {
         setShowRejectModal(true);
@@ -118,7 +118,7 @@ function AdminConvert() {
             alert('반려 처리 중 오류가 발생했습니다.');
         }
     };
-    
+
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -127,13 +127,13 @@ function AdminConvert() {
         const day = String(date.getDate()).padStart(2, '0');
         const hours = String(date.getHours()).padStart(2, '0');
         const minutes = String(date.getMinutes()).padStart(2, '0');
-        
+
         return `${year}-${month}-${day} / ${hours}시 ${minutes}분`;
-      };
+    };
 
     const renderConvertModal = () => {
         const isCloudinaryUrl = (url) => url?.includes('cloudinary');
-    
+
         return {
             left: (
                 <div>
@@ -195,7 +195,7 @@ function AdminConvert() {
                                         <p style={{ color: 'red', fontWeight: 'bold' }}>이미지 없음</p>
                                     </div>
                                 )}
-    
+
                                 <p><strong>▷ 사업자등록번호   :</strong> {selectedData.ownerInfoDTO.storeNo}</p>
                                 <p><strong>▷ 업체 이름   :</strong> {selectedData.ownerInfoDTO.storeName}</p>
                                 <p><strong>▷ 업체 주소   :</strong> {selectedData.ownerInfoDTO.storeAddress}</p>
@@ -222,9 +222,6 @@ function AdminConvert() {
     return (
         <>
             <div className={RentalCss.adminRentalContent}>
-                <div className={RentalCss.rentalSearchBox}>
-                    <div className={RentalCss.searchReset}></div>
-                </div>
                 <div className={RentalCss.adminSelectButton}>
                     <button
                         onClick={() => handleTabClick('/admin/authority/user')}
@@ -280,8 +277,8 @@ function AdminConvert() {
                     </div>
 
                     {pageInfo && (
-                          <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchConvertList(pageNum)} />
-                      )}
+                        <Pagination pageInfo={pageInfo} onPageChange={(pageNum) => fetchConvertList(pageNum)} />
+                    )}
                 </div>
 
                 {/* 모달 컴포넌트 */}

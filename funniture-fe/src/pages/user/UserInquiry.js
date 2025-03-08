@@ -5,16 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '../../component/Pagination';
 import { useState } from 'react';
 
-function UserInquiry () {
+function UserInquiry() {
 
     // 25-03-08 일단 사용자 마이페이지 문의 불러오고, 스토어에 저장했음!!!
     const user = useSelector(state => state.member);
-    console.log('UserInquiry의 user : ' , user);
+    console.log('UserInquiry의 user : ', user);
     const inquiries = useSelector(state => state.member.inquiries);
-    console.log('UserInquiry의 inquiries : ' , inquiries);
+    console.log('UserInquiry의 inquiries : ', inquiries);
     const pageInfo = useSelector(state => state.member.pageInfo);
-    console.log('UserInquiry의 pageInfo : ' , pageInfo);
-    
+    console.log('UserInquiry의 pageInfo : ', pageInfo);
+
     const dispatch = useDispatch();
 
     const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태 관리
@@ -41,16 +41,16 @@ function UserInquiry () {
         if (pageNum !== currentPage) { // 현재 페이지와 다른 경우에만 상태 업데이트
             setCurrentPage(pageNum);
         }
-    };   
+    };
 
-    return(
+    return (
         <>
             <div className={myPageInquiry.activeContainer}>
                 <div className={myPageInquiry.activeInquiryTitle}>
                     <div>문의 관리</div>
                 </div>
 
-                    <div className={myPageInquiry.activeRentalContainer}>
+                <div className={myPageInquiry.activeRentalContainer}>
                     <table className={myPageInquiry.activeRentalTable}>
                         <thead>
                             <tr>
@@ -71,8 +71,8 @@ function UserInquiry () {
                                             {inquiry.qnaType === 1
                                                 ? '기간 문의'
                                                 : inquiry.qnaType === 2
-                                                ? '가격 문의'
-                                                : '기타 문의'}
+                                                    ? '가격 문의'
+                                                    : '기타 문의'}
                                         </td>
                                         <td>{inquiry.qnaWriteTime}</td>
                                         <td>{inquiry.productNo}</td>

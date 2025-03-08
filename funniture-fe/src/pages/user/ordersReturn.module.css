@@ -17,25 +17,26 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 620px;
+    /* height: 620px; */
 
 
 }
 
 .activeRentalTable {
     width: 100%;
-        border-collapse: collapse; /* 세로줄 제거 */
-        text-align: center;
-        font-size: 0.95em;
+    border-collapse: collapse;
+    /* 세로줄 제거 */
+    text-align: center;
+    font-size: 0.95em;
 }
 
-.activeRentalTable > tbody > tr > td:nth-child(7){
+.activeRentalTable>tbody>tr>td:nth-child(7) {
 
     display: flex;
     justify-content: center;
 }
 
-.activeRentalTable > tbody > tr > td >  div {
+.activeRentalTable>tbody>tr>td>div {
     width: 80%;
     border-radius: 5px;
     display: flex;
@@ -46,11 +47,12 @@
 }
 
 .activeRentalTable thead {
-    background-color: #d3d3d3; /* 회색 배경 */
+    background-color: #d3d3d3;
+    /* 회색 배경 */
     font-weight: bold;
 }
 
-.activeRentalTable th{
+.activeRentalTable th {
     height: 40px;
 }
 
@@ -59,27 +61,29 @@
 }
 
 .activeRentalTable tbody tr {
-    border-bottom: 1px solid #5e5a5abb; /* 가로줄만 유지 */
+    border-bottom: 1px solid #5e5a5abb;
+    /* 가로줄만 유지 */
 }
 
 .activeRentalTable tbody tr:hover {
-    background-color: #f5f5f5; /* 마우스 오버 효과 */
+    background-color: #f5f5f5;
+    /* 마우스 오버 효과 */
 }
 
 
 .pagingContainer {
     width: 100%;
     height: 10%;
-        
-        >div {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
 
-            >div{
-                margin: 0;
-                height: fit-content;
-            }
+    >div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+
+        >div {
+            margin: 0;
+            height: fit-content;
         }
+    }
 }
