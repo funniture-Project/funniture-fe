@@ -29,7 +29,8 @@ const initialState = {
         storeNo: '',
         storePhone: ''
     },
-    inquiries: []
+    inquiries: [],
+    reviews: []
 };
 
 // 액션 정의
@@ -40,6 +41,7 @@ export const GET_EMAIL = 'member/GET_EMAIL';
 export const RESET_MEMBER = 'member/RESET_MEMBER';
 export const POST_OWNERDATA = 'member/POST_OWNERDATA'; // 재공자 신청 , 재신청 했을 때 데이터 저장하는 액션!
 export const INQUIRY_USER = 'member/INQUIRY_USER'; // 사용자 마이페이지 문의
+export const REVIEW_USER = 'member/REVIEW_USER';
 
 // 상담 여부 업데이트
 export const CHANGE_ISCONSULTING = 'member/CHANGE_ISCONSULTING'
@@ -56,6 +58,7 @@ const actions = createActions({
     [POST_OWNERDATA]: () => { },
     [CHANGE_ISCONSULTING]: () => { },
     [INQUIRY_USER]: () => { },
+    [REVIEW_USER]: () => { },
 });
 
 const memberReducer = handleActions({
@@ -114,6 +117,12 @@ const memberReducer = handleActions({
     [INQUIRY_USER]: (state, { payload }) => ({
         ...state,
         inquiries: payload.results,  // 문의 리스트
+        pageInfo: payload.results.result.pageInfo   // 페이지 정보 추가
+    }),
+
+    [REVIEW_USER]: (state, { payload }) => ({
+        ...state,
+        reviews: payload.results,  // 리뷰 리스트
         pageInfo: payload.results.result.pageInfo   // 페이지 정보 추가
     }),
 }, initialState);
