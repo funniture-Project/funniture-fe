@@ -43,8 +43,10 @@ import LoginRouter from './layouts/LoginRouter';
 import UserRouter from './layouts/UserRouter';
 import AdminQnAPage from './pages/admin/AdminQnAPage';
 import DeliveryAddress from './pages/user/DeliveryAddress';
+import OrderReturnRegist from './pages/user/OrderReturnRegist';
 import OwnerInquiry from './pages/owner/OwnerInquiry';
 import NotAllow from './pages/common/NotAllow';
+import UserInquiry from './pages/user/UserInquiry';
 
 function App() {
   const [token, setToken] = useState('');
@@ -114,6 +116,7 @@ function App() {
               <Route index element={<Orders />} />
               <Route path='orders/:id' element={<DetailOrder />} />
               <Route path='returns' element={<OrdersReturn />} />
+              <Route path='return/:id' element={<OrderReturnRegist />} />
               <Route path='edit' element={<UserConform />} />
               <Route path='edits' element={<EditsInfo />} />
               <Route path='favorites' element={<FavoritesPage />} />
@@ -121,6 +124,7 @@ function App() {
               <Route path='convert' element={<Convert />} />
               <Route path='appConvert' element={<AppConvert />} />
               <Route path='deliveryaddress' element={<DeliveryAddress />} />
+              <Route path='inquiry' element={<UserInquiry />} />
             </Route>
 
           </Route>

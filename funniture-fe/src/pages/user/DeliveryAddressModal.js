@@ -54,7 +54,7 @@ function DeliveryAddressModal({ onAddressSelect = () => {}, defaultAddress = nul
     // 랜더링 시 데이터 가져오기
     useEffect(() => {
         getData(memberId);
-    }, [memberId, deliveryAddressList]);
+    }, [memberId]);
 
     // Daum 주소 API 스크립트 추가
     useEffect(() => {

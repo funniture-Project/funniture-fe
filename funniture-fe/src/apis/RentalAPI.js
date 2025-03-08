@@ -105,7 +105,7 @@ export async function getOrderDetail(id) {
 
     const response = await getData(url);
 
-    console.log(response)
+    console.log('response', response)
 
     return response
 }
@@ -122,10 +122,10 @@ export const postRentalReservation = async (rentalData) => {
     }
 };
 
-// 사용자 예약 배송지 수정
 export const putRentalDeliveryAddress = async (rentalNo, destinationNo) => {
-    const url = `rental/${rentalNo}/deliveryaddress`;
+    const url = `/rental/${rentalNo}/deliveryaddress`;
     
+    // destinationNo를 단순히 숫자로 보내기
     await api.put(url, destinationNo);
 }
 
@@ -169,6 +169,12 @@ export async function cancelOrder(rentalNo) {
 
 export async function putDeliverySubmit(rentalNo, deliveryNo, deliverCom) {
     const url = `/rental/${rentalNo}/delivery?deliveryNo=${deliveryNo}&deliverCom=${deliverCom}`;
+
+    await api.put(url)
+}
+
+export async function putUpdateRentalState(rentalNo) {
+    const url = `/rental/${rentalNo}/state`;
 
     await api.put(url)
 }

@@ -24,13 +24,14 @@ function RentalRegist () {
     const {rentalNum} = location.state           // 렌탈 갯수
 
     // 예약 등록 페이지 조회 데이터
-    const [defaultAddress, setDefaultAddress] = useState([]);   // 기본배송지 조회
+    const [defaultAddress, setDefaultAddress] = useState(null); // 기본배송지 조회
     const [currentPoint, setCurrentPoint] = useState({});   // 보유 포인트 조회
 
     // 기본 배송지 불러오기
     async function getDefaultAddressData() {
         try {
             const data = await getDefaultDeliveryAddressList(memberId);
+
             setDefaultAddress(data.results.defaultAddressList[0]);
             
         } catch (error) {
@@ -153,15 +154,19 @@ function RentalRegist () {
                     <div className={RentalRegistCss.rentalInfoContainer}>
                         <h3>배송지</h3>
                         <div className={RentalRegistCss.deliverySection}>
+                        <div>
                             <div>
-                                <div>{defaultAddress ? defaultAddress.receiver : '배송지 없음'} ({defaultAddress.destinationName})</div>
-                                <div className={RentalRegistCss.deliveryChangeBtn} onClick={onClickHandler}>변경</div>
+                            {defaultAddress 
+                                ? `${defaultAddress.receiver} (${defaultAddress.destinationName ?? ''})`
+                                : '배송지가 없습니다.(변경을 눌러 배송지를 등록하세요)'}
                             </div>
-                            <div>{defaultAddress ? defaultAddress.destinationPhone : ''}</div>
-                            <div>{defaultAddress ? defaultAddress.destinationAddress : ''}</div>
-                            <select>
-                                <option value="">배송 메모를 선택해주세요.</option>
-                            </select>
+                            <div className={RentalRegistCss.deliveryChangeBtn} onClick={onClickHandler}>변경</div>
+                        </div>
+                        <div>{defaultAddress?.destinationPhone ?? ''}</div>
+                        <div>{defaultAddress?.destinationAddress ?? ''}</div>
+                        <select>
+                            <option value="">배송 메모를 선택해주세요.</option>
+                        </select>
                         </div>
 
                         <h3>주문상품</h3>
@@ -270,7 +275,6 @@ function RentalRegist () {
                 modalContext="로그인 후 이용 가능합니다."
                 modalSize="lg"
                 childContent={<DeliveryAddressModal 
-                    // deliveryAddressList={deliveryAddressList} // 전체 배송지 리스트
                     onAddressSelect={handleAddressSelect} // ✔ 선택됨이 업데이트되기위한 핸들러
                     defaultAddress={defaultAddress} // 기본 배송지 전달
                     />
