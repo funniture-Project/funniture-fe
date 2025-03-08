@@ -199,7 +199,7 @@ function MyPage() {
                             <div>문의내역</div>
                         </Link>
                         <Link
-                            to={`/mypage`}
+                            to={`/mypage/review`}
                             onClick={() => handleTabClick('reviews')}
                             className={`tab link ${activeTab === 'reviews' ? 'active' : ''}`}>
                             <div>리뷰</div>

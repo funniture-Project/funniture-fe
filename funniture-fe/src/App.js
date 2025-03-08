@@ -46,6 +46,7 @@ import DeliveryAddress from './pages/user/DeliveryAddress';
 import OrderReturnRegist from './pages/user/OrderReturnRegist';
 import OwnerInquiry from './pages/owner/OwnerInquiry';
 import UserInquiry from './pages/user/UserInquiry';
+import UserReview from './pages/user/UserReview';
 
 function App() {
   const [token, setToken] = useState('');
@@ -124,6 +125,7 @@ function App() {
               <Route path='appConvert' element={<AppConvert />} />
               <Route path='deliveryaddress' element={<DeliveryAddress />} />
               <Route path='inquiry' element={<UserInquiry />} />
+              <Route path='review' element={<UserReview />} />
             </Route>
 
           </Route>
