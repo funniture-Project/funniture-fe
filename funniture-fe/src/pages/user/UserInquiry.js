@@ -47,7 +47,7 @@ function UserInquiry () {
         <>
             <div className={myPageInquiry.activeContainer}>
                 <div className={myPageInquiry.activeInquiryTitle}>
-                    <div>유저 문의</div>
+                    <div>문의 관리</div>
                 </div>
 
                     <div className={myPageInquiry.activeRentalContainer}>
