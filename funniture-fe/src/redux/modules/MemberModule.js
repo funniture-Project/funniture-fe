@@ -115,7 +115,7 @@ const memberReducer = handleActions({
         ...state,
         inquiries: payload.results,  // 문의 리스트
         pageInfo: payload.results.result.pageInfo   // 페이지 정보 추가
-    })
+    }),
 }, initialState);
 
 

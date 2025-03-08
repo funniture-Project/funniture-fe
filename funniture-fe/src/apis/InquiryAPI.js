@@ -16,7 +16,7 @@ export const callInquiryByProductNoAPI = (productNo) => {
 };
 
 
-// 상세 페이지 문의 불러오기
+// 제공자 상세 페이지 문의 불러오기
 export const callInquiryByOwnerNoAPI = (ownerNo, page = 1, size = 10) => async (dispatch) => {
     if (!ownerNo) {
         console.error('Invalid ownerNo');
@@ -53,18 +53,30 @@ export const callInquiryRegistByProductNoAPI = (dataToSend, memberId) => {
 };
 
 // 마이 페이지에서 문의 데이터 불러오기
-export const callAllInquiryByMypageAPI = (memberId, page = 1, size = 10) => {
-    const requestURL = `http://localhost:8080/api/v1/inquiry/member/${memberId}?page=${page}&size=${size}`;
-
-    return async (dispatch) => {
-        const response = await api.get(requestURL);
+export const callAllInquiryByMypageAPI = (memberId, page = 1, size = 8) => async (dispatch) => {
+    if (!memberId) {
+        console.error('Invalid memberId');
+        return;
+    }
+    console.log('memberId 잘 넘어왔나 : ', memberId);
+    console.log('page 잘 넘어왔나 : ', page);
+    try {
+        const response = await api.get(
+            `http://localhost:8080/api/v1/inquiry/member/${memberId}?page=${page}&size=${size}`
+        );
         console.log('사용자 마이 페이지 전체 문의조회 서버에 잘 다녀 왔나 response : ', response);
-        
-        dispatch({ type: INQUIRY_USER, payload: response.data});
 
-        return response;
-    };
+        // 데이터를 저장
+        dispatch({ type: INQUIRY_USER, payload: response.data });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching inquiries:', error);
+        throw error;
+    }
 };
+
+
+
 
 // 관리자 페이지에서 문의 답변하기 
 // export const callInquiryAnswerByOwnerPageAPI = (inquiryNo) => {
