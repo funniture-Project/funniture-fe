@@ -23,3 +23,26 @@ export const callAllReviewByMypageAPI = (memberId, page = 1, size = 3) => async 
         throw error;
     }
 };
+
+// 상세 페이지 리뷰 불러오기
+export const callReviewByProductNoAPI = async (productNo) => {
+    const requestURL = `http://localhost:8080/api/v1/review/product/${productNo}`;
+
+    try {
+        const response = await fetch(requestURL, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error("서버 응답에 실패했습니다.");
+        }
+
+        return await response.json(); // 서버에서 반환된 JSON 데이터
+    } catch (error) {
+        console.error("리뷰 API 호출 실패:", error);
+        throw error;
+    }
+};
