@@ -4,6 +4,9 @@
     flex: 1;
     margin: 3% 5%;
     box-sizing: border-box;
+    
+    position: relative; /* 부모 요소에 필요 */
+
 }
 
 .activeRentalTitle {
@@ -74,6 +77,8 @@
 .pagingContainer {
     width: 100%;
     height: 10%;
+    position: absolute;
+    bottom: 0;
 
     >div {
         display: flex;

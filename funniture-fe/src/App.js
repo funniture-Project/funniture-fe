@@ -55,6 +55,7 @@ import OwnerInfo from './pages/owner/OwnerInfo';
 import OwnerNotice from './pages/owner/OwnerNotice';
 import OwnerNoticeDetail from './pages/owner/OwnerNoticeDetail';
 import AdminSales from './pages/admin/AdminSales';
+import OwnerSales from './pages/owner/OwnerSales';
 
 function App() {
   const [token, setToken] = useState('');
@@ -154,6 +155,7 @@ function App() {
             <Route path='ownerInfo' element={<OwnerInfo />} />
             <Route path='notice' element={<OwnerNotice />} />
             <Route path='notice/:id' element={<OwnerNoticeDetail />} />
+            <Route path='sales' element={<OwnerSales />} />
           </Route>
 
         </Route>
