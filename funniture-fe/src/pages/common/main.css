@@ -77,9 +77,39 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-
-        >div {
+    
+        > div {
             width: 49.5%;
+            border: solid 1px #7F7F7F;
+            border-radius: 15px;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+    
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+    
+            .reviewHeader {
+                font-size: 1em;
+                font-weight: bold;
+                color: #7F5539;
+                margin-bottom: 5px;
+            }
+    
+            .reviewContent {
+                font-size: 0.9em;
+                color: #333333;
+                margin-bottom: 10px;
+                line-height: 1.4em;
+            }
+    
+            .reviewDate {
+                font-size: 0.8em;
+                color: #A8a8a8;
+                text-align: right; /* 등록일을 오른쪽으로 정렬 */
+            }
         }
     }
+    
 }

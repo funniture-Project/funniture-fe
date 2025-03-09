@@ -5,7 +5,7 @@ const initialState = {
     inquiries: { result: { data: [] }, pageInfo: null },
     reviews: { result: { data: [] }, pageInfo: null }, // 기본 구조 설정
     ownerInfo: {},
-    inquiries: []
+    // inquiries: []
 };
 
 
@@ -24,12 +24,12 @@ const ownerReducer = handleActions({
     [INQUIRY_SELECT]: (state, { payload }) => ({
         ...state,
         inquiries: payload.results,  // 문의 리스트
-        pageInfo: payload.results.result.pageInfo   // 페이지 정보 추가
+        pageInfo: payload.results?.result?.pageInfo   // 페이지 정보 추가
     }),
     [REVIEW_SELECT]: (state, { payload }) => ({
         ...state,
         reviews: payload.results,  // 문의 리스트
-        pageInfo: payload.results.result.pageInfo   // 페이지 정보 추가
+        pageInfo: payload.results?.result?.pageInfo   // 페이지 정보 추가
     }),
     [GET_OWNERINFO]: (state, { payload }) => ({
         ...state,

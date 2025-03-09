@@ -22,16 +22,15 @@ export const callInquiryByOwnerNoAPI = (ownerNo, page = 1, size = 10) => async (
         console.error('Invalid ownerNo');
         return;
     }
-    console.log('ownerNo 잘 넘어 오는지 ', ownerNo);
-    console.log('page 잘 넘어 오는지 ', page);
 
     try {
-        const response = await api.get(
-            `http://localhost:8080/api/v1/inquiry/owner/${ownerNo}?page=${page}&size=${size}`
-        );
-        console.log('ownerNo로 제공자 페이지 문의 조회 서버에 잘 다녀 왔나 response : ', response);
+        const response = await api.get(`/inquiry/owner/${ownerNo}?page=${page}&size=${size}`);
+        if (!response.data || !response.data.results) {
+            console.warn('Empty inquiry data received.');
+            dispatch({ type: INQUIRY_SELECT, payload: { results: { data: [], pageInfo: {} } } });
+            return;
+        }
 
-        // 데이터를 저장
         dispatch({ type: INQUIRY_SELECT, payload: response.data });
         return response.data;
     } catch (error) {
@@ -39,6 +38,7 @@ export const callInquiryByOwnerNoAPI = (ownerNo, page = 1, size = 10) => async (
         throw error;
     }
 };
+
 
 
 // 문의 등록
