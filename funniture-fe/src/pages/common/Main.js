@@ -3,11 +3,14 @@ import decodeJwt from '../../utils/tokenUtils'
 import './main.css'
 import { useEffect, useState } from 'react'
 import { getAllNoticeList } from '../../apis/NoticeAPI'
+import { useNavigate } from 'react-router-dom'
 
 function Main() {
     const [noticeList, setNoticeList] = useState([])
     const { user } = useSelector(state => state.member)
     const [filteredList, setFilteredList] = useState([])
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function getNotice() {
@@ -17,7 +20,7 @@ function Main() {
         }
 
         getNotice()
-    }, [])
+    }, [user])
 
     useEffect(() => {
         if (user.memberId == '' || user.memberRole == "USER") {
@@ -37,7 +40,7 @@ function Main() {
         } else if (user.memberRole == "ADMIN") {
             setFilteredList(noticeList)
         }
-    }, [user])
+    }, [noticeList])
 
     useEffect(() => {
         console.log("noticeList : ", noticeList)
@@ -49,8 +52,10 @@ function Main() {
                 {/* <img src='https://res.cloudinary.com/dor26tdln/raw/upload/v1740707870/vafwl1exrkurtjmpma2p.pdf' alt="테스트" /> */}
                 {/* <iframe src='https://res.cloudinary.com/dor26tdln/raw/upload/v1740707870/vafwl1exrkurtjmpma2p.pdf'></iframe> */}
                 <div className='title'>
-                    <img src={require(`../../assets/icon/review.svg`).default} alt="리뷰 아이콘" />
-                    <span>Best</span> 리뷰
+                    <div>
+                        <img src={require(`../../assets/icon/review.svg`).default} alt="리뷰 아이콘" />
+                        <span>Best</span> 리뷰
+                    </div>
                 </div>
                 <div className='contentBox reviewBox'>
                     <div>리뷰</div>
@@ -66,8 +71,11 @@ function Main() {
 
             <div className='mainContentBox'>
                 <div className='title'>
-                    <img src={require(`../../assets/icon/notice_icon.svg`).default} alt="공지사항항 아이콘" />
-                    <span>공지</span> 사항
+                    <div>
+                        <img src={require(`../../assets/icon/notice_icon.svg`).default} alt="공지사항항 아이콘" />
+                        <span>공지</span> 사항
+                    </div>
+                    <div className='moreView' onClick={() => navigate("/notice")}>더보기 +</div>
                 </div>
                 <div className='contentBox'>
                     {filteredList.length > 0
