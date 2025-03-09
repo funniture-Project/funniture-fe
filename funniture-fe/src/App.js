@@ -49,6 +49,7 @@ import NotAllow from './pages/common/NotAllow';
 import UserInquiry from './pages/user/UserInquiry';
 import UserReview from './pages/user/UserReview';
 import AdminNotice from './pages/admin/AdminNotice';
+import Notice from './pages/common/Notice';
 
 function App() {
   const [token, setToken] = useState('');
@@ -105,6 +106,7 @@ function App() {
 
         <Route path='list' element={<ListPage selectCategory={selectCategory} selectCompany={selectCompany} />} />
         <Route path='/product/:id' element={<ProductDetailPage />} />
+        <Route path='/notice' element={<Notice />} />
 
         {/* 로그인이 필요 */}
         <Route element={<LoginRouter />}>
