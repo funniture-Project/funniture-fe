@@ -21,15 +21,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.2em;
+            font-size: 1.4em;
             font-weight: 700;
             cursor: pointer; 
             border-right: solid 3px rgb(168, 163, 163);
             padding: 0px 8px;
+            margin-top: -25px;
         }
 
         >div:last-child{
             border: none;
+        }
+        
+        .selected {
+            color: #7F5539;
         }
 }
 

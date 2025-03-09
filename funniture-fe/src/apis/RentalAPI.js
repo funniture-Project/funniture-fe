@@ -201,6 +201,23 @@ export async function putUpdateRentalState(rentalNo) {
     await api.put(url)
 }
 
+export async function getSalesByOwner(memberId, yearMonth, productNo) {
+    const url = `/rental/${memberId}/sales`
+    const params = new URLSearchParams()
+   
+    if(yearMonth) {
+        params.append("yearMonth", yearMonth)
+    }
+    // period 값이 존재하면 URL에 추가
+    if (productNo) {
+        params.append("productNo", productNo);
+    }
+
+    const response = await getData(url, params)
+
+    return response;
+}
+
 // 공용
 const getData = async (url, query) => {
     let response
