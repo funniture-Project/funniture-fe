@@ -5,19 +5,20 @@ import { getProductListByOwnerNo } from '../../apis/ProductAPI';
 import { useNavigate } from 'react-router-dom';
 import { callInquiryByOwnerNoAPI } from '../../apis/InquiryAPI';
 import OwnerInquiry from './ownerMainInquiry.module.css';
+import { getAllNoticeList } from '../../apis/NoticeAPI';
 
 function OwnerMyPage() {
     const { user } = useSelector(state => state.member)
     const { ownerAllProductList } = useSelector(state => state.product)
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    console.log('{ ownerAllProductList }' , { ownerAllProductList });
+    console.log('{ ownerAllProductList }', { ownerAllProductList });
     const [saleProductNum, setSaleProductNum] = useState(0);
     const [stopProductNum, setStopProductNum] = useState(0);
     const [noAbleProductNum, setNoAbleProductNum] = useState(0);
 
     const inquiries = useSelector(state => state.owner.inquiries?.result?.data || []); // 조건부 렌더링 해야 에러 안 남.
-    console.log('제공자 메인 페이지 inquiries : ' , inquiries);
+    console.log('제공자 메인 페이지 inquiries : ', inquiries);
 
     async function getData(userId) {
         console.log("데이터 부르기")
@@ -34,6 +35,37 @@ function OwnerMyPage() {
         setSaleProductNum(ownerAllProductList.filter(product => product.productStatus == '판매중').length)
         setNoAbleProductNum(ownerAllProductList.filter(product => product.productStatus == '판매불가').length)
     }, [ownerAllProductList])
+
+    // 공지사항
+    const [noticeList, setNoticeList] = useState([])
+    const [filteredList, setFilteredList] = useState([])
+
+    useEffect(() => {
+        async function getNotice() {
+            const response = await getAllNoticeList()
+
+            setNoticeList(response)
+        }
+
+        getNotice()
+    }, [])
+
+    useEffect(() => {
+        if (noticeList.length > 0) {
+
+            const list = noticeList.filter(item => item.viewRoll == "owner" || item.viewRoll == "all").reverse()
+            if (list.length > 3) {
+                setFilteredList(list.slice(0, 3))
+            } else {
+                setFilteredList(list)
+            }
+        }
+    }, [noticeList])
+
+    useEffect(() => {
+        console.log("filteredList : ", filteredList)
+    }, [filteredList])
+
 
     return (
         <div className={OwMypageCss.mainPageContent}>
@@ -73,25 +105,40 @@ function OwnerMyPage() {
                     </div>
 
                     <div className={OwMypageCss.leftAreaBottom}>
-                    <div className={OwMypageCss.divItemInquiry}>
-                        문의
-                        <div className={OwnerInquiry.scrollableContainer}></div>
-                        <div style={{padding:'5px'}}>
-                            {inquiries && inquiries.length > 0 ? (
-                                inquiries.map((inquiry, index) => (
-                                    <div key={index} className={OwnerInquiry.inquiryItem}>
-                                        <span>{inquiry.qnaWriteTime}</span>
-                                        <span style={{ flex: '2', textAlign: 'center' }}>{inquiry.productName}</span>
-                                        <span style={{ flex: '1', textAlign: 'center' }}>{inquiry.userName}</span>
-                                        <span className={OwnerInquiry.answerButton} style={{ flex: '1', textAlign: 'right' }}>답변하기</span>
+                        <div className={OwMypageCss.divItemInquiry}>
+                            문의
+                            <div className={OwnerInquiry.scrollableContainer}></div>
+                            <div style={{ padding: '5px' }}>
+                                {inquiries && inquiries.length > 0 ? (
+                                    inquiries.map((inquiry, index) => (
+                                        <div key={index} className={OwnerInquiry.inquiryItem}>
+                                            <span>{inquiry.qnaWriteTime}</span>
+                                            <span style={{ flex: '2', textAlign: 'center' }}>{inquiry.productName}</span>
+                                            <span style={{ flex: '1', textAlign: 'center' }}>{inquiry.userName}</span>
+                                            <span className={OwnerInquiry.answerButton} style={{ flex: '1', textAlign: 'right' }}>답변하기</span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>문의 내역이 없습니다.</p>
+                                )}
+                            </div>
+                        </div>
+                        <div className={OwMypageCss.divItem}>
+                            <div>
+                                <div>공지사항</div>
+                                <div onClick={() => navigate("/owner/notice")}>더보기 +</div>
+                            </div>
+                            {filteredList.length == 0
+                                ? <div> 공지사항이 없습니다.</div>
+                                :
+                                filteredList.map(notice => (
+                                    <div className={OwMypageCss.noticeItem} onClick={() => navigate(`/owner/notice/${notice.noticeNo}`)}>
+                                        <div>{notice.noticeTitle}</div>
+                                        <div className={OwMypageCss.noticeWriteTime}>{notice.writeTime}</div>
                                     </div>
                                 ))
-                            ) : (
-                                <p>문의 내역이 없습니다.</p>
-                            )}
+                            }
                         </div>
-                    </div>
-                        <div className={OwMypageCss.divItem}>공지사항</div>
                     </div>
                 </div>
 

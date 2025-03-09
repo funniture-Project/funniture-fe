@@ -4,6 +4,7 @@ import api from "./Apis";
 import imageApi from "./Apis";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { GET_OWNERINFO } from "../redux/modules/OwnerModule";
 
 // 회원 가입
 export const callSignupAPI = ({ form }) => {
@@ -580,6 +581,28 @@ export const getRejectedMessage = async (memberId) => {
     } catch (error) {
         console.error('API 호출 중 오류 발생:', error);
         throw error;
+    }
+}
+
+// 제공자 정보 불러오기 (예진)
+export function getOwnerInfo({ ownerNo }) {
+    return async (dispatch, getState) => {
+
+        const url = `/owner/${ownerNo}`
+
+        const response = await api.get(url)
+
+        console.log("제공자 정보 : ", response)
+
+        if (response?.data.httpStatusCode == 200) {
+
+            dispatch({
+                type: GET_OWNERINFO,
+                payload: {
+                    ownerInfo: response.data.results.result
+                }
+            });
+        }
     }
 }
 
