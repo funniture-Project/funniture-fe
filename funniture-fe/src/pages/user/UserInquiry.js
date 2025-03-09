@@ -10,9 +10,9 @@ function UserInquiry() {
     // 25-03-08 일단 사용자 마이페이지 문의 불러오고, 스토어에 저장했음!!!
     const user = useSelector(state => state.member);
     console.log('UserInquiry의 user : ', user);
-    const inquiries = useSelector(state => state.member.inquiries);
+    const inquiries = useSelector(state => state.member?.inquiries);
     console.log('UserInquiry의 inquiries : ', inquiries);
-    const pageInfo = useSelector(state => state.member.pageInfo);
+    const pageInfo = useSelector(state => state.member?.pageInfo);
     console.log('UserInquiry의 pageInfo : ', pageInfo);
 
     const dispatch = useDispatch();
