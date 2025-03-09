@@ -7,13 +7,15 @@ import { callInquiryByOwnerNoAPI } from '../../apis/InquiryAPI';
 import { callReviewByOwnerNoAPI } from '../../apis/ReviewAPI';
 import OwnerInquiry from './ownerMainInquiry.module.css';
 import OwnerReview from './ownerMainReview.module.css';
+import { getAllNoticeList } from '../../apis/NoticeAPI';
+
 
 function OwnerMyPage() {
     const { user } = useSelector(state => state.member)
     const { ownerAllProductList } = useSelector(state => state.product)
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    console.log('{ ownerAllProductList }' , { ownerAllProductList });
+    console.log('{ ownerAllProductList }', { ownerAllProductList });
     const [saleProductNum, setSaleProductNum] = useState(0);
     const [stopProductNum, setStopProductNum] = useState(0);
     const [noAbleProductNum, setNoAbleProductNum] = useState(0);
@@ -52,6 +54,37 @@ function OwnerMyPage() {
         setSaleProductNum(ownerAllProductList.filter(product => product.productStatus == '판매중').length)
         setNoAbleProductNum(ownerAllProductList.filter(product => product.productStatus == '판매불가').length)
     }, [ownerAllProductList])
+
+    // 공지사항
+    const [noticeList, setNoticeList] = useState([])
+    const [filteredList, setFilteredList] = useState([])
+
+    useEffect(() => {
+        async function getNotice() {
+            const response = await getAllNoticeList()
+
+            setNoticeList(response)
+        }
+
+        getNotice()
+    }, [])
+
+    useEffect(() => {
+        if (noticeList.length > 0) {
+
+            const list = noticeList.filter(item => item.viewRoll == "owner" || item.viewRoll == "all").reverse()
+            if (list.length > 3) {
+                setFilteredList(list.slice(0, 3))
+            } else {
+                setFilteredList(list)
+            }
+        }
+    }, [noticeList])
+
+    useEffect(() => {
+        console.log("filteredList : ", filteredList)
+    }, [filteredList])
+
 
     return (
         <div className={OwMypageCss.mainPageContent}>
@@ -109,7 +142,22 @@ function OwnerMyPage() {
                             )}
                         </div>
                     </div>
-                        <div className={OwMypageCss.divItem}>공지사항</div>
+                        <div className={OwMypageCss.divItem}>
+                            <div>
+                                <div>공지사항</div>
+                                <div onClick={() => navigate("/owner/notice")}>더보기 +</div>
+                            </div>
+                            {filteredList.length == 0
+                                ? <div> 공지사항이 없습니다.</div>
+                                :
+                                filteredList.map(notice => (
+                                    <div className={OwMypageCss.noticeItem} onClick={() => navigate(`/owner/notice/${notice.noticeNo}`)}>
+                                        <div>{notice.noticeTitle}</div>
+                                        <div className={OwMypageCss.noticeWriteTime}>{notice.writeTime}</div>
+                                    </div>
+                                ))
+                            }
+                        </div>
                     </div>
                 </div>
 
