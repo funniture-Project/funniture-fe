@@ -5,8 +5,6 @@ const baseRentalUrl = 'http://localhost:8080/api/v1/rental'
 // ---------------------------------------------------- 관리자 -------------------------------------------------------------
 
 export async function getAdminRentalList(searchRental, pageNum) {
-    
-    console.log('searchRental',searchRental )
 
     const url = '/rental'
     const params = new URLSearchParams();
@@ -37,6 +35,30 @@ export async function getAdminRentalList(searchRental, pageNum) {
 
 export async function getStoreList() {
     return await fetch('http://localhost:8080/api/v1/product/ownerlist?categoryCode=1&categoryCode=2').then(res => res.json());
+}
+
+export async function getAllStoreList() {
+    return await fetch('http://localhost:8080/api/v1/product/ownerlist').then(res => res.json());
+}
+
+export async function getSalesByDate(yearMonth,selectedStore,pageNum) {
+
+    const url = '/rental/admin/sales'
+    const params = new URLSearchParams();
+
+    if (yearMonth) {
+        params.append('yearMonth', yearMonth);
+    }
+    if (selectedStore) {
+        params.append('storeName', selectedStore);
+    }
+    if (pageNum) {
+        params.append("offset", pageNum)
+    }
+    
+    const response = await getData(url, params);
+
+    return response
 }
 
 // ---------------------------------------------------- 사용자 -------------------------------------------------------------
