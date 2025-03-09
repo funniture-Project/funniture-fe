@@ -25,7 +25,7 @@ import { REVIEW_SELECT } from "../redux/modules/OwnerModule";
 //     }
 // };
 
-// 작성 가능한 리뷰 조회 API
+// 마이페이지 작성 가능한 리뷰 조회 API
 export const callWritableReviewsAPI = (memberId, page = 1, size = 3) => async (dispatch) => {
     if (!memberId) {
     console.error('Invalid memberId');
@@ -47,6 +47,7 @@ export const callWritableReviewsAPI = (memberId, page = 1, size = 3) => async (d
     }
     };
 
+// 마이페이지 작성한 리뷰 조회 API
 export const callWrittenReviewsAPI = (memberId, page = 1, size = 3) => async (dispatch) => {
     if (!memberId) {
         console.error('Invalid memberId');
@@ -65,7 +66,6 @@ export const callWrittenReviewsAPI = (memberId, page = 1, size = 3) => async (di
         });
     }
 };
-
 
 
 // 상세 페이지 리뷰 불러오기
@@ -113,6 +113,22 @@ export const callReviewByOwnerNoAPI = (ownerNo, page = 1, size = 7) => async (di
         return response.data;
     } catch (error) {
         console.error('Error fetching reviews:', error);
+        throw error;
+    }
+};
+
+// 상세 페이지 리뷰 불러오기
+export const callReviewByMainAPI = async () => {
+    try {
+        const response = await api.get('/review/main');
+
+        if (response.status !== 200) {
+            throw new Error('서버 응답에 실패했습니다.');
+        }
+
+        return response.data; // 서버에서 반환된 JSON 데이터
+    } catch (error) {
+        console.error('리뷰 API 호출 실패:', error);
         throw error;
     }
 };

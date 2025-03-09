@@ -4,13 +4,33 @@ import './main.css'
 import { useEffect, useState } from 'react'
 import { getAllNoticeList } from '../../apis/NoticeAPI'
 import { useNavigate } from 'react-router-dom'
+import { callReviewByMainAPI } from '../../apis/ReviewAPI'
 
 function Main() {
     const [noticeList, setNoticeList] = useState([])
     const { user } = useSelector(state => state.member)
     const [filteredList, setFilteredList] = useState([])
 
+    const [reviewList, setReviewList] = useState([]);
+
     const navigate = useNavigate();
+
+    // 리뷰 데이터 가져오기
+    useEffect(() => {
+        async function fetchReviews() {
+            try {
+                const response = await callReviewByMainAPI();
+                console.log('메인페이지 리뷰 서버 다녀온 response : ' ,response);
+                if (response.httpStatusCode === 200) {
+                    setReviewList(response.results.map); // 서버에서 반환된 리뷰 리스트 저장
+                }
+            } catch (error) {
+                console.error('리뷰 데이터 가져오기 실패:', error);
+            }
+        }
+
+        fetchReviews();
+    }, []);
 
     useEffect(() => {
         async function getNotice() {
@@ -56,14 +76,19 @@ function Main() {
                     </div>
                 </div>
                 <div className='contentBox reviewBox'>
-                    <div>리뷰</div>
-                    <div>리뷰</div>
-                    <div>리뷰</div>
-                    <div>리뷰</div>
-                    <div>리뷰</div>
-                    <div>리뷰</div>
-                    <div>리뷰</div>
-                    <div>리뷰</div>
+                    {reviewList.length > 0 ? (
+                        reviewList.slice(0, 8).map((review, index) => (
+                            <div key={index} className="reviewItem">
+                                <div className="reviewHeader">
+                                    <span>{review.userName}</span> 님의 리뷰
+                                </div>
+                                <div className="reviewContent">{review.reviewContent}</div>
+                                <div style={{right :'0px'}} className="reviewDate">{new Date(review.reviewWriteTime).toLocaleDateString()}</div>
+                            </div>
+                        ))
+                    ) : (
+                        <div>등록된 리뷰가 없습니다.</div>
+                    )}
                 </div>
             </div>
 

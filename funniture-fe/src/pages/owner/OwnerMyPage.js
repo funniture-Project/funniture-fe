@@ -127,20 +127,20 @@ function OwnerMyPage() {
                     <div className={OwMypageCss.divItemInquiry}>
                         문의
                         <div className={OwnerInquiry.scrollableContainer}></div>
-                        <div style={{padding:'5px'}}>
-                            {inquiries && inquiries.length > 0 ? (
-                                inquiries.map((inquiry, index) => (
-                                    <div key={index} className={OwnerInquiry.inquiryItem}>
-                                        <span>{inquiry.qnaWriteTime.slice(0, 16)}</span>
-                                        <span style={{ flex: '2', textAlign: 'center' }}>{inquiry.productName}</span>
-                                        <span style={{ flex: '1', textAlign: 'center' }}>{inquiry.userName} 님</span>
-                                        <span className={OwnerInquiry.answerButton} style={{ flex: '1', textAlign: 'right' }}>답변하기</span>
-                                    </div>
-                                ))
-                            ) : (
-                                <p>문의 내역이 없습니다.</p>
-                            )}
-                        </div>
+                        <div style={{ padding: '5px' }}>
+                        {inquiries.length > 0 ? (
+                            inquiries.map((inquiry, index) => (
+                                <div key={inquiry.qnaId || index} className={OwnerInquiry.inquiryItem}>
+                                    <span>{inquiry.qnaWriteTime.slice(0, 16)}</span>
+                                    <span style={{ flex: '2', textAlign: 'center' }}>{inquiry.productName}</span>
+                                    <span style={{ flex: '1', textAlign: 'center' }}>{inquiry.userName} 님</span>
+                                    <span className={OwnerInquiry.answerButton} style={{ flex: '1', textAlign: 'right' }}>답변하기</span>
+                                </div>
+                            ))
+                        ) : (
+                            <p>문의 내역이 없습니다.</p>
+                        )}
+                    </div>
                     </div>
                         <div className={OwMypageCss.divItem}>
                             <div>

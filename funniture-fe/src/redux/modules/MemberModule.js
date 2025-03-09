@@ -121,7 +121,7 @@ const memberReducer = handleActions({
 [INQUIRY_USER]: (state, { payload }) => ({
     ...state,
     inquiries: payload.results, // 문의 리스트
-    pageInfo: payload.results.result.pageInfo // 페이지 정보 추가
+    pageInfo: payload.results?.result?.pageInfo // 페이지 정보 추가
 }),
 
 // [REVIEW_USER]: (state, { payload }) => ({
