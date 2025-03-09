@@ -78,7 +78,7 @@ export const callAllInquiryByMypageAPI = (memberId, page = 1, size = 8) => async
 
 
 
-// 관리자 페이지에서 문의 답변하기 
+// 제공자 페이지에서 문의 답변하기 
 // export const callInquiryAnswerByOwnerPageAPI = (inquiryNo) => {
 //     const requestURL = `http://localhost:8080/api/v1/inquiry/answer`;
 

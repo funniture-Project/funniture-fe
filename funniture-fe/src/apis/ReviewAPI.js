@@ -117,7 +117,7 @@ export const callReviewByOwnerNoAPI = (ownerNo, page = 1, size = 7) => async (di
     }
 };
 
-// 상세 페이지 리뷰 불러오기
+// 메인 페이지 리뷰 불러오기
 export const callReviewByMainAPI = async () => {
     try {
         const response = await api.get('/review/main');
@@ -131,4 +131,15 @@ export const callReviewByMainAPI = async () => {
         console.error('리뷰 API 호출 실패:', error);
         throw error;
     }
+};
+
+// 문의 등록하기
+export const callSubmitReviewAPI = (reviewData) => {
+    const requestURL = `http://localhost:8080/api/v1/review/regist`;
+
+    return async (dispatch) => {
+        const response = await api.post(requestURL, { ...reviewData });
+        console.log('리뷰 등록 결과 서버에 잘 다녀 왔나 response : ', response);
+        return response;
+    };
 };
