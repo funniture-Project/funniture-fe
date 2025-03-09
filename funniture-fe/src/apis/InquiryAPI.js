@@ -16,7 +16,7 @@ export const callInquiryByProductNoAPI = (productNo) => {
 };
 
 
-// 제공자 상세 페이지 문의 불러오기
+// 제공자 마이 페이지 문의 불러오기
 export const callInquiryByOwnerNoAPI = (ownerNo, page = 1, size = 10) => async (dispatch) => {
     if (!ownerNo) {
         console.error('Invalid ownerNo');

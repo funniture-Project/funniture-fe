@@ -1,5 +1,6 @@
 import api from "./Apis";
 import { REVIEW_USER } from "../redux/modules/MemberModule";
+import { REVIEW_SELECT } from "../redux/modules/OwnerModule";
 
 // 마이 페이지에서 리뷰 데이터 불러오기
 export const callAllReviewByMypageAPI = (memberId, page = 1, size = 3) => async (dispatch) => {
@@ -43,6 +44,32 @@ export const callReviewByProductNoAPI = async (productNo) => {
         return await response.json(); // 서버에서 반환된 JSON 데이터
     } catch (error) {
         console.error("리뷰 API 호출 실패:", error);
+        throw error;
+    }
+};
+
+// 제공자 상세 페이지 리뷰 불러오기
+export const callReviewByOwnerNoAPI = (ownerNo, page = 1, size = 7) => async (dispatch) => {
+    if (!ownerNo) {
+        console.error('Invalid ownerNo');
+        return;
+    }
+
+    try {
+        const response = await api.get(
+            `http://localhost:8080/api/v1/review/owner/${ownerNo}?page=${page}&size=${size}`
+        );
+
+        if (!response.data || !response.data.results || !response.data.results.result) {
+            console.warn('No data found');
+            dispatch({ type: REVIEW_SELECT, payload: { results: { result: { data: [] }, pageInfo: null } } });
+        } else {
+            dispatch({ type: REVIEW_SELECT, payload: response.data });
+        }
+
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching reviews:', error);
         throw error;
     }
 };

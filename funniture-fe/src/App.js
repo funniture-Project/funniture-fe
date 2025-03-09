@@ -50,6 +50,7 @@ import UserInquiry from './pages/user/UserInquiry';
 import UserReview from './pages/user/UserReview';
 import AdminNotice from './pages/admin/AdminNotice';
 import Notice from './pages/common/Notice';
+import OwnerReview from './pages/owner/OwnerReview';
 
 function App() {
   const [token, setToken] = useState('');
@@ -145,6 +146,7 @@ function App() {
             <Route path='edit' element={<OwnerRegister />} />
             <Route path='rentals' element={<OwnerRental />} />
             <Route path='inquiry' element={<OwnerInquiry />} />
+            <Route path='review' element={<OwnerReview />} />
           </Route>
 
         </Route>

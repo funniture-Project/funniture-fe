@@ -2,15 +2,18 @@ import { createActions, handleActions } from 'redux-actions';
 
 // 초기값 설정
 const initialState = {
-    inquiries: []
+    inquiries: { result: { data: [] }, pageInfo: null },
+    reviews: { result: { data: [] }, pageInfo: null }, // 기본 구조 설정
 };
 
 
 // 액션 정의 (문의 데이터 가져오기)
 export const INQUIRY_SELECT = 'owner/INQUIRY_SELECT';
+export const REVIEW_SELECT = 'owner/REVIEW_SELECT';
 
 const actions = createActions({
-    [INQUIRY_SELECT]: () => { }
+    [INQUIRY_SELECT]: () => { },
+    [REVIEW_SELECT]: () => { }
 });
 
 const ownerReducer = handleActions({
@@ -18,7 +21,12 @@ const ownerReducer = handleActions({
         ...state,
         inquiries: payload.results,  // 문의 리스트
         pageInfo: payload.results.result.pageInfo   // 페이지 정보 추가
-    })
+    }),
+    [REVIEW_SELECT]: (state, { payload }) => ({
+        ...state,
+        reviews: payload.results,  // 문의 리스트
+        pageInfo: payload.results.result.pageInfo   // 페이지 정보 추가
+    }),
 }, initialState);
 
 
