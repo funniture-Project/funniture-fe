@@ -1,14 +1,26 @@
 import './ownerlayout.css'
 import { Outlet, useNavigate } from "react-router-dom"
 import { NavLink } from 'react-router-dom';
-import profileImg from '../assets/images/profiletest.jpg'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { getOwnerInfo } from '../apis/MemberAPI';
 
 function OwnerLayout() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const { user } = useSelector(state => state.member)
+    const { ownerInfo } = useSelector(state => state.owner)
+
+    useEffect(() => {
+        if (user.memberId != '') {
+            dispatch(getOwnerInfo({ ownerNo: user.memberId }))
+        }
+    }, [user])
+
+    useEffect(() => {
+        console.log("store에 저장된 정보 : ", ownerInfo)
+    }, [ownerInfo])
 
     // 제공자가 아닐경우 홈 페이지로 리디렉트
     // useEffect(() => {
@@ -19,15 +31,19 @@ function OwnerLayout() {
     //     }
     // }, [user])
 
+
     return (
         <div className="owner">
             <div className="ownerMenuBar">
 
                 {/* 제공자 정보 */}
                 <div className='ownerInfo'>
-                    <img src={profileImg} alt="프로필 이미지" onClick={() => { navigate('/owner') }} />
-                    <div className='name'>이은미 님</div>
-                    <div className='email'>testEmail@gmail.com</div>
+                    <div className='imgBox'>
+                        <img src={ownerInfo?.storeImage == "a.jpg" || ownerInfo.storeImage == "default.jpg" || ownerInfo.storeImage == null ? require("../assets/images/default.jpg") : ownerInfo?.storeImage}
+                            alt="프로필 이미지" onClick={() => { navigate('/owner') }} />
+                    </div>
+                    <div className='name'>{ownerInfo.storeName} 님</div>
+                    <div className='email'>{user.email}</div>
                 </div>
 
                 {/* 제공자 마이페이지 메뉴 */}
@@ -52,7 +68,7 @@ function OwnerLayout() {
                         <div>문의 사항</div>
                     </NavLink>
                     <NavLink to="/owner/notice" className={({ isActive }) => (isActive ? "selectedMenu" : "")}>
-                        <div>공지사항</div>
+                        <div>공지 사항</div>
                     </NavLink>
                     <NavLink to="/owner/sales" className={({ isActive }) => (isActive ? "selectedMenu" : "")}>
                         <div>정산관리</div>

@@ -28,16 +28,19 @@ function Notice() {
 
     useEffect(() => {
         console.log("noticeList : ", noticeList)
-        if (user?.memberId == '' || user.memberRole == 'USER') {
-            const filterResult = noticeList.filter(item => item.viewRoll == "all" || item.viewRoll == "user")
+        if (noticeList.length > 0) {
 
-            setFilteredList(filterResult)
-        } else if (user.memberRole == 'OWNER') {
-            const filterResult = noticeList.filter(item => item.viewRoll == "all" || item.viewRoll == "owner")
+            if (user?.memberId == '' || user.memberRole == 'USER') {
+                const filterResult = noticeList.filter(item => item.viewRoll == "all" || item.viewRoll == "user")
 
-            setFilteredList(filterResult)
-        } else if (user.memberRole == 'ADMIN') {
-            setFilteredList(noticeList)
+                setFilteredList(filterResult)
+            } else if (user.memberRole == 'OWNER') {
+                const filterResult = noticeList.filter(item => item.viewRoll == "all" || item.viewRoll == "owner")
+
+                setFilteredList(filterResult)
+            } else if (user.memberRole == 'ADMIN') {
+                setFilteredList(noticeList)
+            }
         }
     }, [noticeList])
 

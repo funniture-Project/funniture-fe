@@ -23,27 +23,25 @@ function Main() {
     }, [user])
 
     useEffect(() => {
-        if (user.memberId == '' || user.memberRole == "USER") {
-            const list = noticeList.filter(item => item.viewRoll == "all" || item.viewRoll == "user")
-            if (list.length > 5) {
-                setFilteredList(list.slice(0, 5))
-            } else {
-                setFilteredList(list)
+        if (noticeList.length > 0) {
+            if (user.memberId == '' || user.memberRole == "USER") {
+                const list = noticeList.filter(item => item.viewRoll == "all" || item.viewRoll == "user")
+                if (list.length > 5) {
+                    setFilteredList(list.slice(0, 5))
+                } else {
+                    setFilteredList(list)
+                }
+            } else if (user.memberRole == "OWNER") {
+                const list = noticeList.filter(item => item.viewRoll == "owner" || item.viewRoll == "all")
+                if (list.length > 5) {
+                    setFilteredList(list.slice(0, 5))
+                } else {
+                    setFilteredList(list)
+                }
+            } else if (user.memberRole == "ADMIN") {
+                setFilteredList(noticeList)
             }
-        } else if (user.memberRole == "OWNER") {
-            const list = noticeList.filter(item => item.viewRoll == "owner" || item.viewRoll == "all")
-            if (list.length > 5) {
-                setFilteredList(list.slice(0, 5))
-            } else {
-                setFilteredList(list)
-            }
-        } else if (user.memberRole == "ADMIN") {
-            setFilteredList(noticeList)
         }
-    }, [noticeList])
-
-    useEffect(() => {
-        console.log("noticeList : ", noticeList)
     }, [noticeList])
 
     return (
