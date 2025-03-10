@@ -87,7 +87,7 @@ function OwnerSales() {
 
     // 총 정산 금액 계산 (수수료 5% 제외)
     function calculateTotalSettlement(filteredSales) {
-        return filteredSales.reduce((acc, item) => acc + (item.rentalPrice * item.rentalNumber * 0.95), 0);
+        return filteredSales.reduce((acc, item) => acc + ((item.rentalPrice * item.rentalNumber * 0.95)*0.9), 0);
     }
     
 
@@ -152,7 +152,7 @@ function OwnerSales() {
                                     <td style={{ width: "20%" }}>{item.productName}</td>
                                     <td style={{ width: "8%" }}>{item.memberId}</td>
                                     <td style={{ width: "8%" }}>{item.rentalNumber}</td>
-                                    <td style={{ width: "9%" }}>{(item.rentalPrice * item.rentalNumber).toLocaleString()} 원</td>
+                                    <td style={{ width: "9%" }}>{(item.rentalPrice * item.rentalNumber *0.9).toLocaleString()} 원</td>
                                     <td style={{ width: "11%" }}>{formatDate(item.orderDate)}</td>
                                     <td style={{ width: "11%" }}>
                                         {item.rental_start_date ? formatDate(item.rental_start_date) : "-"}
@@ -193,9 +193,9 @@ function OwnerSales() {
                             <tr>
                                 <td>{selectedRentalDetails.rentalNo}</td>
                                 <td>{selectedRentalDetails.productName}</td>
-                                <td>{(selectedRentalDetails.rentalPrice*selectedRentalDetails.rentalNumber).toLocaleString()} 원</td>
-                                <td>{(selectedRentalDetails.rentalPrice*selectedRentalDetails.rentalNumber * 0.05).toLocaleString()} 원</td>
-                                <td>{(selectedRentalDetails.rentalPrice*selectedRentalDetails.rentalNumber* 0.95).toLocaleString()} 원</td>
+                                <td>{((selectedRentalDetails.rentalPrice*selectedRentalDetails.rentalNumber)*0.9).toLocaleString()} 원</td>
+                                <td>{((selectedRentalDetails.rentalPrice*selectedRentalDetails.rentalNumber * 0.05)*0.9).toLocaleString()} 원</td>
+                                <td>{((selectedRentalDetails.rentalPrice*selectedRentalDetails.rentalNumber* 0.95)*0.9).toLocaleString()} 원</td>
                                 <td>{calculateSettlementDate(yearMonth)}</td>
                             </tr>
                         </tbody>

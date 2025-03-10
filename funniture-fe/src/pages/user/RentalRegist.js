@@ -26,6 +26,14 @@ function RentalRegist () {
     // 예약 등록 페이지 조회 데이터
     const [defaultAddress, setDefaultAddress] = useState(null); // 기본배송지 조회
     const [currentPoint, setCurrentPoint] = useState({});   // 보유 포인트 조회
+    const [deliveryMemo, setDeliveryMemo] = useState(""); // 배송 메모 상태 추가
+
+    const deliveryOptions = [
+        "문 앞에 놓아주세요",
+        "조심히 다뤄주세요",
+        "경비실에 맡겨주세요",
+        "부재시 연락주세요"
+    ];
 
     // 기본 배송지 불러오기
     async function getDefaultAddressData() {
@@ -92,7 +100,8 @@ function RentalRegist () {
                 productNo: productInfo.productNo,
                 rentalNumber: rentalNum,
                 rentalInfoNo: selectRentalOption.rentalInfoNo,
-                destinationNo: defaultAddress.destinationNo
+                destinationNo: defaultAddress.destinationNo,
+                deliveryMemo: deliveryMemo
             };
         
             await postRentalReservation(rentalData);
@@ -164,9 +173,12 @@ function RentalRegist () {
                         </div>
                         <div>{defaultAddress?.destinationPhone ?? ''}</div>
                         <div>{defaultAddress?.destinationAddress ?? ''}</div>
-                        <select>
-                            <option value="">배송 메모를 선택해주세요.</option>
-                        </select>
+                        <select value={deliveryMemo} onChange={(e) => setDeliveryMemo(e.target.value)}>
+                        <option value="">배송 메모를 선택해주세요.</option>
+                        {deliveryOptions.map((option, index) => (
+                            <option key={index} value={option}>{option}</option>
+                        ))}
+                    </select>
                         </div>
 
                         <h3>주문상품</h3>
@@ -191,6 +203,7 @@ function RentalRegist () {
                                 <div>
                                     <div>할인/쿠폰</div>
                                     <div>사용</div>
+                                    <div>전체 10% 할인행사 쿠폰 적용</div>
                                 </div>
                                 <div>- {formatNumber(discountAmount)} <span>원</span></div>
                             </div>

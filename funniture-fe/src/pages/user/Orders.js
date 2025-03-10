@@ -84,6 +84,14 @@ function Orders() {
         }));
     };
 
+    // 숫자를 1,000 형식으로 변환
+    const formatNumber = (num) => {
+    if (typeof num !== "number" || isNaN(num)) {
+        return "0";  // 값이 없거나 숫자가 아니면 기본값 0 반환
+    }
+    return num.toLocaleString();
+    };
+
     return (
         <div className={OrdersCss.ordersContainer}>
             <div className={OrdersCss.orderPageTitle}>주문/배송</div>
@@ -138,7 +146,7 @@ function Orders() {
                                         <div>주문번호 : {item.rentalNo}</div>
                                         <div>{item.orderDate} 결제</div>
                                         <div>상품명 : {item.productName}</div>
-                                        <div>{item.rentalPrice} 원</div>
+                                        <div>{formatNumber(item.rentalPrice * 0.9)} 원</div>
                                         <div>
                                             <Link to={`/mypage/orders/${item.rentalNo}`} className={OrdersCss.link}>주문상세 &gt;</Link>
                                         </div>
