@@ -5,7 +5,6 @@ import { getProductListByOwnerNo } from '../../apis/ProductAPI';
 import { useNavigate } from 'react-router-dom';
 import { callInquiryByOwnerNoAPI } from '../../apis/InquiryAPI';
 import { callReviewByOwnerNoAPI } from '../../apis/ReviewAPI';
-import OwnerInquiry from './ownerMainInquiry.module.css';
 import OwnerReview from './ownerMainReview.module.css';
 import { getAllNoticeList } from '../../apis/NoticeAPI';
 
@@ -15,7 +14,7 @@ function OwnerMyPage() {
     const { ownerAllProductList } = useSelector(state => state.product)
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    
+
     const [saleProductNum, setSaleProductNum] = useState(0);
     const [stopProductNum, setStopProductNum] = useState(0);
     const [noAbleProductNum, setNoAbleProductNum] = useState(0);
@@ -114,24 +113,25 @@ function OwnerMyPage() {
                     </div>
 
                     <div className={OwMypageCss.leftAreaBottom}>
-                    <div className={OwMypageCss.divItemInquiry}>
-                        문의
-                        <div className={OwnerInquiry.scrollableContainer}></div>
-                        <div style={{ padding: '5px' }}>
-                        {inquiries.length > 0 ? (
-                            inquiries.map((inquiry, index) => (
-                                <div key={inquiry.qnaId || index} className={OwnerInquiry.inquiryItem}>
-                                    <span>{inquiry.qnaWriteTime.slice(0, 16)}</span>
-                                    <span style={{ flex: '2', textAlign: 'center' }}>{inquiry.productName}</span>
-                                    <span style={{ flex: '1', textAlign: 'center' }}>{inquiry.userName} 님</span>
-                                    <span className={OwnerInquiry.answerButton} style={{ flex: '1', textAlign: 'right' }}>답변하기</span>
-                                </div>
-                            ))
-                        ) : (
-                            <p>문의 내역이 없습니다.</p>
-                        )}
-                    </div>
-                    </div>
+                        <div className={OwMypageCss.divItem}>
+                            <div>문의</div>
+                            <div className={OwMypageCss.inquiryItemBox}>
+                                {inquiries.length > 0 ? (
+                                    inquiries.map((inquiry, index) => (
+                                        <div key={inquiry.qnaId || index} className={OwMypageCss.inquiryItem}>
+                                            <span>{inquiry.qnaWriteTime.slice(0, 10)}</span>
+                                            <span>{inquiry.productName}</span>
+                                            <span>{inquiry.userName} 님</span>
+                                            <span className={OwMypageCss.answerButton}>
+                                                <div>답변하기</div>
+                                            </span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>문의 내역이 없습니다.</p>
+                                )}
+                            </div>
+                        </div>
                         <div className={OwMypageCss.divItem}>
                             <div>
                                 <div>공지사항</div>
@@ -153,7 +153,7 @@ function OwnerMyPage() {
 
                 <div className={OwMypageCss.rightArea}>
                     <div className={OwMypageCss.divItem}>이번달 매출</div>
-                    
+
                     <div className={OwMypageCss.divItemReview}>
                         리뷰
                         <div className={OwnerReview.scrollableContainer}></div>
@@ -170,9 +170,9 @@ function OwnerMyPage() {
                                         </div>
                                         {/* 상품명, 렌탈 기간, 작성자 이름 */}
                                         <div className={OwnerReview.reviewContent}>
-                                            <span style={{ flex: '1', textAlign: 'center' , marginLeft:'20%' }}>{review.productName}</span>
-                                            <span style={{ flex: '1', textAlign: 'center' , marginLeft:'20%'  }}>{review.rentalTerm}개월</span>
-                                            <span style={{ flex: '1', textAlign: 'center' , marginLeft:'20%'  }}>{review.userName} 님</span>
+                                            <span style={{ flex: '1', textAlign: 'center', marginLeft: '20%' }}>{review.productName}</span>
+                                            <span style={{ flex: '1', textAlign: 'center', marginLeft: '20%' }}>{review.rentalTerm}개월</span>
+                                            <span style={{ flex: '1', textAlign: 'center', marginLeft: '20%' }}>{review.userName} 님</span>
                                         </div>
                                     </div>
                                 ))

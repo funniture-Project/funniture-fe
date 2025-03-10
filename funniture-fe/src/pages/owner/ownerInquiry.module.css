@@ -71,7 +71,8 @@
 
 /* 활성화된 필터 버튼 스타일 */
 .filterButton.active {
-    background-color: #b09060; /* 갈색 톤 */
+    background-color: #b09060;
+    /* 갈색 톤 */
     color: white;
 }
 
@@ -80,13 +81,15 @@
     padding: 6px 12px;
     border-radius: 6px;
     border: none;
-    background-color: #b09060; /* 갈색 톤 */
+    background-color: #b09060;
+    /* 갈색 톤 */
     color: white;
     cursor: pointer;
 }
 
 .answerButton.complete {
-    background-color: #6aa84f; /* 초록색 톤 */
+    background-color: #6aa84f;
+    /* 초록색 톤 */
 }
 
 

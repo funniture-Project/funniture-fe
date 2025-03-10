@@ -216,7 +216,7 @@ function AdminProduct() {
                                             {categoryList.find(category => category.categoryCode == product.categoryCode)?.categoryName}
                                         </div>
                                         <div className={AdProductCss.productName} id="productName">{product.productName}</div>
-                                        <div className={AdProductCss.createAt} id="createAt">2025.02.25(col 추가예정)</div>
+                                        <div className={AdProductCss.createAt} id="createAt">{product.registerTime}</div>
                                         <div className={AdProductCss.productStatus} id="productStatus">{product.productStatus}</div>
                                     </div>
                                 )) :
