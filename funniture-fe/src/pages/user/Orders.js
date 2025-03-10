@@ -146,7 +146,7 @@ function Orders() {
                                         <div>주문번호 : {item.rentalNo}</div>
                                         <div>{item.orderDate} 결제</div>
                                         <div>상품명 : {item.productName}</div>
-                                        <div>{formatNumber(item.rentalPrice * 0.9)} 원</div>
+                                        <div>{formatNumber((item.rentalPrice * item.rentalNumber)* 0.9)} 원</div>
                                         <div>
                                             <Link to={`/mypage/orders/${item.rentalNo}`} className={OrdersCss.link}>주문상세 &gt;</Link>
                                         </div>

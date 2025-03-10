@@ -156,16 +156,16 @@ function DetailOrder({ selectedOrder, closeModal }) {
             <div className={DetailOrderCss.paymentContainer}>
                 <div>
                     <div>주문금액</div>
-                    <div>{formatNumber(order.rentalPrice* 0.9)} 원</div>
+                    <div>{formatNumber((order.rentalPrice * order.rentalNumber)* 0.9)} 원</div>
                 </div>
                 <div>
                     <div>
                         <div>상품금액</div>
-                        <div>{formatNumber(order.rentalPrice* 0.9)} 원</div>
+                        <div>{formatNumber((order.rentalPrice * order.rentalNumber)* 0.9)} 원</div>
                     </div>
                     <div>
                         <div>쿠폰할인</div>
-                        <div>- {formatNumber(order.rentalPrice* 0.1)}원</div>
+                        <div>- {formatNumber((order.rentalPrice * order.rentalNumber)* 0.1)}원</div>
                     </div>
                     <div>
                         <div>배송비</div>
@@ -175,7 +175,7 @@ function DetailOrder({ selectedOrder, closeModal }) {
                 <hr className={DetailOrderCss.orderHr} />
                 <div>
                     <div>포인트 결제</div>
-                    <div>{formatNumber(order.rentalPrice* 0.9)} 원</div>
+                    <div>{formatNumber((order.rentalPrice * order.rentalNumber)* 0.9)} 원</div>
                 </div>
             </div>
 
@@ -187,7 +187,7 @@ function DetailOrder({ selectedOrder, closeModal }) {
                     <div>
                         <div>
                             <div>구매적립</div>
-                            <div>{(order.rentalPrice * 0.01)} <span>원</span></div>
+                            <div>{((order.rentalPrice * order.rentalNumber) * 0.01)} <span>원</span></div>
                         </div>
                         <div>
                             <div>리뷰적립</div>
