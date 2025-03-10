@@ -53,6 +53,11 @@ export const callGetMemberEmailAPI = async (email) => {
     }
 };
 
+export async function updateCount(role) {
+    const url = "/member/updateCount"
+
+    await api.post(url, { role })
+}
 
 // 로그인 할 때 서버에 데이터를 보내고, 토큰 정보를 리턴 받음
 export const callLoginAPI = ({ form }) => {
@@ -83,6 +88,8 @@ export const callLoginAPI = ({ form }) => {
 
                 dispatch(callGetMemberAPI(result.userInfo))
 
+                updateCount(result.userInfo.memberRole)
+
                 // 로그인 성공 시 true 반환
                 return { success: true, message: result.message };
             } else {
@@ -98,6 +105,9 @@ export const callLoginAPI = ({ form }) => {
         }
     };
 };
+
+// 접속자 수 업데이트
+
 
 
 // 로그인 한 회원의 대한 정보를 불러오는 구문
