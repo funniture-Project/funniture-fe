@@ -7,6 +7,7 @@
     box-sizing: border-box;
 }
 .orderContainer > h3 {
+    display: flex;
     color: #7F5539;
     margin: 0;
     margin-bottom: 5px;
@@ -63,17 +64,20 @@
     width: 50%;
     gap: 10px;
 }
+
 .productInfo> div:nth-child(1) > div:nth-child(1)  {
     font-weight: 600;
+    font-size: 1.2em;
+    color: #2C7E3E;
 }
 .productInfo > div > div:nth-child(2),
 .productInfo > div:nth-child(2)> div {
     align-items: center;
     background-color: #B08968;
-    box-shadow: 0px 2.5px 5px rgb(110, 110, 110); /* x, y, blur, 색상 */
     border-radius: 5px;
     padding: 2px 10px;
     color: white;
+    cursor: pointer;
 }
 .productInfo > div:nth-child(2) {
     margin: 7px 20px;
@@ -93,6 +97,7 @@
 }
 
 .orderInfoContainer > div:nth-child(1) {
+    display: flex;
     font-size: 1.3em;
     font-weight: 600;
 } 
@@ -161,18 +166,20 @@
     justify-content: flex-end;
     align-items: center;
     background-color: #B08968;
-    box-shadow: 0px 2.5px 5px rgb(110, 110, 110); /* x, y, blur, 색상 */
+    cursor: pointer;
     border-radius: 5px;
     padding: 2px 10px;
     color: white; 
 }
 
 .deliveryContainer > div:nth-child(2) {
+    display: flex;
     margin: 2px 0px;
     font-size: 0.8em;
 }
 
 .deliveryContainer > div:nth-child(3) {
+    display: flex;
     font-size: 0.95em;
 }
 
@@ -192,10 +199,16 @@
 .deliveryContainer > div:nth-child(4) > div {
     align-items: center;
     background-color: #B08968;
-    box-shadow: 0px 2.5px 5px rgb(156, 155, 155); /* x, y, blur, 색상 */
+    cursor: pointer;
     border-radius: 5px;
     padding: 2px 10px;
     color: white; 
+}
+
+.deliveryContainer > div:nth-child(5) > div {
+    display: flex;
+    margin-top: -10px;
+    font-size: 0.95em;
 }
 
 /* 결제정보 */
@@ -278,4 +291,33 @@
 .pointContainer > div > p {
     color: gray;
     margin: 2px 0px 15px 15px;
+}
+
+.userInfoContainer {
+    box-sizing: border-box;
+    border: 1px solid black;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    align-items: self-start;
+    padding: 1% 2.5%;
+}
+
+.userInfoContainer > div > div > span {
+    font-weight: 600;
+}
+
+.ownerCencle {
+    display: flex;
+    justify-content: center;
+    padding-top: 3%;
+}
+
+.ownerCencle >div {
+    padding: 8px 30px;
+    border-radius: 10px;
+    color: white;
+    background-color: #EC2828;
+    box-shadow: 0px 2.5px 5px rgb(156, 155, 155); /* x, y, blur, 색상 */
+    cursor: pointer;
 }

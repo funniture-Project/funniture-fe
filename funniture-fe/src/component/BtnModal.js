@@ -1,6 +1,8 @@
 import { Button, Modal } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ModalCss from './BtnModal.module.css'
+import { useState } from "react";
+import { useRef, useEffect } from "react";
 
 function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
     modalContext, modalTitle, modalSize, childContent, onSuccess, onFail, onClose }) {
@@ -33,8 +35,9 @@ function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
 
     return (
         <>
-            <Modal show={showBtnModal}
-                onHide={handleFailClose}
+            <Modal
+                show={showBtnModal}
+                onHide={handleOnClose}
                 size={modalSize}
                 centered
                 dialogClassName={ModalCss.customModal}
@@ -46,23 +49,34 @@ function BtnModal({ showBtnModal, setShowBtnModal, btnText, secondBtnText,
                 </Modal.Header>
 
                 <Modal.Body className={ModalCss.modalBody}>
-                    {childContent ? childContent : modalContext ? modalContext : null}
+                    {modalContext && typeof modalContext === 'object' && modalContext.left && modalContext.right ? (
+                        // 새로운 레이아웃: 왼쪽과 오른쪽으로 나누어진 구조
+                        <div className="row">
+                            <div className="col-md-6">{modalContext.left}</div>
+                            <div className="col-md-6">{modalContext.right}</div>
+                        </div>
+                    ) : (
+                        // 기존 방식: childContent 또는 단순 텍스트/JSX 구조
+                        childContent || modalContext
+                    )}
                 </Modal.Body>
+
                 <Modal.Footer className={ModalCss.modalFooter}>
-                    {btnText ?
+                    {btnText &&
                         <Button onClick={handleSuccessClose}>
                             {btnText}
                         </Button>
-                        : null}
-                    {secondBtnText ?
+                    }
+                    {secondBtnText &&
                         <Button onClick={handleFailClose}>
                             {secondBtnText}
                         </Button>
-                        : null}
+                    }
                 </Modal.Footer>
             </Modal>
         </>
     );
+
 
 }
 

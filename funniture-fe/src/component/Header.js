@@ -7,11 +7,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import headerCss from './headerfooter.module.css'
 import decodeJwt from '../utils/tokenUtils';
 import { ReactComponent as MyPageImage } from "../assets/images/circle-user.svg"
+import BtnModal from './BtnModal';
+import { resetMember } from '../redux/modules/MemberModule';
 
 function Header({ setSelectCategory }) {
     const { user } = useSelector(state => state.member);
     const [isLogin, setIsLogin] = useState(false);
     const [userRole, setUserRole] = useState('');
+
+    // 모달 
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -39,7 +45,7 @@ function Header({ setSelectCategory }) {
             } else {
                 setIsLogin(false);
             }
-        } else{
+        } else {
             setIsLogin(false); // 토큰 없으면 로그아웃 상태
         }
     }, [user]);
@@ -69,7 +75,7 @@ function Header({ setSelectCategory }) {
 
     function BeforeLogin() { // | 는 시각적으로 버튼 구분
         return (
-            <div class={headerCss.loginBtn} onClick={() => navigate('/login')}>
+            <div className={headerCss.loginBtn} onClick={() => navigate('/login')}>
                 <div>로그인</div>
             </div>
         );
@@ -78,26 +84,29 @@ function Header({ setSelectCategory }) {
     function AfterLogin() {
 
         return (
-            <div class={headerCss.loginBtn} onClick={onClickLogoutHandler}>
+            <div className={headerCss.loginBtn} onClick={onClickLogoutHandler}>
                 <div>로그아웃</div>
             </div>
         );
     }
 
     const onClickLogoutHandler = () => {
-        window.localStorage.removeItem('accessToken')
-        setIsLogin(false)
-        alert('로그아웃 되었습니다.')
-        navigate('/')
-    }
+        window.localStorage.removeItem('accessToken');
+        dispatch(resetMember()); // Redux 상태 초기화
+        setIsLogin(false);
+        setModalMessage('로그아웃 되었습니다.');
+        setShowModal(true);
+    };
+
 
     const moveMyPage = () => {
+        console.log("현재 유저 역할:", userRole); // 디버깅용
         if (userRole === 'USER') {
             navigate('/mypage');
         } else if (userRole === 'OWNER') {
             navigate('/owner');
         } else if (userRole === 'ADMIN') {
-            navigate('ADMIN');
+            navigate('/admin');
         } else {
             console.error('유저의 권한을 확인할 수 없습니다.')
         }
@@ -125,6 +134,18 @@ function Header({ setSelectCategory }) {
                 {isLogin && (<MyPageImage style={{ fill: "#B08968", width: "2.5%" }} onClick={moveMyPage} />)}
                 {isLogin ? <AfterLogin /> : <BeforeLogin />}
             </div>
+
+            <BtnModal
+                showBtnModal={showModal}
+                setShowBtnModal={setShowModal}
+                modalTitle="로그아웃"
+                modalContext={modalMessage}
+                btnText="확인"
+                onSuccess={() => {
+                    setShowModal(false);
+                    navigate('/');
+                }}
+            />
         </header>
     )
 }

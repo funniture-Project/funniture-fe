@@ -5,7 +5,7 @@
     .ownerMenuBar {
         position: sticky;
         top: 93px;
-        max-height: 74.5vh;
+        max-height: 82vh;
 
         width: 15%;
         border: solid 2px #7F5539;
@@ -24,11 +24,21 @@
             flex-direction: column;
             align-items: center;
 
-            img {
-                width: 30%;
+            .imgBox {
+                width: 35%;
                 border-radius: 50%;
                 aspect-ratio: 1 / 1;
                 margin-bottom: 10px;
+                padding: 5px;
+                border: solid 1px #7F5539;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                img {
+                    max-width: 100%;
+                    max-height: 100%;
+                }
             }
 
             .email {

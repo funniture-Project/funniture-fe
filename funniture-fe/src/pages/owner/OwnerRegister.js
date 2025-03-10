@@ -14,6 +14,7 @@ function OwnerRegister() {
     const { user } = useSelector(state => state.member)
     const { loading, error, msg } = useSelector(state => state.product)
     const [showBtnModal, setShowBtnModal] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     const [productName, setProductName] = useState('');
     const [refCategory, setRefCategory] = useState(1)
@@ -102,9 +103,6 @@ function OwnerRegister() {
 
     // 옵션 삭제
     function removeOption(indexToRemove) {
-        // setRentalOptions((prevOptions) =>
-        //     prevOptions.filter((_, index) => index !== indexToRemove)
-        // );
 
         setRentalOptions(prevOptions => {
             const newOptions = [...prevOptions];  // 깊은 복사
@@ -214,7 +212,11 @@ function OwnerRegister() {
             return;
         }
 
+
         let updatedDescription = description;
+
+        setShowBtnModal(true)
+        setModalMSg("상품 등록 중")
 
         console.log("src 변경전 updatedDescription : ", updatedDescription)
 
@@ -348,6 +350,9 @@ function OwnerRegister() {
         console.log("error : ", error)
         if (!loading) {
             setModalMSg(msg?.trim() != '' ? msg : error)
+        } else {
+            setShowBtnModal(true)
+            setModalMSg("상품 등록 중")
         }
     }, [loading])
 
@@ -617,6 +622,7 @@ function OwnerRegister() {
                 setShowBtnModal={setShowBtnModal}
                 btnText="확인"
                 modalContext={modalMSg}
+                onSuccess={() => navigate("/owner/product")}
             />
 
             <style>

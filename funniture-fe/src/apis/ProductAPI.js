@@ -36,14 +36,15 @@ export async function getSubAllCategory() {
 }
 
 // 검색 조건에 상응하는 데이터 조회
-export async function getProductList(conditions, refCategoryCode) {
+export async function getProductList({ conditions, refCategoryCode, pageNum, paging } = {}) {
 
     console.log("검색 조건 : ", conditions)
+    console.log("pageNum : ", pageNum)
 
     const url = '/product'
     const params = new URLSearchParams()
 
-    if (conditions) {
+    if (conditions && conditions != undefined) {
         if (conditions.categoryCodeList?.length > 0) {
             conditions.categoryCodeList.map(categoryCode => {
                 params.append('categoryCode', categoryCode);
@@ -67,9 +68,15 @@ export async function getProductList(conditions, refCategoryCode) {
         }
     }
 
-    console.log("검색 조건 결과 요청 params : ", params)
+    if (paging) {
+        params.append("pageNum", pageNum)
+    }
+
+    console.log("검색 조건 결과 요청 params : ", params.toString())
 
     const response = await getData(url, params)
+
+    console.log("데이터 가져온 결과임!!!!!!!!!!!!!!!!!! : ", response)
 
     return response
 }

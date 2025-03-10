@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
-import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL, RESET_MEMBER } from "../redux/modules/MemberModule";
+import { POST_REGISTER, POST_LOGIN, GET_MEMBER, GET_EMAIL, RESET_MEMBER, POST_OWNERDATA, CHANGE_ISCONSULTING } from "../redux/modules/MemberModule";
 import api from "./Apis";
 import imageApi from "./Apis";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { GET_OWNERINFO } from "../redux/modules/OwnerModule";
 
 // 회원 가입
 export const callSignupAPI = ({ form }) => {
@@ -26,13 +27,14 @@ export const callSignupAPI = ({ form }) => {
         }).then(res => res.json());
 
         console.log('회원 가입 데이터 서버에 보내고 리턴된 result : ', result);
-        alert(result.message);
-        if (result.status == 200) {
+        if (result.status === 200) {
             console.log('result.status : ', result.status);
             dispatch({ type: POST_REGISTER, payload: result });
         }
+        return result; // 결과를 반환합니다.
     };
 };
+
 
 // 최초 회원 가입 할 때 이메일 입력 시, 중복된 이메일인지 체크하는 API
 export const callGetMemberEmailAPI = async (email) => {
@@ -114,10 +116,11 @@ export const callSendEmailAPI = ({ form }) => {
         const result = await api.post(`/email/${form.email}`, {
             email: form.email
         });
-        alert('인증 번호 발송이 완료되었습니다.');
+
         console.log('인증번호가 서버에 잘 다녀 왔나 result : ', result);
 
         dispatch({ type: GET_EMAIL, payload: result.data });
+        return;
     };
 };
 
@@ -126,10 +129,7 @@ export const callCertificationAPI = ({ email, verification }) => {
         try {
             const response = await api.post('/email/verify', { email, verification });
             if (response.data.success) {
-                alert('인증 성공!');
                 dispatch({ type: 'CERTIFICATION_SUCCESS' });
-            } else {
-                alert('인증 실패. 다시 시도해주세요.');
             }
         } catch (error) {
             console.error('인증 요청 중 오류 발생:', error);
@@ -307,50 +307,362 @@ export const callWithdrawAPI = ({ memberId }) => {
     };
 }
 
+export const callConvertImageAPI = ({ memberId, storeImage }) => {
+    const requestURL = `http://localhost:8080/api/v1/member/modify/imageLink`;
+
+    console.log('callChangeImageAPI에 memberId 잘 넘어 오는지 : ', memberId);
+    console.log('callChangeImageAPI에 storaImage 잘 넘어 오는지 : ', storeImage);
+
+    return async (dispatch, getState) => {
+        const formData = new FormData();
+
+        // JSON 데이터 생성 (객체 형식으로 만들어 줘야 함!!)
+        const memberData = {
+            memberId: memberId, // 문자열 데이터
+        };
+
+        // FormData에 JSON 데이터 추가
+        formData.append(
+            "formData",
+            new Blob([JSON.stringify(memberData)], { type: "application/json" })
+        );
+
+        // FormData에 파일 추가 (파일 객체 그대로 추가)
+        formData.append("storeImage", storeImage);
+
+        try {
+            const response = await api.put(requestURL, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            console.log('프로필 사진 변경 서버에 잘 다녀 왔는지 : ', response);
+
+            if (response.data.httpStatusCode === 201) {
+                console.log('프로필 사진 변경 성공');
+                // alert('프로필 사진이 변경되었습니다.');
+            } else if (response.data.httpStatusCode === 400) {
+                console.log('프로필 사진 변경 실패');
+                alert('프로필 사진 변경에 실패했습니다.');
+            } else {
+                console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
+                alert('알 수 없는 오류가 발생했습니다.');
+            }
+        } catch (error) {
+            console.error('프로필 사진 변경 중 오류 발생: ', error);
+            alert('서버와 통신 중 오류가 발생했습니다.');
+        }
+
+    };
+};
+
 // 사용자가 제공자로 전환 신청할 때 서버에 넘길 사업자 데이터들
-export const callRegisterOwnerAPI = () => {
-    
+// export const callRegisterOwnerAPI = ({
+//     memberId,
+//     storeName,
+//     bank,
+//     account,
+//     storeImage,
+//     storeNo,
+//     storeAddress,
+//     storePhone,
+//     attachmentFile // 변수명 수정
+// }) => {
+//     const requestURL = `http://localhost:8080/api/v1/member/owner/register`;
+
+//     return async (dispatch, getState) => {
+//         const formData = new FormData();
+
+//         // JSON 데이터 생성
+//         const ownerData = {
+//             memberId: memberId,
+//             storeName: storeName,
+//             bank: bank,
+//             account: account,
+//             storeNo: storeNo,
+//             storeAddress: storeAddress,
+//             storePhone: storePhone
+//         };
+
+//         // FormData에 JSON 데이터 추가
+//         formData.append(
+//             "ownerData",
+//             new Blob([JSON.stringify(ownerData)], { type: "application/json" })
+//         );
+
+//         // FormData에 이미지 파일 추가
+//         if (storeImage instanceof File) {
+//             formData.append("storeImage", storeImage);
+//         }
+
+//         // FormData에 첨부파일 추가 (필드 이름 수정)
+//         if (attachmentFile instanceof File) {
+//             formData.append("attachmentFile", attachmentFile); // 필드 이름 수정
+//         }
+
+//         try {
+//             const response = await api.post(requestURL, formData, {
+//                 headers: {
+//                     'Content-Type': 'multipart/form-data'
+//                 }
+//             });
+
+//             console.log('제공자 전환 신청 서버 응답:', response);
+
+//             if (response.data.httpStatusCode === 201) {
+//                 console.log('제공자 전환 신청 성공');
+//                 console.log('서버 응답 데이터:', response.data.results.result); // 추가
+
+//                 // 성공적으로 데이터를 받아왔을 때 Redux 스토어에 저장
+//                 dispatch({
+//                     type: POST_OWNERDATA,
+//                     payload: response.data.results.result // 서버에서 반환된 데이터 저장
+//                 });
+
+//                 return response;
+//             } else if (response.data.httpStatusCode === 400) {
+//                 console.log('제공자 전환 신청 실패');
+//                 alert('제공자 신청에 실패했습니다.');
+//             } else {
+//                 console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
+//                 alert('알 수 없는 오류가 발생했습니다.');
+//             }
+//         } catch (error) {
+//             console.error('제공자 전환 신청 중 오류 발생:', error);
+//             alert('서버와 통신 중 오류가 발생했습니다.');
+//         }
+//     };
+// };
+export const callRegisterOwnerAPI = ({
+    memberId,
+    storeName,
+    bank,
+    account,
+    storeImage,
+    storeNo,
+    storeAddress,
+    storePhone,
+    attachmentFile
+}) => {
+    const requestURL = `http://localhost:8080/api/v1/member/owner/register`;
+
+    return async (dispatch, getState) => {
+        const formData = new FormData();
+
+        // JSON 데이터 생성
+        const ownerData = {
+            memberId, storeName, bank, account, storeNo, storeAddress, storePhone
+        };
+
+        formData.append("ownerData", new Blob([JSON.stringify(ownerData)], { type: "application/json" }));
+
+        if (storeImage instanceof File) {
+            formData.append("storeImage", storeImage);
+        }
+
+        if (attachmentFile instanceof File) {
+            formData.append("attachmentFile", attachmentFile);
+        }
+
+        try {
+            const response = await api.post(requestURL, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+
+            console.log('제공자 전환 신청 서버 응답:', response);
+
+            if (response.data.httpStatusCode === 201) {
+                console.log('제공자 전환 신청 성공');
+                console.log('서버 응답 데이터:', response.data.results.result);
+
+                dispatch({
+                    type: POST_OWNERDATA,
+                    payload: response.data.results.result
+                });
+
+                return response; // 이 부분을 추가
+            } else {
+                console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
+                return { success: false, error: '제공자 신청에 실패했습니다.' };
+            }
+        } catch (error) {
+            console.error('제공자 전환 신청 중 오류 발생:', error);
+            return { success: false, error: '서버와 통신 중 오류가 발생했습니다.' };
+        }
+    };
+};
+
+
+// // 사용자가 제공자 전환 신청을 했는지 여부 확인을 위함
+
+
+// 재신청 시 돌아갈 구문
+export const callUpdateOwnerAPI = ({
+    memberId,
+    storeName,
+    bank,
+    account,
+    storeImage,
+    storeNo,
+    storeAddress,
+    storePhone,
+    attachmentFile
+}) => {
+    const requestURL = `http://localhost:8080/api/v1/member/owner/update`;
+
+    return async (dispatch, getState) => {
+        const formData = new FormData();
+
+        const ownerData = {
+            memberId, storeName, bank, account, storeNo, storeAddress, storePhone
+        };
+
+        formData.append("ownerData", new Blob([JSON.stringify(ownerData)], { type: "application/json" }));
+
+        if (storeImage instanceof File) {
+            formData.append("storeImage", storeImage);
+        }
+
+        if (attachmentFile instanceof File) {
+            formData.append("attachmentFile", attachmentFile);
+        }
+
+        try {
+            const response = await api.post(requestURL, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+
+            console.log('제공자 전환 재신청 서버 응답:', response);
+
+            if (response.data.httpStatusCode === 201) {
+                console.log('제공자 전환 재신청 성공');
+                console.log('서버 응답 데이터:', response.data.results.result);
+
+                dispatch({
+                    type: POST_OWNERDATA,
+                    payload: response.data.results.result
+                });
+
+                return response; // 이 부분을 추가
+            } else {
+                console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
+                return { success: false, error: '제공자 재신청에 실패했습니다.' };
+            }
+        } catch (error) {
+            console.error('제공자 전환 재신청 중 오류 발생:', error);
+            return { success: false, error: '서버와 통신 중 오류가 발생했습니다.' };
+        }
+    };
+};
+
+
+
+// 사용자가 제공자 전환 신청을 했는지 여부 확인을 위함
+export const checkOwnerStatusAPI = async (memberId) => {
+    const requestURL = `http://localhost:8080/api/v1/member/owner/status/${memberId}`;
+    try {
+        const response = await api.get(requestURL);
+        console.log('사용자가 제공자 전환 신청을 했는지 여부 : ', response);
+        return response;
+    } catch (error) {
+        console.error('기존 신청 여부 확인 중 오류 발생:', error);
+        throw error;
+    }
+};
+
+// 제공자 전환 심사 반려 됐을 때 반려 메시지 가져오기
+export const getRejectedMessage = async (memberId) => {
+    const requestURL = `http://localhost:8080/api/v1/member/rejected/${memberId}`;
+    try {
+        const response = await api.get(requestURL);
+        console.log('반려 메시지 잘 불러와졌나 :', response);
+        return response;
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+        throw error;
+    }
+}
+
+// 제공자 정보 불러오기 (예진)
+export function getOwnerInfo({ ownerNo }) {
+    return async (dispatch, getState) => {
+
+        const url = `/owner/${ownerNo}`
+
+        const response = await api.get(url)
+
+        console.log("제공자 정보 : ", response)
+
+        if (response?.data.httpStatusCode == 200) {
+
+            dispatch({
+                type: GET_OWNERINFO,
+                payload: {
+                    ownerInfo: response.data.results.result
+                }
+            });
+        }
+    }
 }
 
 
-// 회원가입은 굳이 토큰을 안 보내도 돼서 axios 쓰지 않아도 됨. 근데 작성해봄.
-// export const callSignupAPI =
-// ({form}) =>
-//     async (dispatch) => {
-//         try {
-//           console.log('실행')
-//           console.log("api : ", api)
-//         const response = await api.post('/auth/signup', {
-//           email : form.email,
-//           userName : form.userName,
-//           password : form.password,
-//         });
-//         if (response.status !== 200) throw new Error(response.error);
-//         dispatch({type : POST_REGISTER, payload : response});
-//         alert('회원가입을 완료하였습니다. ');
-//       }
-//        catch (error) {
-//         // dispatch({ type: types.REGISTER_USER_FAIL, payload: error.error });
-//         console.log('test', error);
-//         //   alert('회원가입에 실패하였습니다.');
-//       }
-//     };
+// 회원의 대한 정보를 불러오는 구문(은미)
+export async function getMemberData(memberId) {
 
-// export const callGetMemberAPI = ({memberId}) => {
-//     const memberRequestURL = `http://localhost:8080/api/v1/member/${memberId}`;
+    const url = `/member/${memberId}`
 
-//     return async (dispatch, getState) => {
-//         const result = await fetch(memberRequestURL,{
-//             method : 'GET',
-//             headers: {
-//                 'Content-Type' : 'application/json',
-//                 Accept: '*/*',
-//                 Authorization : 'Bearer' + window.localStorage.getItem('accessToken'),
-//             },
-//         }).then((res) => res.json());
+    const response = await getData(url);
 
-//         console.log('callGetMemberAPI result : ', result);
+    return response;
+};
 
-//         dispatch({type: GET_MEMBER, payload:result});
-//     }
-// }
+// 은미
+const getData = async (url, query) => {
+    let response
+
+    if (!query) {
+        response = await api.get(url)
+    } else {
+        response = await api.get(url, { params: query })
+    }
+
+    return response?.data
+}
+
+export function changeConsultingAPI({ memberId }) {
+    console.log("업데이트 전 : ", memberId)
+    const url = `/member/modify/consulting?memberId=${memberId}`
+
+    return async (dispatch, getState) => {
+        const response = await api.put(url)
+
+        console.log("변환 결과 : ", response)
+
+        if (response?.data.httpStatusCode == 204) {
+            dispatch({
+                type: CHANGE_ISCONSULTING,
+                payload: {
+                    isConsulting: response?.data.results.isConsulting
+                }
+            })
+        }
+    };
+}
+
+
+// 제공자 전환 심사 중복된 사업자번호인지 확인하기
+export const getCheckStoreNoAPI = async (memberId, storeNo) => {
+    const requestURL = `http://localhost:8080/api/v1/member/check-store-no`;
+    try {
+        // 요청 파라미터를 params 객체로 전달
+        const response = await api.get(requestURL, {
+            params: { memberId, storeNo },
+        });
+        console.log('중복 여부 storeNo 잘 불러와졌나 :', response);
+        return response;
+    } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+        throw error;
+    }
+};

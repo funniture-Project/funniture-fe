@@ -1,29 +1,37 @@
 import RentalRegistCss from './rentalRegist.module.css'
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useState , useEffect } from 'react';
-import { getDefaultDeliveryAddressList, getDeliveryAddressListData } from '../../apis/DeliveryAddressAPI';
+import { getDefaultDeliveryAddressList } from '../../apis/DeliveryAddressAPI';
 import { getCurrentPoint } from '../../apis/PointAPI';
 import BtnModal from '../../component/BtnModal';
 import DeliveryAddressModal from './DeliveryAddressModal';
 import { postRentalReservation } from '../../apis/RentalAPI'; 
+import RentalSuccessModal from './RentalSuccessModal';
+import JSConfetti from "js-confetti";
 
 function RentalRegist () {
 
     const location = useLocation();
     
+    // 사용자 꺼내오기
+    const { user } = useSelector(state => state.member)
+    const { memberId } = user
+
     // 상품 상세페이지에서 넘어오는 데이터
     const {selectRentalOption} = location.state  // 렌탈 조건 정보
     const {productInfo} = location.state         // 상품 정보
     const {rentalNum} = location.state           // 렌탈 갯수
 
     // 예약 등록 페이지 조회 데이터
-    const [defaultAddress, setDefaultAddress] = useState([]);   // 기본배송지 조회
+    const [defaultAddress, setDefaultAddress] = useState(null); // 기본배송지 조회
     const [currentPoint, setCurrentPoint] = useState({});   // 보유 포인트 조회
 
     // 기본 배송지 불러오기
-    async function getDefaultAddressData(memberId) {
+    async function getDefaultAddressData() {
         try {
             const data = await getDefaultDeliveryAddressList(memberId);
+
             setDefaultAddress(data.results.defaultAddressList[0]);
             
         } catch (error) {
@@ -32,7 +40,7 @@ function RentalRegist () {
     }
 
     // 보유 포인트 불러오기 
-    async function getCurrentPointData(memberId) {
+    async function getCurrentPointData() {
         try {
             const data = await getCurrentPoint(memberId);
             setCurrentPoint(data.results);
@@ -43,49 +51,25 @@ function RentalRegist () {
     }
 
     useEffect(() => {
-        getDefaultAddressData("MEM011");
-    }, []);
+        if(user.memberId != ''){
+            getDefaultAddressData();
+        }
+    }, [memberId]);
 
     useEffect(() => {
-        getCurrentPointData("MEM011");
-    }, [])
+        getCurrentPointData();
+    }, [memberId])
 
-    // 렌탈 등록 !!
-    const handlePaymentClick = async () => {
-        try {
-            // 필요한 데이터 준비
-            const rentalData = {
-                memberId: "MEM011", // 실제 로그인된 memberId로 대체
-                productNo: productInfo.productNo,
-                rentalNumber: rentalNum,
-                rentalInfoNo: selectRentalOption.rentalInfoNo,
-                destinationNo: defaultAddress.destinationNo
-            };
-        
-            // API 호출
-            const response = await postRentalReservation(rentalData);
-        
-            // 성공 시 처리할 로직
-            console.log('예약 등록 성공:', response);
-            // 예: 예약 성공 후 페이지 이동, 모달 열기 등
-        
-        } catch (error) {
-            console.error('예약 등록 실패:', error);
-            // 실패 시 처리할 로직
-        }
-        };
     
 // ------------------------------------------------ 배송지 변경 ------------------------------------------------
 
-const [deliveryAddressList, setDeliveryAddressList] = useState([]); // 전체 배송지리스트 조회(모달창)
-const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모달창 상태
+    const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모달창 상태
     const [showConfirmationModal, setShowConfirmationModal] = useState(false); // 변경 완료 모달 상태
+   
 
     // 배송지 선택 모달 열기 핸들러
     // 모달 열기 핸들러
-    const onClickHandler = async () => {
-        const data = await getDeliveryAddressListData("MEM011");  // 모달이 열릴 때 API 호출
-        setDeliveryAddressList(data.results.addressList);
+    const onClickHandler =  () => {
         setShowBtnModal(true);
     };
 
@@ -94,6 +78,55 @@ const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모
         setDefaultAddress(address);   // 기본 배송지 변경
         setShowBtnModal(false);       // 배송지 변경 모달 닫기
         setShowConfirmationModal(true); // 변경 완료 모달 띄우기
+    };
+
+    // ------------------------------------------------ 렌탈 등록 ------------------------------------------------
+
+     const [showSuccessModal, setShowSuccessModal] = useState(false); // 등록 완료 모달 상태
+
+    // 렌탈 등록 핸들러
+    const handlePaymentClick = async () => {
+        try {
+            const rentalData = {
+                memberId: memberId, // 나중에 로그인 된 memberId로 대체
+                productNo: productInfo.productNo,
+                rentalNumber: rentalNum,
+                rentalInfoNo: selectRentalOption.rentalInfoNo,
+                destinationNo: defaultAddress.destinationNo
+            };
+        
+            await postRentalReservation(rentalData);
+            setShowSuccessModal(true);  // 성공 모달 열기
+            handleClick();
+        
+        } catch (error) {
+            console.error('예약 등록 실패:', error);
+        }
+        };
+
+    // 예약 성공 모달 마이페이지, 메인 보내기
+    const navigate = useNavigate();
+
+    // '주문내역 확인' 클릭 시 마이페이지로 이동
+    const handleSuccess = () => {
+        navigate('/mypage'); 
+    };
+
+    // '메인으로 가기' 클릭 시 메인으로 이동
+    const handleFail = () => {
+        navigate('/'); 
+    };
+
+    // Confetti 쓸 준비
+    const jsConfetti = new JSConfetti();
+
+    // 색종이 커스터마이징
+    const handleClick = () => {
+        jsConfetti.addConfetti({
+        confettiNumber: 1500,
+        confettiColors : ['#FF8FA3', '#FFBE7D', '#FAE27F', '#7EC8E3', '#6FE7C2', '#C28FEF'],
+        emojiSize: 30,
+        });
     };
 
     // 계산 되는 것 변수 처리(할인가격, 렌탈 가격, 구매 적립 포인트)
@@ -121,15 +154,19 @@ const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모
                     <div className={RentalRegistCss.rentalInfoContainer}>
                         <h3>배송지</h3>
                         <div className={RentalRegistCss.deliverySection}>
+                        <div>
                             <div>
-                                <div>{defaultAddress ? defaultAddress.receiver : '배송지 없음'} ({defaultAddress.destinationName})</div>
-                                <div className={RentalRegistCss.deliveryChangeBtn} onClick={onClickHandler}>변경</div>
+                            {defaultAddress 
+                                ? `${defaultAddress.receiver} (${defaultAddress.destinationName ?? ''})`
+                                : '배송지가 없습니다.(변경을 눌러 배송지를 등록하세요)'}
                             </div>
-                            <div>{defaultAddress ? defaultAddress.destinationPhone : ''}</div>
-                            <div>{defaultAddress ? defaultAddress.destinationAddress : ''}</div>
-                            <select>
-                                <option value="">배송 메모를 선택해주세요.</option>
-                            </select>
+                            <div className={RentalRegistCss.deliveryChangeBtn} onClick={onClickHandler}>변경</div>
+                        </div>
+                        <div>{defaultAddress?.destinationPhone ?? ''}</div>
+                        <div>{defaultAddress?.destinationAddress ?? ''}</div>
+                        <select>
+                            <option value="">배송 메모를 선택해주세요.</option>
+                        </select>
                         </div>
 
                         <h3>주문상품</h3>
@@ -171,16 +208,12 @@ const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모
                         <div className={RentalRegistCss.pointSection}>
                             <div>
                                 <div>보유포인트</div>
-                                <div>{formatNumber(currentPoint.availablePoints)} <span>원</span></div>
+                                <div>{formatNumber(currentPoint?.availablePoints)} <span>원</span></div>
                             </div>
                             <div className={RentalRegistCss.pointSubSection}>
                                 <div>
                                     <div>사용</div>
-                                    <div>{formatNumber(finalPriceThisMonth)}</div>
-                                    <div>X</div>
-                                </div>
-                                <div>
-                                    <div>전액사용</div>
+                                    <div>{formatNumber(finalPriceThisMonth)} 원</div>
                                 </div>
                             </div>
                         </div>
@@ -242,7 +275,6 @@ const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모
                 modalContext="로그인 후 이용 가능합니다."
                 modalSize="lg"
                 childContent={<DeliveryAddressModal 
-                    deliveryAddressList={deliveryAddressList} // 전체 배송지 리스트
                     onAddressSelect={handleAddressSelect} // ✔ 선택됨이 업데이트되기위한 핸들러
                     defaultAddress={defaultAddress} // 기본 배송지 전달
                     />
@@ -262,6 +294,20 @@ const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 변경 모
                 />
             )}
 
+            {/* 성공 모달 */}
+            {showSuccessModal && (
+                <BtnModal
+                    showBtnModal={showSuccessModal}
+                    setShowBtnModal={setShowSuccessModal}
+                    modalSize="md"
+                    childContent={<RentalSuccessModal />}
+                    btnText="주문내역 확인"
+                    secondBtnText="메인으로 가기"
+                    onSuccess= {handleSuccess}
+                    onFail= {handleFail}
+                    onClose={() => setShowSuccessModal(false)} // 확인 후 모달 닫기
+                />
+            )}
             
         </>
     );

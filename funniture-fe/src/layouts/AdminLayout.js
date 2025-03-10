@@ -3,10 +3,23 @@ import textLogoWhite from '../assets/images/text_logo-white.png'
 import imgLogoWhite from '../assets/images/logo-image-white.png'
 import { NavLink } from 'react-router-dom';
 import { Outlet, useNavigate } from "react-router-dom"
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 function AdminLayout() {
 
     const navigate = useNavigate();
+
+    const { user } = useSelector(state => state.member)
+
+    // 로그인하지 않은 경우 로그인 페이지로 리디렉트
+    // useEffect(() => {
+    //     if (user.memberId != '') {
+    //         if (user.memberRole != "ADMIN") {
+    //             navigate("/restrict")
+    //         }
+    //     }
+    // }, [user])
 
     return (
         <div className="adminPage">

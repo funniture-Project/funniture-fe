@@ -22,9 +22,11 @@
             display: flex;
             align-items: center;
             box-sizing: border-box;
-
+            width: 100%;
+            
             img {
-                width: 20%;
+                margin-left: 25px;
+                width: 70px;
                 border-radius: 50%;
                 aspect-ratio: 1 / 1;
                 margin-right: 10px;
@@ -57,25 +59,35 @@
                 background-color: #7F5539;
                 border-radius: 5px;
 
-                >div {
+                >div:nth-child(1){
                     color: white;
                     padding: 2px 0;
                     width: 100%;
                     text-align: center;
                 }
 
-                >div:first-child {
+                >div:nth-child(1) > div:nth-child(1){
                     border-bottom: solid 1px white;
                 }
 
             }
+        }
+
+        .cuponSubContainer {
+
+            >div {
+                color: white;
+            }
+           
+            >div:nth-child(1) {
+                border-bottom: solid 1px white;
+            } 
         }
     }
 
     /* -- 예약진행상태 아이콘 div -- */
     .rentalStatusIconBox {
         margin-top: 10%;
-        padding-inline: 10%;
         display: flex;
         align-items: center;
         /* 모든 요소 수직 가운데 정렬 */
@@ -87,7 +99,7 @@
         border-radius: 50%;
         padding: 1.5%;
         border: 1px solid red;
-        width: 8%;
+        width: 11%;
         aspect-ratio: 1 / 1;
         display: flex;
         justify-content: center;
@@ -203,4 +215,73 @@
         display: flex;
     }
 
+}
+
+.pointContainer {
+    position: relative; /* 드롭다운의 기준이 되는 부모 */
+    display: inline-block;
+}
+
+.pointSubContainer {
+    cursor: pointer;
+}
+
+.dropdownPointContent {
+    position: absolute; /* 부모 (.pointContainer) 기준으로 배치 */
+    top: 100%; /* 버튼 아래쪽에 배치 */
+    z-index: 100; /* 다른 요소 위에 배치 */
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #7F5539;
+    border-radius: 5px;
+    color: rgb(66, 66, 66);
+    background-color: white;
+    width: 100%;
+    height: 150px;
+}
+
+.dropdownItemContent {
+    display: flex;
+    flex-direction: column;
+    height: 150px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.dropdownItem {
+    padding: 4px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 0.7em;
+    font-weight: 600;
+}
+
+.plusMinusButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin: 5px 5px;
+    gap: 10px;
+}
+
+.plusMinusButton > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #7F5539;
+    border-radius: 15px;
+    width: 40px;
+    height: 20px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+}
+
+.plus {
+    color: #D91E37;
+}
+
+.minus{
+    color: #2C7E3E;
 }

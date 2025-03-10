@@ -4,37 +4,31 @@ const baseRentalUrl = 'http://localhost:8080/api/v1/rental'
 
 // ---------------------------------------------------- 관리자 -------------------------------------------------------------
 
-export async function getAdminRentalList() {
+export async function getAdminRentalList(searchRental, pageNum) {
 
     const url = '/rental'
-
-    const response = await getData(url);
-
-    return response
-}
-
-export async function getAdminRentalListWithCriteria(criteria) {
-
-    const url = '/rental';
     const params = new URLSearchParams();
 
-    if (criteria.rentalState) {
-        params.append('rentalState', criteria.rentalState);
+    if (searchRental.rentalState) {
+        params.append('rentalState', searchRental.rentalState);
     }
-    if (criteria.storeName) {
-        params.append('storeName', criteria.storeName);
+    if (searchRental.storeName) {
+        params.append('storeName', searchRental.storeName);
     }
-    if (criteria.categoryName) {
-        params.append('categoryName', criteria.categoryName);
+    if (searchRental.categoryName) {
+        params.append('categoryName', searchRental.categoryName);
     }
-    if (criteria.searchDate) {
-        params.append('searchDate', criteria.searchDate);
+    if (searchRental.searchDate) {
+        params.append('searchDate', searchRental.searchDate);
     }
-    if (criteria.rentalNo) {
-        params.append('rentalNo', criteria.rentalNo);
+    if (searchRental.rentalNo) {
+        params.append('rentalNo', searchRental.rentalNo);
+    }
+    if (pageNum) {
+        params.append("offset", pageNum)
     }
 
-    const response = await getData(url, params)
+    const response = await getData(url, params);
 
     return response
 }
@@ -43,45 +37,186 @@ export async function getStoreList() {
     return await fetch('http://localhost:8080/api/v1/product/ownerlist?categoryCode=1&categoryCode=2').then(res => res.json());
 }
 
+export async function getAllStoreList() {
+    return await fetch('http://localhost:8080/api/v1/product/ownerlist').then(res => res.json());
+}
+
+export async function getSalesByDate(yearMonth,selectedStore,pageNum) {
+
+    const url = '/rental/admin/sales'
+    const params = new URLSearchParams();
+
+    if (yearMonth) {
+        params.append('yearMonth', yearMonth);
+    }
+    if (selectedStore) {
+        params.append('storeName', selectedStore);
+    }
+    if (pageNum) {
+        params.append("offset", pageNum)
+    }
+    
+    const response = await getData(url, params);
+
+    return response
+}
+
 // ---------------------------------------------------- 사용자 -------------------------------------------------------------
 
-export async function getUserOrderList(memberId, period) {
-    
-    const url = new URL(baseRentalUrl + `/user?memberId=${memberId}`);
+// 사용자별 예약 전체 조회(페이징 처리)
+export async function getUserOrderList(memberId, period, searchDate, pageNum) {
+    // const url = new URL(baseRentalUrl + `/user?memberId=${memberId}`);
+    const url = '/rental/user'
+    const params = new URLSearchParams()
+
 
     // period 값이 존재하면 URL에 추가
-    if (period) {
-        url.searchParams.append("period", period);
+    if (memberId){
+        params.append("memberId", memberId)
     }
-    console.log('url', url);
+    if (period) {
+        params.append("period", period);
+    }
+    if (searchDate) {
+        params.append("searchDate", searchDate)
+    }
+    if (pageNum) {
+        params.append("offset", pageNum)
+    }
 
-    const response = await getData(url);
-    console.log('response', response);
+    const response = await getData(url, params)
 
     return response;
 }
 
+// 사용자의 예약진행상태별 카운트
+export async function getRentalStateList(memberId) {
+    const url = '/rental/count'
+    const params = new URLSearchParams()
+
+    if (memberId) {
+        params.append("memberId", memberId)
+    }
+
+    const response = await getData(url, params)
+
+    return response;
+}
+
+// 사용자별 사용중인 예약 조회(페이징 처리)
+export async function getActiveRentalList(memberId, pageNum) {
+    const url = '/rental/active'
+    const params = new URLSearchParams()
+
+    if(memberId) {
+        params.append("memberId", memberId)
+    }
+
+    if(pageNum) {
+        params.append("offset", pageNum)
+    }
+
+    const response = await getData(url, params)
+
+    return response;
+}
+
+// 주문 상세 조회
 export async function getOrderDetail(id) {
     const url = `/rental/${id}`
 
     const response = await getData(url);
 
-    console.log(response)
+    console.log('response', response)
 
     return response
 }
 
-// 예약 등록 API 호출 함수
+// 사용자 예약 등록
 export const postRentalReservation = async (rentalData) => {
     try {
-        const url = `/rental/regist`;  // 예약 등록을 위한 엔드포인트
-        const response = await api.post(url, rentalData);  // POST 요청
-        return response.data;  // 응답 데이터 반환
+        const url = `/rental/regist`;  
+        const response = await api.post(url, rentalData);  
+        return response.data;  
     } catch (error) {
         console.error('예약 등록 API 호출 실패:', error);
-        throw error;  // 오류를 throw하여 호출자에게 전달
+        throw error; 
     }
 };
+
+export const putRentalDeliveryAddress = async (rentalNo, destinationNo) => {
+    const url = `/rental/${rentalNo}/deliveryaddress`;
+    
+    // destinationNo를 단순히 숫자로 보내기
+    await api.put(url, destinationNo);
+}
+
+// ---------------------------------------------------- 제공자 -------------------------------------------------------------
+
+export const getOwnerRentalList = async (ownerNo, period, rentalTab, pageNum) => {
+    const url = `/rental/owner`
+    const params = new URLSearchParams()
+   
+    if(ownerNo) {
+        params.append("ownerNo", ownerNo)
+    }
+    // period 값이 존재하면 URL에 추가
+    if (period) {
+        params.append("period", period);
+    }
+    if (rentalTab) {
+        params.append("rentalTab", rentalTab)
+    }
+    if (pageNum) {
+        params.append("offset", pageNum)
+    }
+
+    const response = await getData(url, params)
+
+    return response;
+}
+
+export async function putRentalConfirm(rentalNos) {
+    const url = `/rental/confirmBatch?rentalNos=${rentalNos.join('&rentalNos=')}`;
+    await api.put(url);
+
+}
+
+export async function cancelOrder(rentalNo) {
+    const url = `/rental/cancel?rentalNo=${rentalNo}`;
+
+    await api.put(url);
+
+}
+
+export async function putDeliverySubmit(rentalNo, deliveryNo, deliverCom) {
+    const url = `/rental/${rentalNo}/delivery?deliveryNo=${deliveryNo}&deliverCom=${deliverCom}`;
+
+    await api.put(url)
+}
+
+export async function putUpdateRentalState(rentalNo) {
+    const url = `/rental/${rentalNo}/state`;
+
+    await api.put(url)
+}
+
+export async function getSalesByOwner(memberId, yearMonth, productNo) {
+    const url = `/rental/${memberId}/sales`
+    const params = new URLSearchParams()
+   
+    if(yearMonth) {
+        params.append("yearMonth", yearMonth)
+    }
+    // period 값이 존재하면 URL에 추가
+    if (productNo) {
+        params.append("productNo", productNo);
+    }
+
+    const response = await getData(url, params)
+
+    return response;
+}
 
 // 공용
 const getData = async (url, query) => {
