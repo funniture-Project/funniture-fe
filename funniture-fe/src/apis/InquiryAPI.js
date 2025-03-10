@@ -76,19 +76,18 @@ export const callAllInquiryByMypageAPI = (memberId, page = 1, size = 8) => async
 };
 
 
-
-
 // 제공자 페이지에서 문의 답변하기 
-// export const callInquiryAnswerByOwnerPageAPI = (inquiryNo) => {
-//     const requestURL = `http://localhost:8080/api/v1/inquiry/answer`;
+export const callInquiryAnswerByOwnerPageAPI = (inquiryNo, commentContent, memberId) => {
+    const requestURL = `http://localhost:8080/api/v1/comment/regist`;
 
-//     return async (dispatch) => {
-//         const response = await api.post(requestURL,  {
-//             inquiryNo: inquiryNo,
-//             answerContent: answerContent,
-//             ownerId: memberId,
-//         });
-//         console.log('문의 답변 결과 서버에 잘 다녀 왔나 response : ', response);
-//         return response;
-//     };
-// };
+    return async (dispatch) => {
+        const response = await api.post(requestURL, {
+            inquiryNo: inquiryNo,
+            commentContent: commentContent,
+            memberId: memberId
+            // parentCommentNo: null // 일단 제공자 페이지에서는 대댓글 안 쓸 거니까 null로 보내기
+        });
+        console.log('문의 답변 결과 서버에 잘 다녀 왔나 response : ', response);
+        return response;
+    };
+};
