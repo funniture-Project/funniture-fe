@@ -23,9 +23,6 @@ function Rental() {
     // selected-> option 에 추가할 회사
     const [storeList, setStoreList] = useState([]); 
 
-    // 사용자, 업체 정보 드롭다운
-    const [memberInfoDropdownVisible, setMemberInfoDropdownVisible] = useState({});  // 배송지 수정 드롭다운
-
     // 사용자 정보, 업체 정보
     const [userInfo, setUserInfo] = useState({});
     const [ownerInfo, setOwnerInfo] = useState({});
@@ -33,6 +30,9 @@ function Rental() {
     // 페이징 상태 관리
     const [pageInfo, setPageInfo] = useState(null);  // pageInfo 상태 추가
     const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
+
+    // 드롭다운을 하나만 열리도록 하기 위한 상태
+    const [openRentalNo, setOpenRentalNo] = useState(null); 
 
     async function getData(searchRental,pageNum) {
         try {
@@ -81,15 +81,16 @@ function Rental() {
 
     // 배송지 등록 드롭다운 토글 변경
     const toggleDropdown = (item) => {
+        // 이미 열려있는 드롭다운을 클릭했으면 닫기
+        if (openRentalNo === item.rentalNo) {
+            setOpenRentalNo(null); // 이미 열려있는 드롭다운을 닫음
+        } else {
+            setOpenRentalNo(item.rentalNo); // 새로운 드롭다운을 열기
+        }
 
-        setMemberInfoDropdownVisible(prevState => ({
-            ...prevState,
-            [item.rentalNo]: !prevState[item.rentalNo]  // 해당 배송지만 토글
-        }));
-
+        // 사용자 정보와 업체 정보 가져오기
         getUserData(item.memberId);
         getOwnerData(item.ownerNo);
-        
     };
 
     // 페이지 변경 시 데이터 가져오기
@@ -261,7 +262,7 @@ function Rental() {
                                         <div style={{ width: '5%' }}><p>{item.rentalNumber}</p></div>
                                     </div>
 
-                                    {memberInfoDropdownVisible[item.rentalNo] && (
+                                    {openRentalNo === item.rentalNo && (
                                         <div className={RentalCss.dropdownContent}>
                                             <div>
                                                 <div>사용자 정보</div>                                                         
