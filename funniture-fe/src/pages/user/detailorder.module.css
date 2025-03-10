@@ -172,43 +172,10 @@
     color: white; 
 }
 
-.deliveryContainer > div:nth-child(2) {
-    display: flex;
-    margin: 2px 0px;
-    font-size: 0.8em;
-}
-
-.deliveryContainer > div:nth-child(3) {
-    display: flex;
-    font-size: 0.95em;
-}
-
+.deliveryContainer > div:nth-child(2),
+.deliveryContainer > div:nth-child(3),
 .deliveryContainer > div:nth-child(4) {
-    margin: 1% 0%;
     display: flex;
-    gap: 1%;
-}
-
-.deliveryContainer > div:nth-child(4) > select {
-    padding: 3px;
-    width: 50%;
-    border: 2px solid #7F5539;
-    border-radius: 5px;
-}
-
-.deliveryContainer > div:nth-child(4) > div {
-    align-items: center;
-    background-color: #B08968;
-    cursor: pointer;
-    border-radius: 5px;
-    padding: 2px 10px;
-    color: white; 
-}
-
-.deliveryContainer > div:nth-child(5) > div {
-    display: flex;
-    margin-top: -10px;
-    font-size: 0.95em;
 }
 
 /* 결제정보 */
