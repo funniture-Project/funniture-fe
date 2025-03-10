@@ -56,6 +56,15 @@ function DetailOrder({ selectedOrder, closeModal }) {
         }
     }, [selectedOrder, id]); 
 
+    
+    // 숫자를 1,000 형식으로 변환
+    const formatNumber = (num) => {
+        if (typeof num !== "number" || isNaN(num)) {
+            return "0";  // 값이 없거나 숫자가 아니면 기본값 0 반환
+        }
+        return num.toLocaleString();
+        };
+
     if (!order) return <div>Loading...</div>; 
 
     return (
@@ -147,16 +156,16 @@ function DetailOrder({ selectedOrder, closeModal }) {
             <div className={DetailOrderCss.paymentContainer}>
                 <div>
                     <div>주문금액</div>
-                    <div>{order.rentalPrice} 원</div>
+                    <div>{formatNumber(order.rentalPrice* 0.9)} 원</div>
                 </div>
                 <div>
                     <div>
                         <div>상품금액</div>
-                        <div>{order.rentalPrice} 원</div>
+                        <div>{formatNumber(order.rentalPrice* 0.9)} 원</div>
                     </div>
                     <div>
                         <div>쿠폰할인</div>
-                        <div>- 0 원</div>
+                        <div>- {formatNumber(order.rentalPrice* 0.1)}원</div>
                     </div>
                     <div>
                         <div>배송비</div>
@@ -166,7 +175,7 @@ function DetailOrder({ selectedOrder, closeModal }) {
                 <hr className={DetailOrderCss.orderHr} />
                 <div>
                     <div>포인트 결제</div>
-                    <div>{order.rentalPrice} 원</div>
+                    <div>{formatNumber(order.rentalPrice* 0.9)} 원</div>
                 </div>
             </div>
 
@@ -178,7 +187,7 @@ function DetailOrder({ selectedOrder, closeModal }) {
                     <div>
                         <div>
                             <div>구매적립</div>
-                            <div>{(order.rentalPrice * 0.1)} <span>원</span></div>
+                            <div>{(order.rentalPrice * 0.01)} <span>원</span></div>
                         </div>
                         <div>
                             <div>리뷰적립</div>
