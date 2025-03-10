@@ -12,12 +12,6 @@ function DetailOrder({ selectedOrder, closeModal }) {
     const [order, setOrder] = useState(selectedOrder || null);
 
     const [deliveryMemo, setDeliveryMemo] = useState(""); // 배송 메모 상태
-    const deliveryOptions = [
-        "문 앞에 놓아주세요",
-        "조심히 다뤄주세요",
-        "경비실에 맡겨주세요",
-        "부재시 연락주세요"
-    ];
 
     // 예약 취소 핸들러
     const handleCancelOrder = async () => {    
@@ -123,23 +117,11 @@ function DetailOrder({ selectedOrder, closeModal }) {
                 <div>{order.destinationPhone}</div>
                 <div>{order.destinationAddress}</div>
                 <div>
-                    {!selectedOrder && (
-                    <>
-                        <select value={deliveryMemo} onChange={(e) => setDeliveryMemo(e.target.value)}>
-                            <option value="">예약 등록 시 배송메모</option>
-                            {deliveryOptions.map((option, index) => (
-                                <option key={index} value={option}>{option}</option>
-                            ))}
-                        </select>
-                        <div>수정</div>
-                    </>
-                    )}
+                    배송메모 : 
+                    <span style={{ color: order.deliveryMemo ? 'black' : 'gray' }}>
+                        {order.deliveryMemo || "배송메모가 없습니다."}
+                    </span>
                 </div>
-                {selectedOrder && (
-                    <div>
-                        <div>배송메모 : {order.deliveryMemo}</div>
-                    </div>
-                )}
             </div>
 
             { selectedOrder && (

@@ -199,7 +199,9 @@ function DeliveryAddress() {
                                 onChange={(e) => setDestinationName(e.target.value)} 
                             />
                         </div>
-                        <div onClick={handleAddressRegist}>등록</div>
+                        <div onClick={handleAddressRegist}>
+                            <div>등록</div>
+                        </div>
                     </div>
 
                     <div>

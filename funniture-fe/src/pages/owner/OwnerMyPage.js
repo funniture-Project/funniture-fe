@@ -15,15 +15,13 @@ function OwnerMyPage() {
     const { ownerAllProductList } = useSelector(state => state.product)
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    console.log('{ ownerAllProductList }', { ownerAllProductList });
+    
     const [saleProductNum, setSaleProductNum] = useState(0);
     const [stopProductNum, setStopProductNum] = useState(0);
     const [noAbleProductNum, setNoAbleProductNum] = useState(0);
 
     const inquiries = useSelector(state => state.owner.inquiries?.result?.data || []); // 조건부 렌더링 해야 에러 안 남.
     const reviews = useSelector(state => state.owner.reviews?.result?.data || []); // 조건부 렌더링 해야 에러 안 남.
-    console.log('제공자 메인 페이지 inquiries : ' , inquiries);
-    console.log('제공자 메인 페이지 reviews : ' , reviews);
 
     // 제공자 메인에 문의 출력
     useEffect(() => {
@@ -40,12 +38,10 @@ function OwnerMyPage() {
     }, [user, dispatch]); // user와 dispatch에 의존
 
     async function getData(userId) {
-        console.log("데이터 부르기")
         dispatch(getProductListByOwnerNo(userId))
     }
 
     useEffect(() => {
-        console.log("userInfo : ", user.memberId)
         getData(user.memberId)
     }, [user])
 
@@ -62,10 +58,8 @@ function OwnerMyPage() {
     useEffect(() => {
         async function getNotice() {
             const response = await getAllNoticeList()
-
             setNoticeList(response)
         }
-
         getNotice()
     }, [])
 
@@ -80,10 +74,6 @@ function OwnerMyPage() {
             }
         }
     }, [noticeList])
-
-    useEffect(() => {
-        console.log("filteredList : ", filteredList)
-    }, [filteredList])
 
 
     return (
