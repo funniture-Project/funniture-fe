@@ -179,13 +179,13 @@ function Login() {
                                 <span onClick={() => navigate('/signup')}>이메일로 회원가입</span>
                             </div>
 
-                            <div className="socialLogin">
+                            {/* <div className="socialLogin">
                                 <label style={{ color: '#898888' }}>다른 방법으로 로그인</label>
                                 <div className="socialButtons">
                                     <button className="socialButton naver">N</button>
                                     <button className="socialButton google">G</button>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

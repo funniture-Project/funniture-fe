@@ -295,7 +295,8 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                         {/* 상품 정보 */}
                         <div className={InquiryCss.productInfo}>
                             <img
-                                src={getImageLink(productInfo.ownerInfo?.productImageLink)}
+                                // src={getImageLink(productInfo.ownerInfo?.productImageLink)}
+                                src={getImageLink(productInfo.productImageLink)} // productImageLink를 직접 전달
                                 alt="상품 이미지"
                                 className={InquiryCss.productImage}
                             />
