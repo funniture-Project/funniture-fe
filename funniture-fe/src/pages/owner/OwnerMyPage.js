@@ -67,7 +67,7 @@ function OwnerMyPage() {
 
             const list = noticeList.filter(item => item.viewRoll == "owner" || item.viewRoll == "all").reverse()
             if (list.length > 3) {
-                setFilteredList(list.slice(0, 3))
+                setFilteredList(list.slice(0, 5))
             } else {
                 setFilteredList(list)
             }
@@ -81,14 +81,47 @@ function OwnerMyPage() {
                 <div className={OwMypageCss.leftArea}>
                     <div className={OwMypageCss.leftAreaTop}>
                         <div className={OwMypageCss.divItem}>
-                            <div>예약현황</div>
                             <div>
-                                <div>판매 중 {saleProductNum.current}</div>
-                                <div>판매 중단 {stopProductNum.current}</div>
-                                <div>판매 불가 {noAbleProductNum.current}</div>
+                                <div>예약현황</div>
+                                <div onClick={() => navigate("/owner/rentals")}>+ 더보기</div>
+                            </div>
+                            <div>
+                                <div>
+                                    <div>확정 대기</div>
+                                    <div><span>값</span>건</div>
+                                </div>
+
+                                <div>
+                                    <div>확정 완료</div>
+                                    <div><span>값</span>건</div>
+                                </div>
+
+                                <div>
+                                    <div>예약 취소</div>
+                                    <div><span>값</span>건</div>
+                                </div>
                             </div>
                         </div>
-                        <div className={OwMypageCss.divItem}>계약 만료</div>
+                        <div className={OwMypageCss.divItem}>
+                            <div>
+                                <div>계약만료</div>
+                                <div onClick={() => navigate("/owner/rentals")}>+ 더보기</div>
+                            </div>
+                            <div>
+                                <div>
+                                    <div>세달전</div>
+                                    <div><span>값</span> 건</div>
+                                </div>
+                                <div>
+                                    <div>한달전</div>
+                                    <div><span>값</span> 건</div>
+                                </div>
+                                <div>
+                                    <div>일주전</div>
+                                    <div><span>값</span> 건</div>
+                                </div>
+                            </div>
+                        </div>
                         <div className={OwMypageCss.divItem}>
                             <div>
                                 <div>상품관리</div>
@@ -96,15 +129,15 @@ function OwnerMyPage() {
                             </div>
                             <div>
                                 <div>
-                                    <div>판매 중 : </div>
+                                    <div>판매 중</div>
                                     <div><span>{saleProductNum}</span> 건</div>
                                 </div>
                                 <div>
-                                    <div>판매 중단 : </div>
+                                    <div>판매 중단</div>
                                     <div><span>{stopProductNum}</span> 건</div>
                                 </div>
                                 <div>
-                                    <div>판매 불가 : </div>
+                                    <div>판매 불가</div>
                                     <div><span>{noAbleProductNum}</span> 건</div>
                                 </div>
                             </div>
@@ -114,18 +147,23 @@ function OwnerMyPage() {
 
                     <div className={OwMypageCss.leftAreaBottom}>
                         <div className={OwMypageCss.divItem}>
-                            <div>문의</div>
+                            <div>
+                                <div>문의</div>
+                                <div onClick={() => navigate("/owner/inquiry")}>+ 더보기</div>
+                            </div>
                             <div className={OwMypageCss.inquiryItemBox}>
                                 {inquiries.length > 0 ? (
                                     inquiries.map((inquiry, index) => (
-                                        <div key={inquiry.qnaId || index} className={OwMypageCss.inquiryItem}>
-                                            <span>{inquiry.qnaWriteTime.slice(0, 10)}</span>
-                                            <span>{inquiry.productName}</span>
-                                            <span>{inquiry.userName} 님</span>
-                                            <span className={OwMypageCss.answerButton}>
-                                                <div>답변하기</div>
-                                            </span>
-                                        </div>
+                                        <>
+                                            <div key={inquiry.qnaId || index} className={OwMypageCss.inquiryItem}>
+                                                <div>{inquiry.qnaWriteTime.slice(0, 10)}</div>
+                                                <div>{inquiry.productName}</div>
+                                                <div>{inquiry.userName} 님</div>
+                                                <div className={OwMypageCss.answerButton}>
+                                                    <div>답변하기</div>
+                                                </div>
+                                            </div>
+                                        </>
                                     ))
                                 ) : (
                                     <p>문의 내역이 없습니다.</p>
@@ -135,18 +173,22 @@ function OwnerMyPage() {
                         <div className={OwMypageCss.divItem}>
                             <div>
                                 <div>공지사항</div>
-                                <div onClick={() => navigate("/owner/notice")}>더보기 +</div>
+                                <div onClick={() => navigate("/owner/notice")}>+ 더보기</div>
                             </div>
-                            {filteredList.length == 0
-                                ? <div> 공지사항이 없습니다.</div>
-                                :
-                                filteredList.map(notice => (
-                                    <div className={OwMypageCss.noticeItem} onClick={() => navigate(`/owner/notice/${notice.noticeNo}`)}>
-                                        <div>{notice.noticeTitle}</div>
-                                        <div className={OwMypageCss.noticeWriteTime}>{notice.writeTime}</div>
-                                    </div>
-                                ))
-                            }
+                            <div className={OwMypageCss.noticeListBox}>
+                                {filteredList.length == 0
+                                    ? <div> 공지사항이 없습니다.</div>
+                                    :
+                                    filteredList.map(notice => (
+                                        <>
+                                            <div className={OwMypageCss.noticeItem} onClick={() => navigate(`/owner/notice/${notice.noticeNo}`)}>
+                                                <div>{notice.noticeTitle}</div>
+                                                <div className={OwMypageCss.noticeWriteTime}>{notice.writeTime}</div>
+                                            </div>
+                                        </>
+                                    ))
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>

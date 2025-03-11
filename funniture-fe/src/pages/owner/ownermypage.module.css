@@ -24,12 +24,19 @@
                 grid-template-columns: 1fr 1fr;
                 flex-wrap: wrap;
                 gap: 8px;
+
+                >.divItem {
+                    >div:last-child {
+                        justify-content: space-between;
+                    }
+                }
             }
 
             .leftAreaBottom {
                 display: flex;
                 flex-direction: column;
                 gap: 8px;
+                max-height: 40vh;
 
                 >div {
                     width: 100%;
@@ -50,10 +57,11 @@
 
             overflow: hidden;
 
+            /* 구역별 제목과 더보기기 */
             >div:first-child {
                 margin-bottom: 10px;
                 width: 100%;
-                /* padding-bottom: 10px; */
+                padding-bottom: 10px;
                 border-bottom: solid 1px #A8a8a8;
 
                 display: flex;
@@ -75,7 +83,6 @@
                 display: flex;
                 flex-direction: column;
                 flex: 1;
-                justify-content: space-between;
 
                 >div {
                     padding: 0 20px;
@@ -90,36 +97,29 @@
                         font-weight: 700;
                     }
                 }
-            }
 
-            .noticeItem {
-                display: flex;
-                justify-content: space-between;
-                border-bottom: solid 1px #7F5539;
-                cursor: pointer;
-
-                .noticeWriteTime {
-                    font-size: 0.7em;
-                    align-self: end;
-                    color: #797979;
-                }
-            }
-
-            .noticeItem:last-child {
-                flex-direction: row;
-                justify-content: space-between;
-                border: none;
-
-                >div {
+                .noticeItem {
+                    display: flex;
+                    justify-content: space-between;
+                    border-bottom: solid 1px #7F5539;
+                    cursor: pointer;
                     padding: 0;
+
+                    .noticeWriteTime {
+                        font-size: 0.7em;
+                        align-self: end;
+                        color: #797979;
+                    }
                 }
+
             }
+
+            .noticeListBox {
+                overflow: auto;
+            }
+
 
             .inquiryItemBox {
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start !important;
-
                 overflow: auto;
 
 
