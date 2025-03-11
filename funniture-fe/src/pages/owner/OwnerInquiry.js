@@ -10,6 +10,8 @@ function OwnerInquiry() {
     const { user } = useSelector(state => state.member);
     const ownerInquiry = useSelector(state => state.owner?.inquiries?.result || []);
     const pageInfo = useSelector(state => state.owner?.pageInfo || null);  // pageInfo 가져오기
+    const comment = useSelector((state) => state.owner?.comment);
+    console.log('owner comment : ' , comment);
     console.log('pageInfo', pageInfo);
     console.log('ownerInquiry', ownerInquiry);
     const dispatch = useDispatch();
@@ -32,7 +34,7 @@ function OwnerInquiry() {
         if (user && user.memberId) {
             fetchInquiries(currentPage); // 초기 데이터 로드
         }
-    }, [user, currentPage]);
+    }, [user, currentPage, isRegistered]);
 
     // 서버에서 데이터를 불러오는 함수
     const fetchInquiries = async (page) => {
@@ -53,7 +55,7 @@ function OwnerInquiry() {
 
 
     // 필터링으로 렌더링 하기
-    const filteredInquiries = ownerInquiry.data.filter((inquiry) => {
+    const filteredInquiries = (ownerInquiry?.data || []).filter((inquiry) => {
         if (selectedTab === 'waiting') {
             return inquiry.answerStatus === 'waiting';
         } else if (selectedTab === 'complete') {

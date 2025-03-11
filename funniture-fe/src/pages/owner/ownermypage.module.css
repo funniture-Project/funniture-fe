@@ -142,6 +142,11 @@
 
                         cursor: pointer;
                     }
+                    .answerButton.complete {
+                        background-color: #6aa84f;
+                        /* 초록색 톤 */
+                    }
+                    
                 }
             }
         }

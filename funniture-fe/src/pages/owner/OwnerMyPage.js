@@ -320,9 +320,17 @@ function OwnerMyPage() {
                                                 <div>{inquiry.qnaWriteTime.slice(0, 10)}</div>
                                                 <div>{inquiry.productName}</div>
                                                 <div>{inquiry.userName} 님</div>
-                                                <div className={OwMypageCss.answerButton}>
-                                                    <div>답변하기</div>
-                                                </div>
+                                                {inquiry.answerStatus === 'complete' ? (
+                                                    <button className={`${OwMypageCss.answerButton} ${OwMypageCss.complete}`}>
+                                                        답변 완료
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        className={OwMypageCss.answerButton}
+                                                    >
+                                                        답변 대기
+                                                    </button>
+                                                )}
                                             </div>
                                         </>
                                     ))
@@ -331,6 +339,7 @@ function OwnerMyPage() {
                                 )}
                             </div>
                         </div>
+
                         <div className={OwMypageCss.divItem}>
                             <div>
                                 <div>공지사항</div>

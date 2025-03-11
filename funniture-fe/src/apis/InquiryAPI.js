@@ -1,5 +1,5 @@
 import api from "./Apis";
-import { INQUIRY_SELECT } from "../redux/modules/OwnerModule";
+import { INQUIRY_SELECT , COMMENT_OWNER } from "../redux/modules/OwnerModule";
 import { INQUIRY_USER } from "../redux/modules/MemberModule";
 
 // 상세 페이지 문의 불러오기
@@ -105,6 +105,25 @@ export const getAnswerByInquiryNoAPI = (inquiryNo) => async () => {
         return response.data;
     } catch (error) {
         console.error('답변 내용 불러오기 실패:', error);
+        throw error;
+    }
+};
+
+// 상세페이지에서 답변을 가져오는 구문
+// InquiryAPI.js
+export const callCommentByProduct = (inquiryNo) => async (dispatch) => {
+    if (!inquiryNo) {
+        console.error("Invalid inquiryNo");
+        return;
+    }
+
+    try {
+        const response = await api.get(`http://localhost:8080/api/v1/comment/product/${inquiryNo}`);
+        console.log("답변 데이터 가져오기 성공:", response);
+
+        return response.data; // 데이터를 반환하여 컴포넌트에서 사용할 수 있도록 함
+    } catch (error) {
+        console.error("답변 데이터 가져오기 실패:", error);
         throw error;
     }
 };
