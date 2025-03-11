@@ -4,6 +4,7 @@ import { getUserOrderList } from '../../apis/RentalAPI';
 import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import Pagination from '../../component/Pagination';
+import { useNavigate } from 'react-router-dom';
 
 function Orders() {
 
@@ -92,6 +93,12 @@ function Orders() {
     return num.toLocaleString();
     };
 
+    const navigate = useNavigate();
+
+    const handleInquiryClick = (item) => {
+        navigate(`/product/${item}`);
+    };
+
     return (
         <div className={OrdersCss.ordersContainer}>
             <div className={OrdersCss.orderPageTitle}>주문/배송</div>
@@ -152,7 +159,12 @@ function Orders() {
                                         </div>
                                     </div>
                                     <div className={OrdersCss.inquiryButton}>
-                                        <div>문의하기</div>
+                                    <div 
+                                        className={OrdersCss.inquiryButton}
+                                        onClick={() => handleInquiryClick(item.productNo)}
+                                    >
+                                            문의하기
+                                        </div>
                                     </div>
                                 </div>
                             </div>
