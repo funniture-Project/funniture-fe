@@ -266,6 +266,18 @@ export async function getResentProduct(recentList) {
     }
 }
 
+// 카테고리별 상품 등록 현황 가져오기
+export async function getProductCount() {
+
+    const url = "/product/count"
+
+    const response = await api.get(url)
+
+    console.log(response)
+
+    return response.data.results
+}
+
 // 공용
 const getData = async (url, query) => {
     let response

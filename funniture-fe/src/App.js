@@ -166,7 +166,7 @@ function App() {
       <Route path='/find' element={<FindPass />} />
 
       <Route path='*' element={<NotFoundPage />} />
-      <Route path='/                ' element={<NotAllow />} />
+      <Route path='/restrict' element={<NotAllow />} />
 
       {/* 관리자 로그인 필요 */}
       <Route path='/admin' element={<AdminLayout />}>
