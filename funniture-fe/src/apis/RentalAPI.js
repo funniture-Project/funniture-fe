@@ -241,6 +241,22 @@ export async function getRentalPeriodCountByOwner(memberId,period) {
     return response;
 }
 
+// 제공자의 이번 달 매출 조회 성공
+export async function getCurrentMonthSalesByOwner(memberId, yearMonth) {
+    const url = `/rental/${memberId}/chart/currentMonth`
+    const params = new URLSearchParams();
+
+    console.log('yearMonth', yearMonth)
+
+    if (yearMonth) {
+        params.append("yearMonth", yearMonth);
+    }
+
+    const response = await getData(url, params);
+
+    return response;
+}
+
 // 공용
 const getData = async (url, query) => {
     let response
