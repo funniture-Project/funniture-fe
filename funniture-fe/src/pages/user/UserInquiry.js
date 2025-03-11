@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '../../component/Pagination';
 import { useState } from 'react';
 import BtnModal from '../../component/BtnModal';
+import { COMMENT_SELECT } from '../../redux/modules/MemberModule';
 
 function UserInquiry() {
 
@@ -15,6 +16,9 @@ function UserInquiry() {
     console.log('UserInquiry의 inquiries : ', inquiries);
     const pageInfo = useSelector(state => state.member?.pageInfo);
     console.log('UserInquiry의 pageInfo : ', pageInfo);
+
+    const comment = useSelector((state) => state.member?.comment);
+    console.log('마이페이지 comment : ' , comment);
 
     const dispatch = useDispatch();
 
@@ -100,6 +104,8 @@ function UserInquiry() {
                     setModalContent(<div>문의 데이터를 찾을 수 없습니다.</div>);
                 }
                 setShowModal(true);
+                dispatch({ type: COMMENT_SELECT, payload: response }); // 제공자가 남긴 문의 답변을 스토어에 저장!!!
+
             }
         } catch (error) {
             console.error('답변 내용 불러오기 실패:', error);

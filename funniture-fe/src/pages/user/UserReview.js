@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { callWritableReviewsAPI, callWrittenReviewsAPI , callSubmitReviewAPI} from "../../apis/ReviewAPI";
 import defaultImage from "../../assets/images/default.jpg";
 import BtnModal from "../../component/BtnModal";
+import { useNavigate } from "react-router-dom";
 
 function UserReview() {
     const user = useSelector((state) => state.member.user);
@@ -16,6 +17,8 @@ function UserReview() {
     console.log('UserReview 컴포넌트 : writablePageInfo', writablePageInfo);
     const writtenPageInfo = useSelector((state) => state.member?.writtenPageInfo);
     console.log('UserReview 컴포넌트 : writtenPageInfo', writtenPageInfo);
+
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
     const [currentWritablePage, setCurrentWritablePage] = useState(1);
@@ -90,6 +93,12 @@ function UserReview() {
         setShowCompleteModal(true); 
     };
 
+    // 재구매 버튼 클릭 핸들러
+    const handleRebuyClick = (productNo) => {
+        navigate(`/product/${productNo}`);
+    };
+    
+
     return (
         <>
             <div className={myPageReview.activeContainer}>
@@ -141,7 +150,9 @@ function UserReview() {
                                         >
                                             리뷰작성
                                     </button>
-                                    <button className={myPageReview.repurchaseButton}>재구매</button>
+                                    <button className={myPageReview.repurchaseButton}
+                                            onClick={() => handleRebuyClick(review.productNo)}
+                                    >재구매</button>
                                     <button className={myPageReview.deleteButton}>삭제</button>
                                 </div>
                             </div>
@@ -162,14 +173,17 @@ function UserReview() {
                                 />
                                 <div className={myPageReview.reviewContent}>
                                     <h3>{review.productName}</h3>
+                                    <h6>{review.reviewWriteTime}</h6>
                                     <div className={myPageReview.reviewScore}>
                                     <span style={{ color: 'yellow' }}>{"★".repeat(Math.round(review.score))}{" "}</span>
                                         <span>{review.score.toFixed(1)}</span>
                                     </div>
-                                    <p>{review.reviewContent}</p>
+                                    <p style={{marginTop:'10px'}}>{review.reviewContent}</p>
                                 </div>
                                 <div className={myPageReview.actionButtons}>
-                                    <button className={myPageReview.repurchaseButton}>재구매</button>
+                                    <button className={myPageReview.repurchaseButton}
+                                            onClick={() => handleRebuyClick(review.productNo)}
+                                    >재구매</button>
                                     <button className={myPageReview.deleteButton}>삭제</button>
                                 </div>
                             </div>

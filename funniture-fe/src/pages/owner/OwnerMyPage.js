@@ -7,7 +7,9 @@ import { callInquiryByOwnerNoAPI } from '../../apis/InquiryAPI';
 import { callReviewByOwnerNoAPI } from '../../apis/ReviewAPI';
 import OwnerReview from './ownerMainReview.module.css';
 import { getAllNoticeList } from '../../apis/NoticeAPI';
-import { getRentalStateCountByOwner, getRentalPeriodCountByOwner } from '../../apis/RentalAPI';
+import { getRentalStateCountByOwner, getRentalPeriodCountByOwner, getCurrentMonthSalesByOwner } from '../../apis/RentalAPI';
+import React from 'react';
+import ReactApexChart from 'react-apexcharts';
 
 
 function OwnerMyPage() {
@@ -32,6 +34,73 @@ function OwnerMyPage() {
 
     // 예약 리스트 상태 추가
     const [rentalStateCount, setRentalStateCount] = useState([]);
+
+    // 이번 달 매출 조회
+    const [currentMonthChart, setCurrentMonthChart] = useState([]);
+
+    // 날짜 꺼내기
+    const getCurrentMonth = () => {
+        const date = new Date();
+        const year = date.getFullYear(); // 년도
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 월 (0부터 시작하므로 +1, 두 자릿수로 만듦)
+        return `${year}-${month}`;
+    };
+
+    useEffect(() => {
+        async function fetchCurrentMonthSales() {
+            try {
+                const yearMonth = getCurrentMonth(); // 현재 날짜 기준 "YYYY-MM" 값 생성
+                const response = await getCurrentMonthSalesByOwner(user.memberId, yearMonth); // API 호출
+                const data = response.results.currentSalesData;
+                console.log(data)
+    
+                setCurrentMonthChart(data); // 데이터 상태 업데이트
+            } catch (error) {
+                console.error("이번 달 매출 조회 실패 :", error);
+            }
+        }
+    
+        if (user?.memberId) {
+            fetchCurrentMonthSales();
+        }
+    }, [user]);
+
+    const CurrentMonthSalesChart = () => {
+        const labels = currentMonthChart.map(item => item.productName);
+        const values = currentMonthChart.map(item => item.totalSales);
+        const colors = ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0'];
+        return (
+            <ReactApexChart
+                options={{
+                    chart: { width: "100%", type: "bar" },
+                    labels,
+                    plotOptions: {
+                        bar: {
+                            colors: {
+                                ranges: [
+                                    { from: 0, to: 10000, color: '#F44336' }, // 0 ~ 10000 사이 값은 파란색
+                                    { from: 10001, to: 20000, color: '#00E396' }, // 10001 ~ 20000 사이 값은 초록색
+                                    { from: 20001, to: Infinity, color: '#FEB019' }, // 20001 이상은 노란색
+                                ]
+                            }
+                        }
+                    },
+                    responsive: [
+                        {
+                            breakpoint: 480,
+                            options: {
+                                chart: { width: 200 },
+                                legend: { position: "bottom" }
+                            }
+                        }
+                    ]
+                }}
+                series={[{ data: values }]}  
+                type="bar"
+                height="100%"
+            />
+        );
+    };
 
     // 제공자 메인에 문의 출력
     useEffect(() => {
@@ -162,6 +231,10 @@ function OwnerMyPage() {
         }
     }, [user]);
 
+   
+
+    
+
 
     return (
         <div className={OwMypageCss.mainPageContent}>
@@ -247,9 +320,17 @@ function OwnerMyPage() {
                                                 <div>{inquiry.qnaWriteTime.slice(0, 10)}</div>
                                                 <div>{inquiry.productName}</div>
                                                 <div>{inquiry.userName} 님</div>
-                                                <div className={OwMypageCss.answerButton}>
-                                                    <div>답변하기</div>
-                                                </div>
+                                                {inquiry.answerStatus === 'complete' ? (
+                                                    <button className={`${OwMypageCss.answerButton} ${OwMypageCss.complete}`}>
+                                                        답변 완료
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        className={OwMypageCss.answerButton}
+                                                    >
+                                                        답변 대기
+                                                    </button>
+                                                )}
                                             </div>
                                         </>
                                     ))
@@ -258,6 +339,7 @@ function OwnerMyPage() {
                                 )}
                             </div>
                         </div>
+
                         <div className={OwMypageCss.divItem}>
                             <div>
                                 <div>공지사항</div>
@@ -282,7 +364,13 @@ function OwnerMyPage() {
                 </div>
 
                 <div className={OwMypageCss.rightArea}>
-                    <div className={OwMypageCss.divItem}>이번달 매출</div>
+                    <div className={OwMypageCss.divItem}>
+                    <div>이번 달 매출</div>
+                        <div className={OwMypageCss.divItemSalesChart}>
+                         
+                            <CurrentMonthSalesChart/>
+                        </div>
+                    </div>
 
                     <div className={OwMypageCss.divItemReview}>
                         리뷰
