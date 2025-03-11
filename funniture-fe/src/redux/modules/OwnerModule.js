@@ -14,6 +14,7 @@ export const INQUIRY_SELECT = 'owner/INQUIRY_SELECT';
 export const REVIEW_SELECT = 'owner/REVIEW_SELECT';
 export const GET_OWNERINFO = 'owner/GET_OWNERINFO';
 
+
 const actions = createActions({
     [INQUIRY_SELECT]: () => { },
     [REVIEW_SELECT]: () => { },
@@ -34,7 +35,7 @@ const ownerReducer = handleActions({
     [GET_OWNERINFO]: (state, { payload }) => ({
         ...state,
         ownerInfo: payload.ownerInfo
-    })
+    }),
 }, initialState);
 
 
