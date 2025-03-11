@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import AdminTop from "../../component/adminpage/AdminTop";
 import AdMainCss from "./adminMain.module.css"
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link, useSearchParams} from "react-router-dom";
 import { getProductCount } from "../../apis/ProductAPI";
 import ReactApexChart from "react-apexcharts";
+import { getSalesByMonthChartData } from "../../apis/RentalAPI"
 
 function AdminMain() {
 
@@ -157,6 +158,151 @@ function AdminMain() {
         )
     };
 
+    // 매출 데이터 관리
+    const [salesData, setSalesData] = useState([]);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const type = searchParams.get('type') || 'month';
+    const month = searchParams.get('month');
+
+    // 현재 날짜 기준으로 이전 10개월 생성
+    const getPreviousMonths = (numMonths) => {
+        const months = [];
+        const today = new Date();
+
+        for (let i = 0; i < numMonths; i++) {
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1 필요
+            const formattedMonth = `${year}-${month.toString().padStart(2, '0')}`;
+            months.unshift(formattedMonth); // 최신 월이 뒤에 오도록 추가
+            today.setMonth(today.getMonth() - 1); // 이전 달로 이동
+        } return months;
+    };
+
+    // 선택한 월의 1일부터 말일까지 날짜 생성
+    const getPreviousDays = (selectedMonth) => {
+        const days = [];
+        const [year, month] = selectedMonth.split('-').map(Number);
+        const lastDay = new Date(year, month, 0).getDate(); // 해당 월의 마지막 날짜 계산
+
+        for (let day = 1; day <= lastDay; day++) {
+            const formattedDay = `${selectedMonth}-${day.toString().padStart(2, '0')}`;
+            days.push(formattedDay);
+        }
+
+        return days;
+    };
+
+    // 관리자 매출 현황 차트 데이터 부르는 함수
+    async function getSalesData(type, month) {
+        try {
+            let data = [];
+            if (type === 'month') {
+                const months = getPreviousMonths(10);
+                const allDataPromises = months.map(async (month) => {
+                    try {
+                        const response = await getSalesByMonthChartData(month, "month");
+                        const sales = response?.results?.sales ?? [];
+                        return sales.length > 0
+                            ? { month, totalAmount: sales[0].totalAmount }
+                            : { month, totalAmount: 0 };
+                    } catch (error) {
+                        console.error(`Error fetching data for ${month}:`, error);
+                        return { month, totalAmount: 0 };
+                    }
+                });
+                data = await Promise.all(allDataPromises);
+            } else if (type === 'day' && month) {
+                const days = getPreviousDays(month);
+                const allDataPromises = days.map(async (day) => {
+                    try {
+                        const response = await getSalesByMonthChartData(day, "day");
+                        const sales = response?.results?.sales ?? [];
+                        return sales.length > 0
+                            ? { month: day, totalAmount: sales[0].totalAmount }
+                            : { month: day, totalAmount: 0 };
+                    } catch (error) {
+                        console.error(`Error fetching data for ${day}:`, error);
+                        return { month: day, totalAmount: 0 };
+                    }
+                });
+                data = await Promise.all(allDataPromises);
+            }
+            setSalesData(data);
+        } catch (error) {
+            console.error("매출 조회 실패:", error);
+        }
+    }
+
+    useEffect(() => {
+        getSalesData(type, month);
+    }, [type, month]);
+
+    const MonthSalesChart = ({ salesData }) => {
+        const labels = salesData.map(item => item.month);
+        const values = salesData.map(item => item.totalAmount);
+
+        // 클릭 이벤트 핸들러
+        const handleBarClick = (event, chartContext, config) => {
+            const clickedIndex = config.dataPointIndex;
+            if (clickedIndex !== -1) {
+                const selectedMonth = labels[clickedIndex];
+                setSearchParams({ type: 'day', month: selectedMonth });
+            }
+        };
+
+        return (
+            <>
+                {type === 'day' ? (
+                    <Link to="/admin"  style={{ fontSize:'0.9em',textDecoration: 'none' }}>월별 데이터로 돌아가기</Link>
+                ) : null}
+                <ReactApexChart
+                    options={{
+                        chart: {
+                            width: "100%",
+                            type: "bar",
+                            events: {
+                                dataPointSelection: handleBarClick
+                            }
+                        },
+                        labels,
+                        // dataLabels: {
+                        //     enabled: true,
+                        //     style: {
+                        //         colors: ['#34495E'] // 어두운 청회색 (모든 막대에서 잘 보임)
+                        //     }
+                        // },
+                        plotOptions: {
+                            bar: {
+                                colors: {
+                                    ranges: [
+                                        { from: 0, to: 200000, color: '#F44336' }, // 0 ~ 10000 사이 값은 파란색
+                                        { from: 200000, to: 400000, color: '#00E396' }, // 10001 ~ 20000 사이 값은 초록색
+                                        { from: 400000, to: Infinity, color: '#FEB019' }, // 20001 이상은 노란색
+                                    ]
+                                }
+                            }
+                        },
+                        responsive: [
+                            {
+                                breakpoint: 480,
+                                options: {
+                                    chart: { width: 200 },
+                                    legend: { position: "bottom" }
+                                }
+                            }
+                        ],
+                        xaxis: {
+                            categories: labels
+                        }
+                    }}
+                    series={[{ data: values }]}
+                    type="bar"
+                    height="100%"
+                />
+            </>
+        );
+    };
 
     return (
         <>
@@ -170,8 +316,9 @@ function AdminMain() {
                     </div>
                 </div>
                 <div>
-                    <div>
-                        매출 현황
+                    <div>매출 현황</div>
+                    <div className={AdMainCss.chartBox}>
+                        <MonthSalesChart salesData={salesData} />
                     </div>
                 </div>
                 <div>
