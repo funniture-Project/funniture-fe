@@ -61,6 +61,23 @@ export async function getSalesByDate(yearMonth,selectedStore,pageNum) {
     return response
 }
 
+export async function getSalesByMonthChartData(yearMonth,groupBy) {
+
+    const url = '/rental/chart'
+    const params = new URLSearchParams();
+
+    if (yearMonth) {
+        params.append('yearMonth', yearMonth);
+    }
+    if (groupBy) {
+        params.append('groupBy', groupBy);
+    }
+    
+    const response = await getData(url, params);
+
+    return response
+}
+
 // ---------------------------------------------------- 사용자 -------------------------------------------------------------
 
 // 사용자별 예약 전체 조회(페이징 처리)
@@ -241,9 +258,25 @@ export async function getRentalPeriodCountByOwner(memberId,period) {
     return response;
 }
 
-// 제공자의 이번 달 매출 조회 성공
+// 제공자의 이번 달 매출 조회 성공(상품별 합산)
 export async function getCurrentMonthSalesByOwner(memberId, yearMonth) {
     const url = `/rental/${memberId}/chart/currentMonth`
+    const params = new URLSearchParams();
+
+    console.log('yearMonth', yearMonth)
+
+    if (yearMonth) {
+        params.append("yearMonth", yearMonth);
+    }
+
+    const response = await getData(url, params);
+
+    return response;
+}
+
+// 제공자의 월별 매출 조회 성공(상품전체 합산)
+export async function getMonthlySalesByOwner(memberId, yearMonth) {
+    const url = `/rental/${memberId}/chart/monthly`
     const params = new URLSearchParams();
 
     console.log('yearMonth', yearMonth)
