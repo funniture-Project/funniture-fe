@@ -218,6 +218,15 @@ export async function getSalesByOwner(memberId, yearMonth, productNo) {
     return response;
 }
 
+// 제공자의 예약진행상태별 카운트
+export async function getRentalStateCountByOwner(memberId) {
+    const url = `/rental/${memberId}/count`
+
+    const response = await getData(url)
+
+    return response;
+}
+
 // 공용
 const getData = async (url, query) => {
     let response
