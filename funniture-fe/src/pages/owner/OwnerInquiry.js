@@ -101,7 +101,7 @@ function OwnerInquiry() {
         }
     };
 
-    
+
     return (
         <div className={OwnerInquiryCSS.wholeContainer}>
 
@@ -128,8 +128,8 @@ function OwnerInquiry() {
                     전체
                 </button>
             </div>
-
-            {/* 테이블 */}
+            <div className={OwnerInquiryCSS.tableBox}>
+                {/* 테이블 */}
                 <table className={OwnerInquiryCSS.table}>
                     <thead>
                         <tr>
@@ -191,14 +191,16 @@ function OwnerInquiry() {
                     </tbody>
                 </table>
 
+            </div>
             {/* Pagination 컴포넌트 사용 */}
             {pageInfo && (
-                <Pagination style={{ marginLeft: '35% !important' }}
+                <Pagination
                     pageInfo={pageInfo}
                     onPageChange={(pageNum) => {
                         setCurrentPage(pageNum); // 현재 페이지 상태 업데이트
                         fetchInquiries(pageNum); // 데이터 로드
                     }}
+                    className={OwnerInquiryCSS.paging}
                 />
             )}
 
@@ -215,19 +217,19 @@ function OwnerInquiry() {
                         <>
                             {/* 모달 내부 데이터 표시 */}
                             <div className={OwnerInquiryCSS.selectData}>
-                            <div><strong>- 상품명:</strong> {selectedInquiry.productName}</div>
-                            <div><strong>- 회원 번호:</strong> {selectedInquiry.memberId}</div>
-                            <div><strong>- 작성자:</strong> {selectedInquiry.userName}</div>
-                            <div><strong>- 휴대전화:</strong> {selectedInquiry.phoneNumber}</div>
-                            <div><strong>- 문의 내용:</strong> {selectedInquiry.inquiryContent}</div>
-                            <div><strong>- 등록일:</strong> {selectedInquiry.qnaWriteTime}</div>
+                                <div><strong>- 상품명:</strong> {selectedInquiry.productName}</div>
+                                <div><strong>- 회원 번호:</strong> {selectedInquiry.memberId}</div>
+                                <div><strong>- 작성자:</strong> {selectedInquiry.userName}</div>
+                                <div><strong>- 휴대전화:</strong> {selectedInquiry.phoneNumber}</div>
+                                <div><strong>- 문의 내용:</strong> {selectedInquiry.inquiryContent}</div>
+                                <div><strong>- 등록일:</strong> {selectedInquiry.qnaWriteTime}</div>
 
-                            {/* Q&A 유형 표시 */}
-                            <div><strong>- Q&A 유형:</strong>
-                                {selectedInquiry.qnaType === 1 ? '기간 문의' :
-                                    selectedInquiry.qnaType === 2 ? '가격 문의' :
-                                        '기타 문의'}
-                            </div>
+                                {/* Q&A 유형 표시 */}
+                                <div><strong>- Q&A 유형:</strong>
+                                    {selectedInquiry.qnaType === 1 ? '기간 문의' :
+                                        selectedInquiry.qnaType === 2 ? '가격 문의' :
+                                            '기타 문의'}
+                                </div>
                             </div>
                             {/* 답변 입력 필드 */}
                             <textarea
@@ -253,31 +255,31 @@ function OwnerInquiry() {
                 />
             )}
 
-                {/* 답변 내용이 비어 있을 때 표시할 모달 */}
-                {showEmptyModal && (
-                    <BtnModal
-                        showBtnModal={showEmptyModal}
-                        setShowBtnModal={setShowEmptyModal}
-                        modalTitle="알림"
-                        modalSize="sm"
-                        btnText="확인"
-                        childContent="답변을 작성해 주세요."
-                        onSuccess={() => setShowEmptyModal(false)}
-                    />
-                )}
+            {/* 답변 내용이 비어 있을 때 표시할 모달 */}
+            {showEmptyModal && (
+                <BtnModal
+                    showBtnModal={showEmptyModal}
+                    setShowBtnModal={setShowEmptyModal}
+                    modalTitle="알림"
+                    modalSize="sm"
+                    btnText="확인"
+                    childContent="답변을 작성해 주세요."
+                    onSuccess={() => setShowEmptyModal(false)}
+                />
+            )}
 
-                {/* 등록 완료 모달 */}
-                {isRegistered && (
-                    <BtnModal
-                        showBtnModal={isRegistered}
-                        setShowBtnModal={setIsRegistered}
-                        modalTitle="등록 완료"
-                        modalSize="sm"
-                        btnText="확인"
-                        childContent="답변 등록이 성공적으로 완료되었습니다."
-                        onSuccess={() => setIsRegistered(false)}
-                    />
-                )}
+            {/* 등록 완료 모달 */}
+            {isRegistered && (
+                <BtnModal
+                    showBtnModal={isRegistered}
+                    setShowBtnModal={setIsRegistered}
+                    modalTitle="등록 완료"
+                    modalSize="sm"
+                    btnText="확인"
+                    childContent="답변 등록이 성공적으로 완료되었습니다."
+                    onSuccess={() => setIsRegistered(false)}
+                />
+            )}
         </div>
     );
 }
