@@ -7,7 +7,7 @@ import { callInquiryByOwnerNoAPI } from '../../apis/InquiryAPI';
 import { callReviewByOwnerNoAPI } from '../../apis/ReviewAPI';
 import OwnerReview from './ownerMainReview.module.css';
 import { getAllNoticeList } from '../../apis/NoticeAPI';
-import { getRentalStateCountByOwner } from '../../apis/RentalAPI';
+import { getRentalStateCountByOwner, getRentalPeriodCountByOwner } from '../../apis/RentalAPI';
 
 
 function OwnerMyPage() {
@@ -132,6 +132,36 @@ function OwnerMyPage() {
         setReservationCounts(counts);
     }, [rentalStateCount]);
 
+    const [periodCounts, setPeriodCounts] = useState({
+        threeMonths: 0,
+        oneMonth: 0,
+        oneWeek: 0
+    });
+    
+    useEffect(() => {
+        async function fetchPeriodCounts() {
+            try {
+                const threeMonthsResponse = await getRentalPeriodCountByOwner(user.memberId, "3MONTH");
+                const oneMonthResponse = await getRentalPeriodCountByOwner(user.memberId, "1MONTH");
+                const oneWeekResponse = await getRentalPeriodCountByOwner(user.memberId, "1WEEK");
+    
+                const counts = {
+                    threeMonths: threeMonthsResponse.results.rentalStateCount[0]?.count || 0,
+                    oneMonth: oneMonthResponse.results.rentalStateCount[0]?.count || 0,
+                    oneWeek: oneWeekResponse.results.rentalStateCount[0]?.count || 0
+                };
+    
+                setPeriodCounts(counts);
+            } catch (error) {
+                console.error("계약 만료 데이터 조회 오류:", error);
+            }
+        }
+    
+        if (user?.memberId) {
+            fetchPeriodCounts();
+        }
+    }, [user]);
+
 
     return (
         <div className={OwMypageCss.mainPageContent}>
@@ -168,15 +198,15 @@ function OwnerMyPage() {
                             <div>
                                 <div>
                                     <div>세달전</div>
-                                    <div><span>값</span> 건</div>
+                                    <div><span>{periodCounts.threeMonths}</span> 건</div>
                                 </div>
                                 <div>
                                     <div>한달전</div>
-                                    <div><span>값</span> 건</div>
+                                    <div><span>{periodCounts.oneMonth}</span> 건</div>
                                 </div>
                                 <div>
                                     <div>일주전</div>
-                                    <div><span>값</span> 건</div>
+                                    <div><span>{periodCounts.oneWeek}</span> 건</div>
                                 </div>
                             </div>
                         </div>

@@ -90,10 +90,13 @@ function MyPage() {
             const currentDate = new Date();
             currentDate.setHours(0, 0, 0, 0); // 현재 날짜의 시간을 00:00:00으로 맞춤
 
+
+            
             const deadlineRentals = rentals.filter((rental) => {
                 const rentalEndDate = new Date(`${rental.rentalEndDate}T00:00:00`);
                 const daysRemaining = Math.floor((rentalEndDate - currentDate) / (1000 * 60 * 60 * 24));
-                return daysRemaining >= -7 && daysRemaining <= 0; // 만료일 기준 7일 전부터 오늘까지
+                return daysRemaining <= 7 && daysRemaining >= 0; // 만료일 기준 7일 전부터 오늘까지
+                
             });
 
             setReturnDeadlineCount(deadlineRentals.length); // 마감 임박 갯수 설정
