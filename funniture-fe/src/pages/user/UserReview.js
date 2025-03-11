@@ -173,11 +173,12 @@ function UserReview() {
                                 />
                                 <div className={myPageReview.reviewContent}>
                                     <h3>{review.productName}</h3>
+                                    <h6>{review.reviewWriteTime}</h6>
                                     <div className={myPageReview.reviewScore}>
                                     <span style={{ color: 'yellow' }}>{"★".repeat(Math.round(review.score))}{" "}</span>
                                         <span>{review.score.toFixed(1)}</span>
                                     </div>
-                                    <p>{review.reviewContent}</p>
+                                    <p style={{marginTop:'10px'}}>{review.reviewContent}</p>
                                 </div>
                                 <div className={myPageReview.actionButtons}>
                                     <button className={myPageReview.repurchaseButton}
