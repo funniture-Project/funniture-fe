@@ -218,6 +218,29 @@ export async function getSalesByOwner(memberId, yearMonth, productNo) {
     return response;
 }
 
+// 제공자의 예약진행상태별 카운트
+export async function getRentalStateCountByOwner(memberId) {
+    const url = `/rental/${memberId}/count`
+
+    const response = await getData(url)
+
+    return response;
+}
+
+// 제공자의 만료일 기준 기간별 카운트 
+export async function getRentalPeriodCountByOwner(memberId,period) {
+    const url = `/rental/${memberId}/period/count`
+    const params = new URLSearchParams();
+
+    if (period) {
+        params.append("period", period);
+    }
+
+    const response = await getData(url, params);
+
+    return response;
+}
+
 // 공용
 const getData = async (url, query) => {
     let response

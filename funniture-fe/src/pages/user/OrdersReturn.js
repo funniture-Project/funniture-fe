@@ -91,8 +91,8 @@ function OrdersReturn() {
                                     <td>{activeRental.rentalStartDate}~{activeRental.rentalEndDate}</td>
                                     <td>
                                         {/* rentalEndDate가 현재 날짜에서 7일 전부터 오늘 날짜까지인 경우에만 반납신청 div 보이기 */}
-                                        {daysRemaining >= -7 && daysRemaining <= 0 ? (
-                                        <div onClick={() => handleReturnRequest(activeRental.rentalNo)}>반납신청</div>
+                                        {daysRemaining <= 7 && daysRemaining >= 0 ? (
+                                            <div onClick={() => handleReturnRequest(activeRental.rentalNo)}>반납신청</div>
                                         ) : null}
                                     </td>
                                 </tr>

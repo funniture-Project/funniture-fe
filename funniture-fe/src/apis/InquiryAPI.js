@@ -91,3 +91,20 @@ export const callInquiryAnswerByOwnerPageAPI = (inquiryNo, commentContent, membe
         return response;
     };
 };
+
+// 마이페이지에서 제공자의 답변을 가져오는 구문
+export const getAnswerByInquiryNoAPI = (inquiryNo) => async () => {
+    if (!inquiryNo) {
+        console.error('Invalid inquiryNo');
+        return;
+    }
+
+    try {
+        const response = await api.get(`http://localhost:8080/api/v1/comment/inquiry/${inquiryNo}`);
+        console.log('답변 내용 불러오기 성공:', response);
+        return response.data;
+    } catch (error) {
+        console.error('답변 내용 불러오기 실패:', error);
+        throw error;
+    }
+};
