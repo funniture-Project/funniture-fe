@@ -7,6 +7,7 @@ import { callInquiryByOwnerNoAPI } from '../../apis/InquiryAPI';
 import { callReviewByOwnerNoAPI } from '../../apis/ReviewAPI';
 import OwnerReview from './ownerMainReview.module.css';
 import { getAllNoticeList } from '../../apis/NoticeAPI';
+import { getRentalStateCountByOwner } from '../../apis/RentalAPI';
 
 
 function OwnerMyPage() {
@@ -22,6 +23,16 @@ function OwnerMyPage() {
     const inquiries = useSelector(state => state.owner.inquiries?.result?.data || []); // 조건부 렌더링 해야 에러 안 남.
     const reviews = useSelector(state => state.owner.reviews?.result?.data || []); // 조건부 렌더링 해야 에러 안 남.
 
+    // 예약 현황 카운트 상태 추가
+    const [reservationCounts, setReservationCounts] = useState({
+        waiting: 0,       // 확정 대기
+        confirmed: 0,     // 확정 완료
+        canceled: 0,      // 예약 취소
+    });
+
+    // 예약 리스트 상태 추가
+    const [rentalStateCount, setRentalStateCount] = useState([]);
+
     // 제공자 메인에 문의 출력
     useEffect(() => {
         if (user && user.memberId) {
@@ -29,7 +40,7 @@ function OwnerMyPage() {
         }
     }, [user, dispatch]); // user와 dispatch에 의존
 
-    // 제공자 메인에 문의 출력
+    // 제공자 메인에 리뷰 출력
     useEffect(() => {
         if (user && user.memberId) {
             dispatch(callReviewByOwnerNoAPI(user.memberId)); // API 호출
@@ -74,6 +85,53 @@ function OwnerMyPage() {
         }
     }, [noticeList])
 
+    // 예약 리스트 가져오기
+    useEffect(() => {
+        async function getRentalData() {
+            try {
+                // memberId를 사용하여 예약 리스트 가져오기
+                const response = await getRentalStateCountByOwner(user.memberId);
+                const rentals = response.results.rentalStateCount;
+                setRentalStateCount(rentals);
+            } catch (error) {
+                console.error('Error fetching rentals list:', error);
+                setRentalStateCount([]);
+            }
+        }
+
+        if (user && user.memberId) {
+            getRentalData();
+        }
+    }, [user]);
+
+    // rentalStateCount 처리 useEffect 수정
+    useEffect(() => {
+        const counts = {
+        waiting: 0,
+        confirmed: 0,
+        canceled: 0,
+        };
+    
+        // API 응답 구조에 따른 처리
+        rentalStateCount.forEach((stateCount) => {
+        switch(stateCount.rentalState) {
+            case "예약대기":
+            counts.waiting = stateCount.count; // ✅ count 값 직접 할당
+            break;
+            case "예약완료":
+            counts.confirmed = stateCount.count;
+            break;
+            case "예약취소":
+            counts.canceled = stateCount.count;
+            break;
+            default:
+            console.warn("알 수 없는 상태:", stateCount.rentalState);
+        }
+        });
+    
+        setReservationCounts(counts);
+    }, [rentalStateCount]);
+
 
     return (
         <div className={OwMypageCss.mainPageContent}>
@@ -88,17 +146,17 @@ function OwnerMyPage() {
                             <div>
                                 <div>
                                     <div>확정 대기</div>
-                                    <div><span>값</span>건</div>
+                                    <div><span>{reservationCounts.waiting}</span>건</div>
                                 </div>
 
                                 <div>
                                     <div>확정 완료</div>
-                                    <div><span>값</span>건</div>
+                                    <div><span>{reservationCounts.confirmed}</span>건</div>
                                 </div>
 
                                 <div>
                                     <div>예약 취소</div>
-                                    <div><span>값</span>건</div>
+                                    <div><span>{reservationCounts.canceled}</span>건</div>
                                 </div>
                             </div>
                         </div>
