@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import AdminTop from "../../component/adminpage/AdminTop";
 import AdMainCss from "./adminMain.module.css"
-import { useLocation, useNavigate, Link, useSearchParams} from "react-router-dom";
+import { useLocation, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { getProductCount } from "../../apis/ProductAPI";
 import ReactApexChart from "react-apexcharts";
 import { getSalesByMonthChartData } from "../../apis/RentalAPI"
+import { getConnectInfo } from "../../apis/MemberAPI";
 
 function AdminMain() {
 
@@ -12,8 +13,6 @@ function AdminMain() {
 
     async function getProductCountData() {
         const response = await getProductCount();
-
-        console.log("response : ", response)
 
         if (response != null) {
             const array = []
@@ -32,10 +31,6 @@ function AdminMain() {
     }
 
     useEffect(() => {
-        console.log("productCount : ", productCount)
-    }, [productCount])
-
-    useEffect(() => {
         getProductCountData()
     }, [])
 
@@ -44,20 +39,33 @@ function AdminMain() {
         const labels = productCount.map(item => item.categoryName)
         const values = productCount.map(item => item.count)
 
-        console.log("labels : ", labels)
-        console.log("values : ", values)
+        // 데이터 개수만큼 색상 배열 생성
+        const colors = [
+            '#f94144', '#f8961e', '#f9844a', '#f9c74f', '#90be6d',
+            '#43aa8b', '#4d908e', '#577590', '#277da1', '#3d405b'
+        ].slice(0, productCount.length); // 데이터 개수만큼 색상 제한
 
         return (
             < ReactApexChart
                 options={{
                     chart: { width: 380, type: "pie" },
                     labels,
+                    colors,
                     dataLabels: {
                         formatter: function (val, { seriesIndex }) {
-                            return `${labels[seriesIndex]} (${values[seriesIndex]})`;
+                            return `${labels[seriesIndex]}`;
                         },
                         style: {
-                            fontWeight: 'regular',
+                            fontSize: '11px',
+                            fontWeight: 'bold',
+                        },
+                        dropShadow: false,
+                    },
+                    plotOptions: {
+                        pie: {
+                            dataLabels: {
+                                offset: -10
+                            }
                         }
                     },
                     responsive: [
@@ -78,8 +86,78 @@ function AdminMain() {
     }
 
     // 접속자 수 꺽은선 그래프
-    const ConnectCountChart = () => {
+    const [connectDays, setConnectDays] = useState([])
+    const [ownerConnect, setOwnerConnect] = useState([])
+    const [userConnect, setUserConnect] = useState([])
+    const [viewTypeWeek, setViewTypeWeek] = useState(true)
 
+    async function getConnectData() {
+        const response = await getConnectInfo()
+
+        console.log("화면단 : ", response)
+
+        if (response.results?.result.length > 0) {
+            const filteredOwner = response.results.result.filter(data => data.connectAuth == "OWNER")
+            setOwnerConnect(setConnectData(filteredOwner, connectDays))
+
+            const filteredUser = response.results.result.filter(data => data.connectAuth == "USER")
+            setUserConnect(setConnectData(filteredUser, connectDays))
+        }
+    }
+
+    useEffect(() => {
+        const year = new Date().getFullYear();
+        const month = new Date().getMonth() + 1;
+
+        if (viewTypeWeek == true) {
+            setConnectDays(getLast7Days)
+        } else {
+            setConnectDays(getDayArray(year, month))
+        }
+    }, [viewTypeWeek])
+
+    useEffect(() => {
+        if (connectDays.length > 0) {
+            getConnectData()
+        }
+    }, [connectDays])
+
+    useEffect(() => {
+        console.log("ownerConnect : ", ownerConnect)
+        console.log("userConnect : ", userConnect)
+        console.log("connectDays : ", connectDays)
+    }, [ownerConnect, userConnect, connectDays])
+
+    // 이번달 날짜 배열 만들기 (오늘까지만)
+    function getDayArray(year, month) {
+        const today = new Date().getDate();
+        // const lastDate = new Date(year, month, 0).getDate()
+
+        return Array.from({ length: today }, (_, i) => new Date(year, month - 1, month == 3 ? i + 2 : i + 1).toISOString().split('T')[0])
+    }
+
+    // 최근 7일 날짜 배열 생성 함수
+    function getLast7Days() {
+        const today = new Date();
+        return Array.from({ length: 7 }, (_, i) => {
+            const date = new Date();
+            date.setDate(today.getDate() - (6 - i)); // 7일 전부터 오늘까지
+            return date.toISOString().split("T")[0]; // "YYYY-MM-DD"
+        });
+    }
+
+    // 날짜별 기본값 0, 있는 날짜는 데이터 넣기
+    function setConnectData(data, connectDays) {
+        const connectData = new Map(data.map(item => [item.connectDate, item.connectCount]))
+
+        return connectDays.map(date => ({
+            connectDate: date,
+            connectCount: connectData.get(date) || 0
+        }))
+    }
+
+
+    const ConnectCountChart = () => {
         return (
             <ReactApexChart
                 options={{
@@ -103,23 +181,13 @@ function AdminMain() {
                     },
                     colors: ['#77B6EA', '#545454'],
                     dataLabels: {
-                        enabled: true,
+                        enabled: false,
                     },
-                    stroke: {
-                        // curve: 'smooth'
-                    },
-                    // grid: {
-                    //     borderColor: '#e7e7e7',
-                    //     row: {
-                    //         colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                    //         opacity: 0.5
-                    //     },
-                    // },
                     markers: {
                         size: 1
                     },
                     xaxis: {
-                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                        categories: connectDays,
                         title: {
                             text: '일별'
                         }
@@ -128,8 +196,7 @@ function AdminMain() {
                         title: {
                             text: '접속자 수'
                         },
-                        min: 5,
-                        max: 40
+                        min: 0,
                     },
                     legend: {
                         position: 'top',
@@ -142,21 +209,23 @@ function AdminMain() {
 
                 series={[
                     {
-                        name: "High - 2013",
-                        data: [28, 29, 33, 36, 32, 32, 33]
+                        name: "일반 사용자",
+                        data: userConnect.map(item => item.connectCount)
                     },
                     {
-                        name: "Low - 2013",
-                        data: [12, 11, 14, 18, 17, 13, 13]
+                        name: "업체(제공자)",
+                        data: ownerConnect.map(item => item.connectCount)
                     }
                 ]}
 
                 type="line"
                 height={"100%"}
+                width={"100%"}
             />
 
         )
     };
+
 
     // 매출 데이터 관리
     const [salesData, setSalesData] = useState([]);
@@ -254,12 +323,11 @@ function AdminMain() {
         return (
             <>
                 {type === 'day' ? (
-                    <Link to="/admin"  style={{ fontSize:'0.9em',textDecoration: 'none' }}>월별 데이터로 돌아가기</Link>
+                    <Link to="/admin" style={{ fontSize: '0.9em', textDecoration: 'none' }}>월별 데이터로 돌아가기</Link>
                 ) : null}
                 <ReactApexChart
                     options={{
                         chart: {
-                            width: "100%",
                             type: "bar",
                             events: {
                                 dataPointSelection: handleBarClick
@@ -298,7 +366,7 @@ function AdminMain() {
                     }}
                     series={[{ data: values }]}
                     type="bar"
-                    height="100%"
+                    height={"100%"}
                 />
             </>
         );
@@ -329,6 +397,9 @@ function AdminMain() {
                 <div>
                     <div>
                         접속자 수
+                        <span>&#40;</span>
+                        <button className={AdMainCss.viewType} onClick={() => setViewTypeWeek(prev => !prev)}>{viewTypeWeek ? "최근 7일" : "이번달"}</button>
+                        <span>&#41;</span>
                     </div>
                     <div className={AdMainCss.chartBox}>
                         <ConnectCountChart />
