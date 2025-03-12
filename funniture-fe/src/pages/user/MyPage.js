@@ -201,10 +201,10 @@ function MyPage() {
                     <div>배송완료</div>
                 </div>
                 <div className='rentalStatusNumberBox'>
-                    <div>{rentalState.length > 0 ? rentalState[0].count : 0}</div>
-                    <div>{rentalState.length > 2 ? rentalState[1].count : 0}</div>
-                    <div>{rentalState.length > 1 ? rentalState[2].count : 0}</div>
-                    <div>{rentalState.length > 3 ? rentalState[3].count : 0}</div>
+                    <div>{rentalState?.[0]?.count || 0}</div>
+                    <div>{rentalState?.[1]?.count || 0}</div>
+                    <div>{rentalState?.[2]?.count || 0}</div>
+                    <div>{rentalState?.[3]?.count || 0}</div>
                 </div>
 
 
