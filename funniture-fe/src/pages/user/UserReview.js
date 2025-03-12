@@ -63,10 +63,11 @@ function UserReview() {
     // 별점 조정 핸들러 (0.5 단위)
     const handleScoreChange = (change) => {
         let newScore = score + change;
-        if (newScore >= 0.5 && newScore <= 5) {
+        if (newScore >= 1 && newScore <= 5) { // 별점은 1점 단위로 설정
             setScore(newScore);
         }
     };
+    
 
     // 리뷰 제출 핸들러
     const handleSubmitReview = async () => {
@@ -203,14 +204,15 @@ function UserReview() {
 
                     {/* BtnModal 활용 */}
                     {showReviewModal && selectedProduct && (
+                    // 리뷰 작성 모달
                     <BtnModal
                         showBtnModal={showReviewModal}
                         setShowBtnModal={setShowReviewModal}
                         modalTitle="리뷰 작성"
                         btnText="등록"
                         secondBtnText="취소"
-                        onSuccess={handleSubmitReview} // 등록 버튼 클릭 시 실행
-                        onFail={() => setShowReviewModal(false)} // 취소 버튼 클릭 시 실행
+                        onSuccess={handleSubmitReview}
+                        onFail={() => setShowReviewModal(false)}
                         modalContext={
                             <>
                                 <div style={{ textAlign: "center" }}>
@@ -227,9 +229,9 @@ function UserReview() {
                                 </div>
                                 <div style={{ marginTop: "20px", textAlign: "center" }}>
                                     <label>별점:</label>
-                                    <button onClick={() => handleScoreChange(-0.5)} disabled={score <= 0.5}>-</button>
-                                    <span style={{ margin: "0 10px" }}>{score.toFixed(1)}</span>
-                                    <button onClick={() => handleScoreChange(0.5)} disabled={score >= 5}>+</button>
+                                    <button onClick={() => handleScoreChange(-1)} disabled={score <= 1}>-</button> {/* 감소 버튼 */}
+                                    <span style={{ margin: "0 10px" }}>{score}</span> {/* 별점 표시 */}
+                                    <button onClick={() => handleScoreChange(1)} disabled={score >= 5}>+</button> {/* 증가 버튼 */}
                                 </div>
                                 <textarea
                                     placeholder="상품평을 입력해주세요."
