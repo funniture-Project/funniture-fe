@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import myPageInquiry from './mypageInquiry.module.css';
-import { callAllInquiryByMypageAPI , getAnswerByInquiryNoAPI } from '../../apis/InquiryAPI';
+import { callAllInquiryByMypageAPI, getAnswerByInquiryNoAPI } from '../../apis/InquiryAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from '../../component/Pagination';
 import { useState } from 'react';
@@ -18,7 +18,7 @@ function UserInquiry() {
     console.log('UserInquiry의 pageInfo : ', pageInfo);
 
     const comment = useSelector((state) => state.member?.comment);
-    console.log('마이페이지 comment : ' , comment);
+    console.log('마이페이지 comment : ', comment);
 
     const dispatch = useDispatch();
 
@@ -60,14 +60,14 @@ function UserInquiry() {
             if (response) {
                 setModalTitle('답변 확인');
                 const inquiryData = inquiries?.result?.data?.find((inquiry) => inquiry.inquiryNo === inquiryNo);
-    
+
                 // 문의 유형 매핑
                 const qnaTypeMap = {
                     1: '기간 문의',
                     2: '가격 문의',
                     3: '기타 문의'
                 };
-    
+
                 if (inquiryData) {
                     setModalContent(
                         <div className={myPageInquiry.modalContentContainer}>
@@ -83,16 +83,16 @@ function UserInquiry() {
                                     <p>◑ 상품명 : {inquiryData.productName}</p>
                                 </div>
                             </div>
-                            
+
                             {/* 문의 정보 섹션 */}
                             <div className={myPageInquiry.answerSection}>
                                 <p>◑ 문의 유형 : {qnaTypeMap[inquiryData.qnaType]}</p>
                                 <p>◑ 문의 내용 : {inquiryData.inquiryContent}</p>
                                 <p>◑ 문의 등록 시간 : {inquiryData.qnaWriteTime}</p>
                             </div>
-    
-                            <hr/>
-    
+
+                            <hr />
+
                             {/* 답변 정보 섹션 */}
                             <div className={myPageInquiry.answerSection}>
                                 <p className="answerContent">◐ 답변 내용 : {response.results?.map?.commentContent}</p>
@@ -111,7 +111,7 @@ function UserInquiry() {
             console.error('답변 내용 불러오기 실패:', error);
         }
     };
-    
+
 
 
 
@@ -138,25 +138,25 @@ function UserInquiry() {
                             {inquiries?.result?.data?.length > 0 ? (
                                 inquiries.result.data.map((inquiry) => (
                                     <tr key={inquiry.inquiryNo}>
-                                    <td>{inquiry.inquiryNo}</td>
-                                    <td>{inquiry.qnaType === 1 ? '기간 문의' : inquiry.qnaType === 2 ? '가격 문의' : '기타 문의'}</td>
-                                    <td>{inquiry.qnaWriteTime}</td>
-                                    <td>{inquiry.productNo}</td>
-                                    <td>{inquiry.productName}</td>
-                                    <td>
-                                        {inquiry.answerStatus === 'complete' ? (
-                                            <button
-                                            className={`${myPageInquiry.answerButton} ${myPageInquiry.complete}`}
-                                            onClick={() => handleAnswerClick(inquiry.inquiryNo)}
-                                            >
-                                                답변 완료
-                                            </button>
-                                        ) : (
-                                            <button className={`${myPageInquiry.answerButton} ${myPageInquiry.waiting}`}>
-                                                답변 대기
-                                            </button>
-                                        )}
-                                    </td>
+                                        <td>{inquiry.inquiryNo}</td>
+                                        <td>{inquiry.qnaType === 1 ? '기간 문의' : inquiry.qnaType === 2 ? '가격 문의' : '기타 문의'}</td>
+                                        <td>{inquiry.qnaWriteTime}</td>
+                                        <td>{inquiry.productNo}</td>
+                                        <td>{inquiry.productName}</td>
+                                        <td>
+                                            {inquiry.answerStatus === 'complete' ? (
+                                                <button
+                                                    className={`${myPageInquiry.answerButton} ${myPageInquiry.complete}`}
+                                                    onClick={() => handleAnswerClick(inquiry.inquiryNo)}
+                                                >
+                                                    답변 완료
+                                                </button>
+                                            ) : (
+                                                <button className={`${myPageInquiry.answerButton} ${myPageInquiry.waiting}`}>
+                                                    답변 대기
+                                                </button>
+                                            )}
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
@@ -170,16 +170,18 @@ function UserInquiry() {
                         </tbody>
                     </table>
                 </div>
-                {pageInfo && (
-                    <Pagination
-                        pageInfo={pageInfo}
-                        onPageChange={onPageChange}
-                    />
-                )}
+                <div className={myPageInquiry.pagingBox}>
+                    {pageInfo && (
+                        <Pagination
+                            pageInfo={pageInfo}
+                            onPageChange={onPageChange}
+                        />
+                    )}
+                </div>
             </div>
 
-                {/* 모달 컴포넌트 */}
-                <BtnModal
+            {/* 모달 컴포넌트 */}
+            <BtnModal
                 showBtnModal={showModal}
                 setShowBtnModal={setShowModal}
                 modalTitle={modalTitle}

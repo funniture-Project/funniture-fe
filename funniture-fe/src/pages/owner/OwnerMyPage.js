@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getProductListByOwnerNo } from '../../apis/ProductAPI';
 import { useNavigate } from 'react-router-dom';
 import { callInquiryByOwnerNoAPI } from '../../apis/InquiryAPI';
-import { callReviewByOwnerNoAPI } from '../../apis/ReviewAPI';
+import { callReviewByOwnerNoAPI, callReviewAvgByOwnerNoAPI } from '../../apis/ReviewAPI';
 import { getAllNoticeList } from '../../apis/NoticeAPI';
 import { getRentalStateCountByOwner, getRentalPeriodCountByOwner, getCurrentMonthSalesByOwner } from '../../apis/RentalAPI';
 import React from 'react';
@@ -20,6 +20,8 @@ function OwnerMyPage() {
     const [saleProductNum, setSaleProductNum] = useState(0);
     const [stopProductNum, setStopProductNum] = useState(0);
     const [noAbleProductNum, setNoAbleProductNum] = useState(0);
+
+    const [avgReviewScores, setAvgReviewScores] = useState([]);
 
     const inquiries = useSelector(state => state.owner.inquiries?.result?.data || []); // 조건부 렌더링 해야 에러 안 남.
     const reviews = useSelector(state => state.owner.reviews?.result?.data || []); // 조건부 렌더링 해야 에러 안 남.
@@ -114,6 +116,22 @@ function OwnerMyPage() {
             dispatch(callReviewByOwnerNoAPI(user.memberId)); // API 호출
         }
     }, [user, dispatch]); // user와 dispatch에 의존
+
+    // 제공자 메인에 평균 별점 출력
+    useEffect(() => {
+        async function fetchAvgReviewScores() {
+            if (user && user.memberId) {
+                const data = await callReviewAvgByOwnerNoAPI(user.memberId); // API 호출
+                console.log('별점 data : ', data);
+                if (data && data.results?.map) {
+                    setAvgReviewScores(data.results?.map.slice(0, 3)); // 최대 3개의 데이터만 저장
+                }
+            }
+        }
+
+        fetchAvgReviewScores();
+    }, [user]);
+
 
     async function getData(userId) {
         dispatch(getProductListByOwnerNo(userId))
@@ -302,7 +320,24 @@ function OwnerMyPage() {
                                 </div>
                             </div>
                         </div>
-                        <div className={OwMypageCss.divItem}>평균 별점</div>
+                        <div className={OwMypageCss.divItem}>
+                            <div>
+                                <div>평균 별점</div>
+                                <div onClick={() => navigate("/owner/review")}>+ 더보기</div>
+                            </div>
+                            <div>
+                                {avgReviewScores.length > 0 ? (
+                                    avgReviewScores.map((scoreData, index) => (
+                                        <div key={index}>
+                                            <div>{scoreData.productName}</div>
+                                            <div><span>{scoreData.score.toFixed(1)}</span> 점</div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>평균 별점 데이터가 없습니다.</p>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     <div className={OwMypageCss.leftAreaBottom}>

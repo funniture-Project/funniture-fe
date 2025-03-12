@@ -133,7 +133,7 @@ export const callReviewByMainAPI = async () => {
     }
 };
 
-// 문의 등록하기
+// 리뷰 등록하기
 export const callSubmitReviewAPI = (reviewData) => {
     const requestURL = `http://localhost:8080/api/v1/review/regist`;
 
@@ -142,4 +142,18 @@ export const callSubmitReviewAPI = (reviewData) => {
         console.log('리뷰 등록 결과 서버에 잘 다녀 왔나 response : ', response);
         return response;
     };
+};
+
+// 리뷰 평점 불러오기 
+export const callReviewAvgByOwnerNoAPI = async (memberId) => {
+    const requestURL = `http://localhost:8080/api/v1/review/main/${memberId}`;
+
+    try {
+        const response = await api.get(requestURL);
+        console.log('제공자 페이지 리뷰 평점 응답:', response.data);
+        return response.data; // 반환된 데이터를 리턴
+    } catch (error) {
+        console.error('평균 별점 API 호출 실패:', error);
+        return null;
+    }
 };

@@ -123,12 +123,6 @@ function ListPage({ selectCategory, selectCompany }) {
             {/* 필터링 조건 */}
             <div className="list_filterBox">
                 <div>총 {productList.length}개</div>
-
-                <div className="filter_condition">
-                    <div>신상품</div>
-                    <div>낮은 가격순</div>
-                    <div>높은 가격순</div>
-                </div>
             </div>
 
             {/* 결과 출력 */}

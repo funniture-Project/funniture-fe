@@ -207,7 +207,6 @@ function MyPage() {
                     <div>{rentalState?.[3]?.count || 0}</div>
                 </div>
 
-
                 <div className='userMypageTap'>
                     <div className='tapTitle'>나의 활동</div>
                     <div className='myPageSubTapTitle'>
