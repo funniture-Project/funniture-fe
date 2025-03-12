@@ -530,7 +530,12 @@ function OwnerRental() {
                 showBtnModal={showDeliverySubmitModal}
                 setShowBtnModal={setShowDeliverySubmitModal}
                 btnText="확인"
-                modalContext="운송장 등록이 되었습니다."
+                modalContext={
+                    <>
+                        운송장 등록이 되었습니다.<br />
+                        배송이 시작되었습니다.
+                    </>
+                }
                 modalSize="sm"
             />
 
@@ -539,7 +544,7 @@ function OwnerRental() {
                 showBtnModal={showDeliveredModal}
                 setShowBtnModal={setShowDeliveredModal}
                 btnText="확인"
-                modalContext="배송완료로 상태 수정되었습니다."
+                modalContext="배송완료 되었습니다."
                 modalSize="sm"
             />
 

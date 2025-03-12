@@ -198,6 +198,7 @@
       background-color: #B08968;
       color: white;
       border-radius: 5px;
+      cursor: pointer;
     }
 
     > div:nth-child(4) { 
@@ -212,6 +213,7 @@
       background-color: #B08968;
       color: white;
       border-radius: 5px;
+      cursor: pointer;
     }
 }
 

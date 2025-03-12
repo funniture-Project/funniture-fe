@@ -186,7 +186,7 @@ function DeliveryAddress() {
                     >
                         {isDropdownVisible ? '-' : '+'}
                     </div>
-                    <div className={DeliveryCss.registerBtn}>배송지 신규입력</div>
+                    <div className={DeliveryCss.registerBtn}>신규 배송지 등록</div>
                 </div>
             {/* Dropdown 내용 */}
             {isDropdownVisible && (

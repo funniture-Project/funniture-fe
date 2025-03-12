@@ -64,19 +64,19 @@ function Main() {
             if (user.memberId == '' || user.memberRole == "USER") {
                 const list = noticeList.filter(item => item.viewRoll == "all" || item.viewRoll == "user")
                 if (list.length > 5) {
-                    setFilteredList(list.slice(0, 5))
+                    setFilteredList(list.slice(0, 5).reverse())
                 } else {
-                    setFilteredList(list)
+                    setFilteredList(list.reverse())
                 }
             } else if (user.memberRole == "OWNER") {
                 const list = noticeList.filter(item => item.viewRoll == "owner" || item.viewRoll == "all")
                 if (list.length > 5) {
-                    setFilteredList(list.slice(0, 5))
+                    setFilteredList(list.slice(0, 5).reverse())
                 } else {
-                    setFilteredList(list)
+                    setFilteredList(list.reverse())
                 }
             } else if (user.memberRole == "ADMIN") {
-                setFilteredList(noticeList)
+                setFilteredList(noticeList.reverse())
             }
         }
     }, [noticeList])
