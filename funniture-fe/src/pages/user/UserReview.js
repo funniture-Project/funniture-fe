@@ -153,7 +153,7 @@ function UserReview() {
                                     <button className={myPageReview.repurchaseButton}
                                             onClick={() => handleRebuyClick(review.productNo)}
                                     >재구매</button>
-                                    <button className={myPageReview.deleteButton}>삭제</button>
+                                    {/* <button className={myPageReview.deleteButton}>삭제</button> */}
                                 </div>
                             </div>
                         ))
@@ -184,7 +184,7 @@ function UserReview() {
                                     <button className={myPageReview.repurchaseButton}
                                             onClick={() => handleRebuyClick(review.productNo)}
                                     >재구매</button>
-                                    <button className={myPageReview.deleteButton}>삭제</button>
+                                    {/* <button className={myPageReview.deleteButton}>삭제</button> */}
                                 </div>
                             </div>
                         ))
