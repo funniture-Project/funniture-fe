@@ -99,35 +99,35 @@ function UserReview() {
         navigate(`/product/${productNo}`);
     };
 
-    const ReviewModal = () => {
-        return (
-            <>
-                <div className={myPageReview.modalImageBox}>
-                    <img
-                        src={
-                            selectedProduct.productImageLink?.includes("cloudinary.com")
-                                ? selectedProduct.productImageLink
-                                : defaultImage
-                        }
-                        alt="상품 이미지"
-                    />
-                    <h4>{selectedProduct.productName}</h4>
-                </div>
-                <div className={myPageReview.inputStar}>
-                    <label>별점:</label>
-                    <button onClick={() => handleScoreChange(-1)} disabled={score <= 1}>-</button> {/* 감소 버튼 */}
-                    <span>{score}</span> {/* 별점 표시 */}
-                    <button onClick={() => handleScoreChange(1)} disabled={score >= 5}>+</button> {/* 증가 버튼 */}
-                </div>
-                <textarea
-                    placeholder="상품평을 입력해주세요."
-                    value={reviewContent}
-                    onChange={(e) => setReviewContent(e.target.value)}
-                    style={{ width: "100%", height: "100px", marginTop: "10px" }}
-                />
-            </>
-        )
-    }
+    // const ReviewModal = () => {
+    //     return (
+    //         <>
+    //             <div className={myPageReview.modalImageBox}>
+    //                 <img
+    //                     src={
+    //                         selectedProduct.productImageLink?.includes("cloudinary.com")
+    //                             ? selectedProduct.productImageLink
+    //                             : defaultImage
+    //                     }
+    //                     alt="상품 이미지"
+    //                 />
+    //                 <h4>{selectedProduct.productName}</h4>
+    //             </div>
+    //             <div className={myPageReview.inputStar}>
+    //                 <label>별점:</label>
+    //                 <button onClick={() => handleScoreChange(-1)} disabled={score <= 1}>-</button> {/* 감소 버튼 */}
+    //                 <span>{score}</span> {/* 별점 표시 */}
+    //                 <button onClick={() => handleScoreChange(1)} disabled={score >= 5}>+</button> {/* 증가 버튼 */}
+    //             </div>
+    //             <textarea
+    //                 placeholder="상품평을 입력해주세요."
+    //                 value={reviewContent}
+    //                 onChange={(e) => setReviewContent(e.target.value)}
+    //                 style={{ width: "100%", height: "100px", marginTop: "10px" }}
+    //             />
+    //         </>
+    //     )
+    // }
 
 
     return (
@@ -237,16 +237,42 @@ function UserReview() {
 
                 {/* BtnModal 활용 */}
                 {showReviewModal && selectedProduct && (
-                    // 리뷰 작성 모달
                     <BtnModal
                         showBtnModal={showReviewModal}
                         setShowBtnModal={setShowReviewModal}
                         modalTitle="리뷰 작성"
                         btnText="등록"
                         secondBtnText="취소"
-                        onSuccess={handleSubmitReview}
-                        onFail={() => setShowReviewModal(false)}
-                        modalContext={<ReviewModal />}
+                        onSuccess={handleSubmitReview} // 등록 버튼 클릭 시 실행
+                        onFail={() => setShowReviewModal(false)} // 취소 버튼 클릭 시 실행
+                        modalContext={
+                            <>
+                                <div style={{ textAlign: "center" }}>
+                                    <img
+                                        src={
+                                            selectedProduct.productImageLink?.includes("cloudinary.com")
+                                                ? selectedProduct.productImageLink
+                                                : defaultImage
+                                        }
+                                        alt="상품 이미지"
+                                        style={{ width: "100px", height: "100px", marginBottom: "10px" }}
+                                    />
+                                    <h4>{selectedProduct.productName}</h4>
+                                </div>
+                                <div style={{ marginTop: "20px", textAlign: "center" }}>
+                                    <label>별점:</label>
+                                    <button onClick={() => handleScoreChange(-0.5)} disabled={score <= 0.5}>-</button>
+                                    <span style={{ margin: "0 10px" }}>{score.toFixed(1)}</span>
+                                    <button onClick={() => handleScoreChange(0.5)} disabled={score >= 5}>+</button>
+                                </div>
+                                <textarea
+                                    placeholder="상품평을 입력해주세요."
+                                    value={reviewContent}
+                                    onChange={(e) => setReviewContent(e.target.value)}
+                                    style={{ width: "100%", height: "100px", marginTop: "10px" }}
+                                />
+                            </>
+                        }
                     />
                 )}
 

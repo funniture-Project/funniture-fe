@@ -46,12 +46,20 @@ function AdminConvert() {
         try {
             const data = await callConvertByAdminAPI(pageNum);
             console.log('data', data);
-            setConvertList(data.results.result.data);
-            setPageInfo(data.results.result.pageInfo);
+    
+            if (data.results === null) {
+                console.log('데이터가 없습니다.');
+                setConvertList([]); // 데이터가 없을 때 빈 배열로 초기화
+                setPageInfo(null); // 페이지 정보도 초기화
+            } else {
+                setConvertList(data.results.result.data);
+                setPageInfo(data.results.result.pageInfo);
+            }
         } catch (error) {
             console.error('제공자 전환 회원 목록 불러오기 실패:', error);
         }
     };
+    
 
     useEffect(() => {
         console.log('관리자 페이지, 제공자 전환 요청 목록 가져오기');
