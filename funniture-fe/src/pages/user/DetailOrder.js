@@ -12,8 +12,12 @@ function DetailOrder({ selectedOrder, closeModal }) {
     const [order, setOrder] = useState(selectedOrder || null);
 
     const [deliveryMemo, setDeliveryMemo] = useState(""); // 배송 메모 상태
+    
+    const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 수정 모달창 상태
+    const [showSuccessModal, setShowSuccessModal] = useState(false); // 수정 완료 모달 상태
+    const [showCancelSuccessModal, setShowCancelSuccessModal] = useState(false); // 예약 취소 모달 상태
 
-    // 예약 취소 핸들러
+    // 제공자 예약 취소 핸들러
     const handleCancelOrder = async () => {    
         try {
             await cancelOrder(order.rentalNo);
@@ -24,8 +28,16 @@ function DetailOrder({ selectedOrder, closeModal }) {
         }
     };
 
-    const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 수정 모달창 상태
-    const [showSuccessModal, setShowSuccessModal] = useState(false); // 수정 완료 모달 상태
+    const handleUserCancelOrder = async () => {    
+        try {
+            await cancelOrder(order.rentalNo);
+            setShowCancelSuccessModal(true);  // 예약 취소 성공 시 true 전달
+            getData(id)
+        } catch (error) {
+            console.error('예약취소 오류 : ', error);
+        }
+    };
+
 
     // 배송지 선택 모달 열기 핸들러
     // 모달 열기 핸들러
@@ -45,6 +57,18 @@ function DetailOrder({ selectedOrder, closeModal }) {
             setOrder(data.results.rentalDetail[0]);
         }
     };
+
+    async function getData() {
+            try {
+                const data = await getOrderDetail(id);
+        
+                setOrder(data.results.rentalDetail[0]);
+        
+            } catch (error) {
+                console.error('주문 내역 불어오기 실패 :', error);
+            }
+        }
+    
 
     useEffect(() => {
         if (!selectedOrder) {
@@ -89,7 +113,9 @@ function DetailOrder({ selectedOrder, closeModal }) {
                         <div>문의하기</div>
                     </div>
                     <div>
-                        <div onClick={handleCancelOrder}>예약취소</div>
+                    {order.rentalState === '예약대기' && (
+                        <div onClick={handleUserCancelOrder}>예약취소</div>
+                    )}
                     </div>
                 </div>
                 <hr className={DetailOrderCss.orderHr} />
@@ -227,6 +253,17 @@ function DetailOrder({ selectedOrder, closeModal }) {
                         setShowBtnModal={setShowSuccessModal}
                         btnText="확인"
                         modalContext="배송지 변경이 완료되었습니다."
+                        modalSize="sm"
+                />
+            )}
+
+            {/* 배송지 수정 확인 모달 */}
+            {showCancelSuccessModal && (
+                <BtnModal
+                        showBtnModal={showCancelSuccessModal}
+                        setShowBtnModal={setShowCancelSuccessModal}
+                        btnText="확인"
+                        modalContext="예약이 취소되었습니다."
                         modalSize="sm"
                 />
             )}
