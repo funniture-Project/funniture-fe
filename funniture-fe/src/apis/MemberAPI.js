@@ -602,8 +602,6 @@ export function getOwnerInfo({ ownerNo }) {
 
         const response = await api.get(url)
 
-        console.log("제공자 정보 : ", response)
-
         if (response?.data.httpStatusCode == 200) {
 
             dispatch({
@@ -614,6 +612,16 @@ export function getOwnerInfo({ ownerNo }) {
             });
         }
     }
+}
+
+// 접속자 수 데이터 불러오기
+export async function getConnectInfo() {
+    const url = "/member/connectCount"
+    const response = await api.get(url)
+
+    console.log(" 접속자 response : ", response)
+
+    return response.data
 }
 
 

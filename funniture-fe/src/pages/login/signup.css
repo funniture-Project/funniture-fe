@@ -8,7 +8,7 @@
 
 .loginContainer {
     width: 550px;
-    height: 650px;
+    height: max-content;
     background-color: white;
     border-radius: 20px;
 }
@@ -16,7 +16,8 @@
 .loginMainLogo {
     display: flex;
     justify-content: center;
-    margin-bottom: 30px; /* 로고와 폼 사이 간격 */
+    margin-bottom: 30px;
+    /* 로고와 폼 사이 간격 */
 }
 
 .loginMainLogo img {
@@ -26,14 +27,18 @@
 
 .loginForm {
     display: flex;
-    flex-direction: column; /* 세로 정렬 */
-    gap: 20px; /* 입력 필드 간 간격 */
+    flex-direction: column;
+    /* 세로 정렬 */
+    gap: 20px;
+    /* 입력 필드 간 간격 */
 }
 
 .loginInput {
     display: flex;
-    align-items: center; /* 수직 가운데 정렬 */
-    gap: 10px; /* 입력 필드와 버튼 사이 간격 */
+    align-items: center;
+    /* 수직 가운데 정렬 */
+    gap: 10px;
+    /* 입력 필드와 버튼 사이 간격 */
 }
 
 .loginInput input {
@@ -57,7 +62,8 @@
 .verificationInput button {
     height: 50px;
     padding: 0 15px;
-    background-color: #B08968; /* 기본 활성화 색상 */
+    background-color: #B08968;
+    /* 기본 활성화 색상 */
     color: white;
     border: none;
     border-radius: 5px;
@@ -67,16 +73,21 @@
 /* 비활성화 상태 버튼 스타일 */
 .verificationInput button:disabled,
 .verification button:disabled {
-    background-color: #ccc; /* 비활성화 시 배경색 */
-    color: white; /* 비활성화 시 글자색 */
-    cursor: not-allowed; /* 비활성화 시 커서 모양 */
-    opacity: 0.7; /* 약간의 투명도 추가 */
+    background-color: #ccc;
+    /* 비활성화 시 배경색 */
+    color: white;
+    /* 비활성화 시 글자색 */
+    cursor: not-allowed;
+    /* 비활성화 시 커서 모양 */
+    opacity: 0.7;
+    /* 약간의 투명도 추가 */
 }
 
 .verification2 button {
     height: 50px;
     padding: 0 15px;
-    background-color: #B08968; /* 기본 활성화 색상 */
+    background-color: #B08968;
+    /* 기본 활성화 색상 */
     color: white;
     border: none;
     border-radius: 5px;
@@ -85,16 +96,21 @@
 }
 
 .verification2 button:disabled {
-    background-color: #ccc; /* 비활성화 시 배경색 */
-    color: white; /* 비활성화 시 글자색 */
-    cursor: not-allowed; /* 비활성화 시 커서 모양 */
-    opacity: 0.7; /* 약간의 투명도 추가 */
+    background-color: #ccc;
+    /* 비활성화 시 배경색 */
+    color: white;
+    /* 비활성화 시 글자색 */
+    cursor: not-allowed;
+    /* 비활성화 시 커서 모양 */
+    opacity: 0.7;
+    /* 약간의 투명도 추가 */
 }
 
-.signupBtn{
+.signupBtn {
     height: 50px;
     padding: 0 15px;
-    background-color: #B08968; /* 기본 활성화 색상 */
+    background-color: #B08968;
+    /* 기본 활성화 색상 */
     color: white;
     border: none;
     border-radius: 5px;
@@ -102,9 +118,13 @@
     width: 300px;
 }
 
-.signupBtn:disabled{
-    background-color: #ccc; /* 비활성화 시 배경색 */
-    color: white; /* 비활성화 시 글자색 */
-    cursor: not-allowed; /* 비활성화 시 커서 모양 */
-    opacity: 0.7; /* 약간의 투명도 추가 */
+.signupBtn:disabled {
+    background-color: #ccc;
+    /* 비활성화 시 배경색 */
+    color: white;
+    /* 비활성화 시 글자색 */
+    cursor: not-allowed;
+    /* 비활성화 시 커서 모양 */
+    opacity: 0.7;
+    /* 약간의 투명도 추가 */
 }

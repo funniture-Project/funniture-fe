@@ -5,14 +5,28 @@
     background-color: white;
     border: 2px solid #7F5539;
     border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .paginationWrapper {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    height: 10%;
     width: 100%;
     text-align: center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    >div {
+        height: auto;
+    }
+}
+
+.tableBox {
+    flex: 1;
+    overflow: auto;
 }
 
 .title {
@@ -43,7 +57,7 @@
 
 /* 각 열의 너비를 지정 */
 .table th:nth-child(1) {
-    width: 10%;
+    width: 13%;
 }
 
 .table th:nth-child(2) {
@@ -72,42 +86,10 @@
 
 /* 리뷰 내용 열 너비 */
 .table th:nth-child(8) {
-    width: 10%;
+    width: 7%;
 }
 
 /* tbody의 td도 동일한 너비로 설정 */
-.table td:nth-child(1) {
-    width: 10%;
-}
-
-.table td:nth-child(2) {
-    width: 10%;
-}
-
-.table td:nth-child(3) {
-    width: 10%;
-}
-
-.table td:nth-child(4) {
-    width: 10%;
-}
-
-.table td:nth-child(5) {
-    width: 10%;
-}
-
-.table td:nth-child(6) {
-    width: 15%;
-}
-
-.table td:nth-child(7) {
-    width: 25%;
-}
-
-/* 리뷰 내용 열 너비 */
-.table td:nth-child(8) {
-    width: 10%;
-}
 
 /* 리뷰 내용이 길 경우 세로로만 확장 */
 .table td:nth-child(7) {

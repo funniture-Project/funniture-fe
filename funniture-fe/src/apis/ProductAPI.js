@@ -259,8 +259,6 @@ export async function getResentProduct(recentList) {
 
     const response = await api.post(url, recentList)
 
-    console.log("상품 정보 결과 : ", response)
-
     if (response?.status == 200) {
         return response?.data
     }
@@ -272,8 +270,6 @@ export async function getProductCount() {
     const url = "/product/count"
 
     const response = await api.get(url)
-
-    console.log(response)
 
     return response.data.results
 }

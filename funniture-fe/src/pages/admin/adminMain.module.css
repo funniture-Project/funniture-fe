@@ -20,6 +20,7 @@
 
         display: flex;
         flex-direction: column;
+        overflow: hidden;
 
         >div:first-child {
             width: 100%;
@@ -28,7 +29,7 @@
         }
 
         .chartBox {
-            width: 100%;
+            max-width: 100%;
             flex: 1;
             padding: 10px;
 
@@ -39,6 +40,18 @@
                 justify-content: center;
                 align-items: center;
             }
+        }
+
+        span {
+            color: #7F5539;
+        }
+
+        .viewType {
+            background: none;
+            border: none;
+            color: #7F5539;
+            cursor: pointer;
+            padding: 0 5px;
         }
     }
 }

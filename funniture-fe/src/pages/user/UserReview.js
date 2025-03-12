@@ -2,7 +2,7 @@ import Pagination from "../../component/Pagination";
 import myPageReview from "./mypagereview.module.css";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { callWritableReviewsAPI, callWrittenReviewsAPI , callSubmitReviewAPI} from "../../apis/ReviewAPI";
+import { callWritableReviewsAPI, callWrittenReviewsAPI, callSubmitReviewAPI } from "../../apis/ReviewAPI";
 import defaultImage from "../../assets/images/default.jpg";
 import BtnModal from "../../component/BtnModal";
 import { useNavigate } from "react-router-dom";
@@ -67,13 +67,13 @@ function UserReview() {
             setScore(newScore);
         }
     };
-    
+
 
     // 리뷰 제출 핸들러
     const handleSubmitReview = async () => {
         if (!selectedProduct || !user) return;
 
-        if (!reviewContent.trim()) { 
+        if (!reviewContent.trim()) {
             setShowWarningModal(true); // 경고 모달 열기
             return;
         }
@@ -90,15 +90,45 @@ function UserReview() {
         dispatch(callWritableReviewsAPI(user.memberId, currentWritablePage));
         dispatch(callWrittenReviewsAPI(user.memberId, currentWrittenPage));
 
-        setShowReviewModal(false); 
-        setShowCompleteModal(true); 
+        setShowReviewModal(false);
+        setShowCompleteModal(true);
     };
 
     // 재구매 버튼 클릭 핸들러
     const handleRebuyClick = (productNo) => {
         navigate(`/product/${productNo}`);
     };
-    
+
+    const ReviewModal = () => {
+        return (
+            <>
+                <div className={myPageReview.modalImageBox}>
+                    <img
+                        src={
+                            selectedProduct.productImageLink?.includes("cloudinary.com")
+                                ? selectedProduct.productImageLink
+                                : defaultImage
+                        }
+                        alt="상품 이미지"
+                    />
+                    <h4>{selectedProduct.productName}</h4>
+                </div>
+                <div className={myPageReview.inputStar}>
+                    <label>별점:</label>
+                    <button onClick={() => handleScoreChange(-1)} disabled={score <= 1}>-</button> {/* 감소 버튼 */}
+                    <span>{score}</span> {/* 별점 표시 */}
+                    <button onClick={() => handleScoreChange(1)} disabled={score >= 5}>+</button> {/* 증가 버튼 */}
+                </div>
+                <textarea
+                    placeholder="상품평을 입력해주세요."
+                    value={reviewContent}
+                    onChange={(e) => setReviewContent(e.target.value)}
+                    style={{ width: "100%", height: "100px", marginTop: "10px" }}
+                />
+            </>
+        )
+    }
+
 
     return (
         <>
@@ -146,13 +176,13 @@ function UserReview() {
                                 </div>
                                 <div className={myPageReview.actionButtons}>
                                     <button
-                                            className={myPageReview.writeButton}
-                                            onClick={() => handleWriteReviewClick(review)} // 리뷰 작성 버튼 클릭 시 실행
-                                        >
-                                            리뷰작성
+                                        className={myPageReview.writeButton}
+                                        onClick={() => handleWriteReviewClick(review)} // 리뷰 작성 버튼 클릭 시 실행
+                                    >
+                                        리뷰작성
                                     </button>
                                     <button className={myPageReview.repurchaseButton}
-                                            onClick={() => handleRebuyClick(review.productNo)}
+                                        onClick={() => handleRebuyClick(review.productNo)}
                                     >재구매</button>
                                     {/* <button className={myPageReview.deleteButton}>삭제</button> */}
                                 </div>
@@ -176,14 +206,14 @@ function UserReview() {
                                     <h3>{review.productName}</h3>
                                     <h6>{review.reviewWriteTime}</h6>
                                     <div className={myPageReview.reviewScore}>
-                                    <span style={{ color: 'yellow' }}>{"★".repeat(Math.round(review.score))}{" "}</span>
+                                        <span style={{ color: 'yellow' }}>{"★".repeat(Math.round(review.score))}{" "}</span>
                                         <span>{review.score.toFixed(1)}</span>
                                     </div>
-                                    <p style={{marginTop:'10px'}}>{review.reviewContent}</p>
+                                    <p style={{ marginTop: '10px' }}>{review.reviewContent}</p>
                                 </div>
                                 <div className={myPageReview.actionButtons}>
                                     <button className={myPageReview.repurchaseButton}
-                                            onClick={() => handleRebuyClick(review.productNo)}
+                                        onClick={() => handleRebuyClick(review.productNo)}
                                     >재구매</button>
                                     {/* <button className={myPageReview.deleteButton}>삭제</button> */}
                                 </div>
@@ -195,15 +225,18 @@ function UserReview() {
                 </div>
 
                 {/* Pagination Component */}
-                {activeTab === "writable" && writablePageInfo && (
-                    <Pagination pageInfo={writablePageInfo} onPageChange={onWritablePageChange} />
-                )}
-                {activeTab === "written" && writtenPageInfo && (
-                    <Pagination pageInfo={writtenPageInfo} onPageChange={onWrittenPageChange} />
-                )}
 
-                    {/* BtnModal 활용 */}
-                    {showReviewModal && selectedProduct && (
+                <div className={myPageReview.pagingBox}>
+                    {activeTab === "writable" && writablePageInfo && (
+                        <Pagination pageInfo={writablePageInfo} onPageChange={onWritablePageChange} />
+                    )}
+                    {activeTab === "written" && writtenPageInfo && (
+                        <Pagination pageInfo={writtenPageInfo} onPageChange={onWrittenPageChange} />
+                    )}
+                </div>
+
+                {/* BtnModal 활용 */}
+                {showReviewModal && selectedProduct && (
                     // 리뷰 작성 모달
                     <BtnModal
                         showBtnModal={showReviewModal}
@@ -213,39 +246,12 @@ function UserReview() {
                         secondBtnText="취소"
                         onSuccess={handleSubmitReview}
                         onFail={() => setShowReviewModal(false)}
-                        modalContext={
-                            <>
-                                <div style={{ textAlign: "center" }}>
-                                    <img
-                                        src={
-                                            selectedProduct.productImageLink?.includes("cloudinary.com")
-                                                ? selectedProduct.productImageLink
-                                                : defaultImage
-                                        }
-                                        alt="상품 이미지"
-                                        style={{ width: "100px", height: "100px", marginBottom: "10px" }}
-                                    />
-                                    <h4>{selectedProduct.productName}</h4>
-                                </div>
-                                <div style={{ marginTop: "20px", textAlign: "center" }}>
-                                    <label>별점:</label>
-                                    <button onClick={() => handleScoreChange(-1)} disabled={score <= 1}>-</button> {/* 감소 버튼 */}
-                                    <span style={{ margin: "0 10px" }}>{score}</span> {/* 별점 표시 */}
-                                    <button onClick={() => handleScoreChange(1)} disabled={score >= 5}>+</button> {/* 증가 버튼 */}
-                                </div>
-                                <textarea
-                                    placeholder="상품평을 입력해주세요."
-                                    value={reviewContent}
-                                    onChange={(e) => setReviewContent(e.target.value)}
-                                    style={{ width: "100%", height: "100px", marginTop: "10px" }}
-                                />
-                            </>
-                        }
+                        modalContext={<ReviewModal />}
                     />
                 )}
 
-                    {/* 완료 모달 */}
-                    {showCompleteModal && (
+                {/* 완료 모달 */}
+                {showCompleteModal && (
                     <BtnModal
                         showBtnModal={showCompleteModal}
                         setShowBtnModal={setShowCompleteModal}
@@ -253,17 +259,17 @@ function UserReview() {
                         btnText="확인"
                         modalContext={<p>리뷰 등록이 완료되었습니다!</p>}
                     />
-                    )}
-                    {/* 상품평 미입력 경고 모달 추가 */}
-                    {showWarningModal && (
-                        <BtnModal
-                            showBtnModal={showWarningModal}
-                            setShowBtnModal={setShowWarningModal}
-                            modalTitle="알림"
-                            btnText="확인"
-                            modalContext={<p>상품평을 작성해 주세요!</p>}
-                        />
-                    )}
+                )}
+                {/* 상품평 미입력 경고 모달 추가 */}
+                {showWarningModal && (
+                    <BtnModal
+                        showBtnModal={showWarningModal}
+                        setShowBtnModal={setShowWarningModal}
+                        modalTitle="알림"
+                        btnText="확인"
+                        modalContext={<p>상품평을 작성해 주세요!</p>}
+                    />
+                )}
             </div>
         </>
     );
