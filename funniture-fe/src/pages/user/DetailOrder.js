@@ -96,9 +96,11 @@ function DetailOrder({ selectedOrder, closeModal }) {
             </>
             )}
                 <div className={DetailOrderCss.orderInfoContainer}>
-                    <div>{order.rentalState}</div>
+                    <div>{order.rentalState === '예약완료' ? `${order.rentalState} (배송준비중)` : order.rentalState}</div>
                     <div>
-                        <img className={DetailOrderCss.orderImg} src={require(`../../assets/images/testImg.JPG`)} alt="상품 이미지" />
+                        <img className={DetailOrderCss.orderImg} 
+                        src={order?.productImageLink == "a.jpg" || order?.productImageLink == "default.jpg" || order?.productImageLink == null ? require("../../assets/images/default.jpg") :order?.productImageLink}
+                        alt="프로필 이미지"/>
                         <div className={DetailOrderCss.orderInfo}>
                             <div>상품명 : {order.productName}</div>
                             <div>대여 기간 : {order.rentalTerm} 개월</div>

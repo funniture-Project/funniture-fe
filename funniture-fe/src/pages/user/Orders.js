@@ -29,6 +29,7 @@ function Orders() {
     async function getData(memberId, period, searchDate, pageNum) {
         try {
             const data = await getUserOrderList(memberId, period, searchDate, pageNum);
+            console.log('data', data);
     
             // data.results가 없으면 빈 배열로 설정
             if (!data || !data.results || !data.results.userOrderList) {
@@ -142,12 +143,13 @@ function Orders() {
                             <div className={OrdersCss.orderListItem}>
                                 <div className={OrdersCss.status}>
                                     <div>
-                                        {item.rentalState}
+                                        {item.rentalState === '예약완료' ? `${item.rentalState} (배송준비중)` : item.rentalState}
                                     </div>
                                 </div>
                                 <div className={OrdersCss.statusAndProductImgBox}>
                                     <div className={OrdersCss.productImg}>
-                                        <img src={require(`../../assets/images/testImg.JPG`)} alt="상품 이미지 입니다" />
+                                        <img src={item?.productImageLink == "a.jpg" || item?.productImageLink == "default.jpg" || item?.productImageLink == null ? require("../../assets/images/default.jpg") :item?.productImageLink}
+                                        alt="프로필 이미지" />
                                     </div>
                                     <div className={OrdersCss.ordersInfo}>
                                         <div>주문번호 : {item.rentalNo}</div>
