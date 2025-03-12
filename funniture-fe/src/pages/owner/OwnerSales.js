@@ -87,7 +87,7 @@ function OwnerSales() {
 
     // 총 정산 금액 계산 (수수료 5% 제외)
     function calculateTotalSettlement(filteredSales) {
-        return filteredSales.reduce((acc, item) => acc + ((item.rentalPrice * item.rentalNumber * 0.95)*0.9), 0);
+        return filteredSales.reduce((acc, item) => acc + (((item.rentalPrice*0.9) * item.rentalNumber * 0.95)), 0);
     }
     
 

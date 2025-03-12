@@ -10,7 +10,7 @@
     display: flex;
     height: 20%;
     flex-direction: column;
-    border: 1px solid #7F5539;
+    border: 2px solid #7F5539;
     border-radius: 10px;
     padding: 1%;
 
@@ -31,13 +31,11 @@
     .monthSearchContainer>div:nth-child(1) {
         background-color: #B08968;
         border: 1px solid rgb(105, 104, 104);
+        border-right: none;
     }
 
     .monthSearchContainer>div:nth-child(2) {
-
         border: 1px solid rgb(105, 104, 104);
-        border-left: none;
-
     }
 
     .storeSearchContainer {
@@ -86,7 +84,7 @@
 }
 
 .totalAmountContainer {
-    border: 1px solid #7F5539;
+    border: 2px solid #7F5539;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -121,7 +119,7 @@
     height: 70%;
     border-radius: 10px;
     align-items: center;
-    border: 1px solid #7F5539;
+    border: 2px solid #7F5539;
     position: relative;
     /* 부모 요소에 필요 */
 
@@ -146,7 +144,7 @@
         width: 100%;
         height: 45px;
         max-height: 45px;
-        border-bottom: 1px solid #7F5539;
+        border-bottom: 2px solid #7F5539;
         padding-right: 8px;
     }
 
@@ -169,7 +167,7 @@
         width: 100%;
         height: 45px;
         max-height: 45px;
-        border: 1px solid #7F5539;
+        border: 2px solid #7F5539;
         border-radius: 10px;
 
         /* display: none; */
