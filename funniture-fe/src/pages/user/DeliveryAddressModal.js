@@ -92,6 +92,7 @@ function DeliveryAddressModal({ onAddressSelect = () => {}, defaultAddress = nul
             setReceiver('');
             setDestinationAddress('');
             setDestinationPhone('');
+            getData(memberId)
 
         } catch (error) {
             console.error('등록 실패:', error);

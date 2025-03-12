@@ -35,10 +35,10 @@ function DeliveryAddress() {
     async function getData(memberId) {
         try {
             const data = await getDeliveryAddressListData(memberId);
-            setDeliveryAddressList(data.results.addressList);
-
+            setDeliveryAddressList(data.results.addressList || []);
         } catch (error) {
             console.error('배송지를 찾을 수 없음', error);
+            setDeliveryAddressList([]); // 에러 시 빈 배열 설정
         }
     }
 
