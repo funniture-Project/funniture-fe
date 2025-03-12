@@ -78,6 +78,20 @@ export async function getSalesByMonthChartData(yearMonth,groupBy) {
     return response
 }
 
+export async function getTopMonthlySales(yearMonth) {
+
+    const url = '/rental/chart/monthly/top'
+    const params = new URLSearchParams();
+
+    if (yearMonth) {
+        params.append('yearMonth', yearMonth);
+    }
+
+    const response = await getData(url, params);
+
+    return response
+}
+
 // ---------------------------------------------------- 사용자 -------------------------------------------------------------
 
 // 사용자별 예약 전체 조회(페이징 처리)

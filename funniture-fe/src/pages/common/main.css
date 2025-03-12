@@ -89,6 +89,14 @@
             height: fit-content;
             padding: 10px 5px;
             background: none;
+            border: solid 1px #7F5539;
+            color: #7F5539;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #7F5539;
+            color: white;
         }
 
         >div {

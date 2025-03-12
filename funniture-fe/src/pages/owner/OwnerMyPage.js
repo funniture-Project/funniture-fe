@@ -5,7 +5,6 @@ import { getProductListByOwnerNo } from '../../apis/ProductAPI';
 import { useNavigate } from 'react-router-dom';
 import { callInquiryByOwnerNoAPI } from '../../apis/InquiryAPI';
 import { callReviewByOwnerNoAPI } from '../../apis/ReviewAPI';
-import OwnerReview from './ownerMainReview.module.css';
 import { getAllNoticeList } from '../../apis/NoticeAPI';
 import { getRentalStateCountByOwner, getRentalPeriodCountByOwner, getCurrentMonthSalesByOwner } from '../../apis/RentalAPI';
 import React from 'react';
@@ -53,13 +52,13 @@ function OwnerMyPage() {
                 const response = await getCurrentMonthSalesByOwner(user.memberId, yearMonth); // API 호출
                 const data = response.results.currentSalesData;
                 console.log(data)
-    
+
                 setCurrentMonthChart(data); // 데이터 상태 업데이트
             } catch (error) {
                 console.error("이번 달 매출 조회 실패 :", error);
             }
         }
-    
+
         if (user?.memberId) {
             fetchCurrentMonthSales();
         }
@@ -95,7 +94,7 @@ function OwnerMyPage() {
                         }
                     ]
                 }}
-                series={[{ data: values }]}  
+                series={[{ data: values }]}
                 type="bar"
                 height="100%"
             />
@@ -176,28 +175,28 @@ function OwnerMyPage() {
     // rentalStateCount 처리 useEffect 수정
     useEffect(() => {
         const counts = {
-        waiting: 0,
-        confirmed: 0,
-        canceled: 0,
+            waiting: 0,
+            confirmed: 0,
+            canceled: 0,
         };
-    
+
         // API 응답 구조에 따른 처리
         rentalStateCount.forEach((stateCount) => {
-        switch(stateCount.rentalState) {
-            case "예약대기":
-            counts.waiting = stateCount.count; // ✅ count 값 직접 할당
-            break;
-            case "예약완료":
-            counts.confirmed = stateCount.count;
-            break;
-            case "예약취소":
-            counts.canceled = stateCount.count;
-            break;
-            default:
-            console.warn("알 수 없는 상태:", stateCount.rentalState);
-        }
+            switch (stateCount.rentalState) {
+                case "예약대기":
+                    counts.waiting = stateCount.count; // ✅ count 값 직접 할당
+                    break;
+                case "예약완료":
+                    counts.confirmed = stateCount.count;
+                    break;
+                case "예약취소":
+                    counts.canceled = stateCount.count;
+                    break;
+                default:
+                    console.warn("알 수 없는 상태:", stateCount.rentalState);
+            }
         });
-    
+
         setReservationCounts(counts);
     }, [rentalStateCount]);
 
@@ -206,34 +205,34 @@ function OwnerMyPage() {
         oneMonth: 0,
         oneWeek: 0
     });
-    
+
     useEffect(() => {
         async function fetchPeriodCounts() {
             try {
                 const threeMonthsResponse = await getRentalPeriodCountByOwner(user.memberId, "3MONTH");
                 const oneMonthResponse = await getRentalPeriodCountByOwner(user.memberId, "1MONTH");
                 const oneWeekResponse = await getRentalPeriodCountByOwner(user.memberId, "1WEEK");
-    
+
                 const counts = {
                     threeMonths: threeMonthsResponse.results.rentalStateCount[0]?.count || 0,
                     oneMonth: oneMonthResponse.results.rentalStateCount[0]?.count || 0,
                     oneWeek: oneWeekResponse.results.rentalStateCount[0]?.count || 0
                 };
-    
+
                 setPeriodCounts(counts);
             } catch (error) {
                 console.error("계약 만료 데이터 조회 오류:", error);
             }
         }
-    
+
         if (user?.memberId) {
             fetchPeriodCounts();
         }
     }, [user]);
 
-   
 
-    
+
+
 
 
     return (
@@ -365,34 +364,36 @@ function OwnerMyPage() {
 
                 <div className={OwMypageCss.rightArea}>
                     <div className={OwMypageCss.divItem}>
-                    <div>이번 달 매출</div>
+                        <div>이번 달 매출</div>
                         <div className={OwMypageCss.divItemSalesChart}>
-                         
-                            <CurrentMonthSalesChart/>
+
+                            <CurrentMonthSalesChart />
                         </div>
                     </div>
 
-                    <div className={OwMypageCss.divItemReview}>
-                        리뷰
-                        <div className={OwnerReview.scrollableContainer}></div>
-                        <div style={{ padding: '5px' }}>
+                    <div className={OwMypageCss.divItem}>
+                        <div>
+                            <div>리뷰</div>
+                            <div onClick={() => navigate("/owner/review")}>+ 더보기</div>
+                        </div>
+                        <div className={OwMypageCss.reviewListBox}>
                             {reviews && reviews.length > 0 ? (
                                 reviews.map((review, index) => (
-                                    <div key={index} className={OwnerReview.reviewItem}>
-                                        {/* 별점과 작성 날짜 */}
-                                        <div className={OwnerReview.reviewHeader}>
-                                            <span className={OwnerReview.starRating}>
+                                    <>
+                                        <div key={index} className={OwMypageCss.reviewItem}>
+                                            {/* 별점과 작성 날짜 */}
+                                            <div className={OwMypageCss.starRating}>
                                                 {'★'.repeat(Math.floor(review.score))}{'☆'.repeat(5 - Math.floor(review.score))}
-                                            </span>
-                                            <span>{review.reviewWriteTime.slice(0, 16)}</span>
+                                            </div>
+                                            <div className={OwMypageCss.writeAt}>{review.reviewWriteTime.slice(0, 10)}</div>
+
+                                            {/* 상품명, 렌탈 기간, 작성자 이름 */}
+                                            <div className={OwMypageCss.productName}>{review.productName}</div>
+                                            <div>{review.rentalTerm}개월</div>
+                                            <div>{review.userName} 님</div>
                                         </div>
-                                        {/* 상품명, 렌탈 기간, 작성자 이름 */}
-                                        <div className={OwnerReview.reviewContent}>
-                                            <span style={{ flex: '1', textAlign: 'center', marginLeft: '20%' }}>{review.productName}</span>
-                                            <span style={{ flex: '1', textAlign: 'center', marginLeft: '20%' }}>{review.rentalTerm}개월</span>
-                                            <span style={{ flex: '1', textAlign: 'center', marginLeft: '20%' }}>{review.userName} 님</span>
-                                        </div>
-                                    </div>
+
+                                    </>
                                 ))
                             ) : (
                                 <p>리뷰 내역이 없습니다.</p>

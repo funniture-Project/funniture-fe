@@ -232,9 +232,9 @@ function OwnerRental() {
 
         setShowReservationCompleteModal(false);  // 모달 닫기
     };
-    
+
     // 배송중 -> 배송완료
-    const handleDeliveryComplete = async(rentalNo) => {
+    const handleDeliveryComplete = async (rentalNo) => {
         try {
             await putUpdateRentalState(rentalNo);
             getData(memberId, period, rentalTab, pageNum);
@@ -264,7 +264,7 @@ function OwnerRental() {
     };
 
     // 수거중 -> 반납완료
-    const handleCollectionComplete = async(rentalNo) => {
+    const handleCollectionComplete = async (rentalNo) => {
         try {
             await putUpdateRentalState(rentalNo);
             getData(memberId, period, rentalTab, pageNum);
@@ -275,12 +275,12 @@ function OwnerRental() {
         }
 
         setShowCollectionInProgressModal(false);  // 모달 닫기
-        
+
     };
 
 
 
-    
+
 
 
 
@@ -340,13 +340,13 @@ function OwnerRental() {
                         <tr>
                             <th style={{ width: "2%" }}></th>
                             <th style={{ width: "11%" }}>주문번호</th>
-                            <th style={{ width: "10%" }}>택배사</th>
+                            <th style={{ width: "11%" }}>택배사</th>
                             <th style={{ width: "10%" }}>운송장번호</th>
-                            <th style={{ width: "20%" }}>상품명</th>
+                            <th style={{ width: "15%" }}>상품명</th>
                             <th style={{ width: "4%" }}>수량</th>
                             <th style={{ width: "7%" }}>약정기간</th>
-                            <th style={{ width: "7%" }}>A/S 횟수</th>
-                            <th style={{ width: "19%" }}>사용 날짜 / 만료 날짜</th>
+                            <th style={{ width: "5%" }}>A/S 횟수</th>
+                            <th style={{ width: "23%" }}>사용 날짜 / 만료 날짜</th>
                             <th style={{ width: "10%" }}>
                                 <select
                                     onChange={handleStatusChange}
@@ -393,44 +393,46 @@ function OwnerRental() {
                     <tbody>
                         {filteredRentalList.length > 0 ? (
                             filteredRentalList.map((rental, index) => (
-                                <tr key={rental.rentalNo || index}>
-                                    <td>
-                                        <input
-                                            type="checkbox"
-                                            className={OwnerRentalCSS.rowCheckbox}
-                                            checked={selectedRentalNos.includes(rental.rentalNo)}  // 체크 상태 동기화
-                                            onChange={() => handleCheckboxChange(rental.rentalNo)}  // 체크박스 클릭 시 처리
-                                        />
-                                    </td>
-                                    <td>
-                                        <span
-                                            className={OwnerRentalCSS.clickable}
-                                            onClick={() => handleOrderClick(rental)}
-                                        >
-                                            {rental.rentalNo}
-                                        </span>
-                                    </td>
-                                    <td className={canDoubleClick(rental.rentalState) ? OwnerRentalCSS.doubleClickable : ''} onDoubleClick={() => handleDoubleClick(rental)}>
-                                        {rental.deliverCom || '-'}
-                                    </td>
-                                    <td className={canDoubleClick(rental.rentalState) ? OwnerRentalCSS.doubleClickable : ''} onDoubleClick={() => handleDoubleClick(rental)}>
-                                        {rental.deliveryNo || '-'}
-                                    </td>
-                                    <td>{rental.productName}</td>
-                                    <td>{rental.rentalNumber}</td>
-                                    <td>{rental.rentalTerm}개월</td>
-                                    <td>{rental.asNumber}회</td>
-                                    <td>
-                                        {rental.rentalStartDate && rental.rentalEndDate
-                                            ? `${rental.rentalStartDate} ~ ${rental.rentalEndDate}`
-                                            : '-'}
-                                    </td>
-                                    <td>
-                                        <div className={`${OwnerRentalCSS[getStatusClass(rental.rentalState)]}`}>
-                                            {rental.rentalState}
-                                        </div>
-                                    </td>
-                                </tr>
+                                <>
+                                    <tr key={rental.rentalNo || index}>
+                                        <td>
+                                            <input
+                                                type="checkbox"
+                                                className={OwnerRentalCSS.rowCheckbox}
+                                                checked={selectedRentalNos.includes(rental.rentalNo)}  // 체크 상태 동기화
+                                                onChange={() => handleCheckboxChange(rental.rentalNo)}  // 체크박스 클릭 시 처리
+                                            />
+                                        </td>
+                                        <td>
+                                            <span
+                                                className={OwnerRentalCSS.clickable}
+                                                onClick={() => handleOrderClick(rental)}
+                                            >
+                                                {rental.rentalNo}
+                                            </span>
+                                        </td>
+                                        <td className={canDoubleClick(rental.rentalState) ? OwnerRentalCSS.doubleClickable : ''} onDoubleClick={() => handleDoubleClick(rental)}>
+                                            {rental.deliverCom || '-'}
+                                        </td>
+                                        <td className={canDoubleClick(rental.rentalState) ? OwnerRentalCSS.doubleClickable : ''} onDoubleClick={() => handleDoubleClick(rental)}>
+                                            {rental.deliveryNo || '-'}
+                                        </td>
+                                        <td>{rental.productName}</td>
+                                        <td>{rental.rentalNumber}</td>
+                                        <td>{rental.rentalTerm}개월</td>
+                                        <td>{rental.asNumber}회</td>
+                                        <td>
+                                            {rental.rentalStartDate && rental.rentalEndDate
+                                                ? `${rental.rentalStartDate} ~ ${rental.rentalEndDate}`
+                                                : '-'}
+                                        </td>
+                                        <td>
+                                            <div className={`${OwnerRentalCSS[getStatusClass(rental.rentalState)]}`}>
+                                                {rental.rentalState}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </>
                             ))
                         ) : (
                             <tr>
@@ -439,6 +441,16 @@ function OwnerRental() {
                         )}
                     </tbody>
                 </table>
+            </div>
+
+            {/* 페이징 컴포넌트 가져오기 */}
+            <div className={OwnerRentalCSS.pagingContainer}>
+                <div>
+                    <Pagination
+                        pageInfo={pageInfo}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
             </div>
 
             {/* 예약확정 확인 모달 */}
@@ -465,23 +477,23 @@ function OwnerRental() {
                 setShowBtnModal={setShowReservationCompleteModal}
                 modalSize="md"
                 childContent={
-                    <DeliverComModal 
-                        selectedOrder={selectedOrder} 
-                        onBtnClick={handleDeliverySubmit} 
+                    <DeliverComModal
+                        selectedOrder={selectedOrder}
+                        onBtnClick={handleDeliverySubmit}
                     />
                 }
             />
 
-            
+
             {/* 배송중 -> 배송완료 (수정버튼 운송장, 운송업체 수정)*/}
             <BtnModal
                 showBtnModal={showDeliveryInProgressModal}
                 setShowBtnModal={setShowDeliveryInProgressModal}
                 modalSize="md"
                 childContent={
-                    <DeliveryInProgressModal 
-                        selectedOrder={selectedOrder} 
-                        onBtnClick={handleDeliveryComplete} 
+                    <DeliveryInProgressModal
+                        selectedOrder={selectedOrder}
+                        onBtnClick={handleDeliveryComplete}
                     />
                 }
             />
@@ -492,9 +504,9 @@ function OwnerRental() {
                 setShowBtnModal={setShowReturnRequestModal}
                 modalSize="md"
                 childContent={
-                    <DeliverComModal 
-                        selectedOrder={selectedOrder} 
-                        onBtnClick={handleCollectionStart} 
+                    <DeliverComModal
+                        selectedOrder={selectedOrder}
+                        onBtnClick={handleCollectionStart}
                     />
                 }
             />
@@ -505,13 +517,13 @@ function OwnerRental() {
                 setShowBtnModal={setShowCollectionInProgressModal}
                 modalSize="md"
                 childContent={
-                    <DeliveryInProgressModal 
-                        selectedOrder={selectedOrder} 
-                        onBtnClick={handleCollectionComplete} 
+                    <DeliveryInProgressModal
+                        selectedOrder={selectedOrder}
+                        onBtnClick={handleCollectionComplete}
                     />
                 }
             />
-                        
+
 
             {/* 운송장 등록 확인 모달 */}
             <BtnModal
@@ -560,15 +572,7 @@ function OwnerRental() {
                 />
             )}
 
-            {/* 페이징 컴포넌트 가져오기 */}
-            <div className={OwnerRentalCSS.pagingContainer}>
-                <div>
-                    <Pagination
-                        pageInfo={pageInfo}
-                        onPageChange={handlePageChange}
-                    />
-                </div>
-            </div>
+
         </div>
     );
 }

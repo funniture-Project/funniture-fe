@@ -7,7 +7,7 @@ import truckIcon from "../../assets/icon/truck-solid.svg";
 import checkIcon from "../../assets/icon/check-solid.svg";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from 'react';
-import { getPointList,getCurrentPoint } from '../../apis/PointAPI';
+import { getPointList, getCurrentPoint } from '../../apis/PointAPI';
 import { getRentalStateList, getActiveRentalList } from '../../apis/RentalAPI';
 import { useSelector } from 'react-redux';
 
@@ -20,17 +20,17 @@ function MyPage() {
     const [activeTab, setActiveTab] = useState('orders');
 
     // 데이터 관리
-    const [pointLogs, setPointLogs] = useState([]);   
-    const [point, setPoint] = useState([]);  
-    const [rentalState, setRentalState] = useState([]); 
+    const [pointLogs, setPointLogs] = useState([]);
+    const [point, setPoint] = useState([]);
+    const [rentalState, setRentalState] = useState([]);
     const [returnDeadlineCount, setReturnDeadlineCount] = useState(0);    // 반납 마감 임박 상품 갯수 상태 관리
-    
+
     // point +, - 필터
     const [filterType, setFilterType] = useState(null);
 
     // 포인트 드롭다운
     const [pointOpen, setPointOpen] = useState(false);
- 
+
     // 포인트 내역 데이터 가져오는 함수
     async function getPointData(memberId) {
         try {
@@ -64,7 +64,7 @@ function MyPage() {
         try {
             const data = await getRentalStateList(memberId);
             const states = data.results.rentalStateCount;
-    
+
             setRentalState(states);
 
         } catch (error) {
@@ -72,13 +72,13 @@ function MyPage() {
             setRentalState([]);  // 오류 발생 시 빈 배열 설정
         }
     }
-    
+
     // 랜더링 시 데이터 불러오기
     useEffect(() => {
         getCurrentPointData(memberId);
         getRentalStateData(memberId);
 
-    }, [memberId]); 
+    }, [memberId]);
 
     // 반납 예정 갯수 데이터 가져오는 함수
     async function fetchRentalData(memberId) {
@@ -91,12 +91,12 @@ function MyPage() {
             currentDate.setHours(0, 0, 0, 0); // 현재 날짜의 시간을 00:00:00으로 맞춤
 
 
-            
+
             const deadlineRentals = rentals.filter((rental) => {
                 const rentalEndDate = new Date(`${rental.rentalEndDate}T00:00:00`);
                 const daysRemaining = Math.floor((rentalEndDate - currentDate) / (1000 * 60 * 60 * 24));
                 return daysRemaining <= 7 && daysRemaining >= 0; // 만료일 기준 7일 전부터 오늘까지
-                
+
             });
 
             setReturnDeadlineCount(deadlineRentals.length); // 마감 임박 갯수 설정
@@ -139,8 +139,8 @@ function MyPage() {
         <div className='mypage'>
             <div className="mypageMenu">
                 <div className='userInfo'>
-                    <img src={user?.imageLink == "a.jpg" || user?.imageLink == "userDefault.jpg" || user?.imageLink == null ? require("../../assets/images/userDefault.jpg") :user?.imageLink}
-                            alt="프로필 이미지" />
+                    <img src={user?.imageLink == "a.jpg" || user?.imageLink == "userDefault.jpg" || user?.imageLink == null ? require("../../assets/images/userDefault.jpg") : user?.imageLink}
+                        alt="프로필 이미지" />
                     <div>
                         <div className='name'>{user.userName}</div>
                         <div className='email'>{user.email}</div>
@@ -162,18 +162,18 @@ function MyPage() {
                                     <div onClick={() => setFilterType("minus")} className={filterType === "minus" ? "active" : ""}> - </div>
                                 </div>
                                 <div className='dropdownItemContent'>
-                            {filteredLogs.map((log) => {
-                                const pointValue =
-                                    log.addPoint !== 0 ? `+${formatNumber(log.addPoint)}` : `-${formatNumber(log.usedPoint)}`;
-                                return (
-                                <div key={log.pointId} className="dropdownItem">
-                                    <div className="pointDate">{log.pointDateTime}</div>
-                                    <div className={`pointValue ${log.addPoint !== 0 ? "plus" : "minus"}`}>
-                                        {pointValue} Point
-                                    </div>
-                                </div>
-                                );
-                            })}
+                                    {filteredLogs.map((log) => {
+                                        const pointValue =
+                                            log.addPoint !== 0 ? `+${formatNumber(log.addPoint)}` : `-${formatNumber(log.usedPoint)}`;
+                                        return (
+                                            <div key={log.pointId} className="dropdownItem">
+                                                <div className="pointDate">{log.pointDateTime}</div>
+                                                <div className={`pointValue ${log.addPoint !== 0 ? "plus" : "minus"}`}>
+                                                    {pointValue} Point
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}
@@ -201,10 +201,10 @@ function MyPage() {
                     <div>배송완료</div>
                 </div>
                 <div className='rentalStatusNumberBox'>
-                    <div>{rentalState.length > 0 ? rentalState[0].count : 0}</div>
-                    <div>{rentalState.length > 2 ? rentalState[1].count : 0}</div>
-                    <div>{rentalState.length > 1 ? rentalState[2].count : 0}</div>
-                    <div>{rentalState.length > 3 ? rentalState[3].count : 0}</div>
+                    <div>{rentalState?.[0]?.count || 0}</div>
+                    <div>{rentalState?.[1]?.count || 0}</div>
+                    <div>{rentalState?.[2]?.count || 0}</div>
+                    <div>{rentalState?.[3]?.count || 0}</div>
                 </div>
 
 
