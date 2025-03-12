@@ -120,7 +120,7 @@ function DeliveryAddressModal({ onAddressSelect = () => {}, defaultAddress = nul
                 >
                     {isDropdownVisible ? '-' : '+'}
                 </div>
-                <div className={DeliveryAddressCss.registerBtn}>배송지 신규입력</div>
+                <div className={DeliveryAddressCss.registerBtn}>신규 배송지 등록</div>
 
             </div>
             {/* Dropdown 내용 */}

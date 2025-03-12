@@ -188,9 +188,9 @@ function RentalRegist() {
                                 <div>
                                     {defaultAddress
                                         ? `${defaultAddress.receiver} (${defaultAddress.destinationName ?? ''})`
-                                        : '배송지가 없습니다.(변경을 눌러 배송지를 등록하세요)'}
+                                        : '기본배송지가 없습니다.(배송지를 선택/등록하세요)'}
                                 </div>
-                                <div className={RentalRegistCss.deliveryChangeBtn} onClick={onClickHandler}>변경</div>
+                                <div className={RentalRegistCss.deliveryChangeBtn} onClick={onClickHandler}>선택</div>
                             </div>
                             <div>{defaultAddress?.destinationPhone ?? ''}</div>
                             <div>{defaultAddress?.destinationAddress ?? ''}</div>

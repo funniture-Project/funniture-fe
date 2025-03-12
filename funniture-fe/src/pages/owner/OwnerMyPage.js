@@ -78,8 +78,10 @@ function OwnerMyPage() {
                         bar: {
                             colors: {
                                 ranges: [
-                                    { from: 0, to: 10000, color: '#F44336' }, // 0 ~ 10000 사이 값은 파란색
-                                    { from: 10001, to: 20000, color: '#00E396' }, // 10001 ~ 20000 사이 값은 초록색
+                                    { from: 0, to: 3000, color: '#F44336' }, // 0 ~ 10000 사이 값은 파란색
+                                    { from: 3001, to: 5000, color: '#FF4560' }, // 10001 ~ 20000 사이 값은 초록색
+                                    { from: 5001, to: 10000, color: '#00E396' }, // 10001 ~ 20000 사이 값은 초록색
+                                    { from: 10001, to: 20000, color: '#008FFB' }, // 10001 ~ 20000 사이 값은 초록색
                                     { from: 20001, to: Infinity, color: '#FEB019' }, // 20001 이상은 노란색
                                 ]
                             }
@@ -93,7 +95,20 @@ function OwnerMyPage() {
                                 legend: { position: "bottom" }
                             }
                         }
-                    ]
+                    ],
+                    tooltip: {
+                        enabled: true,
+                        custom: function({ series, seriesIndex, dataPointIndex, w }) {
+                            const value = series[seriesIndex][dataPointIndex];
+                            const category = w.globals.labels[dataPointIndex];
+                            return `
+                                <div style="padding: 8px; background:rgb(248, 248, 248); color: #00000; border-radius: 5px;">
+                                    <strong>${category}</strong><br/>
+                                    매출액 : ${value.toLocaleString()} 원
+                                </div>
+                            `;
+                        }
+                    },
                 }}
                 series={[{ data: values }]}  
                 type="bar"

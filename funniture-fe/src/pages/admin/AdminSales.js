@@ -69,8 +69,8 @@ function AdminSales() {
         let feeSum = 0;
     
         salesList.forEach((sale) => {
-            const fee = Math.floor(sale.totalAmount * 0.05 *0.9);
-            const settlement = sale.totalAmount*0.9 - fee;
+            const fee = Math.floor(sale.totalAmount * 0.05);
+            const settlement = sale.totalAmount - fee;
     
             settlementSum += settlement;
             feeSum += fee;
@@ -177,9 +177,9 @@ function AdminSales() {
                                             <div style={{ width: "10%" }}><p>{sale.storeName}</p></div>
                                             <div style={{ width: "10%" }}><p>{sale.categoryName}</p></div>
                                             <div style={{ width: "35%" }}><p>{sale.productName}</p></div>
-                                            <div style={{ width: "15%" }}><p>{(sale.totalAmount*0.9).toLocaleString()} 원</p></div>
-                                            <div style={{ width: "10%" }}><p>{(fee*0.9).toLocaleString()} 원</p></div>
-                                            <div style={{ width: "15%" }}><p>{(settlement*0.9).toLocaleString()} 원</p></div>
+                                            <div style={{ width: "15%" }}><p>{(sale.totalAmount).toLocaleString()} 원</p></div>
+                                            <div style={{ width: "10%" }}><p>{(fee).toLocaleString()} 원</p></div>
+                                            <div style={{ width: "15%" }}><p>{(settlement).toLocaleString()} 원</p></div>
                                         </div>
                                     );
                                 })
