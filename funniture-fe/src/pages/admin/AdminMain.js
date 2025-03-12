@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AdminTop from "../../component/adminpage/AdminTop";
 import AdMainCss from "./adminMain.module.css"
 import { useLocation, useNavigate, Link, useSearchParams} from "react-router-dom";
 import { getProductCount } from "../../apis/ProductAPI";
 import ReactApexChart from "react-apexcharts";
-import { getSalesByMonthChartData } from "../../apis/RentalAPI"
+import { getSalesByMonthChartData , getTopMonthlySales } from "../../apis/RentalAPI"
 
 function AdminMain() {
 
@@ -252,7 +252,7 @@ function AdminMain() {
         };
 
         return (
-            <>
+            <> 
                 {type === 'day' ? (
                     <Link to="/admin"  style={{ fontSize:'0.9em',textDecoration: 'none' }}>월별 데이터로 돌아가기</Link>
                 ) : null}
@@ -266,12 +266,12 @@ function AdminMain() {
                             }
                         },
                         labels,
-                        // dataLabels: {
-                        //     enabled: true,
-                        //     style: {
-                        //         colors: ['#34495E'] // 어두운 청회색 (모든 막대에서 잘 보임)
-                        //     }
-                        // },
+                        dataLabels: {
+                            enabled: true,
+                            style: {
+                                colors: ['#34495E'] // 어두운 청회색 (모든 막대에서 잘 보임)
+                            }
+                        },
                         plotOptions: {
                             bar: {
                                 colors: {
@@ -292,9 +292,27 @@ function AdminMain() {
                                 }
                             }
                         ],
+
+                        tooltip: {
+                            enabled: true,
+                            custom: function({ series, seriesIndex, dataPointIndex, w }) {
+                                const value = series[seriesIndex][dataPointIndex];
+                                const category = w.globals.labels[dataPointIndex];
+                                return `
+                                    <div style="padding: 8px; background:rgb(248, 248, 248); color: #00000; border-radius: 5px;">
+                                        <strong>${category}</strong><br/>
+                                        총 매출액 : ${value.toLocaleString()} 원
+                                    </div>
+                                `;
+                            }
+                        },
                         xaxis: {
                             categories: labels
-                        }
+                        },
+                        dataLabels: {
+                            enabled: false
+                        },
+                        
                     }}
                     series={[{ data: values }]}
                     type="bar"
@@ -303,6 +321,85 @@ function AdminMain() {
             </>
         );
     };
+
+    // top5 제공자 매출
+
+    const [topLabel, setTopLabel] = useState([])
+    const [topValue, setTopValue] = useState([])
+
+    useEffect(()=>{
+        const year = new Date().getFullYear()
+        const month =  (new Date().getMonth() +1).toString().padStart(2,'0')
+        const yearMonth = year + '-' + month
+
+        console.log("날짜 예상 : ", yearMonth)
+
+        async function getTop5() {
+            const reposne = await getTopMonthlySales(yearMonth)
+
+            if (reposne.results != null){
+                const dataList =  reposne.results.topSalesData
+
+                console.log(dataList)
+
+                setTopLabel(dataList.map(item => item.storeName))
+                setTopValue(dataList.map(item => item.totalSales))
+            }
+
+            console.log("top5 제공자 매출 : ",reposne)
+        }
+
+        getTop5();
+    },[])
+
+    useEffect(()=>{
+        console.log("topLabel : ", topLabel)
+        console.log("topValue : ", topValue)
+    },[topLabel, topValue])
+
+    const TopOwner = () =>{
+
+        if(!topLabel.length || !topValue.length){
+            return <div>로딩중....</div>
+        }
+        
+        const colors = ['#FF5733', '#33FF57', '#3366FF', '#FF33CC', '#33FFFF']; // 원하는 색상 지정
+
+    const seriesData = topValue.map((value, index) => ({
+        name: topLabel[index],
+        data: [value],
+        color: colors[index], // 각 시리즈에 색상 지정
+    }));
+
+    return(
+        <ReactApexChart
+            options={{
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        // barWidth: '50%',  // 막대 너비 조절 (기본값: 70%)
+                        // groupPadding: 0.2, // 그룹 간 간격 조절 (기본값: 0.3)
+                    },
+                },
+                dataLabels: { enabled: false },
+                xaxis: { 
+                  categories: topLabel,
+                },
+                yaxis: {
+                  show: false // y축 라벨 제거
+                }
+            }}
+            series={seriesData}
+            type="bar"
+            height="100%"
+        />
+        )
+    }
+
 
     return (
         <>
@@ -323,7 +420,10 @@ function AdminMain() {
                 </div>
                 <div>
                     <div>
-                        공지 사항
+                        이번 달 매출 TOP {topLabel.length} 업체
+                    </div>
+                    <div className={AdMainCss.chartBox}>
+                        <TopOwner/>
                     </div>
                 </div>
                 <div>
