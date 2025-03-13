@@ -52,7 +52,6 @@ function UserInquiry() {
         setSelectedInquiryNo(inquiryNo);
         try {
             const response = await getAnswerByInquiryNoAPI(inquiryNo)();
-            console.log('사용자 페이지 문의 답변 조회 response : ', response);
             if (response) {
                 setModalTitle('답변 확인');
                 const inquiryData = inquiries?.result?.data?.find((inquiry) => inquiry.inquiryNo === inquiryNo);

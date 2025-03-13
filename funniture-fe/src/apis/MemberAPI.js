@@ -40,8 +40,6 @@ export const callGetMemberEmailAPI = async (email) => {
         const response = await api.get(requestURL); // 서버에서 이메일 중복 여부 확인
         const isDuplicate = response.data.results.response; // 서버에서 반환된 값 (true/false)
 
-        console.log('isDuplacate : ', isDuplicate);
-
         return isDuplicate; // true: 중복 이메일 존재, false: 중복 이메일 없음
     } catch (error) {
         console.error('Error checking email:', error);
@@ -74,8 +72,6 @@ export const callLoginAPI = ({ form }) => {
                 }),
             }).then((res) => res.json());
 
-            console.log('로그인 시도 후 반환 받은 데이터 result : ', result);
-
             if (result.status === 200) {
                 window.localStorage.setItem('accessToken', result.userInfo.accessToken);
                 dispatch({ type: POST_LOGIN, payload: result });
@@ -87,7 +83,6 @@ export const callLoginAPI = ({ form }) => {
                 // 로그인 성공 시 true 반환
                 return { success: true, message: result.message };
             } else {
-                console.log('로그인 실패 : ', result.status);
 
                 // 로그인 실패 시 false 반환
                 return { success: false, message: result.message };
@@ -310,7 +305,6 @@ export const callConvertImageAPI = ({ memberId, storeImage }) => {
 
             if (response.data.httpStatusCode === 201) {
             } else if (response.data.httpStatusCode === 400) {
-                console.log('프로필 사진 변경 실패');
                 alert('프로필 사진 변경에 실패했습니다.');
             } else {
                 console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
@@ -324,61 +318,61 @@ export const callConvertImageAPI = ({ memberId, storeImage }) => {
     };
 };
 
-    export const callRegisterOwnerAPI = ({
-        memberId,
-        storeName,
-        bank,
-        account,
-        storeImage,
-        storeNo,
-        storeAddress,
-        storePhone,
-        attachmentFile
-    }) => {
-        const requestURL = `http://localhost:8080/api/v1/member/owner/register`;
+export const callRegisterOwnerAPI = ({
+    memberId,
+    storeName,
+    bank,
+    account,
+    storeImage,
+    storeNo,
+    storeAddress,
+    storePhone,
+    attachmentFile
+}) => {
+    const requestURL = `http://localhost:8080/api/v1/member/owner/register`;
 
-        return async (dispatch, getState) => {
-            const formData = new FormData();
+    return async (dispatch, getState) => {
+        const formData = new FormData();
 
-            // JSON 데이터 생성
-            const ownerData = {
-                memberId, storeName, bank, account, storeNo, storeAddress, storePhone
-            };
+        // JSON 데이터 생성
+        const ownerData = {
+            memberId, storeName, bank, account, storeNo, storeAddress, storePhone
+        };
 
-            formData.append("ownerData", new Blob([JSON.stringify(ownerData)], { type: "application/json" }));
+        formData.append("ownerData", new Blob([JSON.stringify(ownerData)], { type: "application/json" }));
 
-            if (storeImage instanceof File) {
-                formData.append("storeImage", storeImage);
-            }
+        if (storeImage instanceof File) {
+            formData.append("storeImage", storeImage);
+        }
 
-            if (attachmentFile instanceof File) {
-                formData.append("attachmentFile", attachmentFile);
-            }
+        if (attachmentFile instanceof File) {
+            formData.append("attachmentFile", attachmentFile);
+        }
 
-            try {
-                const response = await api.post(requestURL, formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
+        try {
+            const response = await api.post(requestURL, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+
+
+            if (response.data.httpStatusCode === 201) {
+
+                dispatch({
+                    type: POST_OWNERDATA,
+                    payload: response.data.results.result
                 });
 
-
-                if (response.data.httpStatusCode === 201) {
-
-                    dispatch({
-                        type: POST_OWNERDATA,
-                        payload: response.data.results.result
-                    });
-
-                    return response; // 이 부분을 추가
-                } else {
-                    console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
-                    return { success: false, error: '제공자 신청에 실패했습니다.' };
-                }
-            } catch (error) {
-                console.error('제공자 전환 신청 중 오류 발생:', error);
-                return { success: false, error: '서버와 통신 중 오류가 발생했습니다.' };
+                return response; // 이 부분을 추가
+            } else {
+                console.error('예상치 못한 상태 코드:', response.data.httpStatusCode);
+                return { success: false, error: '제공자 신청에 실패했습니다.' };
             }
-        };
+        } catch (error) {
+            console.error('제공자 전환 신청 중 오류 발생:', error);
+            return { success: false, error: '서버와 통신 중 오류가 발생했습니다.' };
+        }
     };
+};
 
 
 // 재신청 시 돌아갈 구문
@@ -486,8 +480,6 @@ export async function getConnectInfo() {
     const url = "/member/connectCount"
     const response = await api.get(url)
 
-    console.log(" 접속자 response : ", response)
-
     return response.data
 }
 
@@ -516,13 +508,10 @@ const getData = async (url, query) => {
 }
 
 export function changeConsultingAPI({ memberId }) {
-    console.log("업데이트 전 : ", memberId)
     const url = `/member/modify/consulting?memberId=${memberId}`
 
     return async (dispatch, getState) => {
         const response = await api.put(url)
-
-        console.log("변환 결과 : ", response)
 
         if (response?.data.httpStatusCode == 204) {
             dispatch({

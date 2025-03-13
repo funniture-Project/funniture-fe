@@ -87,7 +87,6 @@ function Login() {
         if (response.success) {
             const token = decodeJwt(window.localStorage.getItem("accessToken"));
             if (token) {
-                console.log("로그인 성공! 유효한 토큰:", token);
                 setModalMessage(response.message || '로그인 성공!');
                 setIsLoginSuccess(true); // 로그인 성공 상태 설정
                 setShowBtnModal(true); // 모달 표시

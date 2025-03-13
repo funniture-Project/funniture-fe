@@ -8,6 +8,12 @@ import ReactQuill, { Quill } from 'react-quill-new';
 import { ImageResize } from 'quill-image-resize-module-ts';
 
 function OwnerRegister() {
+    useEffect(() => {
+        if (typeof window !== "undefined" && !window.Quill) {
+            window.Quill = Quill;  // Quill을 전역 변수로 등록
+            Quill.register("modules/ImageResize", ImageResize);
+        }
+    }, []);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();

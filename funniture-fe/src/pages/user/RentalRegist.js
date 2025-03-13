@@ -99,16 +99,11 @@ function RentalRegist() {
     const handlePaymentClick = async () => {
         try {
 
-            console.log("defaultAddress.defaultAddress: ", defaultAddress)
-
             if (defaultAddress == null) {
                 setErrorModal(true)
                 setErrorMsg('배송지를 선택해주세요')
                 return
             }
-
-            console.log("currentPoint : ", currentPoint)
-            console.log("finalPriceThisMonth : ", finalPriceThisMonth)
 
             if (finalPriceThisMonth > currentPoint.availablePoints) {
                 setErrorModal(true)

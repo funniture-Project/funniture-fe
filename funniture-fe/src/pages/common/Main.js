@@ -23,7 +23,7 @@ function Main() {
         async function fetchReviews() {
             try {
                 const response = await callReviewByMainAPI();
-                console.log('메인페이지 리뷰 서버 다녀온 response : ', response);
+
                 if (response.httpStatusCode === 200) {
                     setReviewList(response.results.map); // 서버에서 반환된 리뷰 리스트 저장
                 }

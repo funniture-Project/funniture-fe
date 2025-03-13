@@ -53,7 +53,6 @@ function OwnerMyPage() {
                 const yearMonth = getCurrentMonth(); // 현재 날짜 기준 "YYYY-MM" 값 생성
                 const response = await getCurrentMonthSalesByOwner(user.memberId, yearMonth); // API 호출
                 const data = response.results.currentSalesData;
-                console.log(data)
 
                 setCurrentMonthChart(data); // 데이터 상태 업데이트
             } catch (error) {
@@ -99,7 +98,7 @@ function OwnerMyPage() {
                     ],
                     tooltip: {
                         enabled: true,
-                        custom: function({ series, seriesIndex, dataPointIndex, w }) {
+                        custom: function ({ series, seriesIndex, dataPointIndex, w }) {
                             const value = series[seriesIndex][dataPointIndex];
                             const category = w.globals.labels[dataPointIndex];
                             return `
