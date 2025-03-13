@@ -55,7 +55,7 @@ function RentalRegist() {
         try {
             const data = await getCurrentPoint(memberId);
             setCurrentPoint(data.results);
-            console.log('data', data);
+
         } catch (error) {
             console.error('보유 포인트를 불러오는 데 실패 : ', error);
         }

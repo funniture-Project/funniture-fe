@@ -29,7 +29,6 @@ function Orders() {
     async function getData(memberId, period, searchDate, pageNum) {
         try {
             const data = await getUserOrderList(memberId, period, searchDate, pageNum);
-            console.log('data', data);
     
             // data.results가 없으면 빈 배열로 설정
             if (!data || !data.results || !data.results.userOrderList) {

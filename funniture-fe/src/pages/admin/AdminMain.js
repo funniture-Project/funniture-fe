@@ -400,8 +400,6 @@ function AdminMain() {
         const month = (new Date().getMonth() + 1).toString().padStart(2, '0')
         const yearMonth = year + '-' + month
 
-        console.log("날짜 예상 : ", yearMonth)
-
         async function getTop5() {
             const reposne = await getTopMonthlySales(yearMonth)
 
@@ -413,17 +411,10 @@ function AdminMain() {
                 setTopLabel(dataList.map(item => item.storeName))
                 setTopValue(dataList.map(item => item.totalSales))
             }
-
-            console.log("top5 제공자 매출 : ", reposne)
         }
 
         getTop5();
     }, [])
-
-    useEffect(() => {
-        console.log("topLabel : ", topLabel)
-        console.log("topValue : ", topValue)
-    }, [topLabel, topValue])
 
     const TopOwner = () => {
 

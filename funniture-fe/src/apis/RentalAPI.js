@@ -158,8 +158,6 @@ export async function getOrderDetail(id) {
 
     const response = await getData(url);
 
-    console.log('response', response)
-
     return response
 }
 
@@ -277,8 +275,6 @@ export async function getCurrentMonthSalesByOwner(memberId, yearMonth) {
     const url = `/rental/${memberId}/chart/currentMonth`
     const params = new URLSearchParams();
 
-    console.log('yearMonth', yearMonth)
-
     if (yearMonth) {
         params.append("yearMonth", yearMonth);
     }
@@ -292,8 +288,6 @@ export async function getCurrentMonthSalesByOwner(memberId, yearMonth) {
 export async function getMonthlySalesByOwner(memberId, yearMonth) {
     const url = `/rental/${memberId}/chart/monthly`
     const params = new URLSearchParams();
-
-    console.log('yearMonth', yearMonth)
 
     if (yearMonth) {
         params.append("yearMonth", yearMonth);
