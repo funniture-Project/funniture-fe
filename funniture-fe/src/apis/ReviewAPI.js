@@ -1,5 +1,5 @@
 import api from "./Apis";
-import { REVIEW_USER , REVIEW_WRITABLE , REVIEW_WRITTEN } from "../redux/modules/MemberModule";
+import { REVIEW_USER, REVIEW_WRITABLE, REVIEW_WRITTEN } from "../redux/modules/MemberModule";
 import { REVIEW_SELECT } from "../redux/modules/OwnerModule";
 
 // 마이페이지 작성 가능한 리뷰 조회 API
@@ -126,7 +126,6 @@ export const callReviewAvgByOwnerNoAPI = async (memberId) => {
 
     try {
         const response = await api.get(requestURL);
-        console.log('제공자 페이지 리뷰 평점 응답:', response.data);
         return response.data; // 반환된 데이터를 리턴
     } catch (error) {
         console.error('평균 별점 API 호출 실패:', error);

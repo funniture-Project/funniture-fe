@@ -17,7 +17,6 @@ function RecentProduct() {
     }, [])
 
     useEffect(() => {
-        console.log("APi에게 전송될 예정 : ", recentList)
 
         if (recentList.length > 0) {
             async function getData() {
@@ -32,7 +31,6 @@ function RecentProduct() {
     }, [recentList])
 
     useEffect(() => {
-        console.log("출력 전 확인 : ", recentProductInfo)
     }, [recentProductInfo])
 
     return (

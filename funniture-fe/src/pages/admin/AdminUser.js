@@ -96,7 +96,6 @@ function AdminUser() {
     const handleConfirmAccessChange = async () => {
         try {
             const response = await callChangeLimitRoleAPI(selectedUsers);
-            console.log('권한 변경 응답:', response);
 
             if (response && response.data && response.data.httpStatusCode === 201) {
                 setAlertMessage('권한이 변경되었습니다.');

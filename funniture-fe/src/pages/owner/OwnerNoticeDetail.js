@@ -28,9 +28,6 @@ function OwnerNoticeDetail() {
         setSelectedNotice(noticeList.find(notice => notice.noticeNo == id))
     }, [noticeList])
 
-    useEffect(() => {
-        console.log("selectedNotice : ", selectedNotice)
-    }, [selectedNotice])
 
     return (
         <div className={OwNoticeCss.noticeDetailContainer}>

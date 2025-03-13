@@ -2,7 +2,7 @@ import OrdersCss from './orders.module.css';
 // import './editsInfo.css';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { callRegisterOwnerAPI, callConvertImageAPI, checkOwnerStatusAPI, callUpdateOwnerAPI , getRejectedMessage, getCheckStoreNoAPI} from '../../apis/MemberAPI';
+import { callRegisterOwnerAPI, callConvertImageAPI, checkOwnerStatusAPI, callUpdateOwnerAPI, getRejectedMessage, getCheckStoreNoAPI } from '../../apis/MemberAPI';
 import { useNavigate } from 'react-router-dom';
 import basicImage from '../../assets/images/Adobe Express - file.png'
 import BtnModal from '../../component/BtnModal';
@@ -40,63 +40,61 @@ function AppConvert() {
     // 필드가 하나라도 비어있으면 신청 못하게 검증
     const validateForm = () => {
         return form.storeName && form.bank && form.account && form.storeImage &&
-               form.storeNo && form.storeAddress && form.storePhone && form.attachmentFile;
-      };
-      
-      const validateFile = (file, allowedTypes, maxSize) => {
+            form.storeNo && form.storeAddress && form.storePhone && form.attachmentFile;
+    };
+
+    const validateFile = (file, allowedTypes, maxSize) => {
         if (!file) return "파일을 선택해주세요.";
         if (!allowedTypes.includes(file.type)) return "지원하지 않는 파일 형식입니다.";
         if (file.size > maxSize) return `파일 크기는 ${maxSize / 1024 / 1024}MB 이하여야 합니다.`;
         return null;
-      };
-      
-    
-      const handleSubmit = async (e) => {
+    };
+
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validateForm()) {
-          setShowErrorModal(true);
-          return;
+            setShowErrorModal(true);
+            return;
         }
-      
+
         const storeImageError = validateFile(form.storeImage, ['image/jpeg', 'image/png'], 5 * 1024 * 1024);
         const attachmentFileError = validateFile(form.attachmentFile, ['application/pdf'], 10 * 1024 * 1024);
-      
+
         if (storeImageError || attachmentFileError) {
-          setShowFileErrorModal(true);
-          setFileErrorMessage(storeImageError || attachmentFileError);
-          return;
-        }
-      
-        try {
-          const response = await getCheckStoreNoAPI(member.user.memberId, form.storeNo);
-          if (response.data.httpStatusCode === 400) {
-            setIsStoreNoDuplicate(true);
-            setStoreNoErrorMessage('중복된 사업자 번호입니다.');
+            setShowFileErrorModal(true);
+            setFileErrorMessage(storeImageError || attachmentFileError);
             return;
-          }
-      
-          const result = isAlreadyRegistered ? await updateOnClickHandler() : await registerOnClickHandler();
-
-            console.log('handleSubmit의 result : ' , result);
-      
-          if (result.data.httpStatusCode === 201) {
-            setIsSubmitted(true);
-            setSuccessMessage(isAlreadyRegistered ? '제공자 재신청이 완료되었습니다.' : '제공자 신청이 완료되었습니다.');
-            setShowSuccessModal(true);
-          } else {
-            throw new Error('예상치 못한 응답 상태');
-          }
-        } catch (error) {
-          console.error('제공자 신청 중 오류 발생:', error);
-          setShowErrorModal(true);
-          setStoreNoErrorMessage(error.message || '제공자 신청 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
-      };
 
-      const handleSuccessClose = () => {
+        try {
+            const response = await getCheckStoreNoAPI(member.user.memberId, form.storeNo);
+            if (response.data.httpStatusCode === 400) {
+                setIsStoreNoDuplicate(true);
+                setStoreNoErrorMessage('중복된 사업자 번호입니다.');
+                return;
+            }
+
+            const result = isAlreadyRegistered ? await updateOnClickHandler() : await registerOnClickHandler();
+
+            if (result.data.httpStatusCode === 201) {
+                setIsSubmitted(true);
+                setSuccessMessage(isAlreadyRegistered ? '제공자 재신청이 완료되었습니다.' : '제공자 신청이 완료되었습니다.');
+                setShowSuccessModal(true);
+            } else {
+                throw new Error('예상치 못한 응답 상태');
+            }
+        } catch (error) {
+            console.error('제공자 신청 중 오류 발생:', error);
+            setShowErrorModal(true);
+            setStoreNoErrorMessage(error.message || '제공자 신청 중 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+    };
+
+    const handleSuccessClose = () => {
         setShowSuccessModal(false);
-        };
-    
+    };
+
 
     const [form, setForm] = useState({
         storeName: '',
@@ -117,15 +115,14 @@ function AppConvert() {
         setRejectionReason('');
         setIsAlreadyRegistered(true); // 다시 신청할 수 있도록 유지
     };
-    
-    
+
+
     // 제공자 전환 상태 확인
     const fetchOwnerStatus = async () => {
         try {
             const response = await checkOwnerStatusAPI(member.user.memberId);
-    
-            console.log('서버 갔다온 fetchOwnerStatus의 response : ' , response);
-    
+
+
             if (response.data.results.status === "PENDING") {
                 setIsSubmitted(true);
                 setIsRejected(false);
@@ -139,7 +136,7 @@ function AppConvert() {
                 setMessage("제공자 전환이 반려되었습니다. 반려 사유를 확인하세요.");
                 setShowRetryButton(true);
                 setIsAlreadyRegistered(true); // 반려되었어도 신청한 이력이 있으므로 true
-    
+
                 // 반려 메시지 가져오기
                 const rejectedResponse = await getRejectedMessage(member.user.memberId);
                 const rejectedMessage = rejectedResponse.data.results.result.reasonRejection;
@@ -162,8 +159,8 @@ function AppConvert() {
             setMessage("오류가 발생했습니다. 다시 시도해주세요.");
         }
     };
-    
-    
+
+
 
     // 컴포넌트가 마운트될 때 제공자 상태 확인
     useEffect(() => {
@@ -188,7 +185,6 @@ function AppConvert() {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0]; // 사용자가 선택한 파일 가져오기
-        console.log('선택된 파일:', file);
 
         if (file) {
             setPreviewImage(URL.createObjectURL(file)); // 미리보기용 URL 생성
@@ -208,26 +204,26 @@ function AppConvert() {
 
     const registerOnClickHandler = () => {
         return dispatch(callRegisterOwnerAPI({
-          memberId: member.user.memberId,
-          storeName: form.storeName,
-          bank: form.bank,
-          account: form.account,
-          storeImage: form.storeImage,
-          storeNo: form.storeNo,
-          storeAddress: form.storeAddress,
-          storePhone: form.storePhone,
-          attachmentFile: form.attachmentFile
+            memberId: member.user.memberId,
+            storeName: form.storeName,
+            bank: form.bank,
+            account: form.account,
+            storeImage: form.storeImage,
+            storeNo: form.storeNo,
+            storeAddress: form.storeAddress,
+            storePhone: form.storePhone,
+            attachmentFile: form.attachmentFile
         })).then(response => {
             if (response && response.data && response.data.httpStatusCode === 201) {
                 return response;
-          } else {
-            throw new Error('제공자 신청 중 오류가 발생했습니다.');
-          }
+            } else {
+                throw new Error('제공자 신청 중 오류가 발생했습니다.');
+            }
         });
-      };
-      
-      
-      const updateOnClickHandler = () => {
+    };
+
+
+    const updateOnClickHandler = () => {
         return dispatch(callUpdateOwnerAPI({
             memberId: member.user.memberId,
             storeName: form.storeName,
@@ -246,11 +242,11 @@ function AppConvert() {
             }
         });
     };
-    
-      
-      
-    
-    
+
+
+
+
+
 
 
     return (
@@ -259,143 +255,143 @@ function AppConvert() {
                 <div className={OrdersCss.orderPageTitle}>제공자 전환</div>
                 {isSubmitted ? (
                     <SubmissionMessage isRejected={isRejected} isApproved={isApproved} rejectionReason={rejectionReason} onReapply={handleReapply} />
-                    ) : (
-               <div className="editMypageInfo">
+                ) : (
+                    <div className="editMypageInfo">
 
-                    <div>
-                        <span>사업체명 *</span>
-                        <input
-                            type="text"
-                            name="storeName"
-                            value={form.storeName || ''}
-                            onChange={onChangeHandler}
-                            placeholder='사업장의 이름을 입력해 주세요.' />
-                    </div>
-                    <div>
-                        <span>은행 정보 *</span>
-                        <select
-                            type="select"
-                            name="bank"
-                            value={form.bank || ''}
-                            onChange={onChangeHandler} >
-                            <option value="하나은행">하나은행</option>
-                            <option value="신한은행">신한은행</option>
-                            <option value="우리은행">우리은행</option>
-                            <option value="농협은행">농협은행</option>
-                        </select>
-                    </div>
-                    <div>
-                        <span>계좌 번호 *</span>
-                        <input
-                            type="text"
-                            name="account"
-                            value={form.account || ''}
-                            onChange={onChangeHandler}
-                            placeholder="계좌 번호를 - 포함하여 입력해 주세요."
-                        />
-                    </div>
-                    <div className='basicImage'>
-                        <span>대표 사진 * </span>
-                        {/* previewImage 상태를 src로 설정 */}
-                        <img src={previewImage} alt="프로필 미리보기" style={{ marginRight: '34%' }}/>
-                        <input
-                            type="file"
-                            id='uploadImg'
-                            name='uploadImg'
-                            onChange={handleImageChange}
-                            style={{ display: 'none' }} />
-                        <label className='uploadLabel'
-                            htmlFor="uploadImg" style={{ position: 'relative', left: '-35%' }}>사진선택</label>
-                        {/* <button onClick={imageOnClickHandler}>프로필 사진 변경</button> */}
-                    </div>
-                    <div>
-                        <span>사업자 번호 *</span>
-                        <input
-                            type="text"
-                            name="storeNo"
-                            value={form.storeNo || ''}
-                            onChange={onChangeHandler}
-                            placeholder="사업자 번호를 - 포함하여 입력해 주세요."
-                        />
-                    </div>
-                    <div>
-                        <span>사업장 주소 *</span>
-                        <input
-                            type="text"
-                            name="storeAddress"
-                            value={form.storeAddress}
-                            onChange={onChangeHandler}
-                            placeholder="사업장이 위치한 주소를 입력해 주세요."
-                        />
-                    </div>
-                    <div>
-                        <span>사업장 전화번호 *</span>
-                        <input
-                            type="text"
-                            name="storePhone"
-                            value={form.storePhone || ''}
-                            onChange={onChangeHandler}
-                            placeholder="사업장 전화번호를 - 포함하여 입력해 주세요."
-                        />
-                    </div>
-                    <div>
-                        <span>첨부파일 (사업자 등록증) *</span>
-                        <input
-                            type="file"
-                            name="attachmentFile"
-                            onChange={(e) => {
-                                const file = e.target.files[0];
-                                setForm({
-                                    ...form,
-                                    attachmentFile: file, // 선택한 파일 저장
-                                });
-                            }}
-                        />
-                    </div>
-                    <button
-                        className='submitButton'
-                        onClick={handleSubmit}
+                        <div>
+                            <span>사업체명 *</span>
+                            <input
+                                type="text"
+                                name="storeName"
+                                value={form.storeName || ''}
+                                onChange={onChangeHandler}
+                                placeholder='사업장의 이름을 입력해 주세요.' />
+                        </div>
+                        <div>
+                            <span>은행 정보 *</span>
+                            <select
+                                type="select"
+                                name="bank"
+                                value={form.bank || ''}
+                                onChange={onChangeHandler} >
+                                <option value="하나은행">하나은행</option>
+                                <option value="신한은행">신한은행</option>
+                                <option value="우리은행">우리은행</option>
+                                <option value="농협은행">농협은행</option>
+                            </select>
+                        </div>
+                        <div>
+                            <span>계좌 번호 *</span>
+                            <input
+                                type="text"
+                                name="account"
+                                value={form.account || ''}
+                                onChange={onChangeHandler}
+                                placeholder="계좌 번호를 - 포함하여 입력해 주세요."
+                            />
+                        </div>
+                        <div className='basicImage'>
+                            <span>대표 사진 * </span>
+                            {/* previewImage 상태를 src로 설정 */}
+                            <img src={previewImage} alt="프로필 미리보기" style={{ marginRight: '34%' }} />
+                            <input
+                                type="file"
+                                id='uploadImg'
+                                name='uploadImg'
+                                onChange={handleImageChange}
+                                style={{ display: 'none' }} />
+                            <label className='uploadLabel'
+                                htmlFor="uploadImg" style={{ position: 'relative', left: '-35%' }}>사진선택</label>
+                            {/* <button onClick={imageOnClickHandler}>프로필 사진 변경</button> */}
+                        </div>
+                        <div>
+                            <span>사업자 번호 *</span>
+                            <input
+                                type="text"
+                                name="storeNo"
+                                value={form.storeNo || ''}
+                                onChange={onChangeHandler}
+                                placeholder="사업자 번호를 - 포함하여 입력해 주세요."
+                            />
+                        </div>
+                        <div>
+                            <span>사업장 주소 *</span>
+                            <input
+                                type="text"
+                                name="storeAddress"
+                                value={form.storeAddress}
+                                onChange={onChangeHandler}
+                                placeholder="사업장이 위치한 주소를 입력해 주세요."
+                            />
+                        </div>
+                        <div>
+                            <span>사업장 전화번호 *</span>
+                            <input
+                                type="text"
+                                name="storePhone"
+                                value={form.storePhone || ''}
+                                onChange={onChangeHandler}
+                                placeholder="사업장 전화번호를 - 포함하여 입력해 주세요."
+                            />
+                        </div>
+                        <div>
+                            <span>첨부파일 (사업자 등록증) *</span>
+                            <input
+                                type="file"
+                                name="attachmentFile"
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    setForm({
+                                        ...form,
+                                        attachmentFile: file, // 선택한 파일 저장
+                                    });
+                                }}
+                            />
+                        </div>
+                        <button
+                            className='submitButton'
+                            onClick={handleSubmit}
                         >
-                        {isAlreadyRegistered ? '재신청' : '제출'}
+                            {isAlreadyRegistered ? '재신청' : '제출'}
                         </button>
-                </div>
-                    )}
+                    </div>
+                )}
 
-                    <BtnModal
+                <BtnModal
                     showBtnModal={showErrorModal}
                     setShowBtnModal={setShowErrorModal}
                     btnText="확인"
                     modalTitle="입력 오류"
                     modalContext="모든 필수값을 입력해 주세요."
                     onClose={() => setShowErrorModal(false)}
-                    />
+                />
 
-                    <BtnModal
-                        showBtnModal={showSuccessModal}
-                        setShowBtnModal={setShowSuccessModal}
-                        btnText="확인"
-                        modalTitle="신청 완료"
-                        modalContext={successMessage}
-                        onClose={handleSuccessClose}
-                    />
+                <BtnModal
+                    showBtnModal={showSuccessModal}
+                    setShowBtnModal={setShowSuccessModal}
+                    btnText="확인"
+                    modalTitle="신청 완료"
+                    modalContext={successMessage}
+                    onClose={handleSuccessClose}
+                />
 
-                    <BtnModal
-                        showBtnModal={isStoreNoDuplicate}
-                        setShowBtnModal={setIsStoreNoDuplicate}
-                        btnText="확인"
-                        modalTitle="입력 오류"
-                        modalContext={storeNoErrorMessage} // "중복된 사업자 번호입니다." 메시지 사용
-                        onClose={() => setIsStoreNoDuplicate(false)}
-                    />
+                <BtnModal
+                    showBtnModal={isStoreNoDuplicate}
+                    setShowBtnModal={setIsStoreNoDuplicate}
+                    btnText="확인"
+                    modalTitle="입력 오류"
+                    modalContext={storeNoErrorMessage} // "중복된 사업자 번호입니다." 메시지 사용
+                    onClose={() => setIsStoreNoDuplicate(false)}
+                />
 
-                    <BtnModal
+                <BtnModal
                     showBtnModal={showFileErrorModal}
                     setShowBtnModal={setShowFileErrorModal}
                     btnText="확인"
                     modalTitle="파일 오류"
                     modalContext={fileErrorMessage}
                     onClose={() => setShowFileErrorModal(false)}
-                    />
+                />
             </div>
         </>
     );

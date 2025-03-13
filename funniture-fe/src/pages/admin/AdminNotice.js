@@ -30,20 +30,10 @@ function AdminNotice() {
     }, [])
 
     useEffect(() => {
-        console.log("noticeList : ", noticeList)
-    }, [noticeList])
-
-
-    useEffect(() => {
-        console.log("selectedNotice : ", selectedNotice)
-    }, [selectedNotice])
-
-    useEffect(() => {
         setSelectedNotice(noticeList.find(item => item.noticeNo == selectedNo))
     }, [selectedNo])
 
     function detailNotice(noticeNo) {
-        console.log("noticeNo : ", noticeNo)
         setSelectedNo(noticeNo)
     }
 
@@ -58,7 +48,6 @@ function AdminNotice() {
     }
 
     async function saveNotice() {
-        console.log("저장 예정")
         setLoading(true)
         setModalMsg("등록 중 ... ")
 
@@ -96,7 +85,6 @@ function AdminNotice() {
     }
 
     async function removeNotice(noticeNo) {
-        console.log("삭제 대상 : ", noticeNo)
 
         const response = await deleteNotice({ noticeNo })
 

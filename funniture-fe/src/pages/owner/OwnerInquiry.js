@@ -46,10 +46,6 @@ function OwnerInquiry() {
         }
     };
 
-    useEffect(() => {
-        console.log("Updated pageInfo:", pageInfo);
-    }, [pageInfo]);
-
 
     // 필터링으로 렌더링 하기
     const filteredInquiries = (ownerInquiry?.data || []).filter((inquiry) => {

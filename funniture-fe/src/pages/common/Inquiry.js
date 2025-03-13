@@ -1,13 +1,13 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { callInquiryByProductNoAPI, callInquiryRegistByProductNoAPI ,callCommentByProduct } from "../../apis/InquiryAPI";
+import { callInquiryByProductNoAPI, callInquiryRegistByProductNoAPI, callCommentByProduct } from "../../apis/InquiryAPI";
 import InquiryCss from './inquiryProduct.module.css';
 import InquiryDiv from '../../pages/admin/rental.module.css';
 import BtnModal from "../../component/BtnModal";
 import decodeJwt from '../../utils/tokenUtils';
 
 // 상세페이지 문의 조회 및 등록
-function Inquiry({ productInfo , setInquiriesCount }) {
+function Inquiry({ productInfo, setInquiriesCount }) {
     const member = useSelector((state) => state.member);
     const owner = useSelector((state) => state.owner);
     const inquiriesData = useSelector(state => state.member?.inquiries);
@@ -60,7 +60,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
         }
     };
 
-    
+
 
     useEffect(() => {
         if (!productInfo?.productNo) return;
@@ -133,10 +133,8 @@ function Inquiry({ productInfo , setInquiriesCount }) {
         }
 
         try {
-            console.log("등록할 데이터:", formData);
-
-            const dataToSend = { 
-                ...formData, 
+            const dataToSend = {
+                ...formData,
                 productNo: productInfo.productNo,
                 showStatus: formData.showStatus ? 0 : 1
             };
@@ -160,7 +158,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
         }
     };
 
-    
+
     // 이미지 URL 결정 함수
     const getImageLink = (imageLink) => {
         if (!imageLink || imageLink === "default.jpg" || imageLink === "a.jpg") {
@@ -198,11 +196,11 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                         문의 작성
                     </button>
                 ) : null}
-    
+
                 <h3>
                     상품 문의 <span style={{ color: "blue" }}>({inquiries.length})</span>
                 </h3>
-    
+
                 {/* 문의 리스트 */}
                 <div className={InquiryCss.inquiryList}>
                     {inquiries.length === 0 ? (
@@ -230,7 +228,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                                         답변 {inquiry.answerCount || 0}
                                     </span>
                                 </div>
-    
+
                                 {/* 답변창 */}
                                 {expandedInquiries[inquiry.inquiryNo] && (
                                     <div className={InquiryCss.answerBox}>
@@ -252,7 +250,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                     )}
                 </div>
             </div>
-    
+
             {/* 문의 작성 모달 */}
             <BtnModal
                 showBtnModal={showBtnModal}
@@ -275,7 +273,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                                 {productInfo.productName || "상품 이름이 없습니다."}
                             </p>
                         </div>
-    
+
                         {/* Q&A 유형 */}
                         <div className={InquiryCss.formGroup}>
                             <label>Q&A 유형</label>
@@ -291,7 +289,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                                 <option value="3">기타 문의</option>
                             </select>
                         </div>
-    
+
                         {/* Q&A 내용 */}
                         <div className={InquiryCss.formGroup}>
                             <label>Q&A 내용</label>
@@ -305,7 +303,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                             />
                             <small>{formData.inquiryContent.length}/1000</small>
                         </div>
-    
+
                         {/* 이름 */}
                         <div className={InquiryCss.formGroup}>
                             <label>이 름</label>
@@ -318,7 +316,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                                 className="form-control"
                             />
                         </div>
-    
+
                         {/* 휴대전화 */}
                         <div className={InquiryCss.formGroup}>
                             <label>휴대전화</label>
@@ -331,7 +329,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                                 className="form-control"
                             />
                         </div>
-    
+
                         {/* 비공개 여부 */}
                         <div className={InquiryCss.checkBox}>
                             <input
@@ -346,7 +344,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                 }
                 onSuccess={handleInquirySubmit}
             />
-    
+
             {/* 문의 등록 완료 모달 */}
             {showSuccessModal && (
                 <BtnModal
@@ -359,7 +357,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                     onSuccess={() => setShowSuccessModal(false)}
                 />
             )}
-    
+
             {/* 입력 오류 모달 */}
             {showErrorModal && (
                 <BtnModal
@@ -373,8 +371,8 @@ function Inquiry({ productInfo , setInquiriesCount }) {
             )}
         </div>
     );
-    
-    
+
+
 }
 
 export default Inquiry;

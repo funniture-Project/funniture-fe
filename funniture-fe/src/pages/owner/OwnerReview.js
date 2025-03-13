@@ -32,10 +32,6 @@ function OwnerReview() {
         }
     };
 
-    useEffect(() => {
-        console.log("Updated pageInfo:", pageInfo);
-    }, [pageInfo]);
-
     return (
         <>
             <div className={OwnerReviewCSS.wholeContainer}>

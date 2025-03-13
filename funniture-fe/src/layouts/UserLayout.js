@@ -22,7 +22,6 @@ function UserLayout({ selectCategory, setSelectCategory, selectCompany, setSelec
         if (!selectCategory.includes(parseInt(location.state?.categoryCodeList))) {
             setSelectCategory([parseInt(location.state.categoryCodeList)])
         }
-        console.log("location.state : ", location.state)
     }
 
     // 메인페이지에서 이동할 때(제일 처음 초기 카테고리 추가 및 초기화)
@@ -85,7 +84,6 @@ function UserLayout({ selectCategory, setSelectCategory, selectCompany, setSelec
 
         navigate('/list', { state: { searchText: '' } })
 
-        console.log("document.querySelector('.searchBox input') : ", document.querySelector('.searchBox input'))
         document.getElementById('headerSearchText').value = ('')
     }
 

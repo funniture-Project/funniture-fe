@@ -18,6 +18,8 @@ function AdminLayout() {
             if (user.memberRole != "ADMIN") {
                 navigate("/restrict")
             }
+        } else {
+            navigate('/')
         }
     }, [user])
 
