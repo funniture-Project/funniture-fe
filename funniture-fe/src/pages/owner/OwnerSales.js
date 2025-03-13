@@ -150,7 +150,7 @@ function OwnerSales() {
                                     <td style={{ width: "11%" }}>{item.rentalNo}</td>
                                     <td style={{ width: "11%" }}>{item.productNo}</td>
                                     <td style={{ width: "20%" }}>{item.productName}</td>
-                                    <td style={{ width: "8%" }}>{item.memberId}</td>
+                                    <td style={{ width: "8%" }}>{item.userName}</td>
                                     <td style={{ width: "8%" }}>{item.rentalNumber}</td>
                                     <td style={{ width: "9%" }}>{(item.rentalPrice * item.rentalNumber).toLocaleString()} 원</td>
                                     <td style={{ width: "11%" }}>{formatDate(item.orderDate)}</td>
