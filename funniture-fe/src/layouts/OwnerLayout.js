@@ -20,10 +20,13 @@ function OwnerLayout() {
 
     // 제공자가 아닐경우 홈 페이지로 리디렉트
     useEffect(() => {
+        console.log("")
         if (user.memberId != '') {
             if (user.memberRole != "OWNER") {
                 navigate("/restrict")
             }
+        } else {
+            navigate('/')
         }
     }, [user])
 

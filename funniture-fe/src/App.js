@@ -111,10 +111,7 @@ function App() {
         <Route path='/notice' element={<Notice />} />
 
         {/* 로그인이 필요 */}
-        <Route element={<LoginRouter />}>
-
-          <Route path='/rental' element={<RentalRegist />} />
-        </Route>
+        <Route path='/rental' element={<RentalRegist />} />
 
         {/* 일반 사용자 로그인 필요 */}
         <Route element={<UserRouter />}>

@@ -14,6 +14,8 @@ function UserRouter() {
             if (user.memberRole != "USER") {
                 navigate("/restrict")
             }
+        } else {
+            navigate('/')
         }
     }, [user])
 
