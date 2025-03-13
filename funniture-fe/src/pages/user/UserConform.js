@@ -11,7 +11,6 @@ import BtnModal from '../../component/BtnModal';
 function UserConform () {
 
     const member = useSelector(state => state.member);
-    console.log('member : ', member);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -34,8 +33,6 @@ function UserConform () {
     const onClickHandler = async () => {
         const memberId = member.user.memberId;
         const enteredPassword = password.password;
-
-        console.log('enteredPassword : ', enteredPassword);
 
         // 비밀번호 검증 API 호출
         const authResult = await dispatch(callConfirmPassword(memberId, enteredPassword));

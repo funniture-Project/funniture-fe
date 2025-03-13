@@ -61,7 +61,6 @@ function App() {
   const [token, setToken] = useState('');
 
   useEffect(() => {
-    console.log("토큰 세팅")
     if (window.localStorage.getItem("accessToken")) {
       setToken(decodeJwt(window.localStorage.getItem("accessToken")))
     }
@@ -70,12 +69,9 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("token : ", token)
     if (token && token.sub) {
-      console.log("유효한 토큰:", token);
       dispatch(callGetMemberAPI({ memberId: token.sub }));
     } else {
-      console.error("유효하지 않은 토큰 또는 sub 값 없음!");
       dispatch(resetMember()); // 유효하지 않은 경우 Redux 상태 초기화
     }
   }, [token]);

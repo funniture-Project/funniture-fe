@@ -27,7 +27,6 @@ function AdminConvert() {
     const [pageInfo, setPageInfo] = useState(null);
 
     const ownerData = useSelector(state => state.member.owner); // Redux에서 owner 데이터 가져오기
-    // console.log('ownerData', ownerData);
 
     useEffect(() => {
         setActiveTab(location.pathname); // URL 변경 시 activeTab 동기화
@@ -62,7 +61,6 @@ function AdminConvert() {
     
 
     useEffect(() => {
-        console.log('관리자 페이지, 제공자 전환 요청 목록 가져오기');
         callConvertByAdminAPI(1);
     }, []);
 
@@ -70,7 +68,6 @@ function AdminConvert() {
     // 모달 열기 핸들러
     const handleOpenModal = async (convert) => {
         try {
-            console.log('모달 열기 시도:', convert.memberId);
             const detailData = await callConvertDetailAPI(convert.memberId);
             console.log('받은 상세 데이터:', detailData);
             if (detailData) {

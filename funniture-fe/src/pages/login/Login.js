@@ -77,11 +77,11 @@ function Login() {
     {/* 작업을 위해 주석해둠. 로그인 유효성 검증 부분!
      지우지 말 것!!!!!!!!!!!!! */}
     const onClickLoginHandler = async () => {
-        // if (!emailValid || !passwordValid) {
-        //     setModalMessage('이메일 또는 비밀번호를 올바르게 입력해 주세요.');
-        //     setShowBtnModal(true);
-        //     return;
-        // }
+        if (!emailValid || !passwordValid) {
+            setModalMessage('이메일 또는 비밀번호를 올바르게 입력해 주세요.');
+            setShowBtnModal(true);
+            return;
+        }
 
         const response = await dispatch(callLoginAPI({ form })); // response는 { success, message } 형태
         if (response.success) {
@@ -160,16 +160,10 @@ function Login() {
 
                             {/* 작업을 위해 주석해둠. 로그인 활성화 비활성화 여부
                                          지우지 말 것!!!!!!!!!!!!! */}
-                            {/* <div className={`loginBtn ${isLoginEnabled ? 'enabled' : ''}`}>
+                            <div className={`loginBtn ${isLoginEnabled ? 'enabled' : ''}`}>
                                 <button
                                     onClick={onClickLoginHandler}
                                     disabled={!isLoginEnabled}>
-                                    로그인
-                                </button>
-                            </div> */}
-                            <div>
-                                <button className={`loginBtn enabled`}
-                                    onClick={onClickLoginHandler}>
                                     로그인
                                 </button>
                             </div>

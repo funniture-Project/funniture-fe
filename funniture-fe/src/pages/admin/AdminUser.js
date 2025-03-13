@@ -47,7 +47,6 @@ function AdminUser() {
     const fetchUserList = async (pageNum = 1) => {
         try {
             const data = await callUserListByAdminAPI(pageNum);
-            console.log('data', data);
             setUserList(data.results.result.data);
             setPageInfo(data.results.result.pageInfo);
         } catch (error) {
@@ -56,7 +55,6 @@ function AdminUser() {
     };
 
     useEffect(() => {
-        console.log('관리자 페이지, 탈퇴자 useEffect 실행');
         callUserListByAdminAPI(1);
     }, []);
 
@@ -94,26 +92,6 @@ function AdminUser() {
     };
 
 
-    // const handleConfirmAccessChange = async () => {
-    //     try {
-    //         const response = await callChangeLimitRoleAPI(selectedUsers);
-    //         console.log('권한 변경 응답:', response);
-
-    //         if (response && response.data && response.data.httpStatusCode === 201) {
-    //             setAlertMessage('권한이 변경되었습니다.');
-    //             await callUserListByAdminAPI(setUserList); // 사용자 목록 갱신
-    //             setSelectedUsers([]);
-    //             setShowAccessModal(false);
-    //         } else {
-    //             throw new Error('권한 변경 실패');
-    //         }
-    //     } catch (error) {
-    //         console.error('권한 변경 중 오류 발생:', error);
-    //         setAlertMessage('권한 변경에 실패했습니다. 다시 시도해주세요.');
-    //     } finally {
-    //         setShowAlertModal(true);
-    //     }
-    // };
     // 접근 권한 변경 확인 버튼 클릭 시
     const handleConfirmAccessChange = async () => {
         try {

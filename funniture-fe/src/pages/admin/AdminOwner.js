@@ -40,7 +40,6 @@ function AdminOwner() {
     const fetchOwnerList = async (pageNum = 1) => {
         try {
             const data = await callOwnerListByAdminAPI(pageNum);
-            console.log('data', data);
             setOwnerList(data.results.result.data);
             setPageInfo(data.results.result.pageInfo);
         } catch (error) {
@@ -50,7 +49,6 @@ function AdminOwner() {
 
 
     useEffect(() => {
-        console.log('관리자 페이지, 제공자 useEffect 실행');
         callOwnerListByAdminAPI(1);
     }, []);
 
