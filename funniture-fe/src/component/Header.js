@@ -112,7 +112,7 @@ function Header({ setSelectCategory }) {
     }
 
     return (
-        <header>
+        <header className={headerCss.headerBox}>
             <div>
                 <img src={mainLogo} alt="메인 로고" onClick={() => navigate('/')} />
                 <div className={headerCss.switchBtns}>

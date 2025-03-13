@@ -11,7 +11,7 @@ footer {
     color: #AAA9A9;
 }
 
-header {
+.headerBox {
     z-index: 2;
     width: 100%;
     height: 70px;
