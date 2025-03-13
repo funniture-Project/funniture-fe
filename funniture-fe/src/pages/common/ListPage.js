@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getProductList } from "../../apis/ProductAPI";
-import './listpage.css'
+import listCss from './listpage.module.css'
 import { useDispatch, useSelector } from "react-redux";
 import { getFavoriteList, updateFavoriteList } from "../../apis/FavoriteAPI";
 
@@ -107,35 +107,35 @@ function ListPage({ selectCategory, selectCompany }) {
     }, [conditions, refCategoryCode])
 
     return (
-        <div className="wholeContentBox">
+        <div className={listCss.wholeContentBox}>
             {/* 필터링 조건 */}
-            <div className="list_filterBox">
+            <div className={listCss.list_filterBox}>
                 <div>총 {productList.length}개</div>
             </div>
 
             {/* 결과 출력 */}
-            <div className="productList_result">
+            <div className={listCss.productList_result}>
                 {error != '' ?
-                    (<div key={error.length} className="errorMsg">
+                    (<div key={error.length} className={listCss.errorMsg}>
                         <div>{error}</div>
                     </div>) :
-                    (<div className="productListBox">
+                    (<div className={listCss.productListBox}>
                         {productList.map(product => (
-                            <div className="productItem" data-product-no={product.productNo} >
+                            <div className={listCss.productItem} data-product-no={product.productNo} >
                                 <div>
-                                    <div className="imageBox" onClick={() => navigate(`/product/${product.productNo}`)}>
+                                    <div className={listCss.imageBox} onClick={() => navigate(`/product/${product.productNo}`)}>
                                         <img src={product.productImageLink == 'a.jpg' || product.productImageLink == 'default.jpg'
                                             ? require(`../../assets/images/default.jpg`)
                                             : product.productImageLink}
                                             alt="상품 사진" />
 
                                         {product.productStatus == "품절" ?
-                                            <img className="soldOutLabel" src={require('../../assets/images/soldout_label1.png')} />
+                                            <img className={listCss.soldOutLabel} src={require('../../assets/images/soldout_label1.png')} />
                                             : null
                                         }
                                     </div>
                                     <div>
-                                        <div className="storeNameHeart">
+                                        <div className={listCss.storeNameHeart}>
                                             <div>
                                                 {product.storeName}
                                             </div>
