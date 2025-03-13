@@ -37,7 +37,7 @@ function OrdersReturn() {
         try {
             const data = await getActiveRentalList(memberId, pageNum);
             const rentals = data.results.activeRentalList;
-            console.log('rentals', rentals);
+ 
             const pageInfo = data.results.pageInfo;
             setActiveRentalList(rentals);
             setPageInfo(pageInfo);
