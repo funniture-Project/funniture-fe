@@ -10,13 +10,9 @@ import { useNavigate } from "react-router-dom";
 function UserReview() {
     const user = useSelector((state) => state.member.user);
     const writableReviews = useSelector((state) => state.member.writableReviews?.result?.data || []);
-    console.log('UserReview 컴포넌트 writableReviews : ', writableReviews);
     const writtenReviews = useSelector((state) => state.member.writtenReviews?.result?.data || []);
-    console.log('UserReview 컴포넌트 : writtenReviews', writtenReviews);
     const writablePageInfo = useSelector((state) => state.member?.writablePageInfo);
-    console.log('UserReview 컴포넌트 : writablePageInfo', writablePageInfo);
     const writtenPageInfo = useSelector((state) => state.member?.writtenPageInfo);
-    console.log('UserReview 컴포넌트 : writtenPageInfo', writtenPageInfo);
 
     const navigate = useNavigate();
 
@@ -98,6 +94,7 @@ function UserReview() {
     const handleRebuyClick = (productNo) => {
         navigate(`/product/${productNo}`);
     }; 
+
 
     return (
         <>

@@ -8,7 +8,6 @@ export const callInquiryByProductNoAPI = (productNo) => {
 
     return async (dispatch) => {
         const response = await api.get(requestURL);
-        console.log('productNo로 문의 조회 서버에 잘 다녀 왔나 response : ', response);
 
         // 데이터를 명시적으로 반환
         return response.data;
@@ -47,7 +46,6 @@ export const callInquiryRegistByProductNoAPI = (dataToSend, memberId) => {
 
     return async (dispatch) => {
         const response = await api.post(requestURL, { ...dataToSend, memberId });
-        console.log('문의 등록 결과 서버에 잘 다녀 왔나 response : ', response);
         return response;
     };
 };
@@ -58,13 +56,11 @@ export const callAllInquiryByMypageAPI = (memberId, page = 1, size = 8) => async
         console.error('Invalid memberId');
         return;
     }
-    console.log('memberId 잘 넘어왔나 : ', memberId);
-    console.log('page 잘 넘어왔나 : ', page);
+
     try {
         const response = await api.get(
             `http://localhost:8080/api/v1/inquiry/member/${memberId}?page=${page}&size=${size}`
         );
-        console.log('사용자 마이 페이지 전체 문의조회 서버에 잘 다녀 왔나 response : ', response);
 
         // 데이터를 저장
         dispatch({ type: INQUIRY_USER, payload: response.data });
@@ -87,7 +83,6 @@ export const callInquiryAnswerByOwnerPageAPI = (inquiryNo, commentContent, membe
             memberId: memberId
             // parentCommentNo: null // 일단 제공자 페이지에서는 대댓글 안 쓸 거니까 null로 보내기
         });
-        console.log('문의 답변 결과 서버에 잘 다녀 왔나 response : ', response);
         return response;
     };
 };

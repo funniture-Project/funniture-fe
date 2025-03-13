@@ -13,9 +13,6 @@ import BtnModal from '../../component/BtnModal';
 function EditsInfo() {
 
     const member = useSelector(state => state.member);
-    console.log('member : ', member);
-    console.log('member.user : ', member.user);
-    console.log('member.user.address : ', member.user.address);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -43,10 +40,6 @@ function EditsInfo() {
             setPreviewImage(member.user.imageLink || basicImage);
         }
     }, [member]); // member.user 변경될 때 마다 form 상태 업데이트.
-
-    // useEffect(() => {
-    //     callBasicAddressAPI({memberId: member.user.memberId});
-    // });
 
     const [form, setForm] = useState({
         imageLink: '',
@@ -109,7 +102,6 @@ function EditsInfo() {
         if (!isPasswordValid(newPassword)) {
             setPasswordErrorMessage('비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.');
             setShowPasswordErrorModal(true); // 유효성 검사 실패 모달 표시
-            // alert('비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.');
             return;
         }
 
@@ -117,7 +109,6 @@ function EditsInfo() {
         if (!isPasswordMatch(newPassword, confirmNewPassword)) {
             setPasswordErrorMessage('새 비밀번호와 확인 비밀번호가 일치하지 않습니다.');
             setShowPasswordErrorModal(true); // 유효성 검사 실패 모달 표시
-            // alert('새 비밀번호와 확인 비밀번호가 일치하지 않습니다.');
             return;
         }
 
@@ -130,7 +121,6 @@ function EditsInfo() {
         setShowPasswordModal(true); // 비밀번호 변경 성공 모달
         dispatch(resetMember()); // Redux 상태 초기화
         window.localStorage.removeItem('accessToken'); // 토큰 삭제
-        // alert('비밀번호 변경이 완료되었습니다. 로그인 페이지로 이동합니다.');
     };
 
     const handlePasswordModalClose = () => {
@@ -140,7 +130,6 @@ function EditsInfo() {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0]; // 사용자가 선택한 파일 가져오기
-        console.log('선택된 파일:', file);
     
         if (file) {
             setPreviewImage(URL.createObjectURL(file)); // 미리보기용 URL 생성
@@ -160,8 +149,6 @@ function EditsInfo() {
     
     
     const imageOnClickHandler = () => {
-        console.log('imageOnClickHandler 호출됨');
-        console.log('현재 form.imageLink 값:', form.imageLink);
     
         if (!form.imageLink || !(form.imageLink instanceof File)) {
             console.log('조건 만족: !form.imageLink 또는 form.imageLink가 File 객체가 아님');
@@ -169,7 +156,6 @@ function EditsInfo() {
             return;
         }
     
-        console.log('파일이 선택되었습니다:', form.imageLink);
         dispatch(callChangeImageAPI({
             memberId: member.user.memberId,
             imageLink: form.imageLink,

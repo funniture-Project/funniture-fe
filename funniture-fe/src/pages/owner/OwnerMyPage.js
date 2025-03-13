@@ -137,7 +137,6 @@ function OwnerMyPage() {
         async function fetchAvgReviewScores() {
             if (user && user.memberId) {
                 const data = await callReviewAvgByOwnerNoAPI(user.memberId); // API 호출
-                console.log('별점 data : ', data);
                 if (data && data.results?.map) {
                     setAvgReviewScores(data.results?.map.slice(0, 3)); // 최대 3개의 데이터만 저장
                 }

@@ -11,14 +11,11 @@ function Inquiry({ productInfo , setInquiriesCount }) {
     const member = useSelector((state) => state.member);
     const owner = useSelector((state) => state.owner);
     const inquiriesData = useSelector(state => state.member?.inquiries);
-    console.log('inquiriesData' , inquiriesData);
 
     const comment = useSelector((state) => state.member?.comment);
-    console.log('상세 페이지 comment : ' , comment);
 
     const dispatch = useDispatch();
     const [inquiries, setInquiries] = useState([]);
-    console.log('inquiries' , inquiries);
     const [showBtnModal, setShowBtnModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false); // 문의 등록 완료 모달 상태
     const [showErrorModal, setShowErrorModal] = useState(false); // 필수값 다 넣지 않고 등록 누르면
@@ -27,9 +24,6 @@ function Inquiry({ productInfo , setInquiriesCount }) {
     const [expandedInquiries, setExpandedInquiries] = useState({}); // 답변창 상태 관리
     // 답변 데이터 상태
     const [comments, setComments] = useState({});
-    console.log('comments' , comments);
-
-    console.log('문의 컴포넌트 productInfo : ' , productInfo);
 
     const [formData, setFormData] = useState({
         qnaType: "",
@@ -39,32 +33,10 @@ function Inquiry({ productInfo , setInquiriesCount }) {
         showStatus: false,
     });
 
-    // // 문의 데이터 가져오기
-    // const fetchInquiries = async () => {
-    //     try {
-    //         const response = await dispatch(callInquiryByProductNoAPI(productInfo.productNo));
-    //         console.log("문의 데이터:", response);
-
-    //         if (response.results?.map) {
-    //             // 문의 리스트 설정 및 답변 여부 초기화
-    //             const updatedInquiries = response.results.map.map((inquiry) => ({
-    //                 ...inquiry,
-    //                 answerCount: inquiry.answerCount || 0, // 초기 답변 여부 설정
-    //             }));
-
-    //             setInquiries(updatedInquiries);
-    //             setInquiriesCount(updatedInquiries.length); // 문의 개수 상태 업데이트
-    //         }
-    //     } catch (error) {
-    //         console.error("문의 데이터 가져오기 실패:", error);
-    //     }
-    // };
-
     // 문의 데이터 가져오기
     const fetchInquiries = async () => {
         try {
             const response = await dispatch(callInquiryByProductNoAPI(productInfo.productNo));
-            console.log("문의 데이터:", response);
 
             if (response.results?.map) {
                 // 문의 리스트 설정 및 답변 여부 초기화
@@ -108,7 +80,6 @@ function Inquiry({ productInfo , setInquiriesCount }) {
 
         try {
             const response = await dispatch(callCommentByProduct(inquiryNo));
-            console.log("답변 데이터:", response);
 
             setComments((prev) => ({
                 ...prev,
