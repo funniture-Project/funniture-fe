@@ -32,20 +32,16 @@ function FavoritesPage() {
     }, [user])
 
     const removeFavorite = (productNo) => {
-        console.log("지울꺼 : ", productNo)
         setFavoriteList(prev => prev.filter(item => item.productNo != productNo))
     }
 
     useEffect(() => {
-        console.log("favoriteList : ", favoriteList)
 
         const updateSendData = []
 
         favoriteList.map(item => {
             updateSendData.push(item.productNo)
         })
-
-        console.log("updateSendData : ", updateSendData)
 
         if (!isLoading) {
             updateFavoriteList(user.memberId, updateSendData)

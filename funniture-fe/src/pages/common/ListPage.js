@@ -70,13 +70,6 @@ function ListPage({ selectCategory, selectCompany }) {
         }
     }, [favoriteList, existFavoriteList, user]);
 
-    // useEffect(() => {
-    //     console.log("favoriteList : ", favoriteList)
-    //     if (!areArraysEqualUnordered(favoriteList, existFavoriteList)) {
-    //         updateFavoriteList(user.memberId, favoriteList)
-    //     }
-    // }, [favoriteList])
-
     // 검색 조건 설정
     useEffect(() => {
         // 처음 페이지 넘어올 때 설정
@@ -113,22 +106,11 @@ function ListPage({ selectCategory, selectCompany }) {
         getData(conditions)
     }, [conditions, refCategoryCode])
 
-    useEffect(() => {
-        console.log("상품 목록 : ", productList)
-    }, [productList])
-
-
     return (
         <div className="wholeContentBox">
             {/* 필터링 조건 */}
             <div className="list_filterBox">
                 <div>총 {productList.length}개</div>
-
-                <div className="filter_condition">
-                    <div>신상품</div>
-                    <div>낮은 가격순</div>
-                    <div>높은 가격순</div>
-                </div>
             </div>
 
             {/* 결과 출력 */}

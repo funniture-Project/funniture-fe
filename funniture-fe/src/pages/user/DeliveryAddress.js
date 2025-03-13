@@ -35,10 +35,10 @@ function DeliveryAddress() {
     async function getData(memberId) {
         try {
             const data = await getDeliveryAddressListData(memberId);
-            setDeliveryAddressList(data.results.addressList);
-
+            setDeliveryAddressList(data.results.addressList || []);
         } catch (error) {
             console.error('배송지를 찾을 수 없음', error);
+            setDeliveryAddressList([]); // 에러 시 빈 배열 설정
         }
     }
 
@@ -186,7 +186,7 @@ function DeliveryAddress() {
                     >
                         {isDropdownVisible ? '-' : '+'}
                     </div>
-                    <div className={DeliveryCss.registerBtn}>배송지 신규입력</div>
+                    <div className={DeliveryCss.registerBtn}>신규 배송지 등록</div>
                 </div>
             {/* Dropdown 내용 */}
             {isDropdownVisible && (
@@ -199,7 +199,9 @@ function DeliveryAddress() {
                                 onChange={(e) => setDestinationName(e.target.value)} 
                             />
                         </div>
-                        <div onClick={handleAddressRegist}>등록</div>
+                        <div onClick={handleAddressRegist}>
+                            <div>등록</div>
+                        </div>
                     </div>
 
                     <div>

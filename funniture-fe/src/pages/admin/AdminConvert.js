@@ -27,7 +27,6 @@ function AdminConvert() {
     const [pageInfo, setPageInfo] = useState(null);
 
     const ownerData = useSelector(state => state.member.owner); // Redux에서 owner 데이터 가져오기
-    // console.log('ownerData', ownerData);
 
     useEffect(() => {
         setActiveTab(location.pathname); // URL 변경 시 activeTab 동기화
@@ -45,16 +44,21 @@ function AdminConvert() {
     const fetchConvertList = async (pageNum = 1) => {
         try {
             const data = await callConvertByAdminAPI(pageNum);
-            console.log('data', data);
-            setConvertList(data.results.result.data);
-            setPageInfo(data.results.result.pageInfo);
+
+            if (data.results === null) {
+                setConvertList([]); // 데이터가 없을 때 빈 배열로 초기화
+                setPageInfo(null); // 페이지 정보도 초기화
+            } else {
+                setConvertList(data.results.result.data);
+                setPageInfo(data.results.result.pageInfo);
+            }
         } catch (error) {
             console.error('제공자 전환 회원 목록 불러오기 실패:', error);
         }
     };
 
+
     useEffect(() => {
-        console.log('관리자 페이지, 제공자 전환 요청 목록 가져오기');
         callConvertByAdminAPI(1);
     }, []);
 
@@ -62,9 +66,8 @@ function AdminConvert() {
     // 모달 열기 핸들러
     const handleOpenModal = async (convert) => {
         try {
-            console.log('모달 열기 시도:', convert.memberId);
             const detailData = await callConvertDetailAPI(convert.memberId);
-            console.log('받은 상세 데이터:', detailData);
+
             if (detailData) {
                 setSelectedData(detailData);
                 setShowModal(true);
@@ -291,7 +294,6 @@ function AdminConvert() {
                         btnText="승인"
                         secondBtnText="반려"
                         onSuccess={() => {
-                            console.log('승인 처리:', selectedData);
                             handleSuccess();
                         }}
                         onFail={handleReject}

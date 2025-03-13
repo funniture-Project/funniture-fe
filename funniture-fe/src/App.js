@@ -61,7 +61,6 @@ function App() {
   const [token, setToken] = useState('');
 
   useEffect(() => {
-    console.log("토큰 세팅")
     if (window.localStorage.getItem("accessToken")) {
       setToken(decodeJwt(window.localStorage.getItem("accessToken")))
     }
@@ -70,12 +69,9 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("token : ", token)
     if (token && token.sub) {
-      console.log("유효한 토큰:", token);
       dispatch(callGetMemberAPI({ memberId: token.sub }));
     } else {
-      console.error("유효하지 않은 토큰 또는 sub 값 없음!");
       dispatch(resetMember()); // 유효하지 않은 경우 Redux 상태 초기화
     }
   }, [token]);
@@ -115,50 +111,47 @@ function App() {
         <Route path='/notice' element={<Notice />} />
 
         {/* 로그인이 필요 */}
-        <Route element={<LoginRouter />}>
+        <Route path='/rental' element={<RentalRegist />} />
 
-          <Route path='/rental' element={<RentalRegist />} />
+        {/* 일반 사용자 로그인 필요 */}
+        <Route element={<UserRouter />}>
 
-          {/* 일반 사용자 로그인 필요 */}
-          <Route element={<UserRouter />}>
-
-            <Route path='/mypage' element={<MyPage />}>
-              <Route index element={<Orders />} />
-              <Route path='orders/:id' element={<DetailOrder />} />
-              <Route path='returns' element={<OrdersReturn />} />
-              <Route path='return/:id' element={<OrderReturnRegist />} />
-              <Route path='edit' element={<UserConform />} />
-              <Route path='edits' element={<EditsInfo />} />
-              <Route path='favorites' element={<FavoritesPage />} />
-              <Route path='recent' element={<RecentProduct />} />
-              <Route path='convert' element={<Convert />} />
-              <Route path='appConvert' element={<AppConvert />} />
-              <Route path='deliveryaddress' element={<DeliveryAddress />} />
-              <Route path='inquiry' element={<UserInquiry />} />
-              <Route path='review' element={<UserReview />} />
-            </Route>
-
-          </Route>
-
-          <Route path='test' element={<Test />} />
-          <Route path='inquiry' element={<Inquiry />} />
-
-          {/* 제공자 로그인 필요 */}
-          <Route path='/owner' element={<OwnerLayout />}>
-            <Route index element={<OwnerMyPage />} />
-            <Route path='product' element={<OwnerProducts />} />
-            <Route path='register' element={<OwnerRegister />} />
-            <Route path='edit' element={<OwnerRegister />} />
-            <Route path='rentals' element={<OwnerRental />} />
-            <Route path='inquiry' element={<OwnerInquiry />} />
-            <Route path='review' element={<OwnerReview />} />
-            <Route path='ownerInfo' element={<OwnerInfo />} />
-            <Route path='notice' element={<OwnerNotice />} />
-            <Route path='notice/:id' element={<OwnerNoticeDetail />} />
-            <Route path='sales' element={<OwnerSales />} />
+          <Route path='/mypage' element={<MyPage />}>
+            <Route index element={<Orders />} />
+            <Route path='orders/:id' element={<DetailOrder />} />
+            <Route path='returns' element={<OrdersReturn />} />
+            <Route path='return/:id' element={<OrderReturnRegist />} />
+            <Route path='edit' element={<UserConform />} />
+            <Route path='edits' element={<EditsInfo />} />
+            <Route path='favorites' element={<FavoritesPage />} />
+            <Route path='recent' element={<RecentProduct />} />
+            <Route path='convert' element={<Convert />} />
+            <Route path='appConvert' element={<AppConvert />} />
+            <Route path='deliveryaddress' element={<DeliveryAddress />} />
+            <Route path='inquiry' element={<UserInquiry />} />
+            <Route path='review' element={<UserReview />} />
           </Route>
 
         </Route>
+
+        <Route path='test' element={<Test />} />
+        <Route path='inquiry' element={<Inquiry />} />
+
+        {/* 제공자 로그인 필요 */}
+        <Route path='/owner' element={<OwnerLayout />}>
+          <Route index element={<OwnerMyPage />} />
+          <Route path='product' element={<OwnerProducts />} />
+          <Route path='register' element={<OwnerRegister />} />
+          <Route path='edit' element={<OwnerRegister />} />
+          <Route path='rentals' element={<OwnerRental />} />
+          <Route path='inquiry' element={<OwnerInquiry />} />
+          <Route path='review' element={<OwnerReview />} />
+          <Route path='ownerInfo' element={<OwnerInfo />} />
+          <Route path='notice' element={<OwnerNotice />} />
+          <Route path='notice/:id' element={<OwnerNoticeDetail />} />
+          <Route path='sales' element={<OwnerSales />} />
+        </Route>
+
       </Route>
 
       <Route path='/login' element={<Login />} />
@@ -166,7 +159,7 @@ function App() {
       <Route path='/find' element={<FindPass />} />
 
       <Route path='*' element={<NotFoundPage />} />
-      <Route path='/                ' element={<NotAllow />} />
+      <Route path='/restrict' element={<NotAllow />} />
 
       {/* 관리자 로그인 필요 */}
       <Route path='/admin' element={<AdminLayout />}>

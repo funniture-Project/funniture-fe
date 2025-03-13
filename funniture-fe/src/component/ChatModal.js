@@ -47,7 +47,6 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
     const [inquiryList, setInquiryList] = useState([])
 
     useEffect(() => {
-        console.log("새로받아온 chatQaList : ", chatQaList)
         setCurrentList(chatQaList)
 
         if (!firstList?.current?.length > 0) {
@@ -144,10 +143,6 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
     }
 
     useEffect(() => {
-        console.log("==============================================================")
-    }, [currentList])
-
-    useEffect(() => {
         dispatch(getChatQaList({ refNum: selectNum }))
     }, [selectNum])
 
@@ -174,9 +169,7 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
     }
 
     useEffect(() => {
-        console.log("user정보 : ", user)
         if (user) {
-            console.log("user정보 : ", user)
 
             if (user.isConsulting) {
                 getUserChatData(user.memberId)
@@ -185,7 +178,6 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
     }, [user])
 
     useEffect(() => {
-        console.log("사용자의 상담 내역 : ", inquiryList)
         const textareaBox = document.querySelector(`#modalFooter`);
         const chatBox = document.querySelector("#directChatBox")
 
@@ -196,7 +188,6 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
     }, [inquiryList])
 
     async function changeConsulting() {
-        console.log("관리자 연결 클릭 : ", user)
         if (!user || user.memberId == '') {
             setNeedLoginModal(true)
             setLoginModalMsg('관리자와의 상담을 위해서는 로그인이 필요합니다.')
@@ -211,7 +202,6 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
     }
 
     async function sendNewChat() {
-        console.log("메세지 보내기 : ", user?.memberId)
         if (user.memberId != '') {
             const newChat = {
                 senderNo: user.memberId,
@@ -219,7 +209,6 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                 contents: deValue
             }
 
-            console.log(newChat)
             await sendChat({ newChat })
             getUserChatData(user.memberId)
             setDeValue('')
@@ -332,7 +321,6 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                                 </div>
                             </div>
 
-
                             <div className={ChatCss.receiver}>
                                 <div className={ChatCss.receiverButtonBox}>
                                     {currentList?.length > 0 ? currentList[0].chatQaLevel >= 2
@@ -342,6 +330,7 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                                                     <button data-chat-no={item.chatQaNo}
                                                         className={ChatCss.receiverButton}
                                                         onClick={() => selectChatList(item.chatQaNo)}
+                                                        key={item.chatQaNo}
                                                     >
                                                         {item.chatQaQuContent}
                                                     </button>
@@ -356,6 +345,7 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                                             <button data-chat-no={item.chatQaNo}
                                                 className={ChatCss.receiverButton}
                                                 onClick={() => selectChatList(item.chatQaNo)}
+                                                key={item.chatQaNo}
                                             >
                                                 {item.chatQaQuContent}
                                             </button>

@@ -12,13 +12,9 @@ export async function getAllNoticeList() {
 }
 
 export async function registerNotice({ newNotice }) {
-    console.log("API전달 전 : ", newNotice)
-
     const url = '/notice/register'
 
     const response = await api.post(url, newNotice)
-
-    console.log(response)
 
     if (response) {
         return response.data?.message
@@ -28,11 +24,7 @@ export async function registerNotice({ newNotice }) {
 export async function deleteNotice({ noticeNo }) {
     const url = `/notice/delete?noticeNo=${noticeNo}`
 
-    console.log(url)
-
     const response = await api.delete(url)
-
-    console.log(response)
 
     if (response) {
         return response.data?.message

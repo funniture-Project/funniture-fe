@@ -33,10 +33,6 @@ function OwnerNotice() {
         }
     }, [noticeList])
 
-    useEffect(() => {
-        console.log("걸러진 공지사항 : ", filteredList)
-    }, [filteredList])
-
     return (
         <div className={OwNoticeCss.wholeContent}>
             <div className={OwNoticeCss.title}>공지사항</div>

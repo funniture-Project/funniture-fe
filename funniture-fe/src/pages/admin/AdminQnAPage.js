@@ -9,11 +9,6 @@ import AdminDirectPage from "./AdminDirectPage";
 function AdminQnAPage() {
     const [showCheck, setShowCheck] = useState("qnaList")
 
-    useEffect(() => {
-        console.log("showCheck : ", showCheck)
-    }, [showCheck])
-
-
     return (
         <>
             <AdminTop title={"문의 사항"} />

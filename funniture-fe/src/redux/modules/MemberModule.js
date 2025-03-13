@@ -30,7 +30,8 @@ const initialState = {
     storePhone: ''
     },
     inquiries: [],
-    reviews: []
+    reviews: [],
+    comment : {},
 };
 
 // 액션 정의
@@ -44,6 +45,7 @@ export const INQUIRY_USER = 'member/INQUIRY_USER'; // 사용자 마이페이지 
 // export const REVIEW_USER = 'member/REVIEW_USER';
 export const REVIEW_WRITABLE = 'member/REVIEW_WRITABLE'; // 작성 가능한 리뷰
 export const REVIEW_WRITTEN = 'member/REVIEW_WRITTEN'; // 작성한 리뷰
+export const COMMENT_SELECT = 'owner/COMMENT_SELECT';
 
 // 상담 여부 업데이트
 export const CHANGE_ISCONSULTING = 'member/CHANGE_ISCONSULTING'
@@ -63,6 +65,8 @@ const actions = createActions({
     // [REVIEW_USER]: () => { },
     [REVIEW_WRITABLE]: () => { }, // 작성 가능한 리뷰 액션
     [REVIEW_WRITTEN]: () => { }, // 작성한 리뷰 액션
+    [COMMENT_SELECT]: () => { },
+
 });
 
 const memberReducer = handleActions({
@@ -146,6 +150,11 @@ const results = payload?.results || {}; // results가 없으면 빈 객체로 �
     writtenReviews: payload?.results || [], // 작성한 리뷰 리스트
     writtenPageInfo: payload?.results?.result?.pageInfo || null // 페이지 정보 추가
     }),
+
+[COMMENT_SELECT] : (state, { payload }) => ({
+    ...state,
+    comment: payload.results
+})
 }, initialState);
 
 export default memberReducer;

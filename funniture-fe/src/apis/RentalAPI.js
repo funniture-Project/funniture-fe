@@ -61,6 +61,37 @@ export async function getSalesByDate(yearMonth,selectedStore,pageNum) {
     return response
 }
 
+export async function getSalesByMonthChartData(yearMonth,groupBy) {
+
+    const url = '/rental/chart'
+    const params = new URLSearchParams();
+
+    if (yearMonth) {
+        params.append('yearMonth', yearMonth);
+    }
+    if (groupBy) {
+        params.append('groupBy', groupBy);
+    }
+    
+    const response = await getData(url, params);
+
+    return response
+}
+
+export async function getTopMonthlySales(yearMonth) {
+
+    const url = '/rental/chart/monthly/top'
+    const params = new URLSearchParams();
+
+    if (yearMonth) {
+        params.append('yearMonth', yearMonth);
+    }
+
+    const response = await getData(url, params);
+
+    return response
+}
+
 // ---------------------------------------------------- 사용자 -------------------------------------------------------------
 
 // 사용자별 예약 전체 조회(페이징 처리)
@@ -126,8 +157,6 @@ export async function getOrderDetail(id) {
     const url = `/rental/${id}`
 
     const response = await getData(url);
-
-    console.log('response', response)
 
     return response
 }
@@ -214,6 +243,57 @@ export async function getSalesByOwner(memberId, yearMonth, productNo) {
     }
 
     const response = await getData(url, params)
+
+    return response;
+}
+
+// 제공자의 예약진행상태별 카운트
+export async function getRentalStateCountByOwner(memberId) {
+    const url = `/rental/${memberId}/count`
+
+    const response = await getData(url)
+
+    return response;
+}
+
+// 제공자의 만료일 기준 기간별 카운트 
+export async function getRentalPeriodCountByOwner(memberId,period) {
+    const url = `/rental/${memberId}/period/count`
+    const params = new URLSearchParams();
+
+    if (period) {
+        params.append("period", period);
+    }
+
+    const response = await getData(url, params);
+
+    return response;
+}
+
+// 제공자의 이번 달 매출 조회 성공(상품별 합산)
+export async function getCurrentMonthSalesByOwner(memberId, yearMonth) {
+    const url = `/rental/${memberId}/chart/currentMonth`
+    const params = new URLSearchParams();
+
+    if (yearMonth) {
+        params.append("yearMonth", yearMonth);
+    }
+
+    const response = await getData(url, params);
+
+    return response;
+}
+
+// 제공자의 월별 매출 조회 성공(상품전체 합산)
+export async function getMonthlySalesByOwner(memberId, yearMonth) {
+    const url = `/rental/${memberId}/chart/monthly`
+    const params = new URLSearchParams();
+
+    if (yearMonth) {
+        params.append("yearMonth", yearMonth);
+    }
+
+    const response = await getData(url, params);
 
     return response;
 }

@@ -177,9 +177,9 @@ function AdminSales() {
                                             <div style={{ width: "10%" }}><p>{sale.storeName}</p></div>
                                             <div style={{ width: "10%" }}><p>{sale.categoryName}</p></div>
                                             <div style={{ width: "35%" }}><p>{sale.productName}</p></div>
-                                            <div style={{ width: "15%" }}><p>{sale.totalAmount.toLocaleString()} 원</p></div>
-                                            <div style={{ width: "10%" }}><p>{fee.toLocaleString()} 원</p></div>
-                                            <div style={{ width: "15%" }}><p>{settlement.toLocaleString()} 원</p></div>
+                                            <div style={{ width: "15%" }}><p>{(sale.totalAmount).toLocaleString()} 원</p></div>
+                                            <div style={{ width: "10%" }}><p>{(fee).toLocaleString()} 원</p></div>
+                                            <div style={{ width: "15%" }}><p>{(settlement).toLocaleString()} 원</p></div>
                                         </div>
                                     );
                                 })

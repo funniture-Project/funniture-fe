@@ -2,8 +2,6 @@ import OrdersCss from './orders.module.css';
 import './userInfo.css';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import decodeJwt from '../../utils/tokenUtils';
-import { callLoginAPI } from '../../apis/MemberAPI';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { callConfirmPassword } from '../../apis/MemberAPI';
 import BtnModal from '../../component/BtnModal';
@@ -26,30 +24,9 @@ function Convert () {
         [e.target.name] : e.target.value});
     }
 
-    // const onClickHandler = async () => {
-    //     const memberId = member.user.memberId;
-    //     const enteredPassword = password.password;
-    
-    //     console.log('enteredPassword : ', enteredPassword);
-    
-    //     // 비밀번호 검증 API 호출
-    //     const isAuthenticated = await dispatch(callConfirmPassword(memberId, enteredPassword));
-    
-    //     if (isAuthenticated) {
-    //         // 인증 성공 시 페이지 이동
-    //         alert('인증 성공!');
-    //         navigate("/mypage/appConvert");
-    //     } else {
-    //         // 인증 실패 시 경고 메시지 표시
-    //         alert('비밀번호를 확인해 주세요.');
-    //     }
-    // };
-
     const onClickHandler = async () => {
         const memberId = member.user.memberId;
         const enteredPassword = password.password;
-    
-        console.log('enteredPassword : ', enteredPassword);
     
         // 비밀번호 검증 API 호출
         const isAuthenticated = await dispatch(callConfirmPassword(memberId, enteredPassword));

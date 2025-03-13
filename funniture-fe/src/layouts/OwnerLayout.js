@@ -18,18 +18,17 @@ function OwnerLayout() {
         }
     }, [user])
 
-    useEffect(() => {
-        console.log("store에 저장된 정보 : ", ownerInfo)
-    }, [ownerInfo])
-
     // 제공자가 아닐경우 홈 페이지로 리디렉트
-    // useEffect(() => {
-    //     if (user.memberId != '') {
-    //         if (user.memberRole != "OWNER") {
-    //             navigate("/restrict")
-    //         }
-    //     }
-    // }, [user])
+    useEffect(() => {
+        console.log("")
+        if (user.memberId != '') {
+            if (user.memberRole != "OWNER") {
+                navigate("/restrict")
+            }
+        } else {
+            navigate('/')
+        }
+    }, [user])
 
 
     return (

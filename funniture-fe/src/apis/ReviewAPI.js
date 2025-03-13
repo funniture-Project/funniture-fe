@@ -1,51 +1,28 @@
 import api from "./Apis";
-import { REVIEW_USER , REVIEW_WRITABLE , REVIEW_WRITTEN } from "../redux/modules/MemberModule";
+import { REVIEW_USER, REVIEW_WRITABLE, REVIEW_WRITTEN } from "../redux/modules/MemberModule";
 import { REVIEW_SELECT } from "../redux/modules/OwnerModule";
-
-// 마이 페이지에서 리뷰 데이터 불러오기
-// export const callAllReviewByMypageAPI = (memberId, page = 1, size = 3) => async (dispatch) => {
-//     if (!memberId) {
-//         console.error('Invalid memberId');
-//         return;
-//     }
-//     console.log('memberId 잘 넘어왔나 : ', memberId);
-//     console.log('page 잘 넘어왔나 : ', page);
-//     try {
-//         const response = await api.get(
-//             `http://localhost:8080/api/v1/review/member/${memberId}?page=${page}&size=${size}`
-//         );
-//         console.log('사용자 마이 페이지 전체 리뷰조회 서버에 잘 다녀 왔나 response : ', response);
-
-//         // 데이터를 저장
-//         dispatch({ type: REVIEW_USER, payload: response.data });
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error fetching reviews:', error);
-//         throw error;
-//     }
-// };
 
 // 마이페이지 작성 가능한 리뷰 조회 API
 export const callWritableReviewsAPI = (memberId, page = 1, size = 3) => async (dispatch) => {
     if (!memberId) {
-    console.error('Invalid memberId');
-    return;
+        console.error('Invalid memberId');
+        return;
     }
-    console.log('작성 가능한 리뷰 API 호출: memberId=', memberId, 'page=', page);
+
     try {
-    const response = await api.get(
-    `http://localhost:8080/api/v1/review/member/${memberId}?page=${page}&size=${size}`
-    );
-    console.log('작성 가능한 리뷰 조회 결과:', response);
-    
-    // 데이터를 저장
-    dispatch({ type: REVIEW_WRITABLE, payload: response.data });
-    return response.data;
+        const response = await api.get(
+            `http://localhost:8080/api/v1/review/member/${memberId}?page=${page}&size=${size}`
+        );
+
+        // 데이터를 저장
+        dispatch({ type: REVIEW_WRITABLE, payload: response.data });
+
+        return response.data;
     } catch (error) {
-    console.error('Error fetching writable reviews:', error);
-    throw error;
+        console.error('Error fetching writable reviews:', error);
+        throw error;
     }
-    };
+};
 
 // 마이페이지 작성한 리뷰 조회 API
 export const callWrittenReviewsAPI = (memberId, page = 1, size = 3) => async (dispatch) => {
@@ -133,13 +110,25 @@ export const callReviewByMainAPI = async () => {
     }
 };
 
-// 문의 등록하기
+// 리뷰 등록하기
 export const callSubmitReviewAPI = (reviewData) => {
     const requestURL = `http://localhost:8080/api/v1/review/regist`;
 
     return async (dispatch) => {
         const response = await api.post(requestURL, { ...reviewData });
-        console.log('리뷰 등록 결과 서버에 잘 다녀 왔나 response : ', response);
         return response;
     };
+};
+
+// 리뷰 평점 불러오기 
+export const callReviewAvgByOwnerNoAPI = async (memberId) => {
+    const requestURL = `http://localhost:8080/api/v1/review/main/${memberId}`;
+
+    try {
+        const response = await api.get(requestURL);
+        return response.data; // 반환된 데이터를 리턴
+    } catch (error) {
+        console.error('평균 별점 API 호출 실패:', error);
+        return null;
+    }
 };

@@ -5,13 +5,16 @@ import { useEffect, useState } from 'react'
 import { getAllNoticeList } from '../../apis/NoticeAPI'
 import { useNavigate } from 'react-router-dom'
 import { callReviewByMainAPI } from '../../apis/ReviewAPI'
+import { getActiveRentalList } from '../../apis/RentalAPI'
 
 function Main() {
     const [noticeList, setNoticeList] = useState([])
     const { user } = useSelector(state => state.member)
     const [filteredList, setFilteredList] = useState([])
-
     const [reviewList, setReviewList] = useState([]);
+    const [ingList, setIngList] = useState([]);
+    const [returnList, setReturnList] = useState([]);
+    const [firstIndex, setFirstIndex] = useState(0);
 
     const navigate = useNavigate();
 
@@ -20,7 +23,7 @@ function Main() {
         async function fetchReviews() {
             try {
                 const response = await callReviewByMainAPI();
-                console.log('메인페이지 리뷰 서버 다녀온 response : ' ,response);
+
                 if (response.httpStatusCode === 200) {
                     setReviewList(response.results.map); // 서버에서 반환된 리뷰 리스트 저장
                 }
@@ -39,6 +42,18 @@ function Main() {
             setNoticeList(response)
         }
 
+        async function getReturn() {
+            const response = await getActiveRentalList(user.memberId);
+
+            if (response.httpStatusCode == 200) {
+                setIngList(response.results.activeRentalList)
+            }
+        }
+
+        if (user.memberId != '' && user.memberRole == 'USER') {
+            getReturn()
+        }
+
         getNotice()
     }, [user])
 
@@ -47,28 +62,90 @@ function Main() {
             if (user.memberId == '' || user.memberRole == "USER") {
                 const list = noticeList.filter(item => item.viewRoll == "all" || item.viewRoll == "user")
                 if (list.length > 5) {
-                    setFilteredList(list.slice(0, 5))
+                    setFilteredList(list.slice(0, 5).reverse())
                 } else {
-                    setFilteredList(list)
+                    setFilteredList(list.reverse())
                 }
             } else if (user.memberRole == "OWNER") {
                 const list = noticeList.filter(item => item.viewRoll == "owner" || item.viewRoll == "all")
                 if (list.length > 5) {
-                    setFilteredList(list.slice(0, 5))
+                    setFilteredList(list.slice(0, 5).reverse())
                 } else {
-                    setFilteredList(list)
+                    setFilteredList(list.reverse())
                 }
             } else if (user.memberRole == "ADMIN") {
-                setFilteredList(noticeList)
+                setFilteredList(noticeList.reverse())
             }
         }
     }, [noticeList])
 
+    useEffect(() => {
+        if (ingList.length > 0) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0)
+
+            const afterSeven = new Date();
+            afterSeven.setDate(today.getDate() + 7);
+
+            const filterList = ingList.filter(item => {
+                const endDate = new Date(item.rentalEndDate)
+                return today <= endDate && endDate <= afterSeven
+            })
+
+            setReturnList(filterList)
+        }
+    }, [ingList])
+
+    function updateSlice(num) {
+
+        const updateNum = firstIndex + num
+
+        if (updateNum == 0 || updateNum == 4) {
+            setFirstIndex(updateNum)
+        }
+    }
+
     return (
         <div>
+            {user && user.memberRole == 'USER' ?
+                <div className='mainContentBox'>
+                    <div className='title'>
+                        <div>
+                            <img src={require(`../../assets/icon/review.svg`).default} alt="리뷰 아이콘" />
+                            <span>반납</span> 예정 상품
+                        </div>
+                    </div>
+                    <div className='returnListBox'>
+                        <button onClick={() => updateSlice(-4)} style={{ display: returnList.length > 4 ? firstIndex == 4 ? "block" : "none" : "none" }}>&lt;</button>
+                        <div>
+                            {returnList.length > 0 ? (
+                                returnList.slice(firstIndex, firstIndex + 4).map(item => (
+                                    <>
+                                        <div className='returnItem'>
+                                            <div className='imgBox'>
+                                                <img src={item.productImageLink == 'a.jpg' || item.productImageLink == 'default.jpg' ? require("../../assets/images/default.jpg") : item.productImageLink}
+                                                    alt="상품 이미지" />
+                                            </div>
+                                            <div>{item.productName}</div>
+                                            <div><span>월</span>{parseInt(item.rentalPrice).toLocaleString()} 원</div>
+                                            <div>
+                                                <div>{item.rentalStartDate}</div>
+                                                <span>~</span>
+                                                <div>{item.rentalEndDate}</div>
+                                            </div>
+                                        </div>
+                                    </>
+                                ))
+                            ) : (
+                                <div className='noReturnItem'>반납 예정 상품이 없습니다.</div>
+                            )}
+                        </div>
+                        <button onClick={() => updateSlice(4)} style={{ display: returnList.length > 4 ? firstIndex == 0 ? "block" : "none" : "none" }}>&gt;</button>
+                    </div>
+                </div>
+                : null}
+
             <div className='mainContentBox'>
-                {/* <img src='https://res.cloudinary.com/dor26tdln/raw/upload/v1740707870/vafwl1exrkurtjmpma2p.pdf' alt="테스트" /> */}
-                {/* <iframe src='https://res.cloudinary.com/dor26tdln/raw/upload/v1740707870/vafwl1exrkurtjmpma2p.pdf'></iframe> */}
                 <div className='title'>
                     <div>
                         <img src={require(`../../assets/icon/review.svg`).default} alt="리뷰 아이콘" />
@@ -83,7 +160,7 @@ function Main() {
                                     <span>{review.userName}</span> 님의 리뷰
                                 </div>
                                 <div className="reviewContent">{review.reviewContent}</div>
-                                <div style={{right :'0px'}} className="reviewDate">{new Date(review.reviewWriteTime).toLocaleDateString()}</div>
+                                <div style={{ right: '0px' }} className="reviewDate">{new Date(review.reviewWriteTime).toLocaleDateString()}</div>
                             </div>
                         ))
                     ) : (

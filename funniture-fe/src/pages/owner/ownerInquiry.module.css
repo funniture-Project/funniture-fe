@@ -10,6 +10,7 @@
     display: flex;
     flex-direction: column;
     justify-content: start;
+    align-items: center;
     gap: 15px;
 }
 
@@ -17,10 +18,17 @@
 .title {
     font-size: 1.4em;
     font-weight: 700;
+    align-self: flex-start;
 }
 
 
 /* 전체 테이블 스타일 */
+
+.tableBox {
+    width: 100%;
+    flex: 1;
+}
+
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -55,6 +63,7 @@
 
 /* 필터 버튼 컨테이너 */
 .filterButtons {
+    align-self: flex-start;
     display: flex;
     gap: 10px;
 }
@@ -71,7 +80,8 @@
 
 /* 활성화된 필터 버튼 스타일 */
 .filterButton.active {
-    background-color: #b09060; /* 갈색 톤 */
+    background-color: #b09060;
+    /* 갈색 톤 */
     color: white;
 }
 
@@ -80,11 +90,40 @@
     padding: 6px 12px;
     border-radius: 6px;
     border: none;
-    background-color: #b09060; /* 갈색 톤 */
+    background-color: #b09060;
+    /* 갈색 톤 */
     color: white;
     cursor: pointer;
 }
 
 .answerButton.complete {
-    background-color: #6aa84f; /* 초록색 톤 */
+    background-color: #6aa84f;
+    /* 초록색 톤 */
+}
+
+
+.selectData {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f4f4f4;
+}
+
+.selectData div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.selectData strong {
+    font-weight: 600;
+    color: #333;
+}
+
+.selectData div span {
+    font-size: 14px;
+    color: #666;
 }

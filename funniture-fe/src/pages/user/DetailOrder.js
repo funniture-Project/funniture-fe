@@ -12,14 +12,12 @@ function DetailOrder({ selectedOrder, closeModal }) {
     const [order, setOrder] = useState(selectedOrder || null);
 
     const [deliveryMemo, setDeliveryMemo] = useState(""); // 배송 메모 상태
-    const deliveryOptions = [
-        "문 앞에 놓아주세요",
-        "조심히 다뤄주세요",
-        "경비실에 맡겨주세요",
-        "부재시 연락주세요"
-    ];
+    
+    const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 수정 모달창 상태
+    const [showSuccessModal, setShowSuccessModal] = useState(false); // 수정 완료 모달 상태
+    const [showCancelSuccessModal, setShowCancelSuccessModal] = useState(false); // 예약 취소 모달 상태
 
-    // 예약 취소 핸들러
+    // 제공자 예약 취소 핸들러
     const handleCancelOrder = async () => {    
         try {
             await cancelOrder(order.rentalNo);
@@ -30,8 +28,16 @@ function DetailOrder({ selectedOrder, closeModal }) {
         }
     };
 
-    const [showBtnModal, setShowBtnModal] = useState(false); // 배송지 수정 모달창 상태
-    const [showSuccessModal, setShowSuccessModal] = useState(false); // 수정 완료 모달 상태
+    const handleUserCancelOrder = async () => {    
+        try {
+            await cancelOrder(order.rentalNo);
+            setShowCancelSuccessModal(true);  // 예약 취소 성공 시 true 전달
+            getData(id)
+        } catch (error) {
+            console.error('예약취소 오류 : ', error);
+        }
+    };
+
 
     // 배송지 선택 모달 열기 핸들러
     // 모달 열기 핸들러
@@ -52,6 +58,18 @@ function DetailOrder({ selectedOrder, closeModal }) {
         }
     };
 
+    async function getData() {
+            try {
+                const data = await getOrderDetail(id);
+        
+                setOrder(data.results.rentalDetail[0]);
+        
+            } catch (error) {
+                console.error('주문 내역 불어오기 실패 :', error);
+            }
+        }
+    
+
     useEffect(() => {
         if (!selectedOrder) {
             async function fetchData() {
@@ -61,6 +79,15 @@ function DetailOrder({ selectedOrder, closeModal }) {
             fetchData();
         }
     }, [selectedOrder, id]); 
+
+    
+    // 숫자를 1,000 형식으로 변환
+    const formatNumber = (num) => {
+        if (typeof num !== "number" || isNaN(num)) {
+            return "0";  // 값이 없거나 숫자가 아니면 기본값 0 반환
+        }
+        return num.toLocaleString();
+        };
 
     if (!order) return <div>Loading...</div>; 
 
@@ -86,16 +113,20 @@ function DetailOrder({ selectedOrder, closeModal }) {
                         <div>문의하기</div>
                     </div>
                     <div>
-                        <div onClick={handleCancelOrder}>예약취소</div>
+                    {order.rentalState === '예약대기' && (
+                        <div onClick={handleUserCancelOrder}>예약취소</div>
+                    )}
                     </div>
                 </div>
                 <hr className={DetailOrderCss.orderHr} />
             </>
             )}
                 <div className={DetailOrderCss.orderInfoContainer}>
-                    <div>{order.rentalState}</div>
+                    <div>{order.rentalState === '예약완료' ? `${order.rentalState} (배송준비중)` : order.rentalState}</div>
                     <div>
-                        <img className={DetailOrderCss.orderImg} src={require(`../../assets/images/testImg.JPG`)} alt="상품 이미지" />
+                        <img className={DetailOrderCss.orderImg} 
+                        src={order?.productImageLink == "a.jpg" || order?.productImageLink == "default.jpg" || order?.productImageLink == null ? require("../../assets/images/default.jpg") :order?.productImageLink}
+                        alt="프로필 이미지"/>
                         <div className={DetailOrderCss.orderInfo}>
                             <div>상품명 : {order.productName}</div>
                             <div>대여 기간 : {order.rentalTerm} 개월</div>
@@ -123,23 +154,11 @@ function DetailOrder({ selectedOrder, closeModal }) {
                 <div>{order.destinationPhone}</div>
                 <div>{order.destinationAddress}</div>
                 <div>
-                    {!selectedOrder && (
-                    <>
-                        <select value={deliveryMemo} onChange={(e) => setDeliveryMemo(e.target.value)}>
-                            <option value="">예약 등록 시 배송메모</option>
-                            {deliveryOptions.map((option, index) => (
-                                <option key={index} value={option}>{option}</option>
-                            ))}
-                        </select>
-                        <div>수정</div>
-                    </>
-                    )}
+                    배송메모 : 
+                    <span style={{ color: order.deliveryMemo ? 'black' : 'gray' }}>
+                        {order.deliveryMemo || "배송메모가 없습니다."}
+                    </span>
                 </div>
-                {selectedOrder && (
-                    <div>
-                        <div>배송메모 : {order.deliveryMemo}</div>
-                    </div>
-                )}
             </div>
 
             { selectedOrder && (
@@ -165,16 +184,16 @@ function DetailOrder({ selectedOrder, closeModal }) {
             <div className={DetailOrderCss.paymentContainer}>
                 <div>
                     <div>주문금액</div>
-                    <div>{order.rentalPrice} 원</div>
+                    <div>{formatNumber((order.rentalPrice * order.rentalNumber)* 0.9)} 원</div>
                 </div>
                 <div>
                     <div>
                         <div>상품금액</div>
-                        <div>{order.rentalPrice} 원</div>
+                        <div>{formatNumber((order.rentalPrice * order.rentalNumber)* 0.9)} 원</div>
                     </div>
                     <div>
                         <div>쿠폰할인</div>
-                        <div>- 0 원</div>
+                        <div>- {formatNumber((order.rentalPrice * order.rentalNumber)* 0.1)}원</div>
                     </div>
                     <div>
                         <div>배송비</div>
@@ -184,7 +203,7 @@ function DetailOrder({ selectedOrder, closeModal }) {
                 <hr className={DetailOrderCss.orderHr} />
                 <div>
                     <div>포인트 결제</div>
-                    <div>{order.rentalPrice} 원</div>
+                    <div>{formatNumber((order.rentalPrice * order.rentalNumber)* 0.9)} 원</div>
                 </div>
             </div>
 
@@ -196,7 +215,7 @@ function DetailOrder({ selectedOrder, closeModal }) {
                     <div>
                         <div>
                             <div>구매적립</div>
-                            <div>{(order.rentalPrice * 0.1)} <span>원</span></div>
+                            <div>{((order.rentalPrice * order.rentalNumber) * 0.01)} <span>원</span></div>
                         </div>
                         <div>
                             <div>리뷰적립</div>
@@ -234,6 +253,17 @@ function DetailOrder({ selectedOrder, closeModal }) {
                         setShowBtnModal={setShowSuccessModal}
                         btnText="확인"
                         modalContext="배송지 변경이 완료되었습니다."
+                        modalSize="sm"
+                />
+            )}
+
+            {/* 배송지 수정 확인 모달 */}
+            {showCancelSuccessModal && (
+                <BtnModal
+                        showBtnModal={showCancelSuccessModal}
+                        setShowBtnModal={setShowCancelSuccessModal}
+                        btnText="확인"
+                        modalContext="예약이 취소되었습니다."
                         modalSize="sm"
                 />
             )}

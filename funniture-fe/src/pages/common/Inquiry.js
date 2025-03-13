@@ -1,14 +1,19 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { callInquiryByProductNoAPI, callInquiryRegistByProductNoAPI } from "../../apis/InquiryAPI";
+import { callInquiryByProductNoAPI, callInquiryRegistByProductNoAPI, callCommentByProduct } from "../../apis/InquiryAPI";
 import InquiryCss from './inquiryProduct.module.css';
 import InquiryDiv from '../../pages/admin/rental.module.css';
 import BtnModal from "../../component/BtnModal";
 import decodeJwt from '../../utils/tokenUtils';
 
 // 상세페이지 문의 조회 및 등록
-function Inquiry({ productInfo , setInquiriesCount }) {
+function Inquiry({ productInfo, setInquiriesCount }) {
     const member = useSelector((state) => state.member);
+    const owner = useSelector((state) => state.owner);
+    const inquiriesData = useSelector(state => state.member?.inquiries);
+
+    const comment = useSelector((state) => state.member?.comment);
+
     const dispatch = useDispatch();
     const [inquiries, setInquiries] = useState([]);
     const [showBtnModal, setShowBtnModal] = useState(false);
@@ -16,7 +21,9 @@ function Inquiry({ productInfo , setInquiriesCount }) {
     const [showErrorModal, setShowErrorModal] = useState(false); // 필수값 다 넣지 않고 등록 누르면
     const [isLogin, setIsLogin] = useState(false);
 
-    console.log('문의 컴포넌트 productInfo : ' , productInfo);
+    const [expandedInquiries, setExpandedInquiries] = useState({}); // 답변창 상태 관리
+    // 답변 데이터 상태
+    const [comments, setComments] = useState({});
 
     const [formData, setFormData] = useState({
         qnaType: "",
@@ -25,28 +32,78 @@ function Inquiry({ productInfo , setInquiriesCount }) {
         phoneNumber: "",
         showStatus: false,
     });
-    
 
     // 문의 데이터 가져오기
     const fetchInquiries = async () => {
         try {
             const response = await dispatch(callInquiryByProductNoAPI(productInfo.productNo));
-            console.log("문의 데이터:", response);
 
             if (response.results?.map) {
-                // 문의 리스트 설정
-                setInquiries(response.results.map);
-                setInquiriesCount(response.results.map.length); // 문의 개수 상태 업데이트
+                // 문의 리스트 설정 및 답변 여부 초기화
+                const updatedInquiries = await Promise.all(
+                    response.results.map.map(async (inquiry) => {
+                        const commentResponse = await dispatch(callCommentByProduct(inquiry.inquiryNo));
+                        const hasComment = commentResponse.results?.map ? 1 : 0;
+
+                        return {
+                            ...inquiry,
+                            answerCount: hasComment,
+                        };
+                    })
+                );
+
+                setInquiries(updatedInquiries);
+                setInquiriesCount(updatedInquiries.length); // 문의 개수 상태 업데이트
             }
         } catch (error) {
             console.error("문의 데이터 가져오기 실패:", error);
         }
     };
 
+
+
     useEffect(() => {
         if (!productInfo?.productNo) return;
         fetchInquiries();
     }, [dispatch, productInfo]);
+
+    // 답변 버튼 클릭 핸들러
+    const handleAnswerToggle = async (inquiryNo) => {
+        if (expandedInquiries[inquiryNo]) {
+            // 이미 열려 있으면 닫기
+            setExpandedInquiries((prev) => ({
+                ...prev,
+                [inquiryNo]: false,
+            }));
+            return;
+        }
+
+        try {
+            const response = await dispatch(callCommentByProduct(inquiryNo));
+
+            setComments((prev) => ({
+                ...prev,
+                [inquiryNo]: response.results?.map || null, // 댓글 데이터 저장 (없으면 null)
+            }));
+
+            setExpandedInquiries((prev) => ({
+                ...prev,
+                [inquiryNo]: true,
+            }));
+
+            // 문의 리스트 상태 업데이트
+            setInquiries((prevInquiries) =>
+                prevInquiries.map((inquiry) =>
+                    inquiry.inquiryNo === inquiryNo
+                        ? { ...inquiry, answerCount: response.results?.map ? 1 : 0 }
+                        : inquiry
+                )
+            );
+        } catch (error) {
+            console.error("답변 데이터 가져오기 실패:", error);
+        }
+    };
+
 
     // qnaType에 따른 카테고리 텍스트 변환 함수
     const getCategoryText = (qnaType) => {
@@ -76,10 +133,8 @@ function Inquiry({ productInfo , setInquiriesCount }) {
         }
 
         try {
-            console.log("등록할 데이터:", formData);
-
-            const dataToSend = { 
-                ...formData, 
+            const dataToSend = {
+                ...formData,
                 productNo: productInfo.productNo,
                 showStatus: formData.showStatus ? 0 : 1
             };
@@ -103,7 +158,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
         }
     };
 
-    
+
     // 이미지 URL 결정 함수
     const getImageLink = (imageLink) => {
         if (!imageLink || imageLink === "default.jpg" || imageLink === "a.jpg") {
@@ -133,12 +188,18 @@ function Inquiry({ productInfo , setInquiriesCount }) {
     return (
         <div className={InquiryDiv.adminRentalContent}>
             <div className={InquiryCss.inquiryBox}>
-            {isLogin ? (
-                <button 
-                    className={InquiryCss.inquiryWriteButton}
-                    onClick={() => setShowBtnModal(true)}>문의 작성</button>) : null}
+                {isLogin ? (
+                    <button
+                        className={InquiryCss.inquiryWriteButton}
+                        onClick={() => setShowBtnModal(true)}
+                    >
+                        문의 작성
+                    </button>
+                ) : null}
 
-                <h3>상품 문의 <span style={{ color: 'blue' }}>({inquiries.length})</span></h3>
+                <h3>
+                    상품 문의 <span style={{ color: "blue" }}>({inquiries.length})</span>
+                </h3>
 
                 {/* 문의 리스트 */}
                 <div className={InquiryCss.inquiryList}>
@@ -156,19 +217,41 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                                 </div>
                                 <div className={InquiryCss.inquiryMeta}>
                                     <span>
-                                        {getCategoryText(inquiry.qnaType)} | 
-                                        {inquiry.userName ? inquiry.userName : '익명'} | 
-                                        {new Date(inquiry.qnaWriteTime).toLocaleString()} {/* 시, 분, 초까지 표시 */}
+                                        {getCategoryText(inquiry.qnaType)} |{" "}
+                                        {inquiry.userName ? inquiry.userName : "익명"} |{" "}
+                                        {new Date(inquiry.qnaWriteTime).toLocaleString()}
                                     </span>
-                                    <span className={InquiryCss.answerCount}>답변 {inquiry.answerCount || 0}</span>
+                                    <span
+                                        className={InquiryCss.answerCount}
+                                        onClick={() => handleAnswerToggle(inquiry.inquiryNo)}
+                                    >
+                                        답변 {inquiry.answerCount || 0}
+                                    </span>
                                 </div>
+
+                                {/* 답변창 */}
+                                {expandedInquiries[inquiry.inquiryNo] && (
+                                    <div className={InquiryCss.answerBox}>
+                                        {comments[inquiry.inquiryNo] ? (
+                                            <>
+                                                <p>
+                                                    <strong>{comments[inquiry.inquiryNo].storeName || "익명"}</strong>{" "}
+                                                    ({new Date(comments[inquiry.inquiryNo].commentWriteTime).toLocaleString()})
+                                                </p>
+                                                <p>{comments[inquiry.inquiryNo].commentContent}</p>
+                                            </>
+                                        ) : (
+                                            <p>등록된 답글이 없습니다.</p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         ))
                     )}
                 </div>
             </div>
 
-            {/* 대여 문의 작성 모달 */}
+            {/* 문의 작성 모달 */}
             <BtnModal
                 showBtnModal={showBtnModal}
                 setShowBtnModal={setShowBtnModal}
@@ -181,16 +264,19 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                         {/* 상품 정보 */}
                         <div className={InquiryCss.productInfo}>
                             <img
-                                src={getImageLink(productInfo.ownerInfo?.productImageLink)}
+                                // src={getImageLink(productInfo.ownerInfo?.productImageLink)}
+                                src={getImageLink(productInfo.productImageLink)} // productImageLink를 직접 전달
                                 alt="상품 이미지"
                                 className={InquiryCss.productImage}
                             />
-                            <p style={{marginLeft:'3%'}}>{productInfo.productName || "상품 이름이 없습니다."}</p>
+                            <p style={{ marginLeft: "3%" }}>
+                                {productInfo.productName || "상품 이름이 없습니다."}
+                            </p>
                         </div>
 
                         {/* Q&A 유형 */}
                         <div className={InquiryCss.formGroup}>
-                       <br/><label>Q&A 유형</label>
+                            <label>Q&A 유형</label>
                             <select
                                 name="qnaType"
                                 value={formData.qnaType}
@@ -206,7 +292,7 @@ function Inquiry({ productInfo , setInquiriesCount }) {
 
                         {/* Q&A 내용 */}
                         <div className={InquiryCss.formGroup}>
-                        <br/><label>Q&A 내용</label>
+                            <label>Q&A 내용</label>
                             <textarea
                                 name="inquiryContent"
                                 value={formData.inquiryContent}
@@ -246,11 +332,11 @@ function Inquiry({ productInfo , setInquiriesCount }) {
 
                         {/* 비공개 여부 */}
                         <div className={InquiryCss.checkBox}>
-                            <input 
-                                type="checkbox" 
-                                name="showStatus" 
-                                checked={formData.showStatus} 
-                                onChange={handleInputChange} 
+                            <input
+                                type="checkbox"
+                                name="showStatus"
+                                checked={formData.showStatus}
+                                onChange={handleInputChange}
                             />
                             <label> 비공개</label>
                         </div>
@@ -271,17 +357,22 @@ function Inquiry({ productInfo , setInquiriesCount }) {
                     onSuccess={() => setShowSuccessModal(false)}
                 />
             )}
-                {/* 오류 모달 */} 
+
+            {/* 입력 오류 모달 */}
+            {showErrorModal && (
                 <BtnModal
-                showBtnModal={showErrorModal}
-                setShowBtnModal={setShowErrorModal}
-                btnText="확인"
-                modalTitle="입력 오류"
-                modalContext="모든 필수값을 입력해 주세요."
-                onSuccess={() => setShowErrorModal(false)}
+                    showBtnModal={showErrorModal}
+                    setShowBtnModal={setShowErrorModal}
+                    btnText="확인"
+                    modalTitle="입력 오류"
+                    modalContext={<p>모든 필수값을 입력해 주세요.</p>}
+                    onSuccess={() => setShowErrorModal(false)}
                 />
+            )}
         </div>
     );
+
+
 }
 
 export default Inquiry;

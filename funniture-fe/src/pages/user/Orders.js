@@ -4,6 +4,7 @@ import { getUserOrderList } from '../../apis/RentalAPI';
 import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import Pagination from '../../component/Pagination';
+import { useNavigate } from 'react-router-dom';
 
 function Orders() {
 
@@ -84,6 +85,20 @@ function Orders() {
         }));
     };
 
+    // 숫자를 1,000 형식으로 변환
+    const formatNumber = (num) => {
+    if (typeof num !== "number" || isNaN(num)) {
+        return "0";  // 값이 없거나 숫자가 아니면 기본값 0 반환
+    }
+    return num.toLocaleString();
+    };
+
+    const navigate = useNavigate();
+
+    const handleInquiryClick = (item) => {
+        navigate(`/product/${item}`);
+    };
+
     return (
         <div className={OrdersCss.ordersContainer}>
             <div className={OrdersCss.orderPageTitle}>주문/배송</div>
@@ -127,24 +142,30 @@ function Orders() {
                             <div className={OrdersCss.orderListItem}>
                                 <div className={OrdersCss.status}>
                                     <div>
-                                        {item.rentalState}
+                                        {item.rentalState === '예약완료' ? `${item.rentalState} (배송준비중)` : item.rentalState}
                                     </div>
                                 </div>
                                 <div className={OrdersCss.statusAndProductImgBox}>
                                     <div className={OrdersCss.productImg}>
-                                        <img src={require(`../../assets/images/testImg.JPG`)} alt="상품 이미지 입니다" />
+                                        <img src={item?.productImageLink == "a.jpg" || item?.productImageLink == "default.jpg" || item?.productImageLink == null ? require("../../assets/images/default.jpg") :item?.productImageLink}
+                                        alt="프로필 이미지" />
                                     </div>
                                     <div className={OrdersCss.ordersInfo}>
                                         <div>주문번호 : {item.rentalNo}</div>
                                         <div>{item.orderDate} 결제</div>
                                         <div>상품명 : {item.productName}</div>
-                                        <div>{item.rentalPrice} 원</div>
+                                        <div>{formatNumber((item.rentalPrice * item.rentalNumber)* 0.9)} 원</div>
                                         <div>
                                             <Link to={`/mypage/orders/${item.rentalNo}`} className={OrdersCss.link}>주문상세 &gt;</Link>
                                         </div>
                                     </div>
                                     <div className={OrdersCss.inquiryButton}>
-                                        <div>문의하기</div>
+                                    <div 
+                                        className={OrdersCss.inquiryButton}
+                                        onClick={() => handleInquiryClick(item.productNo)}
+                                    >
+                                            문의하기
+                                        </div>
                                     </div>
                                 </div>
                             </div>

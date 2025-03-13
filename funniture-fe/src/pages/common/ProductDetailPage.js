@@ -36,15 +36,15 @@ function ProductDetailPage() {
     // 최초에 렌더링 시, 상품 문의 개수 적용시키기
     useEffect(() => {
         if (productInfo?.productNo) {
-          dispatch(callInquiryByProductNoAPI(productInfo.productNo))
-            .then(response => {
-              if (response.results?.map) {
-                setInquiriesCount(response.results.map.length);
-              }
-            })
-            .catch(error => console.error("초기 데이터 가져오기 실패:", error));
+            dispatch(callInquiryByProductNoAPI(productInfo.productNo))
+                .then(response => {
+                    if (response.results?.map) {
+                        setInquiriesCount(response.results.map.length);
+                    }
+                })
+                .catch(error => console.error("초기 데이터 가져오기 실패:", error));
         }
-      }, [dispatch, productInfo]);
+    }, [dispatch, productInfo]);
 
     // 상품 리뷰 개수 가져오기 (얘도 dipatch로 보내면 에러남)
     const fetchReviewsCount = async () => {
@@ -65,7 +65,6 @@ function ProductDetailPage() {
     }, [productInfo]);
 
     useEffect(() => {
-        console.log("현재 user의 정보 : ", user)
         if (user.memberRole == "USER") {
             dispatch(getFavoriteList(user.memberId))
         }
@@ -78,9 +77,6 @@ function ProductDetailPage() {
             favoriteList.map(item => {
                 array.push(item["productNo"])
             })
-
-            console.log("favoriteList : ", favoriteList)
-            console.log("array : ", array)
 
             if (!areArraysEqual(array, favoriteProductNo)) {
                 setFavoriteProductNo(array);
@@ -111,12 +107,6 @@ function ProductDetailPage() {
         }
     }, [favoriteProductNo, user.memberRole]);
 
-
-    // useEffect(() => {
-    //     console.log("favoriteProductNo : ", favoriteProductNo)
-    //     updateFavoriteList(user.memberId, favoriteProductNo)
-    // }, [favoriteProductNo])
-
     // 렌탈 갯수
     const [rentalNum, setRentalNum] = useState(1);
 
@@ -124,7 +114,6 @@ function ProductDetailPage() {
     const navigate = useNavigate();
 
     const movePage = () => {
-        console.log("예약 막기 : ", user)
 
         if (user.memberId == '') {
             setShowModal(true)
@@ -164,7 +153,6 @@ function ProductDetailPage() {
 
     // 최근 본 상품
     useEffect(() => {
-        console.log('productInfo : ', productInfo)
 
         if (user.memberRole == "USER") {
             let recent = localStorage.getItem("recent")

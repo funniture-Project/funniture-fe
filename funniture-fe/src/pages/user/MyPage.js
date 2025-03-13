@@ -7,8 +7,8 @@ import truckIcon from "../../assets/icon/truck-solid.svg";
 import checkIcon from "../../assets/icon/check-solid.svg";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from 'react';
-import { getPointList,getCurrentPoint } from '../../apis/PointAPI';
-import { getRentalStateList } from '../../apis/RentalAPI';
+import { getPointList, getCurrentPoint } from '../../apis/PointAPI';
+import { getRentalStateList, getActiveRentalList } from '../../apis/RentalAPI';
 import { useSelector } from 'react-redux';
 
 function MyPage() {
@@ -16,21 +16,21 @@ function MyPage() {
     // 사용자 꺼내오기
     const { user } = useSelector(state => state.member)
     const { memberId } = user
-    console.log('user', user)
 
     const [activeTab, setActiveTab] = useState('orders');
 
     // 데이터 관리
-    const [pointLogs, setPointLogs] = useState([]);   
-    const [point, setPoint] = useState([]);  
-    const [rentalState, setRentalState] = useState([]); 
-    
+    const [pointLogs, setPointLogs] = useState([]);
+    const [point, setPoint] = useState([]);
+    const [rentalState, setRentalState] = useState([]);
+    const [returnDeadlineCount, setReturnDeadlineCount] = useState(0);    // 반납 마감 임박 상품 갯수 상태 관리
+
     // point +, - 필터
     const [filterType, setFilterType] = useState(null);
 
     // 포인트 드롭다운
     const [pointOpen, setPointOpen] = useState(false);
- 
+
     // 포인트 내역 데이터 가져오는 함수
     async function getPointData(memberId) {
         try {
@@ -59,12 +59,17 @@ function MyPage() {
         }
     }
 
+    // 포인트
+    useEffect(() => {
+        getCurrentPointData(memberId);
+    }, [memberId]);
+
     // 예약진행상태별 카운트 데이터 가져오는 함수
     async function getRentalStateData() {
         try {
             const data = await getRentalStateList(memberId);
             const states = data.results.rentalStateCount;
-    
+            
             setRentalState(states);
 
         } catch (error) {
@@ -72,13 +77,43 @@ function MyPage() {
             setRentalState([]);  // 오류 발생 시 빈 배열 설정
         }
     }
-    
+
     // 랜더링 시 데이터 불러오기
     useEffect(() => {
-        getCurrentPointData(memberId);
         getRentalStateData(memberId);
+    }, [memberId]);
 
-    }, [memberId]); 
+    
+
+    // 반납 예정 갯수 데이터 가져오는 함수
+    async function fetchRentalData(memberId) {
+        try {
+            const data = await getActiveRentalList(memberId, 1); // 첫 페이지 데이터 가져오기
+            const rentals = data.results.activeRentalList;
+
+            // 현재 날짜와 만료 날짜 비교하여 필터링
+            const currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0); // 현재 날짜의 시간을 00:00:00으로 맞춤
+
+
+
+            const deadlineRentals = rentals.filter((rental) => {
+                const rentalEndDate = new Date(`${rental.rentalEndDate}T00:00:00`);
+                const daysRemaining = Math.floor((rentalEndDate - currentDate) / (1000 * 60 * 60 * 24));
+                return daysRemaining <= 7 && daysRemaining >= 0; // 만료일 기준 7일 전부터 오늘까지
+
+            });
+
+            setReturnDeadlineCount(deadlineRentals.length); // 마감 임박 갯수 설정
+        } catch (error) {
+            console.error('Error fetching rental data:', error);
+            setReturnDeadlineCount(0); // 에러 발생 시 초기화
+        }
+    }
+    // 반납 예정 갯수 데이터 불러오기
+    useEffect(() => {
+        fetchRentalData(memberId);
+    }, [memberId]);
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
@@ -109,7 +144,8 @@ function MyPage() {
         <div className='mypage'>
             <div className="mypageMenu">
                 <div className='userInfo'>
-                    <img src={profileImg} alt="프로필 이미지" />
+                    <img src={user?.imageLink == "a.jpg" || user?.imageLink == "userDefault.jpg" || user?.imageLink == null ? require("../../assets/images/userDefault.jpg") : user?.imageLink}
+                        alt="프로필 이미지" />
                     <div>
                         <div className='name'>{user.userName}</div>
                         <div className='email'>{user.email}</div>
@@ -131,26 +167,26 @@ function MyPage() {
                                     <div onClick={() => setFilterType("minus")} className={filterType === "minus" ? "active" : ""}> - </div>
                                 </div>
                                 <div className='dropdownItemContent'>
-                            {filteredLogs.map((log) => {
-                                const pointValue =
-                                    log.addPoint !== 0 ? `+${formatNumber(log.addPoint)}` : `-${formatNumber(log.usedPoint)}`;
-                                return (
-                                <div key={log.pointId} className="dropdownItem">
-                                    <div className="pointDate">{log.pointDateTime}</div>
-                                    <div className={`pointValue ${log.addPoint !== 0 ? "plus" : "minus"}`}>
-                                        {pointValue} Point
-                                    </div>
-                                </div>
-                                );
-                            })}
+                                    {filteredLogs.map((log) => {
+                                        const pointValue =
+                                            log.addPoint !== 0 ? `+${formatNumber(log.addPoint)}` : `-${formatNumber(log.usedPoint)}`;
+                                        return (
+                                            <div key={log.pointId} className="dropdownItem">
+                                                <div className="pointDate">{log.pointDateTime}</div>
+                                                <div className={`pointValue ${log.addPoint !== 0 ? "plus" : "minus"}`}>
+                                                    {pointValue} Point
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         )}
                     </div>
 
                     <div className='cuponSubContainer'>
-                        <div>쿠폰</div>
-                        <div>3개</div>
+                        <div>반납요청 가능 건수</div>
+                        <div>{returnDeadlineCount}</div>
                     </div>
                 </div>
 
@@ -170,12 +206,11 @@ function MyPage() {
                     <div>배송완료</div>
                 </div>
                 <div className='rentalStatusNumberBox'>
-                    <div>{rentalState.length > 0 ? rentalState[0].count : 0}</div>
-                    <div>{rentalState.length > 2 ? rentalState[2].count : 0}</div>
-                    <div>{rentalState.length > 1 ? rentalState[1].count : 0}</div>
-                    <div>{rentalState.length > 3 ? rentalState[3].count : 0}</div>
+                    <div>{rentalState?.find(item => item.rentalState === '예약대기')?.count || 0}</div>
+                    <div>{rentalState?.find(item => item.rentalState === '예약완료')?.count || 0}</div>
+                    <div>{rentalState?.find(item => item.rentalState === '배송중')?.count || 0}</div>
+                    <div>{rentalState?.find(item => item.rentalState === '배송완료')?.count || 0}</div>
                 </div>
-
 
                 <div className='userMypageTap'>
                     <div className='tapTitle'>나의 활동</div>

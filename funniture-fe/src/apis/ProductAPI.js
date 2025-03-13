@@ -38,9 +38,6 @@ export async function getSubAllCategory() {
 // 검색 조건에 상응하는 데이터 조회
 export async function getProductList({ conditions, refCategoryCode, pageNum, paging } = {}) {
 
-    console.log("검색 조건 : ", conditions)
-    console.log("pageNum : ", pageNum)
-
     const url = '/product'
     const params = new URLSearchParams()
 
@@ -72,11 +69,7 @@ export async function getProductList({ conditions, refCategoryCode, pageNum, pag
         params.append("pageNum", pageNum)
     }
 
-    console.log("검색 조건 결과 요청 params : ", params.toString())
-
     const response = await getData(url, params)
-
-    console.log("데이터 가져온 결과임!!!!!!!!!!!!!!!!!! : ", response)
 
     return response
 }
@@ -124,8 +117,6 @@ export async function changeProductStatus(productNoList, changeStatueValue) {
             changeStatus: changeStatueValue
         })
     }).then(res => res.json())
-
-    console.log("상품 상태 정보 수정 : ", response)
     return response
 }
 
@@ -134,13 +125,10 @@ export function getProductListByOwnerNo(ownerNo) {
 
     return async (dispatch) => {
         try {
-            console.log("ownerNo : ", ownerNo)
 
             const url = `/product/owner?ownerNo=${ownerNo}`
 
             const response = await getData(url)
-
-            console.log("제공자의 전체 상품 정보 response : ", response)
 
             dispatch({
                 type: GET_PRODUCTLIST_BY_OWNERNO,
@@ -166,9 +154,6 @@ export async function getProductDetailInfo(productNo) {
 
 // 상품 등록하기
 export async function registerProduct(dispatch, formData, rentalOptions, productImage) {
-    console.log("API formData : ", formData)
-    console.log("API rentalOptions : ", rentalOptions)
-    console.log("API productImage : ", productImage)
 
     dispatch({ type: REGISTER_PRODUCT_REQUEST })
 
@@ -207,10 +192,6 @@ export async function registerProduct(dispatch, formData, rentalOptions, product
 export async function modifyProductInfo({ dispatch, formData, rentalOptions, productImage, productNo }) {
     dispatch({ type: EDIT_PRODUCT_REQUEST })
 
-    console.log("API 전달 할 데이터 formData : ", formData)
-    console.log("API 전달 할 데이터 rentalOptions : ", rentalOptions)
-    console.log("API 전달 할 데이터 productImage : ", productImage)
-
     const data = new FormData();
     data.append("formData", new Blob([JSON.stringify(formData)], { type: "application/json" })); // formData를 JSON 문자열로 추가
     data.append("rentalOptions", new Blob([JSON.stringify(rentalOptions)], { type: "application/json" })); // rentalOptions를 JSON 문자열로 추가
@@ -226,14 +207,11 @@ export async function modifyProductInfo({ dispatch, formData, rentalOptions, pro
         }
     })
 
-    console.log("수정API 응답 : ", response)
-
     return response?.data
 }
 
 // react quill 이미지 업로드
 export async function uploadQuillImg(switchFile) {
-    console.log("switchFile : ", switchFile)
 
     const url = `/product/quillimg`
 
@@ -246,24 +224,29 @@ export async function uploadQuillImg(switchFile) {
         }
     })
 
-    console.log("uploadUrlData : ", response)
-
     return response?.data
 }
 
 // 최근 본 상품 정보 가져오기
 export async function getResentProduct(recentList) {
-    console.log("전송하는 데이터 : ", recentList)
 
     const url = "/product/recentlist"
 
     const response = await api.post(url, recentList)
 
-    console.log("상품 정보 결과 : ", response)
-
     if (response?.status == 200) {
         return response?.data
     }
+}
+
+// 카테고리별 상품 등록 현황 가져오기
+export async function getProductCount() {
+
+    const url = "/product/count"
+
+    const response = await api.get(url)
+
+    return response.data.results
 }
 
 // 공용

@@ -77,17 +77,16 @@ function Login() {
     {/* 작업을 위해 주석해둠. 로그인 유효성 검증 부분!
      지우지 말 것!!!!!!!!!!!!! */}
     const onClickLoginHandler = async () => {
-        // if (!emailValid || !passwordValid) {
-        //     setModalMessage('이메일 또는 비밀번호를 올바르게 입력해 주세요.');
-        //     setShowBtnModal(true);
-        //     return;
-        // }
+        if (!emailValid || !passwordValid) {
+            setModalMessage('이메일 또는 비밀번호를 올바르게 입력해 주세요.');
+            setShowBtnModal(true);
+            return;
+        }
 
         const response = await dispatch(callLoginAPI({ form })); // response는 { success, message } 형태
         if (response.success) {
             const token = decodeJwt(window.localStorage.getItem("accessToken"));
             if (token) {
-                console.log("로그인 성공! 유효한 토큰:", token);
                 setModalMessage(response.message || '로그인 성공!');
                 setIsLoginSuccess(true); // 로그인 성공 상태 설정
                 setShowBtnModal(true); // 모달 표시
@@ -160,16 +159,10 @@ function Login() {
 
                             {/* 작업을 위해 주석해둠. 로그인 활성화 비활성화 여부
                                          지우지 말 것!!!!!!!!!!!!! */}
-                            {/* <div className={`loginBtn ${isLoginEnabled ? 'enabled' : ''}`}>
+                            <div className={`loginBtn ${isLoginEnabled ? 'enabled' : ''}`}>
                                 <button
                                     onClick={onClickLoginHandler}
                                     disabled={!isLoginEnabled}>
-                                    로그인
-                                </button>
-                            </div> */}
-                            <div>
-                                <button className={`loginBtn enabled`}
-                                    onClick={onClickLoginHandler}>
                                     로그인
                                 </button>
                             </div>
@@ -179,13 +172,13 @@ function Login() {
                                 <span onClick={() => navigate('/signup')}>이메일로 회원가입</span>
                             </div>
 
-                            <div className="socialLogin">
+                            {/* <div className="socialLogin">
                                 <label style={{ color: '#898888' }}>다른 방법으로 로그인</label>
                                 <div className="socialButtons">
                                     <button className="socialButton naver">N</button>
                                     <button className="socialButton google">G</button>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

@@ -9,13 +9,15 @@ function UserRouter() {
     const navigate = useNavigate();
 
     // 일반 사용자가 아닌 경우 홈 페이지로 리디렉트
-    // useEffect(() => {
-    //     if (user.memberId != '') {
-    //         if (user.memberRole != "USER") {
-    //             navigate("/restrict")
-    //         }
-    //     }
-    // }, [user])
+    useEffect(() => {
+        if (user.memberId != '') {
+            if (user.memberRole != "USER") {
+                navigate("/restrict")
+            }
+        } else {
+            navigate('/')
+        }
+    }, [user])
 
     // 로그인된 경우 정상적으로 해당 컴포넌트를 렌더링
     return <Outlet />;

@@ -45,7 +45,6 @@ function AdminLeaver() {
     const fetchLeaverList = async (pageNum = 1) => {
         try {
             const data = await callLeaverUserByAdminAPI(pageNum);
-            console.log('data', data);
             setLeaverList(data.results.result.data);
             setPageInfo(data.results.result.pageInfo);
         } catch (error) {
@@ -54,7 +53,6 @@ function AdminLeaver() {
     };
 
     useEffect(() => {
-        console.log('관리자 페이지, 탈퇴자 useEffect 실행');
         callLeaverUserByAdminAPI(1);
     }, []);
 

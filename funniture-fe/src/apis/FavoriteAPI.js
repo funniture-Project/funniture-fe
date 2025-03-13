@@ -10,8 +10,6 @@ export function getFavoriteList(memberId) {
 
             const response = await getData(url)
 
-            console.log("response : ", response)
-
             if (response.httpStatusCode == 200) {
 
                 dispatch({
@@ -45,16 +43,12 @@ export async function getFavoriteInfoList(memberId) {
 export async function updateFavoriteList(memberId, favoriteList) {
     const url = `/favorite/update`
 
-    console.log("API 보내기 전 : ", memberId, favoriteList)
-
     const data = {
         memberId,
         favoriteList
     }
 
     const response = await api.post(url, data)
-
-    console.log("response 입니다 : ", response)
 
 }
 

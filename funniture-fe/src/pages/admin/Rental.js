@@ -256,7 +256,7 @@ function Rental() {
                                             <p>
                                             {item.rentalStartDate && item.rentalEndDate
                                                 ? `${item.rentalStartDate} ~ ${item.rentalEndDate}`
-                                                : "배송전"}
+                                                : "-"}
                                             </p>
                                         </div>
                                         <div style={{ width: '5%' }}><p>{item.rentalNumber}</p></div>

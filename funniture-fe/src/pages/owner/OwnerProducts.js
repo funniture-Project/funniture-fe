@@ -22,16 +22,10 @@ function OwnerProducts() {
     }
 
     useEffect(() => {
-        console.log("제공자 정보 : ", user)
-
         if (user) {
             getData(user.memberId)
         }
     }, [user])
-
-    useEffect(() => {
-        console.log("ownerAllProductList : ", ownerAllProductList)
-    }, [ownerAllProductList])
 
     useEffect(() => {
         if (ownerAllProductList.length > 0) {
@@ -46,9 +40,6 @@ function OwnerProducts() {
 
         const status = document.getElementById("status").value
 
-        console.log("status : ", status)
-        console.log("checkList : ", checkList)
-
         const response = await changeProductStatus(checkList, status)
 
         if (response.httpStatusCode == 204) {
@@ -61,7 +52,6 @@ function OwnerProducts() {
     }
 
     async function NotSale(productNo) {
-        console.log("productNo : ", productNo)
 
         const response = await changeProductStatus([productNo], "판매종료")
 

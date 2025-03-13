@@ -87,7 +87,7 @@ function OwnerSales() {
 
     // 총 정산 금액 계산 (수수료 5% 제외)
     function calculateTotalSettlement(filteredSales) {
-        return filteredSales.reduce((acc, item) => acc + (item.rentalPrice * item.rentalNumber * 0.95), 0);
+        return filteredSales.reduce((acc, item) => acc + (((item.rentalPrice) * item.rentalNumber * 0.95)), 0);
     }
     
 
@@ -150,7 +150,7 @@ function OwnerSales() {
                                     <td style={{ width: "11%" }}>{item.rentalNo}</td>
                                     <td style={{ width: "11%" }}>{item.productNo}</td>
                                     <td style={{ width: "20%" }}>{item.productName}</td>
-                                    <td style={{ width: "8%" }}>{item.memberId}</td>
+                                    <td style={{ width: "8%" }}>{item.userName}</td>
                                     <td style={{ width: "8%" }}>{item.rentalNumber}</td>
                                     <td style={{ width: "9%" }}>{(item.rentalPrice * item.rentalNumber).toLocaleString()} 원</td>
                                     <td style={{ width: "11%" }}>{formatDate(item.orderDate)}</td>
@@ -164,8 +164,8 @@ function OwnerSales() {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="8" style={{ textAlign: "center" }}>
-                                    데이터가 없습니다.
+                                <td colSpan="9" style={{ textAlign: "center", fontSize:"1.2em"}}>
+                                    예약 내역이 없습니다.
                                 </td>
                             </tr>
                         )}

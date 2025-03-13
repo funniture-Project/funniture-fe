@@ -6,8 +6,6 @@ function LoginRouter() {
 
     const { user } = useSelector(state => state.member)
 
-    console.log("user 정보 : ", user)
-
     // 로그인하지 않은 경우 로그인 페이지로 리디렉트
     // if (!user.memberId) {
     //     return <Navigate to="/login" />;

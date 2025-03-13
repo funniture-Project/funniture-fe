@@ -46,29 +46,7 @@ function AdminDirectPage() {
         setOrderBy("desc")
     }, [showTab, userList]); // showTab 또는 userList가 변경될 때 실행
 
-    // function handleOrderByChange(e) {
-    //     const newOrderBy = e.target.value;
-    //     setOrderBy(newOrderBy)
-
-    //     if (newOrderBy === "desc") {
-    //         const acsList = [...filteredUserList]
-    //         setFilteredUserList(acsList)
-    //     } else if (newOrderBy === "asc") {
-    //         const descList = [...filteredUserList].reverse()
-    //         setFilteredUserList(descList)
-    //     }
-    // }
-
-    useEffect(() => {
-        console.log("순서 변경 : ", filteredUserList)
-    }, [filteredUserList])
-
-    useEffect(() => {
-        console.log("orderBy: ", orderBy)
-    }, [orderBy])
-
     async function getUserChatData(memberId) {
-        console.log("클릭한 memberId : ", memberId)
         const response = await getUSerInquiryList({ memberId })
 
         if (response.httpStatusCode == 200) {
@@ -83,9 +61,6 @@ function AdminDirectPage() {
     }, [selectUserNo])
 
     useEffect(() => {
-        console.log("=================================")
-        console.log("회원 문의 정보 userSend : ", inquiryList)
-        console.log("=================================")
 
         const textareaBox = document.querySelector(`#inputContent`);
         const chatBox = document.querySelector("#directChatListBox")
@@ -110,8 +85,6 @@ function AdminDirectPage() {
     }
 
     async function sendContent() {
-        console.log("입력 내용 insert 대기 : ", deValue)
-        console.log("selectUserNo : ", selectUserNo)
 
         if (selectUserNo != '' && selectUserNo != null && selectUserNo != undefined) {
 
@@ -132,8 +105,6 @@ function AdminDirectPage() {
     }
 
     useEffect(() => {
-        console.log("현재의 기준 : ", orderBy)
-        console.log("실행")
 
         if (orderBy) {
             setFilteredUserList((prev) => prev.reverse())
