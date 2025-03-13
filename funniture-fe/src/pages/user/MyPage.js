@@ -59,12 +59,17 @@ function MyPage() {
         }
     }
 
+    // 포인트
+    useEffect(() => {
+        getCurrentPointData(memberId);
+    }, [memberId]);
+
     // 예약진행상태별 카운트 데이터 가져오는 함수
     async function getRentalStateData() {
         try {
             const data = await getRentalStateList(memberId);
             const states = data.results.rentalStateCount;
-
+            
             setRentalState(states);
 
         } catch (error) {
@@ -75,10 +80,10 @@ function MyPage() {
 
     // 랜더링 시 데이터 불러오기
     useEffect(() => {
-        getCurrentPointData(memberId);
         getRentalStateData(memberId);
-
     }, [memberId]);
+
+    
 
     // 반납 예정 갯수 데이터 가져오는 함수
     async function fetchRentalData(memberId) {
@@ -201,10 +206,10 @@ function MyPage() {
                     <div>배송완료</div>
                 </div>
                 <div className='rentalStatusNumberBox'>
-                    <div>{rentalState?.[0]?.count || 0}</div>
-                    <div>{rentalState?.[1]?.count || 0}</div>
-                    <div>{rentalState?.[2]?.count || 0}</div>
-                    <div>{rentalState?.[3]?.count || 0}</div>
+                    <div>{rentalState?.find(item => item.rentalState === '예약대기')?.count || 0}</div>
+                    <div>{rentalState?.find(item => item.rentalState === '예약완료')?.count || 0}</div>
+                    <div>{rentalState?.find(item => item.rentalState === '배송중')?.count || 0}</div>
+                    <div>{rentalState?.find(item => item.rentalState === '배송완료')?.count || 0}</div>
                 </div>
 
                 <div className='userMypageTap'>
