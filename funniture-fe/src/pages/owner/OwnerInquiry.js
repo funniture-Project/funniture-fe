@@ -11,9 +11,6 @@ function OwnerInquiry() {
     const ownerInquiry = useSelector(state => state.owner?.inquiries?.result || []);
     const pageInfo = useSelector(state => state.owner?.pageInfo || null);  // pageInfo 가져오기
     const comment = useSelector((state) => state.owner?.comment);
-    console.log('owner comment : ' , comment);
-    console.log('pageInfo', pageInfo);
-    console.log('ownerInquiry', ownerInquiry);
     const dispatch = useDispatch();
 
     // 모달 상태 관리
@@ -251,7 +248,6 @@ function OwnerInquiry() {
                     }
                     onSuccess={handleRegisterAnswer} // 등록 버튼 클릭 시 실행
                     onFail={() => {
-                        console.log("답변 등록 취소");
                         setShowModal(false); // 모달 닫기
                     }}
                 />

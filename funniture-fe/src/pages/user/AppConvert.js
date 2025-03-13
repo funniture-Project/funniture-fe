@@ -2,9 +2,8 @@ import OrdersCss from './orders.module.css';
 // import './editsInfo.css';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import decodeJwt from '../../utils/tokenUtils';
 import { callRegisterOwnerAPI, callConvertImageAPI, checkOwnerStatusAPI, callUpdateOwnerAPI , getRejectedMessage, getCheckStoreNoAPI} from '../../apis/MemberAPI';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import basicImage from '../../assets/images/Adobe Express - file.png'
 import BtnModal from '../../component/BtnModal';
 import SubmissionMessage from './SubmissionMessage';
@@ -12,8 +11,6 @@ import SubmissionMessage from './SubmissionMessage';
 function AppConvert() {
 
     const member = useSelector(state => state.member);
-    console.log('member : ', member);
-    console.log('member.user : ', member.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -95,38 +92,7 @@ function AppConvert() {
           setStoreNoErrorMessage(error.message || '제공자 신청 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
       };
-        
 
-    // const handleSubmit = async () => {
-    //     if (!validateForm()) {
-    //         setShowErrorModal(true); // 필수값 누락 모달
-    //         return;
-    //     }
-    
-    //     try {
-    //         // 서버에 사업자 번호 중복 여부 확인 요청
-    //         const response = await getCheckStoreNoAPI(member.user.memberId, form.storeNo);
-    
-    //         console.log('getCheckStoreNoAPI 갔다 오고 response : ', response);
-    //         if (response.data.httpStatusCode === 400) { // 중복된 경우
-    //             setIsStoreNoDuplicate(true);
-    //             setStoreNoErrorMessage('중복된 사업자 번호입니다.');
-    //             return; // 중단
-    //         }
-    
-    //         // 중복이 아닌 경우 신청 진행
-    //         if (isAlreadyRegistered) {
-    //             updateOnClickHandler();
-    //         } else {
-    //             registerOnClickHandler();
-    //         }
-    //     } catch (error) {
-    //         console.error('사업자 번호 중복 확인 중 오류 발생:', error);
-    //         setIsStoreNoDuplicate(true);
-    //         setStoreNoErrorMessage('사업자 번호 확인 중 오류가 발생했습니다.');
-    //     }
-    // };
-      
       const handleSuccessClose = () => {
         setShowSuccessModal(false);
         };
@@ -159,7 +125,6 @@ function AppConvert() {
             const response = await checkOwnerStatusAPI(member.user.memberId);
     
             console.log('서버 갔다온 fetchOwnerStatus의 response : ' , response);
-            console.log('서버 갔다온 fetchOwnerStatus의 response.data.results.status : ' , response.data.results.status);
     
             if (response.data.results.status === "PENDING") {
                 setIsSubmitted(true);
@@ -177,10 +142,7 @@ function AppConvert() {
     
                 // 반려 메시지 가져오기
                 const rejectedResponse = await getRejectedMessage(member.user.memberId);
-                console.log('rejectedResponse : ' , rejectedResponse);
-                console.log('rejectedResponse.data.results.result.rejectionReason : ' , rejectedResponse.data.results.result.reasonRejection);
                 const rejectedMessage = rejectedResponse.data.results.result.reasonRejection;
-                console.log('rejectedMessage : ' , rejectedMessage);
                 setRejectionReason(rejectedMessage);
             } else if (response.data.results.status === "APPROVED") {
                 setIsSubmitted(true);
@@ -213,7 +175,6 @@ function AppConvert() {
     const owner = useSelector(state => state.member.owner);
     useEffect(() => {
         if (owner && owner.memberId) {
-            console.log('owner 데이터:', owner);
             setIsSubmitted(true);
         }
     }, [owner]);

@@ -8,9 +8,7 @@ function OwnerReview() {
 
     const { user } = useSelector(state => state.member);
     const ownerReview = useSelector(state => state.owner?.reviews?.result || []);
-    console.log('ownerReview : ', ownerReview);
     const pageInfo = useSelector(state => state.owner?.pageInfo || null);
-    console.log('pageInfo', pageInfo);
     const dispatch = useDispatch();
 
     const [isLoading, setIsLoading] = useState(true);

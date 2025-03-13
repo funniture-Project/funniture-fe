@@ -31,7 +31,6 @@ const LOCAL_BACKEND = process.env.REACT_APP_LOCAL_BACKEND;
     // 아래 구문은 axios에서 제공하는 것들로 신경안 써도 됨
     api.interceptors.request.use(
         (request) => {
-            // console.log('Starting Request', request);
             request.headers.authorization = `Bearer ${localStorage.getItem('accesstoken')}`;
             return request;
         },
