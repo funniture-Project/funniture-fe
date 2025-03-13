@@ -48,8 +48,6 @@ function Main() {
             if (response.httpStatusCode == 200) {
                 setIngList(response.results.activeRentalList)
             }
-
-            console.log("반납 예정 : ", response)
         }
 
         if (user.memberId != '' && user.memberRole == 'USER') {

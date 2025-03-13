@@ -94,8 +94,6 @@ function AdminMain() {
     async function getConnectData() {
         const response = await getConnectInfo()
 
-        console.log("화면단 : ", response)
-
         if (response.results?.result.length > 0) {
             const filteredOwner = response.results.result.filter(data => data.connectAuth == "OWNER")
             setOwnerConnect(setConnectData(filteredOwner, connectDays))
@@ -121,12 +119,6 @@ function AdminMain() {
             getConnectData()
         }
     }, [connectDays])
-
-    useEffect(() => {
-        console.log("ownerConnect : ", ownerConnect)
-        console.log("userConnect : ", userConnect)
-        console.log("connectDays : ", connectDays)
-    }, [ownerConnect, userConnect, connectDays])
 
     // 이번달 날짜 배열 만들기 (오늘까지만)
     function getDayArray(year, month) {
@@ -400,30 +392,19 @@ function AdminMain() {
         const month = (new Date().getMonth() + 1).toString().padStart(2, '0')
         const yearMonth = year + '-' + month
 
-        console.log("날짜 예상 : ", yearMonth)
-
         async function getTop5() {
             const reposne = await getTopMonthlySales(yearMonth)
 
             if (reposne.results != null) {
                 const dataList = reposne.results.topSalesData
 
-                console.log(dataList)
-
                 setTopLabel(dataList.map(item => item.storeName))
                 setTopValue(dataList.map(item => item.totalSales))
             }
-
-            console.log("top5 제공자 매출 : ", reposne)
         }
 
         getTop5();
     }, [])
-
-    useEffect(() => {
-        console.log("topLabel : ", topLabel)
-        console.log("topValue : ", topValue)
-    }, [topLabel, topValue])
 
     const TopOwner = () => {
 

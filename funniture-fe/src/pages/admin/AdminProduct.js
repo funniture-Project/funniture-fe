@@ -39,8 +39,6 @@ function AdminProduct() {
 
             setCategoryList(subCategoryData)
 
-            console.log("페이징된 데이터임!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-            console.log("productData : ", productData)
             //productList
             setProductList(productData.results?.result)
             setPageInfo(productData.results?.pageInfo)
@@ -56,12 +54,9 @@ function AdminProduct() {
     };
 
     useEffect(() => {
-        console.log("페이지 변경")
 
         async function getData() {
             const response = await getProductList({ pageNum, paging: true })
-
-            console.log(response)
 
             if (response) {
                 setProductList(response.results?.result)
@@ -80,7 +75,6 @@ function AdminProduct() {
             setPageInfo(searchProduct.results?.pageInfo)
             setErrorMsg('')
         } else {
-            console.log("결과없음")
             setProductList([])
             setPageInfo(null)
             setErrorMsg(searchProduct.message)
@@ -88,7 +82,6 @@ function AdminProduct() {
     }
 
     function changeHandler(e) {
-        console.log(e.target)
 
         setSearchCondition(prev => {
             if (e.target.name == 'categoryCodeList' || e.target.name == 'ownerNo') {
@@ -116,8 +109,6 @@ function AdminProduct() {
         const productListData = await getProductList({ pageNum: 1, paging: true });
         setProductList(productListData.results.result)
         setPageInfo(productListData.results?.pageInfo)
-
-        console.log("productListData : ", productListData.results.result)
     }
 
     async function handleSubmit(e) {
@@ -126,7 +117,6 @@ function AdminProduct() {
         const productNoList = data.getAll("productNo")
 
         const response = await changeProductStatus(productNoList, changeStatue)
-        console.log("response : ", response)
 
         if (response.httpStatusCode == 204) {
             const productListData = await getProductList({ pageNum: 1, paging: true });

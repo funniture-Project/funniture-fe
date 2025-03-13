@@ -84,7 +84,6 @@ function OwnerRegister() {
         }
 
         reader.onload = (e) => {
-            console.log("e.target : ", e.target)
             imgShowBox.style.backgroundImage = `url(${e.target.result})`
         }
     }
@@ -119,13 +118,8 @@ function OwnerRegister() {
         setRentalOptions(updatedOptions);
     }
 
-    useEffect(() => {
-        console.log("변경된 rentalOptions (비동기 체크):", rentalOptions);
-    }, [rentalOptions]);
 
     // react-quill 이미지 주소 바꿔치기
-
-
 
     // img태그의 src만 추출하는 정규식
     const gainSource = /(<img[^>]*src\s*=\s*[\"']?([^>\"']+)[\"']?[^>]*>)/g
@@ -218,12 +212,8 @@ function OwnerRegister() {
         setShowBtnModal(true)
         setModalMSg("상품 등록 중")
 
-        console.log("src 변경전 updatedDescription : ", updatedDescription)
-
         if (gainSource.test(description)) {  // description에 이미지가 있을 때만 처리
             updatedDescription = await saveQuillImg(description);
-
-            console.log("src 변경한 updatedDescription : ", updatedDescription)
         }
 
         // 보낼 데이터 생성
@@ -243,13 +233,6 @@ function OwnerRegister() {
             // 상품 정보 수정
             if (editProduct) {
                 (async () => {
-
-                    console.log("수정하러 출발!!!!!!!!!!!")
-
-                    console.log("전달 전의 수정 sendFormData : ", sendFormData)
-                    console.log("전달 전의 수정 rentalOptions : ", rentalOptions)
-                    console.log("전달전의 productImage : ", productImage)
-
                     try {
                         const response = await modifyProductInfo({ dispatch, formData: sendFormData, rentalOptions, productImage, productNo: editProduct.productNo })
 
@@ -269,11 +252,8 @@ function OwnerRegister() {
             } else {
                 // 새롭게 등록록
                 (async () => {
-                    console.log("등록하러 출발!!!!!!!!!!!")
                     try {
                         const response = await registerProduct(dispatch, sendFormData, rentalOptions, productImage)
-
-                        console.log("response : ", response)
 
                         // 등록 성공
                         if (response.httpStatusCode == 201) {
@@ -340,14 +320,6 @@ function OwnerRegister() {
     }, [sendFormData])
 
     useEffect(() => {
-        console.log("modalMSg : ", modalMSg)
-        console.log("sendFormData : ", sendFormData)
-    }, [sendFormData, modalMSg])
-
-    useEffect(() => {
-        console.log("loading 변경 입니다. : ", loading)
-        console.log("msg : ", msg)
-        console.log("error : ", error)
         if (!loading) {
             setModalMSg(msg?.trim() != '' ? msg : error)
         } else {
@@ -360,7 +332,6 @@ function OwnerRegister() {
     const location = useLocation();
 
     const editProduct = location.state?.product;
-    console.log("location.state.product : ", location.state?.product)
 
     useEffect(() => {
         if (editProduct) {
@@ -420,10 +391,6 @@ function OwnerRegister() {
             modules: ['Resize', 'DisplaySize']
         },
     }
-
-    useEffect(() => {
-        console.log("description : ", description)
-    }, [description])
 
     return (
         <div className={OwRegisterCss.wholeContainer}>

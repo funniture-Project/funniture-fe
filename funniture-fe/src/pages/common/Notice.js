@@ -27,7 +27,6 @@ function Notice() {
     }, [])
 
     useEffect(() => {
-        console.log("noticeList : ", noticeList)
         if (noticeList.length > 0) {
 
             if (user?.memberId == '' || user.memberRole == 'USER') {
@@ -43,10 +42,6 @@ function Notice() {
             }
         }
     }, [noticeList])
-
-    useEffect(() => {
-        console.log("걸러진 공지사항 : ", filteredList)
-    }, [filteredList])
 
     useEffect(() => {
         const find = filteredList.find(item => item.noticeNo == selectNum)

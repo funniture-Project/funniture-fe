@@ -32,7 +32,6 @@ function AdminManageChat() {
     ]);
 
     function getListData() {
-        console.log("현재 볼 단계 : ", selectLevel)
         dispatch(getChatQaList({ levelNum: selectLevel }))
     }
 
@@ -41,14 +40,11 @@ function AdminManageChat() {
     }, [selectLevel])
 
     useEffect(() => {
-        console.log("chatQaList : ", chatQaList)
-        console.log("refList : ", refList)
 
         setCurrentList(chatQaList)
     }, [chatQaList])
 
     useEffect(() => {
-        console.log("currentList : ", currentList)
 
         currentList.forEach(item => {
             const textarea = document.querySelector(`textarea[data-textarea-id='${item.chatQaNo}']`);
@@ -72,7 +68,6 @@ function AdminManageChat() {
     }, [currentList])
 
     const handleChange = (id, value, object) => {
-        console.log("클릭 받은 것 id : ", id, " value : ", value, " object : ", object)
 
         setCurrentList((prev) =>
             prev.map((item) =>

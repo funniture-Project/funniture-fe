@@ -100,7 +100,6 @@ function Header({ setSelectCategory }) {
 
 
     const moveMyPage = () => {
-        console.log("현재 유저 역할:", userRole); // 디버깅용
         if (userRole === 'USER') {
             navigate('/mypage');
         } else if (userRole === 'OWNER') {
