@@ -27,7 +27,7 @@ function AdminLayout() {
         <div className="adminPage">
             {/* 어드민 페이지 메뉴 바 */}
             <div className="adminMenuBar">
-                <img className='chairImg' src={imgLogoWhite} alt="로고이미지" onClick={() => navigate("/admin")} />
+                <img className='chairImg' src='/assets/images/logo-image-white.png' alt="로고이미지" onClick={() => navigate("/admin")} />
                 <img src={textLogoWhite} alt="로고이미지" onClick={() => navigate("/admin")} />
 
                 <div className="menus">

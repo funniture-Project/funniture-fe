@@ -8,7 +8,7 @@ const Pagination = ({ pageInfo, onPageChange }) => {
     }
 
     const { total, cri } = pageInfo;
-    const { pageNum, amount} = cri;
+    const { pageNum, amount } = cri;
 
     // 전체 페이지 수 계산
     const totalPages = Math.ceil(total / amount);
@@ -28,13 +28,13 @@ const Pagination = ({ pageInfo, onPageChange }) => {
         <div className={paginationCss.pagination}>
             {/* 이전 페이지 버튼 */}
             <img
-                src={require(`../assets/icon/angles-left-solid.svg`).default}
+                src='/assets/icon/angles-left-solid.svg'
                 alt="페이지 맨앞으로 가는 아이콘"
                 onClick={() => pageNum > 1 && handlePageChange(1)}  // 맨앞 페이지
                 className={pageNum > 1 ? '' : paginationCss.disabled}
             />
             <img
-                src={require(`../assets/icon/angle-left-solid.svg`).default}
+                src='/assets/icon/angle-left-solid.svg'
                 alt="페이지 이전 아이콘"
                 onClick={() => pageNum > 1 && handlePageChange(pageNum - 1)}  // 이전 페이지
                 className={pageNum > 1 ? '' : paginationCss.disabled}
@@ -53,13 +53,13 @@ const Pagination = ({ pageInfo, onPageChange }) => {
 
             {/* 다음 페이지 버튼 */}
             <img
-                src={require(`../assets/icon/angle-right-solid.svg`).default}
+                src='/assets/icon/angle-right-solid.svg'
                 alt="페이지 다음 아이콘"
                 onClick={() => pageNum < totalPages && handlePageChange(pageNum + 1)}  // 다음 페이지
                 className={pageNum < totalPages ? '' : paginationCss.disabled}
             />
             <img
-                src={require(`../assets/icon/angles-right-solid.svg`).default}
+                src='/assets/icon/angles-right-solid.svg'
                 alt="페이지 맨뒤로 가는 아이콘"
                 onClick={() => pageNum < totalPages && handlePageChange(totalPages)}  // 맨뒤 페이지
                 className={pageNum < totalPages ? '' : paginationCss.disabled}

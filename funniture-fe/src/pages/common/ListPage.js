@@ -130,7 +130,7 @@ function ListPage({ selectCategory, selectCompany }) {
                                             alt="상품 사진" />
 
                                         {product.productStatus == "품절" ?
-                                            <img className={listCss.soldOutLabel} src={require('../../assets/images/soldout_label1.png')} />
+                                            <img className={listCss.soldOutLabel} src='/assets/images/soldout_label1.png' />
                                             : null
                                         }
                                     </div>

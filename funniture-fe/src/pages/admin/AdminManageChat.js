@@ -235,7 +235,7 @@ function AdminManageChat() {
                             <div className={AdManaChatCss.deleteBtn}>
                                 <div>
                                     <button>
-                                        <img src={require("../../assets/icon/minus-solid.svg").default} alt="삭제 버튼"
+                                        <img src='assets/icon/minus-solid.svg' alt="삭제 버튼"
                                             onClick={() => deleteChatItem(item.chatQaNo)} />
                                     </button>
                                 </div>

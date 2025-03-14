@@ -69,7 +69,7 @@ function MyPage() {
         try {
             const data = await getRentalStateList(memberId);
             const states = data.results.rentalStateCount;
-            
+
             setRentalState(states);
 
         } catch (error) {
@@ -83,7 +83,7 @@ function MyPage() {
         getRentalStateData(memberId);
     }, [memberId]);
 
-    
+
 
     // 반납 예정 갯수 데이터 가져오는 함수
     async function fetchRentalData(memberId) {
@@ -144,7 +144,7 @@ function MyPage() {
         <div className='mypage'>
             <div className="mypageMenu">
                 <div className='userInfo'>
-                    <img src={user?.imageLink == "a.jpg" || user?.imageLink == "userDefault.jpg" || user?.imageLink == null ? require("../../assets/images/userDefault.jpg") : user?.imageLink}
+                    <img src={user?.imageLink == "a.jpg" || user?.imageLink == "userDefault.jpg" || user?.imageLink == null ? '/assets/images/userDefault.jpg' : user?.imageLink}
                         alt="프로필 이미지" />
                     <div>
                         <div className='name'>{user.userName}</div>

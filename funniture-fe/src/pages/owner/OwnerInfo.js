@@ -46,14 +46,14 @@ function OwnerInfo() {
                 </div>
             </div>
             <div className={OwInfoCss.ownerPdf}>
-                {ownerInfo.attechmentLink === "Samsung_1234567890.pdf" || ownerInfo.attechmentLink == null ? 
-                <img src={require("../../assets/images/free-icon-no-file-11202705.png")} alt="사업자 등록증" />
-                :
+                {ownerInfo.attechmentLink === "Samsung_1234567890.pdf" || ownerInfo.attechmentLink == null ?
+                    <img src='/assets/images/free-icon-no-file-11202705.png' alt="사업자 등록증" />
+                    :
                     <embed
-                    src={ownerInfo.attechmentLink}
-                    type="application/pdf"
-                    width="100%"
-                    height="100%"
+                        src={ownerInfo.attechmentLink}
+                        type="application/pdf"
+                        width="100%"
+                        height="100%"
                     />
                 }
             </div>

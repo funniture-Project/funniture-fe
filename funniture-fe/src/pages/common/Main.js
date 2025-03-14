@@ -111,7 +111,7 @@ function Main() {
                 <div className='mainContentBox'>
                     <div className='title'>
                         <div>
-                            <img src={require(`../../assets/icon/review.svg`).default} alt="리뷰 아이콘" />
+                            <img src='/assets/icon/review.svg' alt="리뷰 아이콘" />
                             <span>반납</span> 예정 상품
                         </div>
                     </div>
@@ -123,7 +123,7 @@ function Main() {
                                     <>
                                         <div className='returnItem'>
                                             <div className='imgBox'>
-                                                <img src={item.productImageLink == 'a.jpg' || item.productImageLink == 'default.jpg' ? require("../../assets/images/default.jpg") : item.productImageLink}
+                                                <img src={item.productImageLink == 'a.jpg' || item.productImageLink == 'default.jpg' ? '/assets/images/default.jpg' : item.productImageLink}
                                                     alt="상품 이미지" />
                                             </div>
                                             <div>{item.productName}</div>
@@ -148,7 +148,7 @@ function Main() {
             <div className='mainContentBox'>
                 <div className='title'>
                     <div>
-                        <img src={require(`../../assets/icon/review.svg`).default} alt="리뷰 아이콘" />
+                        <img src='/assets/icon/review.svg' alt="리뷰 아이콘" />
                         <span>Best</span> 리뷰
                     </div>
                 </div>
@@ -172,7 +172,7 @@ function Main() {
             <div className='mainContentBox'>
                 <div className='title'>
                     <div>
-                        <img src={require(`../../assets/icon/notice_icon.svg`).default} alt="공지사항항 아이콘" />
+                        <img src='/assets/icon/notice_icon.svg' alt="공지사항항 아이콘" />
                         <span>공지</span> 사항
                     </div>
                     <div className='moreView' onClick={() => navigate("/notice")}>더보기 +</div>

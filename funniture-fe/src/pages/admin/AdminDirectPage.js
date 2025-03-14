@@ -155,7 +155,7 @@ function AdminDirectPage() {
                 <div className={AdDirectCss.orderByBox}>
                     <div onClick={reLoad}>
                         <button>새로고침</button>
-                        <img src={require("../../assets/icon/arrows-rotate-solid.svg").default} alt="" />
+                        <img src='/assets/icon/arrows-rotate-solid.svg' alt="" />
                     </div>
                     <select name="orderBy" id="orderBy" value={orderBy} onChange={(e) => setOrderBy(e.target.value)}>
                         <option value="desc">최근 대화순</option>
@@ -175,7 +175,7 @@ function AdminDirectPage() {
                                     <div className={AdDirectCss.userImgBox}>
                                         <img
                                             src={user.imageLink == "a.jpg" || user.imageLink == null || user.imageLink == "default.jpg"
-                                                ? require("../../assets/images/default.jpg") :
+                                                ? '/assets/images/default.jpg' :
                                                 user.imageLink
                                             }
                                             alt="사용자 이미지" />

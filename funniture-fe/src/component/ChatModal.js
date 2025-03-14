@@ -241,7 +241,7 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                     <div>
                         <div>
                             <div className={ChatCss.imgBox}>
-                                <img src={require("../assets/images/a.jpg")} alt="로고 이미지" />
+                                <img src='/assets/images/a.jpg' alt="로고 이미지" />
                             </div>
                             <div className={ChatCss.siteInfo}>
                                 <div>Funniture</div>
@@ -311,7 +311,7 @@ function ChatModal({ showBtnModal, setShowBtnModal }) { // 25-02-27 attachmentFi
                         <div className={`chatBox ${ChatCss.chatBox}`}>
                             <div className={`sender ${ChatCss.sender}`}>
                                 <div className={ChatCss.senderImg}>
-                                    <img src={require("../assets/images/white_chiar_logo.png")} alt="" />
+                                    <img src='/assets/images/white_chiar_logo.png' alt="" />
                                 </div>
                                 <div className={ChatCss.senderMsgBox}>
                                     <div className={ChatCss.senderMsg}>

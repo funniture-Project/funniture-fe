@@ -138,7 +138,7 @@ function AdminOwner() {
                                 <strong>▷ 대표 이미지 :</strong><br />
                             </div>
                             <img
-                                src={noImageDefault}
+                                src='/assets/images/free-icon-no-image-11542598.png'
                                 alt="기본 이미지"
                                 style={{ maxWidth: '70%', height: '50%' }}
                             /><br />

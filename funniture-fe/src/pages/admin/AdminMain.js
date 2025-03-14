@@ -409,7 +409,7 @@ function AdminMain() {
     const TopOwner = () => {
 
         if (!topLabel.length || !topValue.length) {
-            return <div>로딩중....</div>
+            return <div>이번달 주문 없음</div>
         }
 
         const colors = ['#ff595e', '#ffca3a', '#8ac926', '#1982c4', '#6a4c93']; // 원하는 색상 지정

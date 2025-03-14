@@ -107,7 +107,7 @@ function AppConvert() {
         attachmentFile: ''
     });
 
-    const [previewImage, setPreviewImage] = useState(basicImage);
+    const [previewImage, setPreviewImage] = useState('/assets/images/Adobe Express - file.png');
 
     const handleReapply = () => {
         setIsSubmitted(false);

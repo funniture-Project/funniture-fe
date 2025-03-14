@@ -1,9 +1,11 @@
 import DeliveryCss from "./deliveryAddress.module.css";
 import { useState, useEffect } from "react";
 import { useSelector } from 'react-redux';
-import { getDeliveryAddressListData, putDefaultAddress, 
-    putAddressDelete, postAddressRegist, putAddress } from '../../apis/DeliveryAddressAPI';
-import BtnModal from '../../component/BtnModal';  
+import {
+    getDeliveryAddressListData, putDefaultAddress,
+    putAddressDelete, postAddressRegist, putAddress
+} from '../../apis/DeliveryAddressAPI';
+import BtnModal from '../../component/BtnModal';
 
 function DeliveryAddress() {
 
@@ -30,7 +32,7 @@ function DeliveryAddress() {
     const [showDefaultAddressChangeModal, setDefaultAddressChangeModal] = useState(false);  // 기본 배송지 변경 모달
     const [showAddressRegistModal, setAddressRegistModal] = useState(false);  // 배송지 등록완료 모달
     const [showAddressUpdateModal, setAddressUpdateModal] = useState(false);  // 배송지 수정완료 모달
-    
+
     // 데이터 호출 함수
     async function getData(memberId) {
         try {
@@ -48,14 +50,14 @@ function DeliveryAddress() {
     }, [memberId]);
 
     // 기본배송지로 수정 핸들러
-    const handleDefaultAddressChange = async(destinationNo) => {
+    const handleDefaultAddressChange = async (destinationNo) => {
         await putDefaultAddress(destinationNo);
         getData(memberId);
         setDefaultAddressChangeModal(true);
     }
 
     // 배송지 삭제 핸들러
-    const handleAddressDelete =  async(destinationNo) => {
+    const handleAddressDelete = async (destinationNo) => {
         await putAddressDelete(destinationNo);
         getData(memberId);
         setAddressDeleteModal(true);
@@ -72,14 +74,14 @@ function DeliveryAddress() {
     // 주소 찾기 버튼 클릭 시 실행
     const handleOpenPostcode = () => {
         new window.daum.Postcode({
-        oncomplete: function (data) {
-            setDestinationAddress(data.address); // 상세주소 input에 주소 검색 결과 넣기
-        },
+            oncomplete: function (data) {
+                setDestinationAddress(data.address); // 상세주소 input에 주소 검색 결과 넣기
+            },
         }).open();
     };
 
     // 배송지 등록 핸들러
-    const handleAddressRegist= async () => {
+    const handleAddressRegist = async () => {
         try {
 
             const addressData = {
@@ -87,7 +89,7 @@ function DeliveryAddress() {
                 destinationName: destinationName,
                 destinationPhone: destinationPhone,
                 destinationAddress: destinationAddress,
-                receiver : receiver
+                receiver: receiver
             };
 
             await postAddressRegist(addressData);
@@ -105,7 +107,7 @@ function DeliveryAddress() {
     };
 
     // 배송지 수정 핸들러
-    const handleAddressUpdate= async (destinationNo) => {
+    const handleAddressUpdate = async (destinationNo) => {
         try {
 
             const addressData = {
@@ -113,7 +115,7 @@ function DeliveryAddress() {
                 destinationName: destinationName,
                 destinationPhone: destinationPhone,
                 destinationAddress: destinationAddress,
-                receiver : receiver
+                receiver: receiver
             };
 
             await putAddress(destinationNo, addressData);
@@ -137,9 +139,9 @@ function DeliveryAddress() {
             ...prevState,
             [address.destinationNo]: !prevState[address.destinationNo]  // 해당 배송지만 토글
         }));
-        
+
         setSelectedAddress(address);
-        
+
         // 기존 데이터를 state에 반영하여 입력 필드 초기화
         setDestinationName(address.destinationName);
         setReceiver(address.receiver);
@@ -150,27 +152,27 @@ function DeliveryAddress() {
     // 수정을 취소하는 핸들러 
     const handleAddressUpdateCancel = () => {
         setUpdateDropdownVisible(false);
-            setDestinationName('');
-            setReceiver('');
-            setDestinationAddress('');
-            setDestinationPhone('');
+        setDestinationName('');
+        setReceiver('');
+        setDestinationAddress('');
+        setDestinationPhone('');
     }
-    
+
     // 배송지 등록 드롭다운 토글 변경
     const toggleDropdown = () => {
         setIsDropdownVisible(!isDropdownVisible);
     };
 
 
-    return(
+    return (
         <div className={DeliveryCss.deliveryContainer}>
-           
+
             <div className={DeliveryCss.modalHeader}>
                 <div>배송지 관리</div>
             </div>
 
             <div className={DeliveryCss.modalContainer}>
-                
+
                 {/* registerBtnContainer 영역을 눌렀을 때 드롭다운 되게 하기 */}
                 <div className={DeliveryCss.registerBtnContainer}
                     id="openModal"
@@ -188,204 +190,204 @@ function DeliveryAddress() {
                     </div>
                     <div className={DeliveryCss.registerBtn}>신규 배송지 등록</div>
                 </div>
-            {/* Dropdown 내용 */}
-            {isDropdownVisible && (
-                <div className={DeliveryCss.dropdownContent}>
-                    <div>
-                        <div>배송지 이름 : 
-                            <input 
-                                type="text" 
-                                value={destinationName} 
-                                onChange={(e) => setDestinationName(e.target.value)} 
-                            />
-                        </div>
-                        <div onClick={handleAddressRegist}>
-                            <div>등록</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <div>받는 분 : 
-                            <input 
-                                type="text" 
-                                value={receiver} 
-                                onChange={(e) => setReceiver(e.target.value)} 
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <div>전화번호 : 
-                            <input 
-                                type="text" 
-                                value={destinationPhone} 
-                                onChange={(e) => setDestinationPhone(e.target.value)} 
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <div>주소 : </div>
-                        <div onClick={handleOpenPostcode}>주소찾기</div>
-                    </div>
-                    
-                    <div>
-                        <div>상세주소 : 
-                            <input 
-                                type="text" 
-                                value={destinationAddress} 
-                                onChange={(e) => setDestinationAddress(e.target.value)} 
-                            />
-                        </div>
-                    </div>
-                </div>
-                
-            )}
-
-            {deliveryAddressList.length > 0 ? (
-                deliveryAddressList.map((address) => (
-                    <div className={DeliveryCss.addressInfoContainer} key={address.destinationNo}>
-                        <div className={DeliveryCss.addressTitle}>
-                            
-                            <div>
-                                <div>
-                                    <div>{address.receiver} ({address.destinationName})</div>
-                                    {/* isDefault 가 true(1)라면 기본배송지 div 보여주기 */}
-                                    {address.isDefault === 1 && <div>기본배송지</div>}
-                                </div>
-                                <div>
-                                {address.isDefault === 0 &&
-                                    <img 
-                                        onClick={() => handleDefaultAddressChange(address.destinationNo)} 
-                                        className={DeliveryCss.otherAddress}
-                                        src={require(`../../assets/icon/circle-check-solid.svg`).default}
-                                        alt="기본 배송지로 선택" />
-                                        
-                                }
-                                {address.isDefault === 1 &&
-                                    <img 
-                                        onClick={() => handleDefaultAddressChange(address.destinationNo)} 
-                                        className={DeliveryCss.otherAddress}
-                                        src={require(`../../assets/icon/circle-check-solid-brown.svg`).default}
-                                        alt="기본 배송지" />
-                                }
-                                </div>
-                            </div>                           
-                        </div>
-
-                        <div className={DeliveryCss.addressInfo}>
-                            <div>{address.destinationPhone}</div>
-                            <div>{address.destinationAddress}</div>
-                            <div>
-                                <div onClick={() => updateToggleDropdown(address)}>수정</div>
-                                <div onClick={() => handleAddressDelete(address.destinationNo)}>삭제</div>
+                {/* Dropdown 내용 */}
+                {isDropdownVisible && (
+                    <div className={DeliveryCss.dropdownContent}>
+                        <div>
+                            <div>배송지 이름 :
+                                <input
+                                    type="text"
+                                    value={destinationName}
+                                    onChange={(e) => setDestinationName(e.target.value)}
+                                />
+                            </div>
+                            <div onClick={handleAddressRegist}>
+                                <div>등록</div>
                             </div>
                         </div>
 
-                        <hr className={DeliveryCss.addressHr} />
+                        <div>
+                            <div>받는 분 :
+                                <input
+                                    type="text"
+                                    value={receiver}
+                                    onChange={(e) => setReceiver(e.target.value)}
+                                />
+                            </div>
+                        </div>
 
-                        {updateDropdownVisible[address.destinationNo] && (
-                            <div className={DeliveryCss.dropdownContent}>
+                        <div>
+                            <div>전화번호 :
+                                <input
+                                    type="text"
+                                    value={destinationPhone}
+                                    onChange={(e) => setDestinationPhone(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>주소 : </div>
+                            <div onClick={handleOpenPostcode}>주소찾기</div>
+                        </div>
+
+                        <div>
+                            <div>상세주소 :
+                                <input
+                                    type="text"
+                                    value={destinationAddress}
+                                    onChange={(e) => setDestinationAddress(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                )}
+
+                {deliveryAddressList.length > 0 ? (
+                    deliveryAddressList.map((address) => (
+                        <div className={DeliveryCss.addressInfoContainer} key={address.destinationNo}>
+                            <div className={DeliveryCss.addressTitle}>
+
                                 <div>
-                                    <div>배송지 이름 : 
-                                        <input 
-                                            type="text" 
-                                            value={destinationName} 
-                                            onChange={(e) => setDestinationName(e.target.value)} 
-                                        />
+                                    <div>
+                                        <div>{address.receiver} ({address.destinationName})</div>
+                                        {/* isDefault 가 true(1)라면 기본배송지 div 보여주기 */}
+                                        {address.isDefault === 1 && <div>기본배송지</div>}
                                     </div>
                                     <div>
-                                        <div onClick={handleAddressUpdateCancel}>취소</div>
-                                        <div onClick={() => handleAddressUpdate(address.destinationNo)}>수정</div>
-                                    </div>
-                                </div>
+                                        {address.isDefault === 0 &&
+                                            <img
+                                                onClick={() => handleDefaultAddressChange(address.destinationNo)}
+                                                className={DeliveryCss.otherAddress}
+                                                src='/assets/icon/circle-check-solid.svg'
+                                                alt="기본 배송지로 선택" />
 
-                                <div>
-                                    <div>받는 분 : 
-                                        <input 
-                                            type="text" 
-                                            value={receiver} 
-                                            onChange={(e) => setReceiver(e.target.value)} 
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div>전화번호 : 
-                                        <input 
-                                            type="text" 
-                                            value={destinationPhone} 
-                                            onChange={(e) => setDestinationPhone(e.target.value)} 
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div>주소 : </div>
-                                    <div onClick={handleOpenPostcode}>주소찾기</div>
-                                </div>
-                                
-                                <div>
-                                    <div>상세주소 : 
-                                        <input 
-                                            type="text" 
-                                            value={destinationAddress} 
-                                            onChange={(e) => setDestinationAddress(e.target.value)} 
-                                        />
+                                        }
+                                        {address.isDefault === 1 &&
+                                            <img
+                                                onClick={() => handleDefaultAddressChange(address.destinationNo)}
+                                                className={DeliveryCss.otherAddress}
+                                                src='/assets/icon/circle-check-solid-brown.svg'
+                                                alt="기본 배송지" />
+                                        }
                                     </div>
                                 </div>
                             </div>
-                        )}
-            
-                    </div>
-                ))
 
-                
-            ) : (
-                <div>배송지가 없습니다.</div>
-            )}
-            
-        </div>
+                            <div className={DeliveryCss.addressInfo}>
+                                <div>{address.destinationPhone}</div>
+                                <div>{address.destinationAddress}</div>
+                                <div>
+                                    <div onClick={() => updateToggleDropdown(address)}>수정</div>
+                                    <div onClick={() => handleAddressDelete(address.destinationNo)}>삭제</div>
+                                </div>
+                            </div>
 
-        {/* 배송지 삭제 확인 모달 */}
-        <BtnModal
+                            <hr className={DeliveryCss.addressHr} />
+
+                            {updateDropdownVisible[address.destinationNo] && (
+                                <div className={DeliveryCss.dropdownContent}>
+                                    <div>
+                                        <div>배송지 이름 :
+                                            <input
+                                                type="text"
+                                                value={destinationName}
+                                                onChange={(e) => setDestinationName(e.target.value)}
+                                            />
+                                        </div>
+                                        <div>
+                                            <div onClick={handleAddressUpdateCancel}>취소</div>
+                                            <div onClick={() => handleAddressUpdate(address.destinationNo)}>수정</div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div>받는 분 :
+                                            <input
+                                                type="text"
+                                                value={receiver}
+                                                onChange={(e) => setReceiver(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div>전화번호 :
+                                            <input
+                                                type="text"
+                                                value={destinationPhone}
+                                                onChange={(e) => setDestinationPhone(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div>주소 : </div>
+                                        <div onClick={handleOpenPostcode}>주소찾기</div>
+                                    </div>
+
+                                    <div>
+                                        <div>상세주소 :
+                                            <input
+                                                type="text"
+                                                value={destinationAddress}
+                                                onChange={(e) => setDestinationAddress(e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                        </div>
+                    ))
+
+
+                ) : (
+                    <div>배송지가 없습니다.</div>
+                )}
+
+            </div>
+
+            {/* 배송지 삭제 확인 모달 */}
+            <BtnModal
                 showBtnModal={showAddressDeleteModal}
                 setShowBtnModal={setAddressDeleteModal}
                 btnText="확인"
                 modalContext="배송지가 삭제되었습니다."
                 modalSize="sm"
-        />
+            />
 
-        {/* 기본배송지 등록 확인 모달 */}
-        <BtnModal
+            {/* 기본배송지 등록 확인 모달 */}
+            <BtnModal
                 showBtnModal={showDefaultAddressChangeModal}
                 setShowBtnModal={setDefaultAddressChangeModal}
                 btnText="확인"
                 modalContext="기본 배송지로 선택되었습니다."
                 modalSize="sm"
-        />
+            />
 
-        {/* 배송지 등록 확인 모달 */}
-        <BtnModal
+            {/* 배송지 등록 확인 모달 */}
+            <BtnModal
                 showBtnModal={showAddressRegistModal}
                 setShowBtnModal={setAddressRegistModal}
                 btnText="확인"
                 modalContext="배송지 등록이 완료되었습니다."
                 modalSize="sm"
-        />
+            />
 
-        {/* 배송지 수정 확인 모달 */}
-        <BtnModal
+            {/* 배송지 수정 확인 모달 */}
+            <BtnModal
                 showBtnModal={showAddressUpdateModal}
                 setShowBtnModal={setAddressUpdateModal}
                 btnText="확인"
                 modalContext="배송지 수정이 완료되었습니다."
                 modalSize="sm"
-        />
+            />
 
 
-    </div>
-);
+        </div>
+    );
 }
 
 export default DeliveryAddress;
