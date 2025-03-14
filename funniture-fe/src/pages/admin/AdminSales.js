@@ -8,7 +8,7 @@ function AdminSales() {
 
     // 매출 데이터
     const [salesList, setSalesList] = useState([]);
-    
+
     // 총매출
     const [totalSettlement, setTotalSettlement] = useState(0);
     const [totalFee, setTotalFee] = useState(0);
@@ -18,19 +18,19 @@ function AdminSales() {
     const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
 
     // 회사 리스트
-    const [storeList, setStoreList] = useState([]); 
+    const [storeList, setStoreList] = useState([]);
 
     // 선택한 회사
     const [selectedStore, setSelectedStore] = useState(null);
     // 선택한 Date
     const [yearMonth, setYearMonth] = useState(getFormattedDateForMonthInput());
 
-    async function getData(yearMonth,selectedStore,pageNum) {
+    async function getData(yearMonth, selectedStore, pageNum) {
         try {
-            const data = await getSalesByDate(yearMonth,selectedStore,pageNum);
+            const data = await getSalesByDate(yearMonth, selectedStore, pageNum);
             const sales = data.results.salesData;
             const pageInfo = data.results.pageInfo;
-        
+
             // API 호출 후 결과 처리
             if (data.results.salesData) {
                 setSalesList(sales); // 검색 결과 상태에 저장
@@ -46,16 +46,16 @@ function AdminSales() {
     }
 
     useEffect(() => {
-        getData(yearMonth, selectedStore, pageNum);  
+        getData(yearMonth, selectedStore, pageNum);
     }, [selectedStore, pageNum]);
-    
+
     // 회사 리스트
     useEffect(() => {
         async function fetchData() {
             try {
                 const data = await getAllStoreList();
                 setStoreList(data.results?.result || []);
-        
+
             } catch (error) {
                 console.error("API 호출 실패:", error);
                 setStoreList([]);
@@ -67,20 +67,20 @@ function AdminSales() {
     useEffect(() => {
         let settlementSum = 0;
         let feeSum = 0;
-    
+
         salesList.forEach((sale) => {
             const fee = Math.floor(sale.totalAmount * 0.05);
             const settlement = sale.totalAmount - fee;
-    
+
             settlementSum += settlement;
             feeSum += fee;
         });
-    
+
         setTotalSettlement(settlementSum);
         setTotalFee(feeSum);
     }, [salesList]);
 
-    
+
 
     // 오늘 날짜를 YYYY-MM 형식으로 변환하는 함수
     function getFormattedDateForMonthInput() {
@@ -107,14 +107,14 @@ function AdminSales() {
         setPageNum(1); // 페이지 번호 초기화
     };
 
-    return(
+    return (
         <>
             <AdminTop title={'매출 현황'} />
             <div className={AdminSalesCSS.adminSaleContainer}>
                 <div className={AdminSalesCSS.adminSearchContainer}>
-                    <div className={AdminSalesCSS.monthSearchContainer}>
-                        <div>날짜</div>
-                        <input 
+                    <div className={AdminSalesCSS.monthSearchContainer} style={{ display: "flex" }}>
+                        <div style={{ display: "flex", flexDirection: "column" }}>날짜</div>
+                        <input
                             type="month"
                             value={yearMonth}
                             onChange={(e) => {
@@ -123,18 +123,18 @@ function AdminSales() {
                             }}
                         />
                     </div>
-                    <hr/>
-                    <div className={AdminSalesCSS.storeSearchContainer}>
+                    <hr />
+                    <div className={AdminSalesCSS.storeSearchContainer} style={{ display: "flex" }}>
                         <div onClick={() => handleResetSearch()}>검색 초기화</div>
-                        <div>
+                        <div style={{ display: "flex" }}>
                             {storeList.map((store) => (
                                 <div
                                     onClick={() => handleStoreSearch(store.store_name)}
                                     key={store.owner_no}
                                     className={selectedStore === store.store_name ? AdminSalesCSS.selectedStore : ''}
                                 >
-                                {store.store_name}
-                             </div>
+                                    {store.store_name}
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -142,7 +142,7 @@ function AdminSales() {
 
                 <div className={AdminSalesCSS.totalAmountContainer}>
                     <div>총 매출</div>
-                    <div>
+                    <div style={{ display: "flex" }}>
                         <div>정산금 : {totalSettlement.toLocaleString()} 원</div>
                         <div>수수료 : {totalFee.toLocaleString()} 원</div>
                     </div>
@@ -184,13 +184,13 @@ function AdminSales() {
                                     );
                                 })
                             )}
-                            
+
                             {/* 페이징 컴포넌트 가져오기 */}
                             <div className={AdminSalesCSS.pagingContainer}>
                                 <div>
-                                    <Pagination 
-                                    pageInfo={pageInfo} 
-                                    onPageChange={handlePageChange} 
+                                    <Pagination
+                                        pageInfo={pageInfo}
+                                        onPageChange={handlePageChange}
                                     />
                                 </div>
                             </div>

@@ -176,7 +176,7 @@ function ProductDetailPage() {
                     <div className={PDCSS.summaryInfoBox}>
                         <div className={PDCSS.imgBox}>
                             <img src={productInfo.productImageLink == 'a.jpg' || productInfo.productImageLink == 'default.jpg'
-                                ? require(`../../assets/images/default.jpg`)
+                                ? '/assets/images/default.jpg'
                                 : productInfo.productImageLink}
                                 alt="상품 사진" />
                         </div>
@@ -192,8 +192,8 @@ function ProductDetailPage() {
                                     {user.memberRole == "USER" ? (
                                         <div onClick={() => likeHandler(productInfo.productNo)}>
                                             {favoriteProductNo.includes(productInfo.productNo) ?
-                                                <img src={require("../../assets/icon/fulll-heart.svg").default} alt="관심 있는 상품" />
-                                                : <img src={require("../../assets/icon/empty-heart.svg").default} alt="관심 없는 상품" />
+                                                <img src="/assets/icon/fulll-heart.svg" alt="관심 있는 상품" />
+                                                : <img src="/assets/icon/empty-heart.svg" alt="관심 없는 상품" />
                                             }
                                         </div>
                                     ) : null}
