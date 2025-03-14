@@ -122,7 +122,7 @@ function ListPage({ selectCategory, selectCompany }) {
                     (<div className={listCss.productListBox}>
                         {productList.map(product => (
                             <div className={listCss.productItem} data-product-no={product.productNo} >
-                                <div>
+                                <div className={listCss.productItemInnerBox} style={{ display: "flex" }}>
                                     <div className={listCss.imageBox} onClick={() => navigate(`/product/${product.productNo}`)}>
                                         <img src={product.productImageLink == 'a.jpg' || product.productImageLink == 'default.jpg'
                                             ? require(`../../assets/images/default.jpg`)

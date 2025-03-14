@@ -4,7 +4,7 @@ import searchIcon from '../assets/icon/search-icon.svg'
 import { getCategory } from "../apis/ProductAPI"
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import headerCss from './headerfooter.module.css'
+import headerCss from '../component/headerfooter.module.css'
 import decodeJwt from '../utils/tokenUtils';
 import { ReactComponent as MyPageImage } from "../assets/images/circle-user.svg"
 import BtnModal from './BtnModal';
