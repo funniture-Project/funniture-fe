@@ -21,7 +21,7 @@ function Rental() {
     const [rentalList, setRentalList] = useState([]);
 
     // selected-> option 에 추가할 회사
-    const [storeList, setStoreList] = useState([]); 
+    const [storeList, setStoreList] = useState([]);
 
     // 사용자 정보, 업체 정보
     const [userInfo, setUserInfo] = useState({});
@@ -32,14 +32,14 @@ function Rental() {
     const [pageNum, setPageNum] = useState(1);  // pageNum 상태 관리 
 
     // 드롭다운을 하나만 열리도록 하기 위한 상태
-    const [openRentalNo, setOpenRentalNo] = useState(null); 
+    const [openRentalNo, setOpenRentalNo] = useState(null);
 
-    async function getData(searchRental,pageNum) {
+    async function getData(searchRental, pageNum) {
         try {
-            const data = await getAdminRentalList(searchRental,pageNum);
+            const data = await getAdminRentalList(searchRental, pageNum);
             const rentals = data.results.adminRentalList;
             const pageInfo = data.results.pageInfo;
-     
+
             // API 호출 후 결과 처리
             if (data && data.results && data.results.adminRentalList) {
                 setRentalList(rentals); // 검색 결과 상태에 저장
@@ -56,7 +56,7 @@ function Rental() {
 
     // 데이터 호출 함수
     async function getUserData(memberId) {
-        
+
         try {
             const data = await getMemberData(memberId);
             setUserInfo(data.results.result);
@@ -67,7 +67,7 @@ function Rental() {
     }
 
     async function getOwnerData(ownerNo) {
-        
+
         try {
             const data = await getMemberData(ownerNo);
             setOwnerInfo(data.results.result);
@@ -109,7 +109,7 @@ function Rental() {
             try {
                 const data = await getStoreList();
                 setStoreList(data.results?.result || []);
-       
+
             } catch (error) {
                 console.error("API 호출 실패:", error);
                 setStoreList([]);
@@ -141,14 +141,14 @@ function Rental() {
             searchDate: '',
             rentalNo: ''
         };
-    
+
         setSearchRental(initialSearch);  // 검색 조건 초기화
         setPageNum(1);  // 1페이지로 이동
-    
+
         try {
             // 최신 초기화된 검색 조건으로 데이터 요청
             const data = await getAdminRentalList(initialSearch, 1);
-    
+
             setRentalList(data.results.adminRentalList);
             setPageInfo(data.results.pageInfo); // 최신 페이지 정보 반영
         } catch (error) {
@@ -156,7 +156,7 @@ function Rental() {
             setRentalList([]); // 오류 발생 시 리스트 초기화
         }
     };
-    
+
 
 
     return (
@@ -205,15 +205,15 @@ function Rental() {
                                 }
                             }}
                         />
-                    
+
                         <img
-                            src={require(`../../assets/icon/rotate-right-solid.svg`).default}
+                            src='/assets/icon/rotate-right-solid.svg'
                             alt="초기화 아이콘"
                             onClick={handleReset}
                         />
-                
+
                         <img
-                            src={require(`../../assets/icon/search-icon.svg`).default}
+                            src='/assets/icon/search-icon.svg'
                             alt="검색 아이콘"
                             onClick={() => getData(searchRental, 1)}
                         />
@@ -231,7 +231,7 @@ function Rental() {
                             <div style={{ width: "20%" }}><p>사용시작/만료날짜</p></div>
                             <div style={{ width: "5%" }}><p>수량</p></div>
                         </div>
-                    
+
                         <div className={RentalCss.rentalContainer}>
                             {/* 테이블 데이터 */}
                             {rentalList.length === 0 ? (
@@ -240,48 +240,48 @@ function Rental() {
                                 </div>
                             ) : (
                                 rentalList.map((item) => (
-                                <>
-                                    {/* 기본 행 */}
-                                    <div
-                                        key={item.rentalNo}
-                                        className={RentalCss.rentalItems}
-                                        onClick={() => toggleDropdown(item)}
-                                    >
-                                        <div style={{ width: '15%' }}><p>{item.rentalNo}</p></div>
-                                        <div style={{ width: '10%' }}><p>{item.storeName}</p></div>
-                                        <div style={{ width: '10%' }}><p>{item.rentalState}</p></div>
-                                        <div style={{ width: '5%' }}><p>{item.categoryName}</p></div>
-                                        <div style={{ width: '35%' }}><p>{item.productName}</p></div>
-                                        <div style={{ width: '20%' }}>
-                                            <p>
-                                            {item.rentalStartDate && item.rentalEndDate
-                                                ? `${item.rentalStartDate} ~ ${item.rentalEndDate}`
-                                                : "-"}
-                                            </p>
-                                        </div>
-                                        <div style={{ width: '5%' }}><p>{item.rentalNumber}</p></div>
-                                    </div>
-
-                                    {openRentalNo === item.rentalNo && (
-                                        <div className={RentalCss.dropdownContent}>
-                                            <div>
-                                                <div>사용자 정보</div>                                                         
-                                                <div>회원번호 : {userInfo.memberId}</div>                                                         
-                                                <div>ID : {userInfo.email}</div>                                                         
-                                                <div>이름 : {userInfo.username}</div>                                        
-                                                <div>전화번호 : {userInfo.phoneNumber}</div>                                        
+                                    <>
+                                        {/* 기본 행 */}
+                                        <div
+                                            key={item.rentalNo}
+                                            className={RentalCss.rentalItems}
+                                            onClick={() => toggleDropdown(item)}
+                                        >
+                                            <div style={{ width: '15%' }}><p>{item.rentalNo}</p></div>
+                                            <div style={{ width: '10%' }}><p>{item.storeName}</p></div>
+                                            <div style={{ width: '10%' }}><p>{item.rentalState}</p></div>
+                                            <div style={{ width: '5%' }}><p>{item.categoryName}</p></div>
+                                            <div style={{ width: '35%' }}><p>{item.productName}</p></div>
+                                            <div style={{ width: '20%' }}>
+                                                <p>
+                                                    {item.rentalStartDate && item.rentalEndDate
+                                                        ? `${item.rentalStartDate} ~ ${item.rentalEndDate}`
+                                                        : "-"}
+                                                </p>
                                             </div>
-
-                                            <div>
-                                                <div>업체 정보</div>                                                         
-                                                <div>회원번호 : {ownerInfo.memberId}</div>                                                         
-                                                <div>ID : {ownerInfo.email}</div>                                                         
-                                                <div>이름 : {ownerInfo.username}</div>                                        
-                                                <div>전화번호 : {ownerInfo.phoneNumber}</div>                                    
-                                            </div>
+                                            <div style={{ width: '5%' }}><p>{item.rentalNumber}</p></div>
                                         </div>
-                                    )}
-                                </>
+
+                                        {openRentalNo === item.rentalNo && (
+                                            <div className={RentalCss.dropdownContent}>
+                                                <div>
+                                                    <div>사용자 정보</div>
+                                                    <div>회원번호 : {userInfo.memberId}</div>
+                                                    <div>ID : {userInfo.email}</div>
+                                                    <div>이름 : {userInfo.username}</div>
+                                                    <div>전화번호 : {userInfo.phoneNumber}</div>
+                                                </div>
+
+                                                <div>
+                                                    <div>업체 정보</div>
+                                                    <div>회원번호 : {ownerInfo.memberId}</div>
+                                                    <div>ID : {ownerInfo.email}</div>
+                                                    <div>이름 : {ownerInfo.username}</div>
+                                                    <div>전화번호 : {ownerInfo.phoneNumber}</div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
                                 ))
                             )}
                         </div>
@@ -290,9 +290,9 @@ function Rental() {
                     {/* 페이징 컴포넌트 가져오기 */}
                     <div className={RentalCss.pagingContainer}>
                         <div>
-                            <Pagination 
-                            pageInfo={pageInfo} 
-                            onPageChange={handlePageChange} 
+                            <Pagination
+                                pageInfo={pageInfo}
+                                onPageChange={handlePageChange}
                             />
                         </div>
                     </div>

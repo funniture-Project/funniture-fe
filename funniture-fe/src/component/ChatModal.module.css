@@ -245,6 +245,7 @@
                 width: fit-content;
                 border-radius: 5px;
                 margin: 0 8px;
+                white-space: pre-line;
             }
 
             .chatLeft,

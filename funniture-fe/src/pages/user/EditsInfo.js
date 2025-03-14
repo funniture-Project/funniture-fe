@@ -24,8 +24,8 @@ function EditsInfo() {
     const [showPasswordModal, setShowPasswordModal] = useState(false); // 비밀번호 변경 성공 모달
     const [showPasswordErrorModal, setShowPasswordErrorModal] = useState(false); // 비밀번호 유효성 검사 실패 모달
     const [passwordErrorMessage, setPasswordErrorMessage] = useState(''); // 비밀번호 오류 메시지
-    const [showImageErrorModal , setShowImageErrorModal] = useState(false); // 변경할 이미지 선택 안 하고 누를때
-    const [showImageSuccessModal , setShowImageSuccessModal] = useState(false);
+    const [showImageErrorModal, setShowImageErrorModal] = useState(false); // 변경할 이미지 선택 안 하고 누를때
+    const [showImageSuccessModal, setShowImageSuccessModal] = useState(false);
 
     // 사용자 개인정보 바꾸기 전에 기존 데이터 가져와야 함.
     useEffect(() => {
@@ -37,7 +37,7 @@ function EditsInfo() {
                 newPassword: '',
                 confirmNewPassword: ''
             });
-            setPreviewImage(member.user.imageLink || basicImage);
+            setPreviewImage(member.user.imageLink || '/assets/images/Adobe Express - file.png');
         }
     }, [member]); // member.user 변경될 때 마다 form 상태 업데이트.
 
@@ -49,7 +49,7 @@ function EditsInfo() {
         confirmNewPassword: ''
     });
 
-    const [previewImage , setPreviewImage] = useState(basicImage);
+    const [previewImage, setPreviewImage] = useState('../../assets/images/Adobe Express - file.png');
 
     // 비밀번호 유효성 검사 함수
     const isPasswordValid = (newPassword) => {
@@ -77,7 +77,7 @@ function EditsInfo() {
         }));
         setShowPhoneModal(true); // 전화번호 변경 성공 모달 표시
     };
-    
+
     const handlePhoneModalClose = () => {
         setShowPhoneModal(false); // 전화번호 변경 성공 모달 닫기
     };
@@ -89,11 +89,11 @@ function EditsInfo() {
         }));
         setShowAddressModal(true); // 주소 변경 성공 모달 표시
     };
-    
+
     const handleAddressModalClose = () => {
         setShowAddressModal(false); // 주소 변경 성공 모달 닫기
     };
-    
+
 
     const passwordOnClickHandler = () => {
         const { newPassword, confirmNewPassword } = form;
@@ -130,7 +130,7 @@ function EditsInfo() {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0]; // 사용자가 선택한 파일 가져오기
-    
+
         if (file) {
             setPreviewImage(URL.createObjectURL(file)); // 미리보기용 URL 생성
             setForm({
@@ -143,26 +143,26 @@ function EditsInfo() {
                 imageLink: '', // 파일이 선택되지 않은 경우 빈 문자열로 설정
             });
         }
-    
+
         e.target.value = ''; // 입력 필드 초기화 (같은 파일 다시 선택 가능)
     };
-    
-    
+
+
     const imageOnClickHandler = () => {
-    
+
         if (!form.imageLink || !(form.imageLink instanceof File)) {
             console.log('조건 만족: !form.imageLink 또는 form.imageLink가 File 객체가 아님');
             setShowImageErrorModal(true); // 오류 모달 표시
             return;
         }
-    
+
         dispatch(callChangeImageAPI({
             memberId: member.user.memberId,
             imageLink: form.imageLink,
         }));
         setShowImageSuccessModal(true);
     };
-    
+
 
     // 탈퇴 확인 모달 열기
     const openConfirmModal = () => {
@@ -196,16 +196,16 @@ function EditsInfo() {
                 <div className="editMypageInfo">
                     <div className='basicImage'>
                         <span>프로필 사진</span>
-                    {/* previewImage 상태를 src로 설정 */}
+                        {/* previewImage 상태를 src로 설정 */}
                         <img src={previewImage} alt="프로필 미리보기" style={{ width: '150px', height: '150px' }} />
-                                <input
-                                    type="file"
-                                    id='uploadImg'
-                                    name='uploadImg'
-                                    onChange={handleImageChange}
-                                    style={{display:'none'}}/>
-                                <label className='uploadLabel'
-                                htmlFor="uploadImg">파일선택</label>
+                        <input
+                            type="file"
+                            id='uploadImg'
+                            name='uploadImg'
+                            onChange={handleImageChange}
+                            style={{ display: 'none' }} />
+                        <label className='uploadLabel'
+                            htmlFor="uploadImg">파일선택</label>
                         <button onClick={imageOnClickHandler}>프로필 사진 변경</button>
                     </div>
                     <div>
@@ -342,8 +342,8 @@ function EditsInfo() {
                 />
             )}
 
-                {/* 이미지 변경 성공 모달 */}
-                {showImageSuccessModal && (
+            {/* 이미지 변경 성공 모달 */}
+            {showImageSuccessModal && (
                 <BtnModal
                     showBtnModal={showImageSuccessModal}
                     setShowBtnModal={setShowImageSuccessModal}
