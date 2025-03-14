@@ -153,7 +153,6 @@ function ProductDetailPage() {
                 setProductInfo(response.results?.result)
                 if (response.results?.result.rentalOptionList?.length > 0) {
                     setSelectRentalOption(response.results.result.rentalOptionList[0]);
-
                     setSelectTerm(response.results.result.rentalOptionList[0].rentalTerm)
                 }
             }
