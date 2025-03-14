@@ -201,7 +201,10 @@ function RentalRegist() {
                         <div className={RentalRegistCss.orderItemSection}>
                             <div>{productInfo.ownerInfo.storeName}</div>
                             <div className={RentalRegistCss.rentalInfoSubSection}>
-                                <img className={RentalRegistCss.rentalProductImg} src={require(`../../assets/images/testImg.JPG`)} alt="상품 이미지" />
+                                <img className={RentalRegistCss.rentalProductImg} 
+                                    src={productInfo?.productImageLink == "a.jpg" || productInfo?.productImageLink == "default.jpg" || productInfo?.productImageLink == null ? 
+                                    require("../../assets/images/default.jpg") :productInfo?.productImageLink}
+                                    alt="상품 이미지" />
                                 <div>
                                     <div>상품명 : {productInfo.productName}</div>
                                     <div>약정기간 : {selectRentalOption.rentalTerm}개월</div>

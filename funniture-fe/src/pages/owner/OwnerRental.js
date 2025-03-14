@@ -533,7 +533,7 @@ function OwnerRental() {
                 modalContext={
                     <>
                         운송장 등록이 되었습니다.<br />
-                        배송이 시작되었습니다.
+                        해당 상품 배송이 시작되었습니다.
                     </>
                 }
                 modalSize="sm"
@@ -553,7 +553,12 @@ function OwnerRental() {
                 showBtnModal={showPickedUpModal}
                 setShowBtnModal={setShowPickedUpModal}
                 btnText="확인"
-                modalContext="수거중으로 상태 수정되었습니다."
+                modalContext={
+                    <>
+                    운송장 등록이 되었습니다.<br />
+                    해당 상품 수거가 시작되었습니다.
+                    </>
+                }
                 modalSize="sm"
             />
 
@@ -562,7 +567,7 @@ function OwnerRental() {
                 showBtnModal={showReturnedModal}
                 setShowBtnModal={setShowReturnedModal}
                 btnText="확인"
-                modalContext="반납완료로 상태 수정되었습니다."
+                modalContext="반납완료 되었습니다."
                 modalSize="sm"
             />
 
