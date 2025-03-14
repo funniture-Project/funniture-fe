@@ -148,7 +148,7 @@ function Orders() {
                                 <div className={OrdersCss.statusAndProductImgBox}>
                                     <div className={OrdersCss.productImg}>
                                         <img src={item?.productImageLink == "a.jpg" || item?.productImageLink == "default.jpg" || item?.productImageLink == null ? require("../../assets/images/default.jpg") :item?.productImageLink}
-                                        alt="프로필 이미지" />
+                                        alt="상품 이미지" />
                                     </div>
                                     <div className={OrdersCss.ordersInfo}>
                                         <div>주문번호 : {item.rentalNo}</div>
