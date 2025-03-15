@@ -11,7 +11,8 @@ export const callWritableReviewsAPI = (memberId, page = 1, size = 3) => async (d
 
     try {
         const response = await api.get(
-            `http://localhost:8080/api/v1/review/member/${memberId}?page=${page}&size=${size}`
+            // `http://localhost:8080/api/v1/review/member/${memberId}?page=${page}&size=${size}`
+            `http://localhost:8887/api/v1/review/member/${memberId}?page=${page}&size=${size}`
         );
 
         // 데이터를 저장
@@ -33,6 +34,7 @@ export const callWrittenReviewsAPI = (memberId, page = 1, size = 3) => async (di
     try {
         const response = await api.get(
             `http://localhost:8080/api/v1/review/member/${memberId}/written?page=${page}&size=${size}`
+                `http://localhost:8887/api/v1/review/member/${memberId}/written?page=${page}&size=${size}`
         );
         dispatch({ type: REVIEW_WRITTEN, payload: response.data });
     } catch (error) {
@@ -47,7 +49,8 @@ export const callWrittenReviewsAPI = (memberId, page = 1, size = 3) => async (di
 
 // 상세 페이지 리뷰 불러오기
 export const callReviewByProductNoAPI = async (productNo) => {
-    const requestURL = `http://localhost:8080/api/v1/review/product/${productNo}`;
+    // const requestURL = `http://localhost:8080/api/v1/review/product/${productNo}`;
+    const requestURL = `http://localhost:8887/api/v1/review/product/${productNo}`;
 
     try {
         const response = await fetch(requestURL, {
@@ -77,7 +80,8 @@ export const callReviewByOwnerNoAPI = (ownerNo, page = 1, size = 7) => async (di
 
     try {
         const response = await api.get(
-            `http://localhost:8080/api/v1/review/owner/${ownerNo}?page=${page}&size=${size}`
+            // `http://localhost:8080/api/v1/review/owner/${ownerNo}?page=${page}&size=${size}`
+            `http://localhost:8887/api/v1/review/owner/${ownerNo}?page=${page}&size=${size}`
         );
 
         if (!response.data || !response.data.results || !response.data.results.result) {
@@ -112,7 +116,8 @@ export const callReviewByMainAPI = async () => {
 
 // 리뷰 등록하기
 export const callSubmitReviewAPI = (reviewData) => {
-    const requestURL = `http://localhost:8080/api/v1/review/regist`;
+    // const requestURL = `http://localhost:8080/api/v1/review/regist`;
+    const requestURL = `http://localhost:8887/api/v1/review/regist`;
 
     return async (dispatch) => {
         const response = await api.post(requestURL, { ...reviewData });
@@ -122,7 +127,8 @@ export const callSubmitReviewAPI = (reviewData) => {
 
 // 리뷰 평점 불러오기 
 export const callReviewAvgByOwnerNoAPI = async (memberId) => {
-    const requestURL = `http://localhost:8080/api/v1/review/main/${memberId}`;
+    // const requestURL = `http://localhost:8080/api/v1/review/main/${memberId}`;
+    const requestURL = `http://localhost:8887/api/v1/review/main/${memberId}`;
 
     try {
         const response = await api.get(requestURL);

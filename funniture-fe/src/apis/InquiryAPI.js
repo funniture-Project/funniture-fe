@@ -1,10 +1,11 @@
 import api from "./Apis";
-import { INQUIRY_SELECT , COMMENT_OWNER } from "../redux/modules/OwnerModule";
+import { INQUIRY_SELECT, COMMENT_OWNER } from "../redux/modules/OwnerModule";
 import { INQUIRY_USER } from "../redux/modules/MemberModule";
 
 // 상세 페이지 문의 불러오기
 export const callInquiryByProductNoAPI = (productNo) => {
-    const requestURL = `http://localhost:8080/api/v1/inquiry/product/${productNo}`;
+    // const requestURL = `http://localhost:8080/api/v1/inquiry/product/${productNo}`;
+    const requestURL = `http://localhost:8887/api/v1/inquiry/product/${productNo}`;
 
     return async (dispatch) => {
         const response = await api.get(requestURL);
@@ -42,7 +43,8 @@ export const callInquiryByOwnerNoAPI = (ownerNo, page = 1, size = 10) => async (
 
 // 문의 등록
 export const callInquiryRegistByProductNoAPI = (dataToSend, memberId) => {
-    const requestURL = `http://localhost:8080/api/v1/inquiry/regist`;
+    // const requestURL = `http://localhost:8080/api/v1/inquiry/regist`;
+    const requestURL = `http://localhost:8887/api/v1/inquiry/regist`;
 
     return async (dispatch) => {
         const response = await api.post(requestURL, { ...dataToSend, memberId });
@@ -59,7 +61,8 @@ export const callAllInquiryByMypageAPI = (memberId, page = 1, size = 8) => async
 
     try {
         const response = await api.get(
-            `http://localhost:8080/api/v1/inquiry/member/${memberId}?page=${page}&size=${size}`
+            // `http://localhost:8080/api/v1/inquiry/member/${memberId}?page=${page}&size=${size}`
+            `http://localhost:8887/api/v1/inquiry/member/${memberId}?page=${page}&size=${size}`
         );
 
         // 데이터를 저장
@@ -74,7 +77,8 @@ export const callAllInquiryByMypageAPI = (memberId, page = 1, size = 8) => async
 
 // 제공자 페이지에서 문의 답변하기 
 export const callInquiryAnswerByOwnerPageAPI = (inquiryNo, commentContent, memberId) => {
-    const requestURL = `http://localhost:8080/api/v1/comment/regist`;
+    // const requestURL = `http://localhost:8080/api/v1/comment/regist`;
+    const requestURL = `http://localhost:8887/api/v1/comment/regist`;
 
     return async (dispatch) => {
         const response = await api.post(requestURL, {
@@ -95,7 +99,8 @@ export const getAnswerByInquiryNoAPI = (inquiryNo) => async () => {
     }
 
     try {
-        const response = await api.get(`http://localhost:8080/api/v1/comment/inquiry/${inquiryNo}`);
+        // const response = await api.get(`http://localhost:8080/api/v1/comment/inquiry/${inquiryNo}`);
+        const response = await api.get(`http://localhost:8887/api/v1/comment/inquiry/${inquiryNo}`);
         console.log('답변 내용 불러오기 성공:', response);
         return response.data;
     } catch (error) {
@@ -113,7 +118,8 @@ export const callCommentByProduct = (inquiryNo) => async (dispatch) => {
     }
 
     try {
-        const response = await api.get(`http://localhost:8080/api/v1/comment/product/${inquiryNo}`);
+        // const response = await api.get(`http://localhost:8080/api/v1/comment/product/${inquiryNo}`);
+        const response = await api.get(`http://localhost:8887/api/v1/comment/product/${inquiryNo}`);
         console.log("답변 데이터 가져오기 성공:", response);
 
         return response.data; // 데이터를 반환하여 컴포넌트에서 사용할 수 있도록 함

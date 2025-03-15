@@ -1,6 +1,7 @@
 import api from "./Apis";
 
-const baseRentalUrl = 'http://localhost:8080/api/v1/rental'
+// const baseRentalUrl = 'http://localhost:8080/api/v1/rental'
+const baseRentalUrl = 'http://localhost:8887/api/v1/rental'
 
 // ---------------------------------------------------- 관리자 -------------------------------------------------------------
 
@@ -34,14 +35,16 @@ export async function getAdminRentalList(searchRental, pageNum) {
 }
 
 export async function getStoreList() {
-    return await fetch('http://localhost:8080/api/v1/product/ownerlist?categoryCode=1&categoryCode=2').then(res => res.json());
+    // return await fetch('http://localhost:8080/api/v1/product/ownerlist?categoryCode=1&categoryCode=2').then(res => res.json());
+    return await fetch('http://localhost:8887/api/v1/product/ownerlist?categoryCode=1&categoryCode=2').then(res => res.json());
 }
 
 export async function getAllStoreList() {
-    return await fetch('http://localhost:8080/api/v1/product/ownerlist').then(res => res.json());
+    // return await fetch('http://localhost:8080/api/v1/product/ownerlist').then(res => res.json());
+    return await fetch('http://localhost:8887/api/v1/product/ownerlist').then(res => res.json());
 }
 
-export async function getSalesByDate(yearMonth,selectedStore,pageNum) {
+export async function getSalesByDate(yearMonth, selectedStore, pageNum) {
 
     const url = '/rental/admin/sales'
     const params = new URLSearchParams();
@@ -55,13 +58,13 @@ export async function getSalesByDate(yearMonth,selectedStore,pageNum) {
     if (pageNum) {
         params.append("offset", pageNum)
     }
-    
+
     const response = await getData(url, params);
 
     return response
 }
 
-export async function getSalesByMonthChartData(yearMonth,groupBy) {
+export async function getSalesByMonthChartData(yearMonth, groupBy) {
 
     const url = '/rental/chart'
     const params = new URLSearchParams();
@@ -72,7 +75,7 @@ export async function getSalesByMonthChartData(yearMonth,groupBy) {
     if (groupBy) {
         params.append('groupBy', groupBy);
     }
-    
+
     const response = await getData(url, params);
 
     return response
@@ -102,7 +105,7 @@ export async function getUserOrderList(memberId, period, searchDate, pageNum) {
 
 
     // period 값이 존재하면 URL에 추가
-    if (memberId){
+    if (memberId) {
         params.append("memberId", memberId)
     }
     if (period) {
@@ -139,11 +142,11 @@ export async function getActiveRentalList(memberId, pageNum) {
     const url = '/rental/active'
     const params = new URLSearchParams()
 
-    if(memberId) {
+    if (memberId) {
         params.append("memberId", memberId)
     }
 
-    if(pageNum) {
+    if (pageNum) {
         params.append("offset", pageNum)
     }
 
@@ -164,18 +167,18 @@ export async function getOrderDetail(id) {
 // 사용자 예약 등록
 export const postRentalReservation = async (rentalData) => {
     try {
-        const url = `/rental/regist`;  
-        const response = await api.post(url, rentalData);  
-        return response.data;  
+        const url = `/rental/regist`;
+        const response = await api.post(url, rentalData);
+        return response.data;
     } catch (error) {
         console.error('예약 등록 API 호출 실패:', error);
-        throw error; 
+        throw error;
     }
 };
 
 export const putRentalDeliveryAddress = async (rentalNo, destinationNo) => {
     const url = `/rental/${rentalNo}/deliveryaddress`;
-    
+
     // destinationNo를 단순히 숫자로 보내기
     await api.put(url, destinationNo);
 }
@@ -185,8 +188,8 @@ export const putRentalDeliveryAddress = async (rentalNo, destinationNo) => {
 export const getOwnerRentalList = async (ownerNo, period, rentalTab, pageNum) => {
     const url = `/rental/owner`
     const params = new URLSearchParams()
-   
-    if(ownerNo) {
+
+    if (ownerNo) {
         params.append("ownerNo", ownerNo)
     }
     // period 값이 존재하면 URL에 추가
@@ -233,8 +236,8 @@ export async function putUpdateRentalState(rentalNo) {
 export async function getSalesByOwner(memberId, yearMonth, productNo) {
     const url = `/rental/${memberId}/sales`
     const params = new URLSearchParams()
-   
-    if(yearMonth) {
+
+    if (yearMonth) {
         params.append("yearMonth", yearMonth)
     }
     // period 값이 존재하면 URL에 추가
@@ -257,7 +260,7 @@ export async function getRentalStateCountByOwner(memberId) {
 }
 
 // 제공자의 만료일 기준 기간별 카운트 
-export async function getRentalPeriodCountByOwner(memberId,period) {
+export async function getRentalPeriodCountByOwner(memberId, period) {
     const url = `/rental/${memberId}/period/count`
     const params = new URLSearchParams();
 

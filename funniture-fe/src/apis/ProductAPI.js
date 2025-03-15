@@ -2,7 +2,8 @@ import { GET_CATEGORY_LIST } from '../redux/modules/CategoryModuls'
 import api from "./Apis";
 import { EDIT_PRODUCT_REQUEST, GET_PRODUCTLIST_BY_OWNERNO, REGISTER_PRODUCT_FAIL, REGISTER_PRODUCT_REQUEST, REGISTER_PRODUCT_SUCCESS } from '../redux/modules/productReducer';
 
-const baseProductUrl = 'http://localhost:8080/api/v1/product'
+// const baseProductUrl = 'http://localhost:8080/api/v1/product'
+const baseProductUrl = 'http://localhost:8887/api/v1/product'
 
 // 카테고리 조회 (store에 저장)
 export function getCategory(refCategory) {

@@ -8,7 +8,8 @@ import { GET_OWNERINFO } from "../redux/modules/OwnerModule";
 
 // 회원 가입
 export const callSignupAPI = ({ form }) => {
-    const requestURL = `http://localhost:8080/api/v1/auth/signup`;
+    // const requestURL = `http://localhost:8080/api/v1/auth/signup`;
+    const requestURL = `http://localhost:8887/api/v1/auth/signup`;
 
     return async (dispatch, getState) => {
         const result = await fetch(requestURL, {
@@ -34,7 +35,8 @@ export const callSignupAPI = ({ form }) => {
 
 // 최초 회원 가입 할 때 이메일 입력 시, 중복된 이메일인지 체크하는 API
 export const callGetMemberEmailAPI = async (email) => {
-    const requestURL = `http://localhost:8080/api/v1/auth/validation/${email}`;
+    // const requestURL = `http://localhost:8080/api/v1/auth/validation/${email}`;
+    const requestURL = `http://localhost:8887/api/v1/auth/validation/${email}`;
 
     try {
         const response = await api.get(requestURL); // 서버에서 이메일 중복 여부 확인
@@ -55,7 +57,8 @@ export async function updateCount(role) {
 
 // 로그인 할 때 서버에 데이터를 보내고, 토큰 정보를 리턴 받음
 export const callLoginAPI = ({ form }) => {
-    const loginURL = `http://localhost:8080/api/v1/auth/login`;
+    // const loginURL = `http://localhost:8080/api/v1/auth/login`;
+    const loginURL = `http://localhost:8887/api/v1/auth/login`;
 
     return async (dispatch, getState) => {
         try {
@@ -132,7 +135,8 @@ export const callCertificationAPI = ({ email, verification }) => {
 
 // 로그인 페이지에서 비밀번호 변경 로직
 export const callChangePassAPI = ({ form }) => {
-    const requestURL = `http://localhost:8080/api/v1/member/findPass`
+    // const requestURL = `http://localhost:8080/api/v1/member/findPass`
+    const requestURL = `http://localhost:8887/api/v1/member/findPass`
 
     return async (dispatch, getState) => {
         const result = api.post(requestURL, {
@@ -146,7 +150,8 @@ export const callChangePassAPI = ({ form }) => {
 
 // 사용자 개인 정보 변경 전, 비밀번호 검증 로직
 export const callConfirmPassword = (memberId, password) => {
-    const requestURL = `http://localhost:8080/api/v1/member/conform`;
+    // const requestURL = `http://localhost:8080/api/v1/member/conform`;
+    const requestURL = `http://localhost:8887/api/v1/member/conform`;
 
     return async (dispatch, getState) => {
         try {
@@ -170,7 +175,8 @@ export const callConfirmPassword = (memberId, password) => {
 
 // 전화번호 바꾸는 로직
 export const callChangePhoneAPI = ({ memberId, phoneNumber }) => {
-    const requestURL = `http://localhost:8080/api/v1/member/modify/phone`;
+    // const requestURL = `http://localhost:8080/api/v1/member/modify/phone`;
+    const requestURL = `http://localhost:8887/api/v1/member/modify/phone`;
 
     return async (dispatch, getState) => {
         const response = await api.put(requestURL, {
@@ -186,7 +192,8 @@ export const callChangePhoneAPI = ({ memberId, phoneNumber }) => {
 };
 
 export const callChangePasswordAPI = ({ memberId, password }) => {
-    const requestURL = `http://localhost:8080/api/v1/member/modify/password`;
+    // const requestURL = `http://localhost:8080/api/v1/member/modify/password`;
+    const requestURL = `http://localhost:8887/api/v1/member/modify/password`;
 
     return async (dispatch, getState) => {
         const response = await api.put(requestURL, {
@@ -204,7 +211,8 @@ export const callChangePasswordAPI = ({ memberId, password }) => {
 }
 
 export const callChangeAddressAPI = ({ memberId, address }) => {
-    const requestURL = `http://localhost:8080/api/v1/member/modify/address`;
+    // const requestURL = `http://localhost:8080/api/v1/member/modify/address`;
+    const requestURL = `http://localhost:8887/api/v1/member/modify/address`;
 
     return async (dispatch, getState) => {
         const response = await api.put(requestURL, {
@@ -223,7 +231,8 @@ export const callChangeAddressAPI = ({ memberId, address }) => {
 
 // 마이페이지에서 이미지 변경 요청
 export const callChangeImageAPI = ({ memberId, imageLink }) => {
-    const requestURL = `http://localhost:8080/api/v1/member/modify/imageLink`;
+    // const requestURL = `http://localhost:8080/api/v1/member/modify/imageLink`;
+    const requestURL = `http://localhost:8887/api/v1/member/modify/imageLink`;
 
     return async (dispatch, getState) => {
         const formData = new FormData();
@@ -267,7 +276,8 @@ export const callChangeImageAPI = ({ memberId, imageLink }) => {
 
 // 탈퇴하기 눌렀을 때 동작하는 애 
 export const callWithdrawAPI = ({ memberId }) => {
-    const requestURL = `http://localhost:8080/api/v1/member/withdraw/${memberId}`;
+    // const requestURL = `http://localhost:8080/api/v1/member/withdraw/${memberId}`;
+    const requestURL = `http://localhost:8887/api/v1/member/withdraw/${memberId}`;
 
     return async () => {
         const response = await api.put(requestURL)
@@ -276,7 +286,8 @@ export const callWithdrawAPI = ({ memberId }) => {
 }
 
 export const callConvertImageAPI = ({ memberId, storeImage }) => {
-    const requestURL = `http://localhost:8080/api/v1/member/modify/imageLink`;
+    // const requestURL = `http://localhost:8080/api/v1/member/modify/imageLink`;
+    const requestURL = `http://localhost:8887/api/v1/member/modify/imageLink`;
 
     return async (dispatch, getState) => {
         const formData = new FormData();
@@ -329,7 +340,8 @@ export const callRegisterOwnerAPI = ({
     storePhone,
     attachmentFile
 }) => {
-    const requestURL = `http://localhost:8080/api/v1/member/owner/register`;
+    // const requestURL = `http://localhost:8080/api/v1/member/owner/register`;
+    const requestURL = `http://localhost:8887/api/v1/member/owner/register`;
 
     return async (dispatch, getState) => {
         const formData = new FormData();
@@ -387,7 +399,8 @@ export const callUpdateOwnerAPI = ({
     storePhone,
     attachmentFile
 }) => {
-    const requestURL = `http://localhost:8080/api/v1/member/owner/update`;
+    // const requestURL = `http://localhost:8080/api/v1/member/owner/update`;
+    const requestURL = `http://localhost:8887/api/v1/member/owner/update`;
 
     return async (dispatch, getState) => {
         const formData = new FormData();
@@ -433,7 +446,8 @@ export const callUpdateOwnerAPI = ({
 
 // 사용자가 제공자 전환 신청을 했는지 여부 확인을 위함
 export const checkOwnerStatusAPI = async (memberId) => {
-    const requestURL = `http://localhost:8080/api/v1/member/owner/status/${memberId}`;
+    // const requestURL = `http://localhost:8080/api/v1/member/owner/status/${memberId}`;
+    const requestURL = `http://localhost:8887/api/v1/member/owner/status/${memberId}`;
     try {
         const response = await api.get(requestURL);
         return response;
@@ -445,7 +459,8 @@ export const checkOwnerStatusAPI = async (memberId) => {
 
 // 제공자 전환 심사 반려 됐을 때 반려 메시지 가져오기
 export const getRejectedMessage = async (memberId) => {
-    const requestURL = `http://localhost:8080/api/v1/member/rejected/${memberId}`;
+    // const requestURL = `http://localhost:8080/api/v1/member/rejected/${memberId}`;
+    const requestURL = `http://localhost:8887/api/v1/member/rejected/${memberId}`;
     try {
         const response = await api.get(requestURL);
         return response;
@@ -527,7 +542,8 @@ export function changeConsultingAPI({ memberId }) {
 
 // 제공자 전환 심사 중복된 사업자번호인지 확인하기
 export const getCheckStoreNoAPI = async (memberId, storeNo) => {
-    const requestURL = `http://localhost:8080/api/v1/member/check-store-no`;
+    // const requestURL = `http://localhost:8080/api/v1/member/check-store-no`;
+    const requestURL = `http://localhost:8887/api/v1/member/check-store-no`;
     try {
         // 요청 파라미터를 params 객체로 전달
         const response = await api.get(requestURL, {
